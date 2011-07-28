@@ -121,7 +121,7 @@ public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest 
 		ComponentBuilder builder = createComponentBuilder(name);
 		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
-		expectGeneratedSet(helper, products).withCeasedAvailability();
+		expectUniquelyGeneratedSet(helper, products).withCeasedAvailability();
 	}
 	
 	/*

@@ -107,11 +107,6 @@ public abstract class GeneratorTest {
         return new Helper(generator);
     }
 
-    protected <T> Helper expectGeneratedSet(Generator<T> generator, T ... products) { // TODO what's the difference to expectUniqueFromSet()?
-        expectGeneratedSet(generator, products.length, products);
-        return new Helper(generator);
-    }
-
     protected <T> Helper expectGeneratedSet(Generator<T> generator, int invocations, T ... products) {
         expectGeneratedSetOnce(generator, invocations, products);
         generator.reset();
@@ -119,10 +114,10 @@ public abstract class GeneratorTest {
         return new Helper(generator);
     }
 
-    protected <T> Helper expectUniqueFromSet(Generator<T> generator, T ... products) {
-        expectUniqueFromSetOnce(generator, products);
+    protected <T> Helper expectUniquelyGeneratedSet(Generator<T> generator, T ... products) {
+        expectUniquelyGeneratedSetOnce(generator, products);
         generator.reset();
-        expectUniqueFromSetOnce(generator, products);
+        expectUniquelyGeneratedSetOnce(generator, products);
         return new Helper(generator);
     }
 
@@ -321,14 +316,14 @@ public abstract class GeneratorTest {
         }
     }
 
-    private <T> void expectGeneratedSetOnce(Generator<T> generator, int invocations, T... expectedProduct) {
-        Set<T> expectedSet = CollectionUtil.toSet(expectedProduct);
-        Set<T> observedSet = new HashSet<T>(expectedProduct.length);
+    private <T> void expectGeneratedSetOnce(Generator<T> generator, int invocations, T... expectedProducts) {
+        Set<T> expectedSet = CollectionUtil.toSet(expectedProducts);
+        Set<T> observedSet = new HashSet<T>(expectedProducts.length);
         ProductWrapper<T> wrapper = new ProductWrapper<T>();
         for (int i = 0; i < invocations; i++) {
         	wrapper = generator.generate(wrapper);
             assertNotNull("Generator has gone unavailable. " +
-            		"Generated only " + i + " of " + expectedProduct.length + " expected values: " + observedSet, 
+            		"Generated only " + i + " of " + expectedProducts.length + " expected values: " + observedSet, 
             		wrapper);
             T generation = wrapper.unwrap();
             logger.debug("created " + format(generation));
@@ -339,14 +334,14 @@ public abstract class GeneratorTest {
         assertEquals(expectedSet, observedSet);
     }
 
-    private <T>void expectUniqueFromSetOnce(Generator<T> generator, T... products) {
-        Set<T> expectedSet = CollectionUtil.toSet(products);
+    private <T>void expectUniquelyGeneratedSetOnce(Generator<T> generator, T... expectedProducts) {
+        Set<T> expectedSet = CollectionUtil.toSet(expectedProducts);
         UniqueValidator<Object> validator = new UniqueValidator<Object>();
         ProductWrapper<T> wrapper = new ProductWrapper<T>();
-        for (int i = 0; i < products.length; i++) {
+        for (int i = 0; i < expectedProducts.length; i++) {
         	wrapper = generator.generate(wrapper);
             assertNotNull("Generator has gone unavailable after " + i + " products, " +
-            		"expected " + products.length + " products. ", wrapper);
+            		"expected " + expectedProducts.length + " products. ", wrapper);
 			T product = wrapper.unwrap();
             logger.debug("created " + format(product));
             assertTrue("Product is not unique: " + product, validator.valid(product));

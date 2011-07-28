@@ -59,11 +59,11 @@ public class SequencedDatasetCSVGeneratorTest extends GeneratorTest {
 
 	@Test
 	public void test() {
-		expectGeneratedSet(createDatasetGenerator(NORTH_AMERICA), NEW_YORK, SAN_FRANCISCO, MEXICO, VILLAHERMOSA);
-		expectGeneratedSet(createDatasetGenerator(SOUTH_AMERICA), SAO_PAOLO, BRASILIA);
-		expectGeneratedSet(createDatasetGenerator(ANGLO_AMERICA), NEW_YORK, SAN_FRANCISCO);
-		expectGeneratedSet(createDatasetGenerator(LATIN_AMERICA), MEXICO, VILLAHERMOSA, SAO_PAOLO, BRASILIA);
-		expectGeneratedSet(createDatasetGenerator(AMERICA), NEW_YORK, SAN_FRANCISCO, MEXICO, VILLAHERMOSA, SAO_PAOLO, BRASILIA);
+		expectUniquelyGeneratedSet(createDatasetGenerator(NORTH_AMERICA), NEW_YORK, SAN_FRANCISCO, MEXICO, VILLAHERMOSA);
+		expectUniquelyGeneratedSet(createDatasetGenerator(SOUTH_AMERICA), SAO_PAOLO, BRASILIA);
+		expectUniquelyGeneratedSet(createDatasetGenerator(ANGLO_AMERICA), NEW_YORK, SAN_FRANCISCO);
+		expectUniquelyGeneratedSet(createDatasetGenerator(LATIN_AMERICA), MEXICO, VILLAHERMOSA, SAO_PAOLO, BRASILIA);
+		expectUniquelyGeneratedSet(createDatasetGenerator(AMERICA), NEW_YORK, SAN_FRANCISCO, MEXICO, VILLAHERMOSA, SAO_PAOLO, BRASILIA);
 
 	}
 

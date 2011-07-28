@@ -54,7 +54,7 @@ public class InstanceGeneratorFactoryTest extends GeneratorTest {
 		InstanceDescriptor instance = new InstanceDescriptor("n", type).withUnique(true);
 		Generator<Long> generator = createInstanceGenerator(instance);
 		generator.init(context);
-		expectGeneratedSet(generator, 1L, 2L, 3L).withCeasedAvailability();
+		expectUniquelyGeneratedSet(generator, 1L, 2L, 3L).withCeasedAvailability();
 	}
 	
 	@Test
@@ -62,7 +62,7 @@ public class InstanceGeneratorFactoryTest extends GeneratorTest {
 		IdDescriptor descriptor = new IdDescriptor("id", "long");
 		Generator<Long> generator = createInstanceGenerator(descriptor);
 		generator.init(context);
-		expectGeneratedSet(generator, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L).withContinuedAvailability();
+		expectUniquelyGeneratedSet(generator, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L).withContinuedAvailability();
 	}
 	
 	@SuppressWarnings("unchecked")

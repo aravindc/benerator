@@ -47,7 +47,7 @@ public class CompositeStringGeneratorTest extends GeneratorTest {
                 new OneShotGenerator<String>("0"),
                 new OneShotGenerator<String>("1"));
         generator.init(context);
-        expectUniqueFromSet(generator, "01").withCeasedAvailability();
+        expectUniquelyGeneratedSet(generator, "01").withCeasedAvailability();
     }
 
     @Test
@@ -56,7 +56,7 @@ public class CompositeStringGeneratorTest extends GeneratorTest {
                 new SequenceTestGenerator<String>("A", "B", "C"),
                 new SequenceTestGenerator<String>("0", "1"));
         generator.init(context);
-        expectUniqueFromSet(generator, "A0", "B0", "C0", "A1", "B1", "C1").withCeasedAvailability();
+        expectUniquelyGeneratedSet(generator, "A0", "B0", "C0", "A1", "B1", "C1").withCeasedAvailability();
     }
 
 }

@@ -159,7 +159,7 @@ public class RegexStringGeneratorFactory_equivalenceTest extends GeneratorTest {
     }
     
     private void expectSet(String regex, String... products) {
-    	expectGeneratedSet(createGenerator(regex, 0, null), products);
+    	expectUniquelyGeneratedSet(createGenerator(regex, 0, null), products);
     }
     
     private void expectSequence(String regex, int minLength, Integer maxLength, String... products) {

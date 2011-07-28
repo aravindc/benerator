@@ -123,12 +123,12 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
 
     @Test
     public void testUniqueCharSets() throws Exception {
-        expectUniqueFromSet(create("[a]{1,2}", 30, true),
+        expectUniquelyGeneratedSet(create("[a]{1,2}", 30, true),
                 "a", "aa").withCeasedAvailability();
-        expectUniqueFromSet(create("x[ab]{3}x", 30, true),
+        expectUniquelyGeneratedSet(create("x[ab]{3}x", 30, true),
                 "xaaax", "xaabx", "xabax", "xabbx", "xbaax", "xbabx", "xbbax", "xbbbx").withCeasedAvailability();
         expectUniqueProducts(create("[01]{2}/[01]{2}", 30, true), 16).withCeasedAvailability();
-        expectUniqueFromSet(create("[01]{2,3}", 30, true),
+        expectUniquelyGeneratedSet(create("[01]{2,3}", 30, true),
                 "00", "01", "10", "11", "000", "001", "010", "011", "100", "101", "110", "111").withCeasedAvailability();
         expectUniqueProducts(create("0[0-9]{2,4}/[1-9][0-9]5", 30, true), 5).withContinuedAvailability();
         expectUniqueProducts(create("[0-9]{5}", 0, true), 1000).withContinuedAvailability();
@@ -136,8 +136,8 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
 
     @Test
     public void testUniqueGroups() throws Exception {
-        expectUniqueFromSet(create("x(ab){1,2}x", 30, true), "xabx", "xababx").withCeasedAvailability();
-        expectUniqueFromSet(create("x(a[01]{2}){1,2}x", 30, true),
+        expectUniquelyGeneratedSet(create("x(ab){1,2}x", 30, true), "xabx", "xababx").withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("x(a[01]{2}){1,2}x", 30, true),
                 "xa00x", "xa01x", "xa10x", "xa11x",
                 "xa00a00x", "xa01a00x", "xa10a00x", "xa11a00x",
                 "xa00a01x", "xa01a01x", "xa10a01x", "xa11a01x",
@@ -148,11 +148,11 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
     
     @Test
     public void testUniqueAlternatives() throws Exception {
-        expectUniqueFromSet(create("x(a|b)x", 30, true), "xax", "xbx").withCeasedAvailability();
-        expectUniqueFromSet(create("x(a|b){2}x", 30, true), "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
-        expectUniqueFromSet(create("x(a|b){1,2}x", 30, true), "xax", "xbx", "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
-        expectUniqueFromSet(create("([a]{1,2}|b)", 30, true), "a", "aa", "b").withCeasedAvailability();
-        expectUniqueFromSet(create("x([01]{1,2}|b)x", 30, true),
+        expectUniquelyGeneratedSet(create("x(a|b)x", 30, true), "xax", "xbx").withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("x(a|b){2}x", 30, true), "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("x(a|b){1,2}x", 30, true), "xax", "xbx", "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("([a]{1,2}|b)", 30, true), "a", "aa", "b").withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("x([01]{1,2}|b)x", 30, true),
                 "x0x", "x1x", "x00x", "x01x", "x10x", "x11x", "xbx").withCeasedAvailability();
     }
     

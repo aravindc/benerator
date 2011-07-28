@@ -87,7 +87,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("string");
 		type.setValues("'A','B','C'");
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.ORDERED);
-		expectGeneratedSet(generator, "A", "B", "C").withCeasedAvailability();
+		expectUniquelyGeneratedSet(generator, "A", "B", "C").withCeasedAvailability();
 	}
 	
 	@Test

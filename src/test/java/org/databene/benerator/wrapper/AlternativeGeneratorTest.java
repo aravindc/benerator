@@ -59,8 +59,8 @@ public class AlternativeGeneratorTest extends GeneratorTest {
     
     @Test
     public void testUniqueOneShotAlternatives() {
-        expectUniqueFromSet(initialize(generator(0)), 0).withCeasedAvailability();
-        expectUniqueFromSet(initialize(generator(0, 1, 2)), 0, 1, 2).withCeasedAvailability();
+        expectUniquelyGeneratedSet(initialize(generator(0)), 0).withCeasedAvailability();
+        expectUniquelyGeneratedSet(initialize(generator(0, 1, 2)), 0, 1, 2).withCeasedAvailability();
     }
 
     @Test
@@ -71,7 +71,7 @@ public class AlternativeGeneratorTest extends GeneratorTest {
         gens[1] = generator(0, 1);
         Generator<Integer> generator = new AlternativeGenerator<Integer>(Integer.class, gens);
         generator.init(context);
-        expectUniqueFromSet(generator, 0, 1, 2).withCeasedAvailability();
+        expectUniquelyGeneratedSet(generator, 0, 1, 2).withCeasedAvailability();
     }
 
     @Test
