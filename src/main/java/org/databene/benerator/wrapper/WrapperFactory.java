@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 
 /**
  * Provides wrappers for number {@link Generator}s that converts 
@@ -42,6 +44,11 @@ import org.databene.benerator.Generator;
 
 public class WrapperFactory {
 
+    public static <T extends Number> NonNullGenerator<T> wrapNonNullNumberGenerator(
+    		Class<T> numberType, NonNullGenerator<? extends Number> source, T min, T precision) {
+    	return GeneratorFactoryUtil.asNonNullGenerator(wrapNumberGenerator(numberType, source, min, precision));
+    }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <T extends Number> Generator<T> wrapNumberGenerator(
     		Class<T> numberType, Generator<? extends Number> source, T min, T precision) {
