@@ -35,6 +35,7 @@ import java.util.*;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.WeightFunction;
@@ -44,6 +45,7 @@ import org.databene.benerator.distribution.sequence.HeadSequence;
 import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.model.data.Uniqueness;
@@ -109,8 +111,9 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, Sequence sequence) {
         Generator<T> generator = generatorFactory.createNumberGenerator(type, min, true, max, true, precision, sequence, Uniqueness.NONE);
         generator.init(context);
+        ProductWrapper<T> wrapper = new ProductWrapper<T>();
         for (int i = 0; i < 5; i++) {
-            T n = generator.generate();
+            T n = generator.generate(wrapper).unwrap();
             assertNotNull("Generator not available: " + generator, n);
             if (min != null)
             	assertTrue("Generated value (" + n + ") is smaller than min (" + min + ") using sequence '" + sequence + "'", 
@@ -125,8 +128,9 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         generator.init(context);
         int range = (int)((max.doubleValue() - min.doubleValue() + precision.doubleValue()) / precision.doubleValue());
         int[] count = new int[range];
+        ProductWrapper<T> wrapper = new ProductWrapper<T>();
         for (int i = 0; i < 1000; i++) {
-            T n = generator.generate();
+            T n = generator.generate(wrapper).unwrap();
             double d = n.doubleValue();
             assertTrue(d >= min.doubleValue());
             assertTrue(d <= max.doubleValue());
@@ -150,7 +154,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     public void testGetEmptySampleGenerator() {
         Generator<Integer> generator = generatorFactory.createSampleGenerator(new HashSet<Integer>(), Integer.class, false);
 		generator.init(context);
-		assertNull(generator.generate());
+		assertNull(generator.generate(new ProductWrapper<Integer>()));
     }
 
     // date source --------------------------------------------------------------------------------------------------
@@ -195,8 +199,9 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         List<Character> specialChars;
         specialChars = new ArrayList<Character>(LocaleUtil.letters(locale));
         int[] specialCount = new int[specialChars.size()];
+        ProductWrapper<Character> wrapper = new ProductWrapper<Character>();
         for (int i = 0; i < 1000; i++) {
-            Character c = generator.generate();
+            Character c = generator.generate(wrapper).unwrap();
             int index = specialChars.indexOf(c);
             if (index >= 0)
                 specialCount[index]++;
@@ -236,7 +241,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
   }
 
     private void checkRegexGeneration(String pattern, int minLength, Integer maxLength, boolean nullable) {
-        Generator<String> generator = generatorFactory.createRegexStringGenerator(pattern, minLength, maxLength, false);
+    	NonNullGenerator<String> generator = generatorFactory.createRegexStringGenerator(pattern, minLength, maxLength, false);
         generator.init(context);
         RegexStringGeneratorFactory_volumeTest.checkRegexGeneration(generator, pattern, minLength, maxLength, nullable);
     }
@@ -280,8 +285,9 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         String pattern = "{0} {1}";
         Generator<String> generator = GeneratorFactoryUtil.createMessageGenerator(pattern, 0, 12, salutationGenerator, nameGenerator);
         generator.init(context);
+        ProductWrapper<String> wrapper = new ProductWrapper<String>();
         for (int i = 0; i < 10; i++) {
-            String message = generator.generate();
+            String message = generator.generate(wrapper).unwrap();
             StringTokenizer tokenizer = new StringTokenizer(message, " ");
             assertEquals(2, tokenizer.countTokens());
             assertTrue(salutations.contains(tokenizer.nextToken()));
@@ -351,8 +357,9 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         Generator[] sources = new Generator[] { salutationGenerator, nameGenerator };
         Generator<Object[]> generator = generatorFactory.createCompositeArrayGenerator(Object.class, sources, false);
         generator.init(context);
+        ProductWrapper<Object[]> wrapper = new ProductWrapper<Object[]>();
         for (int i = 0; i < 10; i++) {
-            Object[] array = generator.generate();
+			Object[] array = generator.generate(wrapper).unwrap();
             assertEquals(2, array.length);
             assertTrue(salutations.contains(array[0]));
             assertTrue(names.contains(array[1]));
@@ -362,23 +369,27 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     // source generators -----------------------------------------------------------------------------------------------
 
     @Test
-    public void testGetCSVCellGenerator() {
+    public void testGetCSVCellGenerator() { // TODO move this and other test methods to GeneratorFactoryUtilTest
         Generator<String> generator = GeneratorFactoryUtil.createCSVCellGenerator("file://org/databene/csv/names-abc.csv", ',', Encodings.UTF_8);
         generator.init(context);
-        assertEquals("Alice", generator.generate());
-        assertEquals("Bob", generator.generate());
-        assertEquals("Charly", generator.generate());
-        assertNull(generator.generate());
+        assertEquals("Alice", nextProduct(generator));
+        assertEquals("Bob", nextProduct(generator));
+        assertEquals("Charly", nextProduct(generator));
+        assertNull(generator.generate(new ProductWrapper<String>()));
     }
+
+	protected <T> T nextProduct(Generator<T> generator) {
+		return generator.generate(new ProductWrapper<T>()).unwrap();
+	}
 
     @Test
     public void testGetArraySourceGenerator() {
         Generator<String[]> generator = GeneratorFactoryUtil.createCSVLineGenerator(
                 "file://org/databene/csv/names-abc.csv", ',', Encodings.UTF_8, true);
         generator.init(context);
-        assertArrayEquals(new String[] { "Alice", "Bob" }, generator.generate());
-        assertArrayEquals(new String[] { "Charly"}, generator.generate());
-        assertNull(generator.generate());
+        assertArrayEquals(new String[] { "Alice", "Bob" }, nextProduct(generator));
+        assertArrayEquals(new String[] { "Charly"}, nextProduct(generator));
+        assertNull(generator.generate(new ProductWrapper<String[]>()));
     }
 
     private void assertArrayEquals(String[] expected, String[] actual) {
@@ -424,7 +435,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     private <T> void initAndUseGenerator(Generator<T> generator) {
     	generator.init(context);
         for (int i = 0; i < 5; i++) {
-            T product = generator.generate();
+            T product = generator.generate(new ProductWrapper<T>()).unwrap();
         	assertNotNull("Generator unexpectedly invalid: " + generator.toString(), product);
         }
     }

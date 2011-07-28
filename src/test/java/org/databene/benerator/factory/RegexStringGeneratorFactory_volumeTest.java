@@ -3,7 +3,7 @@ package org.databene.benerator.factory;
 import java.util.regex.Pattern;
 import java.util.Locale;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.LocaleUtil;
 import org.slf4j.Logger;
@@ -160,11 +160,11 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
     public void testAlternativesBugOfAdgadg() throws Exception {
     	// Tests a bug posted by adgadg at 2009-07-18, see http://databene.org/phpBB3/viewtopic.php?f=3&t=110
     	String pattern = "(0[1239] [1-9]([0-9]{2}) ([0-9]{2} ){2})|(0[1-9][0-9] ([0-9]{2} ){3})";
-		Generator<String> gen = create(pattern);
+    	NonNullGenerator<String> generator = create(pattern);
     	boolean alt1 = false;
     	boolean alt2 = false;
     	for (int i = 0; i < 20; i++) {
-    		String product = gen.generate();
+    		String product = generator.generate();
     		switch (product.indexOf(' ')) {
 	    		case 2: alt1 = true; break;
 	    		case 3: alt2 = true; break;
@@ -180,11 +180,11 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
 
     private void checkRegexGeneration(String regex) throws Exception {
         logger.debug("checking generation for regex '" + regex + "'");
-        Generator<String> generator = create(regex);
+        NonNullGenerator<String> generator = create(regex);
         checkRegexGeneration(generator, regex, 0, 255, true);
     }
 
-    public static void checkRegexGeneration(Generator<String> generator, String regex, int minLength, Integer maxLength, boolean nullable) {
+    public static void checkRegexGeneration(NonNullGenerator<String> generator, String regex, int minLength, Integer maxLength, boolean nullable) {
         String message = "Generation failed for: '" + regex + "': ";
         for (int i = 0; i < 20; i++) {
             String output = generator.generate();
@@ -205,14 +205,14 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
         }
     }
     
-    private Generator<String> create(String pattern) {
-    	Generator<String> generator = RegexGeneratorFactory.create(pattern, new VolumeGeneratorFactory());
+    private NonNullGenerator<String> create(String pattern) {
+    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, new VolumeGeneratorFactory());
     	generator.init(context);
 		return generator;
     }
     
-    private Generator<String> create(String pattern, int maxLimit, boolean unique) {
-    	Generator<String> generator = RegexGeneratorFactory.create(pattern, 0, null, unique, new VolumeGeneratorFactory());
+    private NonNullGenerator<String> create(String pattern, int maxLimit, boolean unique) {
+    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, 0, null, unique, new VolumeGeneratorFactory());
     	generator.init(context);
 		return generator;
     }
