@@ -37,7 +37,7 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
     	Locale.setDefault(realLocale);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testNullPattern() throws Exception {
         checkRegexGeneration(null);
     }
