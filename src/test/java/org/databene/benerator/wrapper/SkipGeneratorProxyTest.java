@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -44,18 +45,19 @@ public class SkipGeneratorProxyTest extends GeneratorTest {
     @Test
     public void testSkip() {
         SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3);
-        SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(source, 1L, 2L);
+        SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(source, 1, 2);
         generator.init(context);
-        int value = generator.generate();
+        int value = GeneratorUtil.generateNonNull(generator);
         assertTrue(value == 1 || value == 2);
     }
 
     @Test
     public void testLimit1() {
         SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3);
-        SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(source, 1L, 1L, SequenceManager.RANDOM_SEQUENCE, 1L);
+        SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(
+        		source, 1, 1, SequenceManager.RANDOM_SEQUENCE, 1);
         generator.init(context);
-        Integer value = generator.generate();
+        Integer value = GeneratorUtil.generateNonNull(generator);
         assertNotNull(value);
         assertTrue(value == 1);
         assertUnavailable(generator);
@@ -66,27 +68,31 @@ public class SkipGeneratorProxyTest extends GeneratorTest {
         SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2);
         SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(source);
         generator.init(context);
-        assertEquals(1, (int) generator.generate());
-        assertEquals(2, (int) generator.generate());
+        assertEquals(1, (int) generateUnwrapped(generator));
+        assertEquals(2, (int) generateUnwrapped(generator));
         assertUnavailable(generator);
     }
 
-    @Test
-    public void testInvalidSetup() {
-        Generator<Integer> source = new ConstantTestGenerator<Integer>(1);
-        checkInvalidSetup(null, 1, 1);
-        checkInvalidSetup(source, -1, 1);
-        checkInvalidSetup(source, 1, -1);
+    @Test(expected = InvalidGeneratorSetupException.class)
+    public void testMissingSource() {
+        createAndInit(null, 1, 1);
     }
 
-    private void checkInvalidSetup(Generator<Integer> source, long minIncrement, long maxIncrement) {
-        try {
-            Generator<Integer> generator = new SkipGeneratorProxy<Integer>(source, minIncrement, maxIncrement);
-            generator.init(context);
-            fail("InvalidGeneratorSetupException expected");
-        } catch (InvalidGeneratorSetupException e) {
-            // this is the expected behavior
-        }
+    @Test(expected = InvalidGeneratorSetupException.class)
+    public void testNegativeMinIncrement() {
+        Generator<Integer> source = new ConstantTestGenerator<Integer>(1);
+        createAndInit(source, -1, 1);
+    }
+
+    @Test(expected = InvalidGeneratorSetupException.class)
+    public void testMaxIncrementSmallerThanMinIncrement() {
+        Generator<Integer> source = new ConstantTestGenerator<Integer>(1);
+        createAndInit(source, 1, -1);
+    }
+
+    private void createAndInit(Generator<Integer> source, int minIncrement, int maxIncrement) {
+        Generator<Integer> generator = new SkipGeneratorProxy<Integer>(source, minIncrement, maxIncrement);
+        generator.init(context);
     }
     
 }

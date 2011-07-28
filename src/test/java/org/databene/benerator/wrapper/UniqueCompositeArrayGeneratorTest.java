@@ -29,6 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.sample.OneShotGenerator;
+import org.databene.benerator.sample.SequenceGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
@@ -57,13 +58,70 @@ public class UniqueCompositeArrayGeneratorTest extends GeneratorTest {
     @SuppressWarnings("unchecked")
     public void testString() {
         Generator<String>[] sources = new Generator [] {
-                new OneShotGenerator<String>("x"),
-                new SequenceTestGenerator<String>("a", "b"),
-                new OneShotGenerator<String>("x")
+            new OneShotGenerator<String>("x"),
+            new SequenceTestGenerator<String>("a", "b"),
+            new OneShotGenerator<String>("x")
         };
         UniqueCompositeArrayGenerator<String> generator = new UniqueCompositeArrayGenerator<String>(String.class, sources);
         generator.init(context);
 		expectUniqueProducts(generator,  2).withCeasedAvailability();
     }
 
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testNotNull() {
+        Generator<Integer>[] sources = new Generator [] {
+    		new SequenceGenerator<Integer>(Integer.class, 1, 2),
+    		new SequenceGenerator<Integer>(Integer.class, 3, 4)
+        };
+        UniqueCompositeArrayGenerator<Integer> generator = new UniqueCompositeArrayGenerator<Integer>(Integer.class, sources);
+		generator.init(context);
+		expectGeneratedSequence(generator, 
+			new Integer[] { 1, 3 },
+			new Integer[] { 1, 4 },
+			new Integer[] { 2, 3 },
+			new Integer[] { 2, 4 }
+		);
+	}
+	
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testNull() {
+        Generator<Integer>[] sources = new Generator [] {
+			new SequenceGenerator<Integer>(Integer.class, null, 1),
+			new SequenceGenerator<Integer>(Integer.class, null, 2)
+        };
+		UniqueCompositeArrayGenerator<Integer> generator = new UniqueCompositeArrayGenerator<Integer>(
+				Integer.class, sources);
+		generator.init(context);
+		expectGeneratedSequence(generator, 
+			new Integer[] { null, null },
+			new Integer[] { null,    2 },
+			new Integer[] {    1, null },
+			new Integer[] {    1,    2 }
+		);
+	}
+	
+    @SuppressWarnings("unchecked")
+	@Test
+	public void testThreeDigits() {
+        Generator<Integer>[] sources = new Generator [] {
+			new SequenceGenerator<Integer>(Integer.class, 1, 2),
+			new SequenceGenerator<Integer>(Integer.class, 3, 4),
+			new SequenceGenerator<Integer>(Integer.class, 5, 6)
+        };
+		UniqueCompositeArrayGenerator<Integer> generator = new UniqueCompositeArrayGenerator<Integer>(Integer.class, sources);
+		generator.init(context);
+		expectGeneratedSequence(generator, 
+			new Integer[] { 1, 3, 5 },
+			new Integer[] { 1, 3, 6 },
+			new Integer[] { 1, 4, 5 },
+			new Integer[] { 1, 4, 6 },
+			new Integer[] { 2, 3, 5 },
+			new Integer[] { 2, 3, 6 },
+			new Integer[] { 2, 4, 5 },
+			new Integer[] { 2, 4, 6 }
+		);
+	}
+	
 }

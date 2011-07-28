@@ -29,6 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -61,7 +62,7 @@ public class SimpleArrayGeneratorTest extends GeneratorClassTest {
                 source, String.class, minLength, maxLength);
         generator.init(context);
         for (int i = 0; i < 100; i++) {
-            String[] product = generator.generate();
+            String[] product = GeneratorUtil.generateNonNull(generator);
             assertTrue(minLength <= product.length);
             assertTrue(product.length <= maxLength);
         }

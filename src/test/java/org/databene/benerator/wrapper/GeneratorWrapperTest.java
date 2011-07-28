@@ -29,6 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.util.SimpleGenerator;
 
 import org.junit.Test;
@@ -56,8 +57,8 @@ public class GeneratorWrapperTest extends GeneratorTest {
 	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void expect12(MyWrapper wrapper) {
-		assertEquals(1, (int) wrapper.generate());
-		assertEquals(2, (int) wrapper.generate());
+		assertEquals(1, (int) GeneratorUtil.generateNonNull(wrapper));
+		assertEquals(2, (int) GeneratorUtil.generateNonNull(wrapper));
 		assertUnavailable(wrapper);
     }
 	
@@ -68,11 +69,11 @@ public class GeneratorWrapperTest extends GeneratorTest {
         }
 
         public Class<Integer> getGeneratedType() {
-	        return source.getGeneratedType();
+	        return getSource().getGeneratedType();
         }
 		
-        public Integer generate() throws IllegalGeneratorStateException {
-	        return source.generate();
+		public ProductWrapper<Integer> generate(ProductWrapper<Integer> wrapper) {
+	        return getSource().generate(wrapper);
         }
 
 	}
@@ -81,8 +82,8 @@ public class GeneratorWrapperTest extends GeneratorTest {
 		
 		private int n = 0;
 		
-        public Integer generate() throws IllegalGeneratorStateException {
-        	return (n < 2 ? ++n : null);
+		public ProductWrapper<Integer> generate(ProductWrapper<Integer> wrapper) {
+        	return (n < 2 ? wrapper.wrap(++n) : null);
         }
 
         @Override

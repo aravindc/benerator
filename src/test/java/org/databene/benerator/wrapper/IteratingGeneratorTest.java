@@ -63,7 +63,7 @@ public class IteratingGeneratorTest extends GeneratorTest {
     	EmptyIterable emptySource = new EmptyIterable();
     	Generator<Integer> generator = new IteratingGenerator<Integer>(emptySource);
     	generator.init(new BeneratorContext());
-    	assertNull(generator.generate());
+    	assertUnavailable(generator);
     	assertTrue(emptySource.latestInstance.closed);
     	IOUtil.close(generator);
 	}

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.measure.count.ObjectCounter;
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class CollectionGeneratorTest extends GeneratorClassTest {
 		CollectionGenerator<List, Integer> generator 
         	= new CollectionGenerator<List, Integer>(List.class, source, 1, 5, SequenceManager.RANDOM_SEQUENCE);
         generator.init(context);
-        List<Integer> list = generator.generate();
+        List<Integer> list = GeneratorUtil.generateNonNull(generator);
         checkEqualDistribution(list, 0., CollectionUtil.toSet(1));
     }
 
@@ -70,7 +71,7 @@ public class CollectionGeneratorTest extends GeneratorClassTest {
         generator.init(context);
         ObjectCounter<Integer> counter = new ObjectCounter<Integer>(4);
         for (int i = 0; i < 5000; i++)
-            counter.count(generator.generate().size());
+            counter.count(GeneratorUtil.generateNonNull(generator).size());
         checkEqualDistribution(counter, 0.1, CollectionUtil.toSet(0, 1, 2, 3));
     }
     

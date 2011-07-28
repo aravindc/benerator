@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,7 @@ import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 
 import java.util.Arrays;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class CompositeArrayGeneratorTest extends GeneratorTest {
         generator.init(context);
         Integer[] EXPECTED_ARRAY = new Integer[] {1, 2};
         for (int i = 0; i < 10; i++)
-            assertTrue(Arrays.equals(EXPECTED_ARRAY, generator.generate()));
+            assertTrue(Arrays.equals(EXPECTED_ARRAY, GeneratorUtil.generateNonNull(generator)));
     }
     
     @Test

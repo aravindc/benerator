@@ -28,6 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.ThreadSafeConverter;
 import org.junit.Test;
@@ -47,8 +48,8 @@ public class ConvertingGeneratorTest extends GeneratorTest {
         TestConverter converter = new TestConverter();
         ConvertingGenerator<Integer, String> generator = new ConvertingGenerator<Integer, String>(source, converter);
         assertEquals("constructor", source.getLastMethodCall());
-        assertEquals("1", generator.generate());
-        assertEquals("1", generator.generate());
+        assertEquals("1", GeneratorUtil.generateNonNull(generator));
+        assertEquals("1", GeneratorUtil.generateNonNull(generator));
         assertTrue(generator.getSource() == source);
         generator.reset();
         assertEquals("reset", source.getLastMethodCall());

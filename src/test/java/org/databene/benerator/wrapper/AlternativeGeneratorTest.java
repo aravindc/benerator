@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,8 +50,9 @@ public class AlternativeGeneratorTest extends GeneratorTest {
         Generator<Integer> source2 = new RandomIntegerGenerator(1, 2);
         AlternativeGenerator<Integer> generator = new AlternativeGenerator<Integer>(Integer.class, source1, source2);
         generator.init(context);
+        ProductWrapper<Integer> wrapper = new ProductWrapper<Integer>();
         for (int i = 0; i < 100; i++) {
-            int product = generator.generate();
+			int product = generator.generate(wrapper).unwrap();
             assertTrue((-2 <= product && product <= -1) || (1 <= product && product <= 2));
         }
     }

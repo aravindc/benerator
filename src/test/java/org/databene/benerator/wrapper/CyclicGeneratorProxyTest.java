@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,7 @@ import static junit.framework.Assert.*;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.util.SimpleGenerator;
 
 /**
@@ -46,6 +47,7 @@ public class CyclicGeneratorProxyTest extends GeneratorTest {
 	@Test
 	public void testSingleIteration() {
 		CyclicGeneratorProxy<Integer> proxy = new CyclicGeneratorProxy<Integer>(new Source12());
+		proxy.init(context);
 		expect12(proxy);
 		proxy.close();
 		assertUnavailable(proxy);
@@ -54,6 +56,7 @@ public class CyclicGeneratorProxyTest extends GeneratorTest {
 	@Test
 	public void testCyclicIteration() {
 		CyclicGeneratorProxy<Integer> proxy = new CyclicGeneratorProxy<Integer>(new Source12());
+		proxy.init(context);
 		expect12(proxy);
 		expect12(proxy);
 		proxy.close();
@@ -63,6 +66,7 @@ public class CyclicGeneratorProxyTest extends GeneratorTest {
 	@Test
 	public void testReset() {
 		CyclicGeneratorProxy<Integer> proxy = new CyclicGeneratorProxy<Integer>(new Source12());
+		proxy.init(context);
 		assertAvailable(proxy);
 		proxy.reset();
 		expect12(proxy);
@@ -73,16 +77,16 @@ public class CyclicGeneratorProxyTest extends GeneratorTest {
 	// helper methods --------------------------------------------------------------------------------------------------
 
 	private void expect12(CyclicGeneratorProxy<Integer> wrapper) {
-		assertEquals(1, (int) wrapper.generate());
-		assertEquals(2, (int) wrapper.generate());
+		assertEquals(1, (int) GeneratorUtil.generateNonNull(wrapper));
+		assertEquals(2, (int) GeneratorUtil.generateNonNull(wrapper));
     }
 
 	public static class Source12 extends SimpleGenerator<Integer> {
 		
 		private int n = 0;
 		
-        public Integer generate() throws IllegalGeneratorStateException {
-	        return (n < 2 ? ++n : null);
+		public ProductWrapper<Integer> generate(ProductWrapper<Integer> wrapper) {
+	        return (n < 2 ? wrapper.wrap(++n) : null);
         }
 
         @Override
@@ -98,7 +102,6 @@ public class CyclicGeneratorProxyTest extends GeneratorTest {
 		public Class<Integer> getGeneratedType() {
 	        return Integer.class;
         }
-
 	}
 
 }
