@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.sample;
 import java.util.List;
 
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Test;
@@ -66,7 +67,7 @@ public class AttachedWeightSampleGeneratorTest extends GeneratorTest {
         int n = 10000;
         int[] sampleCount = new int[3];
         for (int i = 0; i < n; i++) {
-            sampleCount[g.generate()] ++;
+            sampleCount[GeneratorUtil.generateNonNull(g)] ++;
         }
         List<WeightedSample<? extends Integer>> samples2 = g.getSamples();
         for (int i = 0; i < sampleCount.length; i++) {

@@ -9,6 +9,7 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.Encodings;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -34,7 +35,7 @@ public class WeightedCSVSampleGeneratorTest extends GeneratorTest {
         // run test
         List<Date> expectedDates = CollectionUtil.toList(sdf.parse("01.02.2003"), sdf.parse("02.02.2003"), sdf.parse("03.02.2003"));
         for (int i = 0; i < 10; i++) {
-            Date generatedDate = generator.generate();
+            Date generatedDate = GeneratorUtil.generateNonNull(generator);
             assertTrue("generated date not in expected value set: " + sdf.format(generatedDate),
                     expectedDates.contains(generatedDate));
         }

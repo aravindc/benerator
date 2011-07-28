@@ -41,6 +41,7 @@ import org.databene.commons.FileUtil;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -70,7 +71,7 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
         // test
         List<Date> expectedDates = CollectionUtil.toList(sdf.parse("01.02.2003"), sdf.parse("02.02.2003"), sdf.parse("03.02.2003"));
         for (int i = 0; i < 100; i++) {
-            Date generatedDate = generator.generate();
+            Date generatedDate = GeneratorUtil.generateNonNull(generator);
             assertTrue("generated date not in expected value set: " + sdf.format(generatedDate),
                     expectedDates.contains(generatedDate));
         }
@@ -94,7 +95,7 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
 	        	= new SequencedCSVSampleGenerator<Integer>(BIG_FILE_NAME, converter);
 	        generator.init(context);
 	        for (int i = 0; i < 1000; i++) {
-	            int product = generator.generate();
+	            int product = GeneratorUtil.generateNonNull(generator);
 	            assertTrue("generated value not in expected value range: " + product, 0 <= product && product <= 99);
 	        }
     	} finally {

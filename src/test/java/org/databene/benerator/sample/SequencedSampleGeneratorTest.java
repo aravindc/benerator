@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Test;
@@ -54,7 +55,7 @@ public class SequencedSampleGeneratorTest extends GeneratorClassTest {
         int n = 10000;
         int[] sampleCount = new int[3];
         for (int i = 0; i < n; i++) {
-            sampleCount[g.generate()] ++;
+            sampleCount[GeneratorUtil.generateNonNull(g)] ++;
         }
         for (int i = 0; i < sampleCount.length; i++) {
             int count = sampleCount[i];
@@ -75,7 +76,7 @@ public class SequencedSampleGeneratorTest extends GeneratorClassTest {
         generator.init(context);
         // test
         for (int i = 0; i < 100; i++) {
-            int product = generator.generate();
+            int product = GeneratorUtil.generateNonNull(generator);
             assertTrue("generated value not in expected value range: " + product, 0 <= product && product <= 99);
         }
     }
