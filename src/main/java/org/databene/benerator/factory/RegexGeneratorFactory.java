@@ -55,6 +55,8 @@ public class RegexGeneratorFactory {
 
     public static NonNullGenerator<String> create(String pattern, int minLength, Integer maxLength, boolean unique, 
     		GeneratorFactory factory) {
+    	if (pattern == null)
+    		throw new IllegalArgumentException("Not a regular expression: null");
         Object regex = new RegexParser().parseRegex(pattern);
         return createFromObject(regex, minLength, maxLength, unique, factory);
 	}
