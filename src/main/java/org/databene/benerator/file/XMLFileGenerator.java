@@ -37,10 +37,10 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.statement.IncludeStatement;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.TypeGeneratorFactory;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.util.SimpleGenerator;
-import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
@@ -81,7 +81,7 @@ public class XMLFileGenerator extends SimpleGenerator<File> {
         XMLSchemaDescriptorProvider xsdProvider = new XMLSchemaDescriptorProvider(schemaUri, context);
 		dataModel.addDescriptorProvider(xsdProvider);
         // set up file name generator
-        this.fileNameGenerator = new ConvertingGenerator<Long, String>(
+        this.fileNameGenerator = GeneratorFactoryUtil.createConvertingGenerator(
                 new IncrementGenerator(), 
                 new MessageConverter(filenamePattern, Locale.US));
         // parse properties files

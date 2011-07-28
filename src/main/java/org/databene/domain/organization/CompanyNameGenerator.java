@@ -45,12 +45,10 @@ import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequencedCSVSampleGenerator;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
-import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.MessageGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Encodings;
 import org.databene.commons.bean.PropertyAccessConverter;
-import org.databene.domain.address.City;
 import org.databene.domain.address.CityGenerator;
 import org.databene.domain.address.Country;
 import org.databene.text.NameNormalizer;
@@ -248,8 +246,10 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 			    Generator<String> locationBaseGen;
 		        if (location && country != null) {
 		        	try {
-			            Generator<String> city = new ConvertingGenerator<City, String>(
-			            		new CityGenerator(country.getIsoCode()), new PropertyAccessConverter("name"), new NameNormalizer());
+			            Generator<String> city = GeneratorFactoryUtil.createConvertingGenerator(
+			            		new CityGenerator(country.getIsoCode()), 
+			            		new PropertyAccessConverter("name"), 
+			            		new NameNormalizer());
 			            locationBaseGen = new AlternativeGenerator<String>(String.class, 
 			                    			new ConstantGenerator<String>(country.getLocalName()), 
 			                    			city);

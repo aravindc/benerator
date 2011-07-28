@@ -200,7 +200,8 @@ public class GeneratorFactoryUtil {
      * @param converter the converter to apply to the products of the source generator
      * @return a generator of the desired characteristics
      */
-    public static <S, T> Generator<T> createConvertingGenerator(Generator<S> source, Converter<S, T> converter) { // TODO apply wherever possible
+    @SuppressWarnings("rawtypes")
+	public static <S, T> Generator<T> createConvertingGenerator(Generator<S> source, Converter... converter) {
         return new ConvertingGenerator<S, T>(source, converter);
     }
 

@@ -31,10 +31,10 @@ import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.file.FileBuilder;
 import org.databene.benerator.wrapper.CompositeArrayGenerator;
-import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.format.Alignment;
@@ -94,7 +94,7 @@ public class ArrayFlatFileDemo {
             super(Object.class, false, createSources());
         }
 
-        @SuppressWarnings({ "unchecked", "cast", "rawtypes" })
+        @SuppressWarnings({ "unchecked", "cast" })
         private static Generator<Object>[] createSources() {
             VolumeGeneratorFactory generatorFactory = new VolumeGeneratorFactory();
 			Generator<Date> dateGenerator = generatorFactory.createDateGenerator( // transaction date
@@ -105,7 +105,7 @@ public class ArrayFlatFileDemo {
                     new ConstantGenerator<String>("R"),
                     generatorFactory.createNumberGenerator(Integer.class, 1, true, LENGTH, true, 1, SequenceManager.RANDOM_WALK_SEQUENCE, Uniqueness.NONE),
                     generatorFactory.createSampleGenerator(CollectionUtil.toList("BUY", "SALE"), String.class, false), // transaction type
-                    new ConvertingGenerator(dateGenerator, dateRenderer), // transaction date
+                    GeneratorFactoryUtil.createConvertingGenerator(dateGenerator, dateRenderer), // transaction date
                     generatorFactory.createSampleGenerator(CollectionUtil.toList("Alice", "Bob", "Charly"), String.class, false), // partner
                     generatorFactory.createRegexStringGenerator("[A-Z0-9]{6}", 6, 6, false), // article number
                     generatorFactory.createNumberGenerator(Integer.class, 1, true, 20, true, 1, SequenceManager.RANDOM_SEQUENCE, Uniqueness.NONE), // item count
