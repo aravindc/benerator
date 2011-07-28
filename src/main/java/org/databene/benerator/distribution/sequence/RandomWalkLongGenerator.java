@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
@@ -47,7 +48,7 @@ public class RandomWalkLongGenerator extends AbstractNonNullNumberGenerator<Long
     private long initial;
     private long next;
 
-    private AbstractNonNullNumberGenerator<Long> incrementGenerator;
+    private NonNullGenerator<Long> incrementGenerator;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -90,7 +91,7 @@ public class RandomWalkLongGenerator extends AbstractNonNullNumberGenerator<Long
 
     @Override
     public void init(GeneratorContext context) {
-        incrementGenerator = (AbstractNonNullNumberGenerator<Long>) incrementDistribution.createGenerator(
+        incrementGenerator = incrementDistribution.createGenerator(
         		Long.class, minIncrement, maxIncrement, precision, false);
         if (minIncrement < 0 && maxIncrement <= 0)
             initial = max;
