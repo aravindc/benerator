@@ -21,6 +21,7 @@
 
 package org.databene.platform.db;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
@@ -29,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO Document class.<br/><br/>
+ * Abstract parent class for database-sequence-related {@link Generator}s.<br/><br/>
  * Created: 24.07.2011 06:16:59
  * @since 0.7.0
  * @author Volker Bergmann
