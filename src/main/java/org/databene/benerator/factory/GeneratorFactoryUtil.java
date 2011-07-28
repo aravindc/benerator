@@ -416,7 +416,7 @@ public class GeneratorFactoryUtil {
 			return new NullInjectingGeneratorProxy<T>(source, nullQuota);
 	}
 
-	public static <T> NonNullGenerator<T> asNonNullGenerator(Generator<T> source) {
+	public static <T> NonNullGenerator<T> asNonNullGenerator(Generator<T> source) { // TODO move this and other methods to WrapperFactory?
 		if (source instanceof AsNonNullGenerator)
 			return (NonNullGenerator<T>) source;
 		else
