@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.domain.person;
 
 import java.util.Random;
 
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates European Tax Identification Numbers (like the German 'Steueridentifikationsnummer').<br/>
@@ -37,10 +37,15 @@ import org.databene.benerator.util.ThreadSafeGenerator;
  * @since 0.5.5
  * @author Volker Bergmann
  */
-public class TINGenerator extends ThreadSafeGenerator<String> {
+public class TINGenerator extends ThreadSafeNonNullGenerator<String> {
 	
 	private Random random = new Random();
 	
+	public Class<String> getGeneratedType() {
+	    return String.class;
+    }
+
+	@Override
 	public String generate() {
 		char[] buffer = new char[10];
 		// create a 10-digit string of which each digit is used at most once
@@ -76,9 +81,5 @@ public class TINGenerator extends ThreadSafeGenerator<String> {
 		int checksum = TINValidator.calculateChecksum(s);
 		return s + (char) (checksum + '0');
 	}
-
-	public Class<String> getGeneratedType() {
-	    return String.class;
-    }
 
 }
