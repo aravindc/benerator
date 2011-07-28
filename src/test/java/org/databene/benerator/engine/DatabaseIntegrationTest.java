@@ -50,7 +50,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	private ConsumerMock<Entity> consumer;
 	
 	@Before
-	public void setUp() throws Exception {
+	public void setUpDatabase() throws Exception {
 		DBUtil.resetMonitors();
 		consumer = new ConsumerMock<Entity>(true);
 		context.set("cons", consumer);

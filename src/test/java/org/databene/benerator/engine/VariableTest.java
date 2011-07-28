@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,7 +42,7 @@ public class VariableTest extends BeneratorIntegrationTest {
 	private ConsumerMock<Entity> consumer;
 	
     @Before
-	public void setUp() throws Exception {
+	public void setUpSourceAndConsumer() throws Exception {
 		consumer = new ConsumerMock<Entity>(true);
 		context.set("cons", consumer);
 		context.set("pit", new PersonIterable());
