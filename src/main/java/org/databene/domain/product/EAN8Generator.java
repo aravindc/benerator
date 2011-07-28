@@ -27,7 +27,7 @@
 package org.databene.domain.product;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 
 /**
  * Generates 8-digit EAN codes.<br/>
@@ -35,7 +35,7 @@ import org.databene.benerator.wrapper.GeneratorWrapper;
  * Created: 30.07.2007 21:47:30
  * @author Volker Bergmann
  */
-public class EAN8Generator extends GeneratorWrapper<String, String> {
+public class EAN8Generator extends NonNullGeneratorWrapper<String, String> {
 
     private boolean unique;
 
@@ -68,9 +68,10 @@ public class EAN8Generator extends GeneratorWrapper<String, String> {
         super.init(context);
     }
     
-    public String generate() {
+	public String generate() {
+    	assertInitialized();
         char[] chars = new char[8];
-        source.generate().getChars(0, 7, chars, 0);
+        generateFromNotNullSource().getChars(0, 7, chars, 0);
         chars[7] = chars[6];
         chars[6] = '0';
         int sum = 0;

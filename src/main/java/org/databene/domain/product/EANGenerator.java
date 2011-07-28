@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,8 +27,9 @@
 package org.databene.domain.product;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.wrapper.AlternativeGenerator;
+import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 
 /**
  * Generates EAN8 and EAN13 codes at the configured ratio.<br/>
@@ -36,7 +37,7 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
  * Created: 30.07.2007 21:23:44
  * @author Volker Bergmann
  */
-public class EANGenerator extends GeneratorProxy<String> {
+public class EANGenerator extends NonNullGeneratorProxy<String> {
 
     private boolean unique;
 
@@ -70,16 +71,10 @@ public class EANGenerator extends GeneratorProxy<String> {
     @Override
     public void init(GeneratorContext context) {
     	assertNotInitialized();
-        setSource(new AlternativeGenerator<String>(String.class,
+        setSource(GeneratorFactoryUtil.asNonNullGenerator(new AlternativeGenerator<String>(String.class,
                 new EAN8Generator(unique),
-                new EAN13Generator(unique)));
+                new EAN13Generator(unique))));
         super.init(context);
-    }
-
-    @Override
-    public String generate() {
-        assertInitialized();
-        return super.generate();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------

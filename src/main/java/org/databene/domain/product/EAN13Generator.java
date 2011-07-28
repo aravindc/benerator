@@ -27,14 +27,15 @@
 package org.databene.domain.product;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 
 /**
  * Generates 13-digits EAN codes.<br/>
  * <br/>
  * Created: 30.07.2007 21:47:30
+ * @author Volker Bergmann
  */
-public class EAN13Generator extends GeneratorWrapper<String, String> {
+public class EAN13Generator extends NonNullGeneratorWrapper<String, String> {
 
     private boolean unique;
 
@@ -64,11 +65,11 @@ public class EAN13Generator extends GeneratorWrapper<String, String> {
         super.init(context);
     }
     
-    public String generate() {
+	public String generate() {
     	assertInitialized();
         char[] chars = new char[13];
         int sum = 0;
-        source.generate().getChars(0, 12, chars, 0);
+        generateFromNotNullSource().getChars(0, 12, chars, 0);
         for (int i = 0; i < 12; i++)
             sum += (chars[i] - '0') * (1 + (i % 2) * 2);
         if (sum % 10 == 0)
@@ -76,7 +77,6 @@ public class EAN13Generator extends GeneratorWrapper<String, String> {
         else
             chars[12] = (char)('0' + 10 - (sum % 10));
         return new String(chars);
-
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
@@ -85,4 +85,5 @@ public class EAN13Generator extends GeneratorWrapper<String, String> {
     public String toString() {
         return getClass().getSimpleName() + (unique ? "[unique]" : "");
     }
+
 }
