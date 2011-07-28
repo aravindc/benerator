@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.InstanceDescriptor;
@@ -137,7 +138,7 @@ public class AddressGeneratorTest extends GeneratorClassTest {
 		InstanceDescriptor descriptor = parser.parseVariable(element, parent);
 		Generator<Address> generator = (Generator<Address>) InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
 		generator.init(context);
-        Country generatedCountry = generator.generate().getCountry();
+        Country generatedCountry = GeneratorUtil.generateNonNull(generator).getCountry();
 		if (country == null) {
 	        assertEquals(Country.getDefault(), generatedCountry);
         } else
