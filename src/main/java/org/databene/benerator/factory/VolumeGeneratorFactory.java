@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorProvider;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.composite.StochasticArrayGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
@@ -120,7 +121,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
     }
 
 	@Override
-	public Generator<String> createStringGenerator(Set<Character> chars,
+	public NonNullGenerator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
         if (unique) {
             return new UniqueStringGenerator(minLength, maxLength, chars);
@@ -196,7 +197,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Generator<String> createCompositeStringGenerator(
+	public NonNullGenerator<String> createCompositeStringGenerator(
 			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, boolean unique) {
 		AlternativeGenerator<String> result = new AlternativeGenerator<String>(String.class);
 		for (int partCount = minParts; partCount <= maxParts; partCount++) {
@@ -205,7 +206,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 				sources[i] = GeneratorFactoryUtil.stringGenerator(partGeneratorProvider.create());
 			result.addSource(new CompositeStringGenerator(unique, sources));
 		}
-		return result;
+		return GeneratorFactoryUtil.asNonNullGenerator(result);
 	}
 
 }

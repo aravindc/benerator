@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.AttachedWeight;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.FeatureWeight;
@@ -45,6 +46,7 @@ import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.ExpressionBasedGenerator;
+import org.databene.benerator.wrapper.AsNonNullGenerator;
 import org.databene.benerator.wrapper.AsStringGenerator;
 import org.databene.benerator.wrapper.CollectionGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
@@ -412,6 +414,13 @@ public class GeneratorFactoryUtil {
 			return source;
 		else
 			return new NullInjectingGeneratorProxy<T>(source, nullQuota);
+	}
+
+	public static <T> NonNullGenerator<T> asNonNullGenerator(Generator<T> source) {
+		if (source instanceof AsNonNullGenerator)
+			return (NonNullGenerator<T>) source;
+		else
+			return new AsNonNullGenerator<T>(source);
 	}
 
 }

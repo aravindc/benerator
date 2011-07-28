@@ -30,6 +30,7 @@ import java.util.TreeSet;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorProvider;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.EquivalenceStringGenerator;
@@ -183,7 +184,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
     }
     
 	@Override
-	public Generator<String> createStringGenerator(Set<Character> chars,
+	public NonNullGenerator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
 		Generator<Character> charGenerator = createCharacterGenerator(chars);
 		Set<Integer> counts = defaultCounts(minLength, maxLength);
@@ -193,7 +194,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Generator<String> createCompositeStringGenerator(
+	public NonNullGenerator<String> createCompositeStringGenerator(
 			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, boolean unique) {
 		AlternativeGenerator<String> result = new AlternativeGenerator<String>(String.class);
 		Set<Integer> partCounts = defaultCounts(minParts, maxParts);
@@ -203,7 +204,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 				sources[i] = GeneratorFactoryUtil.stringGenerator(partGeneratorProvider.create());
 			result.addSource(new CompositeStringGenerator(true, sources));
 		}
-		return result;
+		return GeneratorFactoryUtil.asNonNullGenerator(result);
 	}
 	
     @Override

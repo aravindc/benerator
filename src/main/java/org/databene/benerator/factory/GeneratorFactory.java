@@ -244,10 +244,10 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
 		return createRegexStringGenerator(pattern, minLength, maxLength, unique); 
 	}
     
-	public abstract Generator<String> createStringGenerator(Set<Character> chars,
+	public abstract NonNullGenerator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique);
 
-	public abstract Generator<String> createCompositeStringGenerator(
+	public abstract NonNullGenerator<String> createCompositeStringGenerator(
 			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, boolean unique);
 
 	/**
@@ -259,11 +259,12 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @return a generator of the desired characteristics
      * @throws ConfigurationError 
      */
-    public Generator<String> createRegexStringGenerator(String pattern, int minLength, Integer maxLength, boolean unique) 
+    public NonNullGenerator<String> createRegexStringGenerator(String pattern, int minLength, Integer maxLength, 
+    		boolean unique) 
             	throws ConfigurationError {
-    	Generator<String> generator = RegexGeneratorFactory.create(pattern, minLength, maxLength, unique, this);
-        return new ValidatingGeneratorProxy<String>(
-                generator, new StringLengthValidator(minLength, maxLength));
+    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, minLength, maxLength, unique, this);
+        return GeneratorFactoryUtil.asNonNullGenerator(new ValidatingGeneratorProxy<String>(
+                generator, new StringLengthValidator(minLength, maxLength)));
     }
 
     // collection generators -------------------------------------------------------------------------------------------

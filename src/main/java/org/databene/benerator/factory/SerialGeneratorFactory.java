@@ -30,6 +30,7 @@ import java.util.TreeSet;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorProvider;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.EquivalenceStringGenerator;
@@ -37,8 +38,8 @@ import org.databene.benerator.sample.OneShotGenerator;
 import org.databene.benerator.sample.SequenceGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
-import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
+import org.databene.benerator.wrapper.GeneratorChain;
 import org.databene.benerator.wrapper.SimpleCompositeArrayGenerator;
 import org.databene.commons.Assert;
 import org.databene.commons.CollectionUtil;
@@ -116,7 +117,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
     }
     
 	@Override
-	public Generator<String> createStringGenerator(Set<Character> chars,
+	public NonNullGenerator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
 		Generator<Character> charGenerator = createCharacterGenerator(chars);
 		Set<Integer> counts = defaultCounts(minLength, maxLength);
@@ -126,9 +127,9 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Generator<String> createCompositeStringGenerator(
+	public NonNullGenerator<String> createCompositeStringGenerator(
 			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, boolean unique) {
-		AlternativeGenerator<String> result = new AlternativeGenerator<String>(String.class);
+		GeneratorChain<String> result = new GeneratorChain<String>(String.class, true);
 		Set<Integer> partCounts = defaultCounts(minParts, maxParts);
 		for (int partCount : partCounts) {
 			Generator<String>[] sources = new Generator[partCount];
@@ -136,7 +137,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 				sources[i] = GeneratorFactoryUtil.stringGenerator(partGeneratorProvider.create());
 			result.addSource(new CompositeStringGenerator(true, sources));
 		}
-		return result;
+		return GeneratorFactoryUtil.asNonNullGenerator(result);
 	}
 	
     @Override

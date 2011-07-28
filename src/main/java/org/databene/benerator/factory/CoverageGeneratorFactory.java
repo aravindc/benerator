@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.GeneratorChain;
@@ -69,12 +70,12 @@ public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // T
     
 	@SuppressWarnings("unchecked")
 	@Override
-	public Generator<String> createStringGenerator(Set<Character> chars,
+	public NonNullGenerator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
-    	return new GeneratorChain<String>(String.class, true, 
+    	return GeneratorFactoryUtil.asNonNullGenerator(new GeneratorChain<String>(String.class, true, 
     		super.createStringGenerator(chars, minLength, maxLength, lengthDistribution, unique),
     		serialFactory.createStringGenerator(chars, minLength, maxLength, lengthDistribution, unique)
-		);
+		));
 	}
 	
     @Override
