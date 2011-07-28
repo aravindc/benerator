@@ -49,7 +49,7 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 	private ConsumerMock<Object[]> consumer;
 	
 	@Before
-	public void setUp() {
+	public void setUpContext() {
 		consumer = new ConsumerMock<Object[]>(true);
 		context.set("cons", consumer);
 	}
