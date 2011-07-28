@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
@@ -60,11 +61,11 @@ public class NobilityTitleGeneratorTest extends GeneratorTest {
 
 	private void checkLocale(Locale locale, double nobilityQuota, Set<String> expectedTitles) {
 	    int nobCount = 0;
-		NobilityTitleGenerator gen = new NobilityTitleGenerator(Gender.MALE, locale);
-		gen.setNobleQuota(nobilityQuota);
-		gen.init(context);
+		NobilityTitleGenerator generator = new NobilityTitleGenerator(Gender.MALE, locale);
+		generator.setNobleQuota(nobilityQuota);
+		generator.init(context);
 		for (int i = 0; i < N; i++) {
-			String title = gen.generate();
+			String title = GeneratorUtil.generateNullable(generator);
 			if (title.length() > 0) {
 				assertTrue(expectedTitles.contains(title));
 				nobCount++;
@@ -75,7 +76,7 @@ public class NobilityTitleGeneratorTest extends GeneratorTest {
 		else if (nobilityQuota == 1)
 			assertEquals(N, nobCount);
 		else
-			assertEquals(gen.getNobleQuota(), ((double) nobCount) / N, 0.1);
+			assertEquals(generator.getNobleQuota(), ((double) nobCount) / N, 0.1);
     }
 	
 }
