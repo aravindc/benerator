@@ -30,10 +30,12 @@ import java.util.Stack;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.dataset.DatasetBasedGenerator;
 import org.databene.benerator.dataset.DatasetUtil;
 import org.databene.benerator.dataset.ProductFromDataset;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Encodings;
@@ -48,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class StreetNameGenerator extends GeneratorProxy<String> implements DatasetBasedGenerator<String> {
+public class StreetNameGenerator extends GeneratorProxy<String> implements DatasetBasedGenerator<String>, NonNullGenerator<String> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StreetNameGenerator.class);
 
@@ -101,7 +103,7 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
 	private void init(Stack<String> datasetOptions, GeneratorContext context) {
 		String currentOption = datasetOptions.pop();
     	try {
-			source = createSource(currentOption);
+			setSource(createSource(currentOption));
 	        super.init(context);
     	} catch (Exception e) {
     		// if the call fails, try another option
@@ -122,5 +124,9 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
 	private static Generator<String> createSource(String datasetName) {
 	    return new WeightedDatasetCSVGenerator<String>(FILENAME_PATTERN, datasetName, REGION_NESTING, Encodings.UTF_8);
     }
+
+	public String generate() {
+		return GeneratorUtil.generateNonNull(this);
+	}
 
 }

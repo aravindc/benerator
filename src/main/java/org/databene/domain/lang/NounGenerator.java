@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,9 @@ package org.databene.domain.lang;
 import java.io.IOException;
 import java.util.Locale;
 
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.sample.SampleGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 
 /**
  * Generates {@link Noun}s of a given {@link Locale}.<br/>
@@ -39,7 +41,7 @@ import org.databene.benerator.sample.SampleGenerator;
  * @author Volker Bergmann
  */
 
-public class NounGenerator extends SampleGenerator<Noun> {
+public class NounGenerator extends SampleGenerator<Noun> implements NonNullGenerator<Noun> {
 	
 	public NounGenerator() throws IOException {
 		this(Locale.getDefault());
@@ -48,6 +50,10 @@ public class NounGenerator extends SampleGenerator<Noun> {
 	public NounGenerator(Locale locale) throws IOException {
 		super(Noun.class);
 		addValues(Noun.getInstances(locale));
+	}
+
+	public Noun generate() {
+		return GeneratorUtil.generateNonNull(this);
 	}
 
 }

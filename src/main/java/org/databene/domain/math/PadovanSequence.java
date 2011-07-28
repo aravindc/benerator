@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.domain.math;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.LongBasedSequence;
 import org.databene.benerator.distribution.Sequence;
 
@@ -46,7 +46,7 @@ public class PadovanSequence extends LongBasedSequence {
     }
 
     @Override
-    protected Generator<Long> createLongGenerator(Long min, Long max, Long precision, boolean unique) {
+    protected NonNullGenerator<Long> createLongGenerator(Long min, Long max, Long precision, boolean unique) {
 	    return new PadovanLongGenerator(min, max, unique);
     }
     

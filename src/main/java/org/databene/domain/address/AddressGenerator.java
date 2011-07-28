@@ -27,9 +27,10 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.primitive.DigitsGenerator;
 import org.databene.benerator.wrapper.CompositeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class AddressGenerator extends CompositeGenerator<Address> {
+public class AddressGenerator extends CompositeGenerator<Address> implements NonNullGenerator<Address> {
 	
 	private static Logger LOGGER = LoggerFactory.getLogger(AddressGenerator.class);
 
@@ -88,7 +89,11 @@ public class AddressGenerator extends CompositeGenerator<Address> {
         super.init(context);
 	}
 
-    public Address generate() throws IllegalGeneratorStateException {
+	public ProductWrapper<Address> generate(ProductWrapper<Address> wrapper) {
+		return wrapper.wrap(generate());
+	}
+
+	public Address generate() {
     	assertInitialized();
         City city = cityGenerator.generate();
         Country country = city.getCountry();
@@ -100,7 +105,8 @@ public class AddressGenerator extends CompositeGenerator<Address> {
         PhoneNumber officePhone = generatePhoneNumber(city);
         PhoneNumber mobilePhone = country.generateMobileNumber(city);
         PhoneNumber fax = generatePhoneNumber(city);
-        return new Address(street.getName(), houseNumber, zipCode, city, city.getState().getId(), country, privatePhone, officePhone, mobilePhone, fax);
+        return new Address(street.getName(), houseNumber, zipCode, city, city.getState().getId(), country, 
+        		privatePhone, officePhone, mobilePhone, fax);
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------

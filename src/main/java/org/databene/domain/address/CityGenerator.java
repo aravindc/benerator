@@ -27,9 +27,11 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
 import org.databene.benerator.sample.SampleGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 
 /**
  * Generates {@link City} objects.<br/>
@@ -37,7 +39,7 @@ import org.databene.benerator.sample.SampleGenerator;
  * Created: 14.10.2007 21:24:25
  * @author Volker Bergmann
  */
-public class CityGenerator extends AbstractDatasetGenerator<City> {
+public class CityGenerator extends AbstractDatasetGenerator<City> implements NonNullGenerator<City> {
 
 	private static final String REGION = "/org/databene/dataset/region";
 	
@@ -54,6 +56,10 @@ public class CityGenerator extends AbstractDatasetGenerator<City> {
             for (City city : state.getCities())
                 generator.addValue(city);
         return (generator.getVariety() > 0 ? generator : null);
+	}
+
+	public City generate() {
+		return GeneratorUtil.generateNonNull(this);
 	}
 
 }

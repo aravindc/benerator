@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ package org.databene.domain.address;
 
 import java.util.*;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.primitive.DigitsGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.Escalator;
@@ -54,7 +53,7 @@ public class City {
     private Locale language;
     private int population;
     
-    private static Generator<String> localNumberGenerator = new DigitsGenerator(7, 8, 1);
+    private static DigitsGenerator localNumberGenerator = new DigitsGenerator(7, 8, 1);
 
     public City(State state, String name, String addition, String[] postalCodes, String areaCode) {
         if (areaCode == null)
@@ -159,7 +158,8 @@ public class City {
 
 	@Override
     public String toString() {
-        return name + (StringUtil.isEmpty(nameExtension) ? "" : (Character.isLetter(nameExtension.charAt(0)) ? " " : "") + nameExtension);
+        return name + (StringUtil.isEmpty(nameExtension) ? "" : 
+        	(Character.isLetter(nameExtension.charAt(0)) ? " " : "") + nameExtension);
     }
 
     @Override

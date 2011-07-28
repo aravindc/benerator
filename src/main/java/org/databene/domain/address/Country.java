@@ -26,7 +26,6 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.DigitsGenerator;
 import org.databene.benerator.primitive.RegexStringGenerator;
@@ -63,13 +62,13 @@ public class Country {
     private String name;
     private String phoneCode;
 	private boolean mobilePhoneCityRelated;
-	private Generator<String> mobilePrefixGenerator;
+	private RegexStringGenerator mobilePrefixGenerator;
     private DigitsGenerator localNumberGenerator;
     private Locale countryLocale;
     private Locale defaultLanguage;
     private Map<String, State> states;
 
-	private Generator<City> cityGenerator;
+	private CityGenerator cityGenerator;
 
 
     private Country(String isoCode, String defaultLanguage, String phoneCode, String mobilCodePattern, String name) {
@@ -192,7 +191,7 @@ public class Country {
 					localNumberGenerator.generate());
     }
 
-    private Generator<City> getCityGenerator() {
+    private CityGenerator getCityGenerator() {
     	if (cityGenerator == null) {
     		cityGenerator = new CityGenerator(this.getIsoCode());
     		cityGenerator.init(null);

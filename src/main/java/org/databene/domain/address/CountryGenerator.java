@@ -27,9 +27,11 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 
 /**
  * Generates a random country.<br/>
@@ -37,7 +39,7 @@ import org.databene.benerator.sample.ConstantGenerator;
  * Created: 11.06.2006 08:15:51
  * @author Volker Bergmann
  */
-public class CountryGenerator extends AbstractDatasetGenerator<Country> {
+public class CountryGenerator extends AbstractDatasetGenerator<Country> implements NonNullGenerator<Country> {
 
 	private static final String REGION = "/org/databene/dataset/region";
 	
@@ -55,6 +57,10 @@ public class CountryGenerator extends AbstractDatasetGenerator<Country> {
 	protected Generator<Country> createGeneratorForAtomicDataset(Dataset dataset) {
 		Country country = Country.getInstance(dataset.getName(), false);
 		return (country != null ? new ConstantGenerator<Country>(country) : null);
+	}
+
+	public Country generate() {
+		return GeneratorUtil.generateNonNull(this);
 	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------

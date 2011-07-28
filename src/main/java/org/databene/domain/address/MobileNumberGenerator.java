@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,7 +21,7 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates mobile phone numbers.<br/><br/>
@@ -29,7 +29,7 @@ import org.databene.benerator.util.ThreadSafeGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class MobileNumberGenerator extends ThreadSafeGenerator<PhoneNumber> {
+public class MobileNumberGenerator extends ThreadSafeNonNullGenerator<PhoneNumber> {
 
     private Country country;
 
@@ -45,12 +45,14 @@ public class MobileNumberGenerator extends ThreadSafeGenerator<PhoneNumber> {
     	this.country = country;
     }
 
+	public Class<PhoneNumber> getGeneratedType() {
+	    return PhoneNumber.class;
+	}
+
+	@Override
 	public PhoneNumber generate() {
         return country.generateMobileNumber();
     }
 
-	public Class<PhoneNumber> getGeneratedType() {
-	    return PhoneNumber.class;
-	}
-	
+
 }
