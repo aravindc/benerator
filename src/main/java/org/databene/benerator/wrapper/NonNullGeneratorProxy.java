@@ -21,6 +21,7 @@
 
 package org.databene.benerator.wrapper;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 
 /**
@@ -48,7 +49,10 @@ public abstract class NonNullGeneratorProxy<E> extends GeneratorProxy<E> impleme
     }
 
     /** Sets the source generator */
-    public void setSource(NonNullGenerator<E> source) {
+    @Override
+	public void setSource(Generator<E> source) {
+    	if (!(source instanceof NonNullGenerator))
+    		throw new IllegalArgumentException("Not a NonNullGenerator: " + source);
         super.setSource(source);
     }
     
