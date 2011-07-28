@@ -71,11 +71,11 @@ public class DataSourceGenerator<E> extends AbstractGenerator<E> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-	public boolean isParallelizable() { // TODO?
+	public boolean isParallelizable() {
 	    return true;
     }
 
-	public boolean isThreadSafe() { // TODO?
+	public boolean isThreadSafe() {
 	    return true;
     }
     
