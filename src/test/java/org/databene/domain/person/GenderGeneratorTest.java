@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,7 +45,7 @@ public class GenderGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
-    public void testDefault() throws IllegalGeneratorStateException {
+    public void testDefaultSettings() throws IllegalGeneratorStateException {
         Generator<Gender> generator = new GenderGenerator();
         generator.init(context);
         expectRelativeWeights(generator, 1000, Gender.FEMALE, 0.5, Gender.MALE, 0.5);
