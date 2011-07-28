@@ -1,5 +1,7 @@
 package org.databene.benerator.demo;
 
+import static org.databene.benerator.util.GeneratorUtil.*;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
@@ -9,6 +11,7 @@ import org.databene.benerator.factory.GeneratorFactory;
  * by generating phone numbers and email addresses.<br/>
  * <br/>
  * Created: 07.09.2006 21:01:53
+ * @author Volker Bergmann
  */
 public class RegexDemo {
 
@@ -18,14 +21,18 @@ public class RegexDemo {
     public static void main(String[] args) {
     	BeneratorContext context = new BeneratorContext();
     	GeneratorFactory generatorFactory = context.getGeneratorFactory();
+    	
         Generator<String> phoneGenerator = generatorFactory.createRegexStringGenerator(PHONE_PATTERN, 1, 16, false);
         phoneGenerator.init(context);
         for (int i = 0; i < 5; i++)
-            System.out.println(phoneGenerator.generate());
+            System.out.println(generateNonNull(phoneGenerator));
+        close(phoneGenerator);
+        
         Generator<String> emailGenerator = generatorFactory.createRegexStringGenerator(EMAIL_PATTERN, 1, 100, false);
         emailGenerator.init(context);
         for (int i = 0; i < 5; i++)
-            System.out.println(emailGenerator.generate());
+            System.out.println(generateNonNull(emailGenerator));
+        close(emailGenerator);
     }
     
 }
