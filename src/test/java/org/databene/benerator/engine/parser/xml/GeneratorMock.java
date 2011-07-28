@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,6 +22,7 @@
 package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Assert;
 import org.databene.commons.context.ContextAware;
 import org.databene.model.data.Entity;
@@ -38,9 +39,9 @@ public class GeneratorMock extends SimpleGenerator<Entity> {
 		return Entity.class;
     }
 
-	public Entity generate() {
+	public ProductWrapper<Entity> generate(ProductWrapper<Entity> wrapper) {
 		Assert.notNull(context, "context");
-		return new Entity("Dummy");
+		return wrapper.wrap(new Entity("Dummy"));
     }
 
 }
