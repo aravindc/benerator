@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
 import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.validator.StringLengthValidator;
@@ -55,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * Created: 28.02.2008 15:17:13
  * @author Volker Bergmann
  */
-public class ShopXMLTest {
+public class ShopXMLTest extends GeneratorTest {
     
     private static final Logger logger = LoggerFactory.getLogger(ShopXMLTest.class);
     
@@ -105,7 +106,7 @@ public class ShopXMLTest {
             descriptor, false, Uniqueness.NONE, provider.getContext());
         generator.init(new BeneratorContext());
         for (int i = 0; i < 10; i++) {
-            T object = generator.generate();
+            T object = generateUnwrapped(generator);
             logger.debug(object.toString());
             assertTrue("Invalid object: " + object, validator.valid(object));
         }
@@ -120,7 +121,7 @@ public class ShopXMLTest {
         		"instance", descriptor, Uniqueness.NONE, provider.getContext());
         generator.init(new BeneratorContext());
         for (int i = 0; i < 10; i++) {
-            Entity entity = generator.generate();
+            Entity entity = generateUnwrapped(generator);
             if (entity != null) {
 	            logger.debug(entity.toString());
 	            assertTrue("Invalid entity: " + entity, validator.valid(entity));

@@ -2,6 +2,8 @@ package org.databene.benerator.demo;
 
 import java.util.List;
 
+import static org.databene.benerator.util.GeneratorUtil.*;
+
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.Generator;
@@ -25,16 +27,19 @@ public class HelloWorldDemo {
         
         // create and initialize the name generator
         List<String> names = CollectionUtil.toList("Alice", "Bob", "Charly");
-		Generator<String> name = generatorFactory.createSampleGenerator(names, String.class, false);
-        name.init(context);
+		Generator<String> nameGenerator = generatorFactory.createSampleGenerator(names, String.class, false);
+        init(nameGenerator, context);
         
         // use the generators
-        for (int i = 0; i < 5; i++)
-            System.out.println(salutationGenerator.generate() + " " + name.generate());
+        for (int i = 0; i < 5; i++) {
+			String salutation = generateNonNull(salutationGenerator);
+			String name = generateNonNull(nameGenerator);
+			System.out.println(salutation + " " + name);
+		}
         
         // in the end, close the generators
-        salutationGenerator.close();
-        name.close();
+        close(salutationGenerator);
+        close(nameGenerator);
     }
 
 }

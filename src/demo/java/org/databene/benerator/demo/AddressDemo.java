@@ -26,7 +26,8 @@
 
 package org.databene.benerator.demo;
 
-import org.databene.benerator.engine.BeneratorContext;
+import static org.databene.benerator.util.GeneratorUtil.*;
+
 import org.databene.domain.address.Address;
 import org.databene.domain.address.AddressGenerator;
 
@@ -38,14 +39,15 @@ public class AddressDemo {
 	
     public static void main(String[] args) {
         AddressGenerator generator = new AddressGenerator("world");
-        generator.init(new BeneratorContext());
+        init(generator);
         for (int i = 0; i < 10; i++) {
-            Address address = generator.generate();
+            Address address = generateNonNull(generator);
 			System.out.println(address);
             System.out.println("phone: " + address.getPrivatePhone());
             System.out.println("fax: " + address.getFax());
             System.out.println();
         }
+        close(generator);
     }
     
 }

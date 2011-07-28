@@ -1,11 +1,12 @@
 package org.databene.benerator.demo;
 
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.VolumeGeneratorFactory;
-import org.databene.benerator.util.SimpleGenerator;
+import static org.databene.benerator.util.GeneratorUtil.*;
+import org.databene.benerator.util.SimpleNonNullGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.model.data.Uniqueness;
 
 /**
@@ -22,9 +23,10 @@ public class CustomSequenceDemo {
     public static void main(String[] args) {
         Sequence odd = new OddNumberSequence();
         Generator<Integer> generator = new VolumeGeneratorFactory().createNumberGenerator(Integer.class, 3, true, Integer.MAX_VALUE, true, 2, odd, Uniqueness.NONE);
-        generator.init(new BeneratorContext());
+        init(generator);
         for (int i = 0; i < 10; i++)
-            System.out.println(generator.generate());
+            System.out.println(generateNonNull(generator));
+        close(generator);
     }
 
     /** The custom Sequence implementation */
@@ -34,14 +36,14 @@ public class CustomSequenceDemo {
 	        super("odd");
         }
 
-		public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
+		public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
                 boolean unique) {
         	OddNumberGenerator doubleGenerator = new OddNumberGenerator(min.doubleValue(), max.doubleValue());
-			return WrapperFactory.wrapNumberGenerator(numberType, doubleGenerator, min, precision);
+			return WrapperFactory.wrapNonNullNumberGenerator(numberType, doubleGenerator, min, precision);
         }
     }
 
-    public static class OddNumberGenerator extends SimpleGenerator<Double> {
+    public static class OddNumberGenerator extends SimpleNonNullGenerator<Double> {
     	
     	private double min;
     	private double max;
@@ -66,7 +68,8 @@ public class CustomSequenceDemo {
 	        return Double.class;
         }
     	
-        public Double generate() {
+		@Override
+		public Double generate() {
         	if (next >= max)
         		return null;
 	        double result = next;
@@ -78,6 +81,7 @@ public class CustomSequenceDemo {
         public void reset() {
             next = min;
         }
+
     }
 
 }

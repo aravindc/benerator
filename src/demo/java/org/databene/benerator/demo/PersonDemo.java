@@ -26,7 +26,8 @@
 
 package org.databene.benerator.demo;
 
-import org.databene.benerator.engine.BeneratorContext;
+import static org.databene.benerator.util.GeneratorUtil.*;
+
 import org.databene.domain.person.PersonGenerator;
 
 import java.util.Locale;
@@ -36,11 +37,13 @@ import java.util.Locale;
  * @author Volker Bergmann
  */
 public class PersonDemo {
+	
     public static void main(String[] args) {
         PersonGenerator generator = new PersonGenerator("world", Locale.ENGLISH);
-        generator.init(new BeneratorContext());
+        init(generator);
         for (int i = 0; i < 100; i++)
-            System.out.println(generator.generate());
-        generator.close();
+            System.out.println(generateNonNull(generator));
+        close(generator);
     }
+    
 }

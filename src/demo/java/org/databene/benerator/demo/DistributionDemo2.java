@@ -21,10 +21,11 @@
 
 package org.databene.benerator.demo;
 
+import static org.databene.benerator.util.GeneratorUtil.*;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.function.ExponentialFunction;
-import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * Demonstrates usage of the {@link ExponentialFunction}.<br/><br/>
@@ -42,10 +43,10 @@ public class DistributionDemo2 {
 		System.out.println("Generating numbers");
 		Distribution distribution = new ExponentialFunction(5, -0.5);
 		Generator<Double> generator = distribution.createGenerator(Double.class, 3., 8., 0.1, false);
-		generator.init(new BeneratorContext());
+		init(generator);
 		for (int i = 0; i < 20; i++)
-			System.out.println(generator.generate());
-		generator.close();
+			System.out.println(generateNonNull(generator));
+		close(generator);
 	}
 
 }

@@ -1,5 +1,7 @@
 package org.databene.benerator.demo;
 
+import static org.databene.benerator.util.GeneratorUtil.*;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
@@ -75,7 +77,7 @@ public class DistributionDemo {
             super.paint(g);
             g.drawString(title, 0, 10);
             for (int i = 0; i < N; i++) {
-                Integer y = generator.generate();
+                Integer y = generateNonNull(generator);
                 if (y != null)
                 	g.fillRect(i, 16 + N - y, 2, 2);
             }

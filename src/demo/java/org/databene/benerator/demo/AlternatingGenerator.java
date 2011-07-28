@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.demo;
 
-import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.util.SimpleNonNullGenerator;
 
 /**
  * Simple example of a generator that alternatively generators 0 and 1: 0, 1, 0, 1, 0, 1, 0, 1.<br/>
@@ -36,7 +36,7 @@ import org.databene.benerator.util.SimpleGenerator;
  * @author Volker Bergmann
  */
 
-public class AlternatingGenerator extends SimpleGenerator<Integer> {
+public class AlternatingGenerator extends SimpleNonNullGenerator<Integer> {
 	
 	private int value = 1;
 
@@ -44,9 +44,10 @@ public class AlternatingGenerator extends SimpleGenerator<Integer> {
 	    return Integer.class;
     }
 
-    public Integer generate() {
+	@Override
+	public Integer generate() {
 		value = (value + 1) % 2;
 		return value;
 	}
-	
+
 }

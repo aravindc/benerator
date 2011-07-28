@@ -23,8 +23,9 @@ package org.databene.benerator.demo;
 
 import java.util.Arrays;
 
+import static org.databene.benerator.util.GeneratorUtil.*;
+
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.EquivalenceGeneratorFactory;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.factory.GeneratorFactoryUtil;
@@ -47,28 +48,28 @@ public class GeneratorFactoryDemo {
 
 	private static void iterateCsv(GeneratorFactory generatorFactory) {
 		Generator<String[]> generator = GeneratorFactoryUtil.createCSVLineGenerator("org/databene/benerator/products.csv", ';', Encodings.UTF_8, true);
-		generator.init(new BeneratorContext());
+		init(generator);
 		String[] row;
-		while ((row = generator.generate()) != null) // null signals that the generator is used up
+		while ((row = generateNonNull(generator)) != null) // null signals that the generator is used up
 			System.out.println(Arrays.toString(row));
-		generator.close();
+		close(generator);
 	}
 
 	private static void generateByWeightedLiteralList(GeneratorFactory generatorFactory) {
 		Generator<String> generator = generatorFactory.createFromWeightedLiteralList("'Alpha'^4,'Bravo'^1", String.class, null, false);
-		generator.init(new BeneratorContext());
+		init(generator);
 		for (int i = 0; i < 10; i++)
-			System.out.println(generator.generate());
-		generator.close();
+			System.out.println(generateNonNull(generator));
+		close(generator);
 	}
 
 	private static void generateByRegex(GeneratorFactory generatorFactory) {
 		// generating German phone numbers
 		Generator<String> generator = generatorFactory.createRegexStringGenerator("\\+49\\-[1-9]{2,5}\\-[1-9][0-9]{3,9}", 8, 20, false);
-		generator.init(new BeneratorContext());
+		init(generator);
 		for (int i = 0; i < 10; i++)
-			System.out.println(generator.generate());
-		generator.close();
+			System.out.println(generateNonNull(generator));
+		close(generator);
 	}
 	
 }
