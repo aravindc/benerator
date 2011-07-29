@@ -75,7 +75,7 @@ public class SkipGeneratorProxy<E> extends CardinalGenerator<E, E> {
     /** Initializes the generator to use a random increment of uniform distribution */
     public SkipGeneratorProxy(Generator<E> source, int minIncrement, int maxIncrement, 
     		Distribution incrementDistribution, Integer limit) {
-        super(source, minIncrement, maxIncrement, 1, incrementDistribution);
+        super(source, false, minIncrement, maxIncrement, 1, incrementDistribution);
         this.minIncrement = minIncrement;
         this.maxIncrement = maxIncrement;
         this.count = 0;

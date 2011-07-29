@@ -54,7 +54,7 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
 
     public CollectionGenerator(Class<C> collectionType, Generator<I> source, 
     		int minSize, int maxSize, Distribution sizeDistribution) {
-        super(source, minSize, maxSize, 1, sizeDistribution);
+        super(source, false, minSize, maxSize, 1, sizeDistribution);
         this.collectionType = mapCollectionType(collectionType);
     }
 

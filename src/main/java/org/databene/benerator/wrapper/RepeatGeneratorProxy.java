@@ -53,7 +53,7 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
 
     public RepeatGeneratorProxy(Generator<E> source, int minRepetitions, int maxRepetitions, 
     		int repetitionGranularity, Distribution repetitionDistribution) {
-        super(source, minRepetitions, maxRepetitions, repetitionGranularity, repetitionDistribution);
+        super(source, false, minRepetitions, maxRepetitions, repetitionGranularity, repetitionDistribution);
     }
 
     public Class<E> getGeneratedType() {
