@@ -29,6 +29,8 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.util.ValidatingGenerator;
 import org.databene.benerator.util.WrapperProvider;
 import org.databene.commons.CollectionUtil;
@@ -44,7 +46,7 @@ import java.util.List;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class MessageGenerator extends ValidatingGenerator<String> {
+public class MessageGenerator extends ValidatingGenerator<String> implements NonNullGenerator<String> {
 
     /**
      * Pattern of the MessageFormat to use.
@@ -139,6 +141,10 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     public Class<String> getGeneratedType() {
         return String.class;
     }
+
+	public String generate() {
+		return GeneratorUtil.generateNonNull(this);
+	}
 
     /** Implementation of ValidatingGenerator's generation callback method */
     @SuppressWarnings({ "rawtypes", "unchecked" })
