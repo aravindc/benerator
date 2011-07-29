@@ -61,6 +61,16 @@ public abstract class XLSTest extends IteratorTestCase {
     protected static final String PERSON1_NAME = "Alice";
     protected static final int PERSON1_AGE = 23;
 
+    protected static final ComplexTypeDescriptor XYZ_DESCRIPTOR;
+	static {
+		XYZ_DESCRIPTOR = new ComplexTypeDescriptor("XYZ");
+		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("ean", "string"));
+		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("price", "big_decimal"));
+		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("date", "date"));
+		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("avail", "boolean"));
+		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("updated", "timestamp"));
+	}
+	
     protected static final ComplexTypeDescriptor PRODUCT_DESCRIPTOR;
 	static {
 		PRODUCT_DESCRIPTOR = new ComplexTypeDescriptor("Product");
@@ -95,6 +105,27 @@ public abstract class XLSTest extends IteratorTestCase {
 	);
 	
 	protected static final Entity PERSON1 = new Entity(PERSON_DESCRIPTOR, 
+			"name", PERSON1_NAME, 
+			"age", PERSON1_AGE
+	);
+	
+	protected static final Entity XYZ11 = new Entity(XYZ_DESCRIPTOR, 
+			"ean", EAN1, 
+			"price", PRICE1,
+			"date", DATE1,
+			"avail", AVAIL1,
+			"updated", UPDATED1
+	);
+	
+	protected static final Entity XYZ12 = new Entity(XYZ_DESCRIPTOR, 
+			"ean", EAN2, 
+			"price", PRICE2,
+			"date", DATE2,
+			"avail", AVAIL2,
+			"updated", UPDATED2
+	);
+	
+	protected static final Entity XYZ21 = new Entity(XYZ_DESCRIPTOR, 
 			"name", PERSON1_NAME, 
 			"age", PERSON1_AGE
 	);

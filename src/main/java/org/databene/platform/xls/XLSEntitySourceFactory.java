@@ -35,16 +35,16 @@ import org.databene.model.data.EntitySource;
  */
 public class XLSEntitySourceFactory implements SourceFactory<Entity> {
 	
-	private String type; // TODO 
+	private String entityType;
 	private Converter<String, ?> scriptConverter;
 	
-	public XLSEntitySourceFactory(String type, Converter<String, ?> scriptConverter) {
-		this.type = type;
+	public XLSEntitySourceFactory(String entityType, Converter<String, ?> scriptConverter) {
+		this.entityType = entityType;
 	    this.scriptConverter = scriptConverter;
     }
 
-	public EntitySource create(String id, BeneratorContext context) {
-        XLSEntitySource source = new XLSEntitySource(id, scriptConverter);
+	public EntitySource create(String uri, BeneratorContext context) {
+        XLSEntitySource source = new XLSEntitySource(uri, scriptConverter, entityType);
         source.setContext(context);
         return source;
 	}

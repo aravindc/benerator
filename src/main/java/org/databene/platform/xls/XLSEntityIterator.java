@@ -66,7 +66,7 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 	private int sheetNo;
 	
 	private Converter<String, ?> preprocessor;
-	
+	private String entityType;
 	private DataIterator<Entity> source;
 	
 	// constructors ----------------------------------------------------------------------------------------------------
@@ -75,10 +75,15 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 		this(uri, new NoOpConverter<String>());
 	}
 
-	public XLSEntityIterator(String uri, Converter<String, ?> preprocessor) 
+	public XLSEntityIterator(String uri, Converter<String, ?> preprocessor) throws IOException {
+		this(uri, new NoOpConverter<String>(), null);
+	}
+
+	public XLSEntityIterator(String uri, Converter<String, ?> preprocessor, String entityType) 
 			throws IOException {
 		this.uri = uri;
 		this.preprocessor = preprocessor;
+		this.entityType = entityType;
 		this.workbook = new HSSFWorkbook(IOUtil.getInputStreamForURI(uri));
 		this.sheetNo = -1;
 	}
@@ -139,15 +144,16 @@ public class XLSEntityIterator implements DataIterator<Entity> {
     		if (source != null)
     			IOUtil.close(source);
 			this.sheetNo++;
+			String typeNameToUse = (entityType != null ? entityType : workbook.getSheetName(sheetNo));
 			source = createSheetIterator(
-				workbook.getSheetAt(sheetNo), workbook.getSheetName(sheetNo), preprocessor, uri);
+				workbook.getSheetAt(sheetNo), typeNameToUse, preprocessor, uri);
     	} else
     		source = null;
     }
 
 	private static DataIterator<Entity> createSheetIterator(
-			HSSFSheet sheet, String sheetName, Converter<String, ?> preprocessor, String uri) {
-		return new SheetIterator(sheet, sheetName, preprocessor, uri);
+			HSSFSheet sheet, String entityType, Converter<String, ?> preprocessor, String uri) {
+		return new SheetIterator(sheet, entityType, preprocessor, uri);
     }
 	
 	static class SheetIterator implements DataIterator<Entity> {
@@ -161,7 +167,8 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 	    Object[] buffer;
 	    ThreadLocalDataContainer<Object[]> sourceContainer = new ThreadLocalDataContainer<Object[]>();
 		
-		public SheetIterator(HSSFSheet sheet, String complexTypeName, Converter<String, ?> preprocessor, String defaultProviderId) {
+		public SheetIterator(HSSFSheet sheet, String entityType, Converter<String, ?> preprocessor, 
+				String defaultProviderId) {
 	        this.source = new XLSLineIterator(sheet, true, preprocessor);
 	        this.defaultProviderId = defaultProviderId;
 			DataContainer<Object[]> tmp = source.next(sourceContainer.get());
@@ -171,7 +178,7 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 			}
 			this.buffer = tmp.getData();
 			String headers[] = ((XLSLineIterator) source).getHeaders();
-		    createComplexTypeDescriptor(complexTypeName, headers, buffer);
+		    createComplexTypeDescriptor(entityType, headers, buffer);
 		    converter = new Array2EntityConverter(complexTypeDescriptor, headers, false);
         }
 		

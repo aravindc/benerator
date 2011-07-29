@@ -46,6 +46,7 @@ import org.databene.webdecs.DataIterator;
 
 public class XLSEntitySource extends FileBasedEntitySource {
 	
+	private String entityType;
     private Converter<String, ?> preprocessor;
 
     // constructors ----------------------------------------------------------------------------------------------------
@@ -59,7 +60,12 @@ public class XLSEntitySource extends FileBasedEntitySource {
     }
 
     public XLSEntitySource(String uri, Converter<String, ?> preprocessor) {
+        this(uri, preprocessor, null);
+    }
+
+    public XLSEntitySource(String uri, Converter<String, ?> preprocessor, String entityType) {
         super(uri);
+        this.entityType = entityType;
         this.preprocessor = preprocessor;
     }
 
@@ -67,7 +73,7 @@ public class XLSEntitySource extends FileBasedEntitySource {
 
     public DataIterator<Entity> iterator() {
         try {
-			return new XLSEntityIterator(resolveUri(), preprocessor);
+			return new XLSEntityIterator(resolveUri(), preprocessor, entityType);
 		} catch (IOException e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
 		}

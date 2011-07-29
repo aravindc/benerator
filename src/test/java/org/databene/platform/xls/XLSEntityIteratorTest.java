@@ -29,6 +29,7 @@ package org.databene.platform.xls;
 import java.util.Date;
 import java.util.List;
 
+import org.databene.commons.converter.NoOpConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
@@ -73,6 +74,22 @@ public class XLSEntityIteratorTest extends XLSTest {
 			assertProduct(PROD2, next);
 			assertPerson(PERSON1, DataUtil.nextNotNullData(iterator));
 			assertNull(iterator.next(new DataContainer<Entity>()));
+		} finally {
+			iterator.close();
+		}
+	}
+	
+	@Test
+	public void testImportPredefinedEntityType() throws Exception {
+		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, new NoOpConverter<String>(), "XYZ");
+		try {
+			assertXYZ(XYZ11, DataUtil.nextNotNullData(iterator));
+			Entity next = DataUtil.nextNotNullData(iterator);
+			assertXYZ(XYZ12, next);
+			Entity entity = DataUtil.nextNotNullData(iterator);
+			assertEquals("XYZ", entity.type());
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			assertEquals("Alice", entity.get("name"));
 		} finally {
 			iterator.close();
 		}
@@ -149,6 +166,16 @@ public class XLSEntityIteratorTest extends XLSTest {
 	    ComponentDescriptor component = complexTypeDescriptor.getComponent(componentName);
 	    assertNotNull(component);
 	    assertEquals("Type of component " + componentName + " is wrong, ", componentType, component.getTypeDescriptor().getName());
+    }
+
+	private void assertXYZ(Entity expected, Entity actual) {
+		assertEquals("XYZ", actual.type());
+		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));
+		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.000001);
+		assertEquals(expected.getComponent("date"), actual.getComponent("date"));
+		assertEquals(expected.getComponent("avail"), actual.getComponent("avail"));
+		assertEquals(((Date) expected.getComponent("updated")).getTime(), 
+				((Date) actual.getComponent("updated")).getTime());
     }
 
 	private void assertProduct(Entity expected, Entity actual) {
