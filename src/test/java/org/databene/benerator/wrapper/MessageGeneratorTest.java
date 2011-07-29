@@ -21,6 +21,10 @@
 
 package org.databene.benerator.wrapper;
 
+import static org.databene.benerator.util.GeneratorUtil.*;
+import static org.junit.Assert.*;
+
+import org.databene.benerator.ConstantTestGenerator;
 import org.junit.Test;
 
 /**
@@ -33,7 +37,12 @@ public class MessageGeneratorTest {
 
 	@Test
 	public void test() {
-		// TODO implement
+		MessageGenerator generator = new MessageGenerator("Hello {0}{1}", 
+				new ConstantTestGenerator<String>("World"),
+				new ConstantTestGenerator<String>("!"));
+		init(generator);
+		assertEquals("Hello World!", generator.generate());
+		close(generator);
 	}
 	
 }
