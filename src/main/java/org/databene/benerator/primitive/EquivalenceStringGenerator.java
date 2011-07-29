@@ -38,8 +38,8 @@ public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> 
 
 	protected Integer currentLength;
 	
-	public EquivalenceStringGenerator(Generator<E> charGenerator, Generator<Integer> lengthGenerator) {
-		super(charGenerator, lengthGenerator, true);
+	public EquivalenceStringGenerator(Generator<E> charGenerator, NonNullGenerator<Integer> lengthGenerator) {
+		super(charGenerator, true, lengthGenerator);
 	}
 
 	public Class<String> getGeneratedType() {
