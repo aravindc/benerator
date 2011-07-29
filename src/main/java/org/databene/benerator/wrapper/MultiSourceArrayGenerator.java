@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,13 +30,13 @@ import org.databene.benerator.GeneratorContext;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class CompositeArrayGenerator<S> extends GeneratorProxy<S[]> {
+public class MultiSourceArrayGenerator<S> extends GeneratorProxy<S[]> {
 
 	private Class<S> targetType;
     private boolean unique;
     private Generator<? extends S>[] sources;
     
-	public CompositeArrayGenerator(Class<S> targetType, boolean unique, Generator<? extends S>... sources) {
+	public MultiSourceArrayGenerator(Class<S> targetType, boolean unique, Generator<? extends S>... sources) {
 	    this.targetType = targetType;
 	    this.unique = unique;
 	    this.sources = sources;
@@ -53,9 +53,9 @@ public class CompositeArrayGenerator<S> extends GeneratorProxy<S[]> {
     @Override
     public synchronized void init(GeneratorContext context) {
 		if (unique)
-			super.setSource(new UniqueCompositeArrayGenerator<S>(targetType, sources));
+			super.setSource(new UniqueMultiSourceArrayGenerator<S>(targetType, sources));
 		else
-			super.setSource(new SimpleCompositeArrayGenerator<S>(targetType, sources));
+			super.setSource(new SimpleMultiSourceArrayGenerator<S>(targetType, sources));
 	    super.init(context);
     }
     

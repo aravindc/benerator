@@ -27,7 +27,6 @@ import java.util.Set;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorProvider;
 import org.databene.benerator.NonNullGenerator;
-import org.databene.benerator.composite.StochasticArrayGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.BooleanGenerator;
@@ -41,7 +40,8 @@ import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
-import org.databene.benerator.wrapper.UniqueCompositeArrayGenerator;
+import org.databene.benerator.wrapper.SimpleMultiSourceArrayGenerator;
+import org.databene.benerator.wrapper.UniqueMultiSourceArrayGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.iterator.ArrayIterable;
@@ -65,9 +65,9 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	@Override
 	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique) {
         if (unique)
-        	return new UniqueCompositeArrayGenerator<T>(componentType, sources);
+        	return new UniqueMultiSourceArrayGenerator<T>(componentType, sources);
         else
-        	return new StochasticArrayGenerator<T>(componentType, sources);
+        	return new SimpleMultiSourceArrayGenerator<T>(componentType, sources);
 	}
 
 	@Override

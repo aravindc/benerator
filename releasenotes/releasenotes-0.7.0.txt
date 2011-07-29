@@ -25,6 +25,7 @@ changes
 - Renamed ValidatingGenerator.generateImpl() to doGenerate()
 - Renamed all 'precision' properties to 'granularity'
 - Removed 'name' property from Sequence
+- Renamed @DescriptorBased to @Descriptor
 
 
 enhancements
@@ -43,6 +44,8 @@ enhancements
 - Added generic 'offset' feature
 - Added 'cached' feature to DBSequenceGenerator, removed OfflineSequenceGenerator
 - renamed 'source' property to 'database' in DBSequenceGenerator and DBSeqHiLoGenerator
+- New Generator class 'StringGenerator'
+- cleaned up generator hierarchies for arrays
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)

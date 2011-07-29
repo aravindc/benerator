@@ -41,7 +41,7 @@ import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
-import org.databene.benerator.wrapper.UniqueCompositeArrayGenerator;
+import org.databene.benerator.wrapper.UniqueMultiSourceArrayGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.Assert;
 import org.databene.commons.CollectionUtil;
@@ -74,7 +74,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 
 	@Override
 	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique) {
-    	return new UniqueCompositeArrayGenerator<T>(componentType, sources);
+    	return new UniqueMultiSourceArrayGenerator<T>(componentType, sources);
 	}
 
 	@Override

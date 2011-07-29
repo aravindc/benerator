@@ -34,7 +34,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link UniqueCompositeArrayGenerator}.<br/>
+ * Tests the {@link UniqueMultiSourceArrayGenerator}.<br/>
  * <br/>
  * Created: 17.11.2007 13:39:04
  * @author Volker Bergmann
@@ -49,7 +49,7 @@ public class UniqueCompositeArrayGeneratorTest extends GeneratorTest {
                 new SequenceTestGenerator<Integer>(0, 1),
                 new SequenceTestGenerator<Integer>(0, 1)
         };
-        UniqueCompositeArrayGenerator<Integer> generator = new UniqueCompositeArrayGenerator<Integer>(Integer.class, sources);
+        UniqueMultiSourceArrayGenerator<Integer> generator = new UniqueMultiSourceArrayGenerator<Integer>(Integer.class, sources);
         generator.init(context);
 		expectUniqueProducts(generator,  8).withCeasedAvailability();
     }
@@ -62,7 +62,7 @@ public class UniqueCompositeArrayGeneratorTest extends GeneratorTest {
             new SequenceTestGenerator<String>("a", "b"),
             new OneShotGenerator<String>("x")
         };
-        UniqueCompositeArrayGenerator<String> generator = new UniqueCompositeArrayGenerator<String>(String.class, sources);
+        UniqueMultiSourceArrayGenerator<String> generator = new UniqueMultiSourceArrayGenerator<String>(String.class, sources);
         generator.init(context);
 		expectUniqueProducts(generator,  2).withCeasedAvailability();
     }
@@ -74,7 +74,7 @@ public class UniqueCompositeArrayGeneratorTest extends GeneratorTest {
     		new SequenceGenerator<Integer>(Integer.class, 1, 2),
     		new SequenceGenerator<Integer>(Integer.class, 3, 4)
         };
-        UniqueCompositeArrayGenerator<Integer> generator = new UniqueCompositeArrayGenerator<Integer>(Integer.class, sources);
+        UniqueMultiSourceArrayGenerator<Integer> generator = new UniqueMultiSourceArrayGenerator<Integer>(Integer.class, sources);
 		generator.init(context);
 		expectGeneratedSequence(generator, 
 			new Integer[] { 1, 3 },
@@ -91,7 +91,7 @@ public class UniqueCompositeArrayGeneratorTest extends GeneratorTest {
 			new SequenceGenerator<Integer>(Integer.class, null, 1),
 			new SequenceGenerator<Integer>(Integer.class, null, 2)
         };
-		UniqueCompositeArrayGenerator<Integer> generator = new UniqueCompositeArrayGenerator<Integer>(
+		UniqueMultiSourceArrayGenerator<Integer> generator = new UniqueMultiSourceArrayGenerator<Integer>(
 				Integer.class, sources);
 		generator.init(context);
 		expectGeneratedSequence(generator, 
@@ -110,7 +110,7 @@ public class UniqueCompositeArrayGeneratorTest extends GeneratorTest {
 			new SequenceGenerator<Integer>(Integer.class, 3, 4),
 			new SequenceGenerator<Integer>(Integer.class, 5, 6)
         };
-		UniqueCompositeArrayGenerator<Integer> generator = new UniqueCompositeArrayGenerator<Integer>(Integer.class, sources);
+		UniqueMultiSourceArrayGenerator<Integer> generator = new UniqueMultiSourceArrayGenerator<Integer>(Integer.class, sources);
 		generator.init(context);
 		expectGeneratedSequence(generator, 
 			new Integer[] { 1, 3, 5 },

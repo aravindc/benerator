@@ -28,9 +28,8 @@ package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
-import org.databene.benerator.wrapper.CardinalGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.commons.ArrayUtil;
+import org.databene.benerator.wrapper.SingleSourceArrayGenerator;
 
 /**
  * Creates a stochastic number of instances of a type. The number of elements is determined by the values 
@@ -41,39 +40,21 @@ import org.databene.commons.ArrayUtil;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class InstanceArrayGenerator<S> extends CardinalGenerator<S, Object> {
+public class SimplifyingSingleSourceArrayGenerator<S> extends SingleSourceArrayGenerator<S, Object> {
     
-    public InstanceArrayGenerator(Generator<S> source) {
-        super(source, false);
+    public SimplifyingSingleSourceArrayGenerator(Generator<S> source, NonNullGenerator<Integer> countGenerator) {
+        super(source, source.getGeneratedType(), countGenerator);
     }
     
-    public InstanceArrayGenerator(Generator<S> source, NonNullGenerator<Integer> countGenerator) {
-        super(source, false, countGenerator);
-    }
-    
-    public Class<Object> getGeneratedType() {
-        return Object.class;
-    }
-
+	@Override
 	public ProductWrapper<Object> generate(ProductWrapper<Object> wrapper) {
-		Integer count = generateCount();
-        if (count == 0)
-            return wrapper.wrap(new Object[0]);
-        if (count == 1) {
-            ProductWrapper<S> tmp = generateFromSource();
-            if (tmp == null)
-            	return null;
-			return wrapper.wrap(tmp.unwrap());
-        } else { // count >= 2
-            Object[] result = ArrayUtil.newInstance(getSource().getGeneratedType(), count);
-            for (int i = 0; i < count; i++) {
-                ProductWrapper<S> tmp = generateFromSource();
-                if (tmp == null)
-                	return null;
-            	result[i] = tmp.unwrap();
-            }
-            return wrapper.wrap(result);
-        }
+		Object[] array = (Object[]) super.generate();
+		if (array == null)
+			return null;
+        if (array.length == 1)
+            return wrapper.wrap(array[0]);
+        else
+        	return wrapper.wrap(array);
     }
 
 }

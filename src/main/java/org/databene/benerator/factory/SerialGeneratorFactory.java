@@ -40,7 +40,7 @@ import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
 import org.databene.benerator.wrapper.GeneratorChain;
-import org.databene.benerator.wrapper.SimpleCompositeArrayGenerator;
+import org.databene.benerator.wrapper.SimpleMultiSourceArrayGenerator;
 import org.databene.commons.Assert;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Converter;
@@ -65,7 +65,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 
 	@Override
 	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique) {
-    	return new SimpleCompositeArrayGenerator<T>(componentType, sources);
+    	return new SimpleMultiSourceArrayGenerator<T>(componentType, sources);
 	}
 
 	@Override

@@ -35,7 +35,7 @@ import org.databene.benerator.distribution.SequenceManager;
  * @author Volker Bergmann
  * @since 0.3.04
  */
-public class ByteArrayGenerator extends AbstractArrayGenerator<Byte, byte[]> {
+public class ByteArrayGenerator extends SingleSourceArrayGenerator<Byte, byte[]> {
 	
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ public class ByteArrayGenerator extends AbstractArrayGenerator<Byte, byte[]> {
     }
 
     public ByteArrayGenerator(Generator<Byte> source, int minLength, int maxLength, Distribution distribution) {
-        super(source, byte.class, byte[].class, minLength, maxLength, distribution);
+        super(source, byte.class, minLength, maxLength, distribution);
     }
 
     @Override

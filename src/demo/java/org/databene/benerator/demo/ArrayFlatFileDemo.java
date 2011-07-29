@@ -34,7 +34,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.file.FileBuilder;
-import org.databene.benerator.wrapper.CompositeArrayGenerator;
+import org.databene.benerator.wrapper.MultiSourceArrayGenerator;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.format.Alignment;
@@ -88,7 +88,7 @@ public class ArrayFlatFileDemo {
         }
     }
 
-    public static class TransactionGenerator extends CompositeArrayGenerator<Object> {
+    public static class TransactionGenerator extends MultiSourceArrayGenerator<Object> {
 
         public TransactionGenerator() {
             super(Object.class, false, createSources());

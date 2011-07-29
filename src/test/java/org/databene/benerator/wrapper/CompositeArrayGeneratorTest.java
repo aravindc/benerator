@@ -37,7 +37,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link CompositeArrayGenerator}.<br/><br/>
+ * Tests the {@link MultiSourceArrayGenerator}.<br/><br/>
  * Created: 11.10.2006 23:12:21
  * @since 0.1
  * @author Volker Bergmann
@@ -49,7 +49,7 @@ public class CompositeArrayGeneratorTest extends GeneratorTest {
     public void testNonUnique() {
         ConstantTestGenerator<Integer> source1 = new ConstantTestGenerator<Integer>(1);
         ConstantTestGenerator<Integer> source2 = new ConstantTestGenerator<Integer>(2);
-        CompositeArrayGenerator<Integer> generator = new CompositeArrayGenerator<Integer>(Integer.class, false, source1, source2);
+        MultiSourceArrayGenerator<Integer> generator = new MultiSourceArrayGenerator<Integer>(Integer.class, false, source1, source2);
         generator.init(context);
         Integer[] EXPECTED_ARRAY = new Integer[] {1, 2};
         for (int i = 0; i < 10; i++)
@@ -61,7 +61,7 @@ public class CompositeArrayGeneratorTest extends GeneratorTest {
     public void testUnique() {
         Generator<Integer> source1 = new SequenceTestGenerator<Integer>(1, 2);
         Generator<Integer> source2 = new SequenceTestGenerator<Integer>(3, 4);
-        CompositeArrayGenerator<Integer> generator = new CompositeArrayGenerator<Integer>(Integer.class, true, source1, source2);
+        MultiSourceArrayGenerator<Integer> generator = new MultiSourceArrayGenerator<Integer>(Integer.class, true, source1, source2);
         generator.init(context);
         expectUniqueProducts(generator, 4).withCeasedAvailability();
     }

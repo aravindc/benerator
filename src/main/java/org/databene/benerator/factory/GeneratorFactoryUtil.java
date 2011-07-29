@@ -59,8 +59,8 @@ import org.databene.benerator.wrapper.NonClosingGeneratorProxy;
 import org.databene.benerator.wrapper.NullInjectingGeneratorProxy;
 import org.databene.benerator.wrapper.NullStartingGenerator;
 import org.databene.benerator.wrapper.OffsetBasedGenerator;
-import org.databene.benerator.wrapper.SimpleArrayGenerator;
-import org.databene.benerator.wrapper.SimpleCompositeArrayGenerator;
+import org.databene.benerator.wrapper.SimpleMultiSourceArrayGenerator;
+import org.databene.benerator.wrapper.SingleSourceArrayGenerator;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
@@ -109,7 +109,7 @@ public class GeneratorFactoryUtil { // TODO replace explicit generator construct
      */
     public static <T> Generator<T[]> createArrayGeneratorOfVariableLength(Generator<T> source, Class<T> type, 
             int minSize, int maxSize, Distribution sizeDistribution) {
-        return new SimpleArrayGenerator<T>(source, type, minSize, maxSize, sizeDistribution);
+        return new SingleSourceArrayGenerator<T, T[]>(source, type, minSize, maxSize, sizeDistribution);
     }
 
     /**
@@ -223,7 +223,7 @@ public class GeneratorFactoryUtil { // TODO replace explicit generator construct
     public static Generator<String> createMessageGenerator(
             String pattern, int minLength, int maxLength, Generator ... sources) {
         Generator<String> generator = new ConvertingGenerator<Object[], String>(
-                new SimpleCompositeArrayGenerator<Object>(Object.class, sources), (Converter) new MessageConverter(pattern, null));
+                new SimpleMultiSourceArrayGenerator<Object>(Object.class, sources), (Converter) new MessageConverter(pattern, null));
         generator = new ValidatingGeneratorProxy<String>(generator, new StringLengthValidator(minLength, maxLength));
         return generator;
     }

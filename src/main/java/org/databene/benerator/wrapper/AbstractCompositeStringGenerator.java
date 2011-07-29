@@ -60,7 +60,7 @@ public abstract class AbstractCompositeStringGenerator extends GeneratorWrapper<
     @Override
 	public synchronized void init(GeneratorContext context) {
 		Generator<? extends Object>[] sources = initSources(context, unique);
-		super.setSource(new CompositeArrayGenerator<Object>(Object.class, unique, sources));
+		super.setSource(new MultiSourceArrayGenerator<Object>(Object.class, unique, sources));
 	    super.init(context);
 	}
 	

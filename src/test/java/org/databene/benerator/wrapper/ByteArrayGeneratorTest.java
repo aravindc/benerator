@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,33 +19,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.composite;
+package org.databene.benerator.wrapper;
 
-import org.databene.benerator.util.ThreadSafeNonNullGenerator;
+import static org.databene.benerator.util.GeneratorUtil.*;
+import static org.junit.Assert.*;
+
+import org.databene.benerator.ConstantTestGenerator;
+import org.databene.benerator.test.GeneratorTest;
+import org.junit.Test;
 
 /**
- * Generates an array of fixed size filled with nulls.<br/><br/>
- * Created: 30.04.2010 08:36:00
- * @since 0.6.1
+ * Tests the {@link ByteArrayGenerator}.<br/><br/>
+ * Created: 29.07.2011 12:48:32
+ * @since 0.7.0
  * @author Volker Bergmann
  */
-public class BlankArrayGenerator extends ThreadSafeNonNullGenerator<Object[]> {
+public class ByteArrayGeneratorTest extends GeneratorTest {
 
-    private static final Class<Object[]> GENERATED_TYPE = Object[].class;
-
-    private int length;
-
-    public BlankArrayGenerator(int length) {
-        this.length = length;
-    }
-
-	public Class<Object[]> getGeneratedType() {
-        return GENERATED_TYPE;
-    }
-
-	@Override
-	public Object[] generate() {
-        return new Object[length];
-    }
-
+	@Test
+	public void test() {
+		ConstantTestGenerator<Byte> source = new ConstantTestGenerator<Byte>((byte) 1);
+		ByteArrayGenerator generator = new ByteArrayGenerator(source, 2, 2);
+		init(generator);
+		byte[] result = generateNonNull(generator);
+		assertEquals(2, result.length);
+		assertEquals(1, result[0]);
+		assertEquals(1, result[1]);
+		close(generator);
+	}
+	
 }

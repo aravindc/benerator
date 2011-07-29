@@ -61,7 +61,7 @@ public class MessageGenerator extends ValidatingGenerator<String> implements Non
     private int maxLength;
 
     /** provides the objects to format */
-    private SimpleCompositeArrayGenerator<?> helper;
+    private SimpleMultiSourceArrayGenerator<?> helper;
 
 	private WrapperProvider<Object[]> sourceWrapperProvider;
 
@@ -82,7 +82,7 @@ public class MessageGenerator extends ValidatingGenerator<String> implements Non
         this.pattern = pattern;
         this.minLength = minLength;
         this.maxLength = maxLength;
-        this.helper = new SimpleCompositeArrayGenerator<Object>(Object.class, sources);
+        this.helper = new SimpleMultiSourceArrayGenerator<Object>(Object.class, sources);
         this.sourceWrapperProvider = new WrapperProvider<Object[]>();
     }
 

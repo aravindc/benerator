@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,60 +26,66 @@
 
 package org.databene.benerator.wrapper;
 
+import java.lang.reflect.Array;
+
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.commons.ArrayUtil;
 
 /**
- * Common abstraction for all generators that create arrays.<br/>
+ * Assembles the output of a source generator into an array of random length.<br/>
  * <br/>
- * Created at 13.07.2008 15:51:59
- * @since 0.5.4
+ * Created: 26.08.2006 09:37:55
+ * @since 0.1
  * @author Volker Bergmann
  */
-public abstract class AbstractArrayGenerator<E, A> extends CardinalGenerator<E, A>{
+public class SingleSourceArrayGenerator<S, P> extends CardinalGenerator<S, P> implements NonNullGenerator<P> {
 
-    private Class<E> componentType;
-    private Class<A> generatedType;
+    private Class<S> componentType;
+    private Class<P> generatedType;
 
-    public AbstractArrayGenerator(Generator<E> source, Class<E> componentType, Class<A> generatedType, 
+    @SuppressWarnings("unchecked")
+	public SingleSourceArrayGenerator(Generator<S> source, Class<S> componentType,  
     		int minLength, int maxLength, Distribution lengthDistribution) {
         super(source, false, minLength, maxLength, 1, SequenceManager.RANDOM_SEQUENCE);
         this.componentType = componentType;
-        this.generatedType = generatedType;
+        this.generatedType = ArrayUtil.arrayType(componentType);
+    }
+
+    @SuppressWarnings("unchecked")
+	public SingleSourceArrayGenerator(Generator<S> source, Class<S> componentType, 
+			NonNullGenerator<Integer> lengthGenerator) {
+        super(source, false, lengthGenerator);
+        this.componentType = componentType;
+        this.generatedType = ArrayUtil.arrayType(componentType);
     }
 
     // configuration properties ----------------------------------------------------------------------------------------
 
-    public Class<A> getGeneratedType() {
+    public Class<P> getGeneratedType() {
         return generatedType;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void init(GeneratorContext context) {
-        super.init(context);
-        if (generatedType == null) {
-            Class<E> cType = (componentType != null ? componentType : getSource().getGeneratedType());
-            this.generatedType = ArrayUtil.arrayType(cType);
-        }
+	public ProductWrapper<P> generate(ProductWrapper<P> wrapper) {
+        return wrapper.wrap(generate());
     }
 
-    @SuppressWarnings("unchecked")
-    public ProductWrapper<A> generate(ProductWrapper<A> wrapper) {
+	public P generate() {
     	Integer size = generateCount();
     	if (size == null)
     		return null;
-        E[] array = ArrayUtil.newInstance(componentType, size.intValue());
+    	// the following works for primitive types as well as for objects
+        @SuppressWarnings("unchecked")
+		P array = (P) ArrayUtil.newInstance(componentType, size.intValue());
         for (int i = 0; i < size; i++) {
-            ProductWrapper<E> component = generateFromSource();
+            ProductWrapper<S> component = generateFromSource();
             if (component == null)
             	return null;
-			array[i] = component.unwrap();
+			Array.set(array, i, component.unwrap());
         } 
-        return wrapper.wrap((A) array);
-    }
+        return array;
+	}
 
 }

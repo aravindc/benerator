@@ -77,7 +77,7 @@ public class CompositeStringGenerator extends GeneratorWrapper<String[], String>
         int count = 0;
         Generator<String[]> source = getSource();
         if (source != null)
-            count = ((CompositeArrayGenerator<String>) source).getSources().length;
+            count = ((MultiSourceArrayGenerator<String>) source).getSources().length;
         return getClass().getSimpleName() + "[count=" + count + ", " +
                 "source=" + source + ", unique=" + unique + ']';
     }
@@ -85,7 +85,7 @@ public class CompositeStringGenerator extends GeneratorWrapper<String[], String>
     // private helpers -------------------------------------------------------------------------------------------------
 
     protected static Generator<String[]> wrap(boolean unique, Generator<?>... sources) {
-        return new CompositeArrayGenerator<String>(String.class, unique, GeneratorFactoryUtil.stringGenerators(sources));
+        return new MultiSourceArrayGenerator<String>(String.class, unique, GeneratorFactoryUtil.stringGenerators(sources));
     }
 
 }

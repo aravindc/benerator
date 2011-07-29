@@ -49,7 +49,7 @@ import org.databene.benerator.composite.AlternativeComponentBuilder;
 import org.databene.benerator.composite.ArrayElementBuilder;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.composite.ConditionalComponentBuilder;
-import org.databene.benerator.composite.InstanceArrayGenerator;
+import org.databene.benerator.composite.SimplifyingSingleSourceArrayGenerator;
 import org.databene.benerator.composite.PlainEntityComponentBuilder;
 import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
@@ -298,7 +298,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     	Generator<Long> source = GeneratorFactoryUtil.getCountGenerator(instance, true, context);
     	NonNullGenerator<Integer> countGenerator = GeneratorFactoryUtil.asNonNullGenerator(
     			new AsIntegerGeneratorWrapper<Number>((Generator) source));
-    	return new InstanceArrayGenerator(generator, countGenerator);
+    	return new SimplifyingSingleSourceArrayGenerator(generator, countGenerator);
     }
 
 }

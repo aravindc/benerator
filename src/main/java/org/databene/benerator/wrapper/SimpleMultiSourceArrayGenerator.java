@@ -38,7 +38,7 @@ import java.lang.reflect.Array;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class SimpleCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
+public class SimpleMultiSourceArrayGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
 
     private Class<S> componentType;
     private boolean available;
@@ -47,7 +47,7 @@ public class SimpleCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
 
     /** Initializes the generator to an array of source generators */
     @SuppressWarnings("unchecked")
-	public SimpleCompositeArrayGenerator(Class<S> componentType, Generator<? extends S> ... sources) {
+	public SimpleMultiSourceArrayGenerator(Class<S> componentType, Generator<? extends S> ... sources) {
         super(ArrayUtil.arrayType(componentType), sources);
         this.componentType = componentType;
         this.available = true;
@@ -57,6 +57,7 @@ public class SimpleCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	public ProductWrapper<S[]> generate(ProductWrapper<S[]> wrapper) {
+		assertInitialized();
     	if (!available)
     		return null;
         S[] array = (S[]) Array.newInstance(componentType, availableSourceCount());

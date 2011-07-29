@@ -44,9 +44,9 @@ import org.slf4j.LoggerFactory;
  * Created: 17.11.2007 13:37:37
  * @author Volker Bergmann
  */
-public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
+public class UniqueMultiSourceArrayGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
 
-    private static final Logger logger = LoggerFactory.getLogger(UniqueCompositeArrayGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(UniqueMultiSourceArrayGenerator.class);
 
     private Class<S> componentType;
     private Object[] buffer;
@@ -57,13 +57,13 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
      * Initializes the generator to an array of source generators
      */
     @SuppressWarnings("unchecked")
-	public UniqueCompositeArrayGenerator(Class<S> componentType, Generator<? extends S> ... sources) {
+	public UniqueMultiSourceArrayGenerator(Class<S> componentType, Generator<? extends S> ... sources) {
         super(ArrayUtil.arrayType(componentType), sources);
         this.componentType = componentType;
     }
 
     @SuppressWarnings("unchecked")
-	public UniqueCompositeArrayGenerator(Class<S> componentType, List<Generator<? extends S>> sources) {
+	public UniqueMultiSourceArrayGenerator(Class<S> componentType, List<Generator<? extends S>> sources) {
         super(ArrayUtil.arrayType(componentType), sources);
         this.componentType = componentType;
     }

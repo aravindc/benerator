@@ -41,7 +41,7 @@ import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
-import org.databene.benerator.wrapper.UniqueCompositeArrayGenerator;
+import org.databene.benerator.wrapper.UniqueMultiSourceArrayGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
@@ -103,7 +103,7 @@ public class ArrayGeneratorFactory {
         	Generator<?>[] generators = new Generator[elementBuilders.size()];
         	for (int i = 0; i < generators.length; i++)
         		generators[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
-        	baseGenerator = new UniqueCompositeArrayGenerator<Object>(Object.class, generators);
+        	baseGenerator = new UniqueMultiSourceArrayGenerator<Object>(Object.class, generators);
         	elementBuilders = null; // element builders are now controlled by the UniqueArrayGenerator
         } else
         	baseGenerator = new BlankArrayGenerator(arrayType.getElementCount());

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,34 +26,43 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.*;
-import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.commons.ArrayUtil;
+import org.databene.benerator.sample.SampleGenerator;
+import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
- * Assembles the output of a source generator into an array of random length.<br/>
- * <br/>
- * Created: 26.08.2006 09:37:55
+ * Tests the {@link SingleSourceArrayGenerator}.<br/><br/>
+ * Created: 11.10.2006 23:12:21
  * @since 0.1
  * @author Volker Bergmann
  */
-public class SimpleArrayGenerator<E> extends AbstractArrayGenerator<E, E[]> {
+public class SingleSourceArrayGeneratorTest extends GeneratorTest {
 
-    // constructors ----------------------------------------------------------------------------------------------------
-
-    @SuppressWarnings("unchecked")
-    public SimpleArrayGenerator() {
-        this(null, (Class<E>) Object.class, 0, 30);
+	@Test
+    public void test() {
+        check(0, 0);
+        check(3, 3);
+        check(0, 1);
+        check(1, 2);
+        check(3, 6);
     }
 
-    public SimpleArrayGenerator(Generator<E> source, Class<E> componentType, int minLength, int maxLength) {
-        this(source, componentType, minLength, maxLength, SequenceManager.RANDOM_SEQUENCE);
-    }
+    // helpers ---------------------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
-    public SimpleArrayGenerator(Generator<E> source, Class<E> componentType, int minLength, int maxLength, Distribution lengthDistribution) {
-        super(source, componentType, ArrayUtil.arrayType(componentType), minLength, maxLength, lengthDistribution);
+    private void check(int minLength, int maxLength) {
+        Generator<String> source = new SampleGenerator<String>(String.class, "Alice", "Bob");
+        SingleSourceArrayGenerator<String, String[]> generator = new SingleSourceArrayGenerator<String, String[]>(
+                source, String.class, minLength, maxLength, SequenceManager.RANDOM_SEQUENCE);
+        generator.init(context);
+        for (int i = 0; i < 100; i++) {
+            String[] product = GeneratorUtil.generateNonNull(generator);
+            assertTrue(minLength <= product.length);
+            assertTrue(product.length <= maxLength);
+        }
     }
-
+    
 }
