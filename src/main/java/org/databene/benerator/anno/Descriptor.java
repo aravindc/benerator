@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.METHOD } )
-public @interface DescriptorBased { // TODO rename to @Descriptor? or @Benerator?
+public @interface Descriptor {
 	String file() default "";
 	String name() default "";
 }

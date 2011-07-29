@@ -148,7 +148,7 @@ public class AnnotationMapper {
 			// Evaluate annotations
 			org.databene.benerator.anno.Generator generatorAnno = testMethod.getAnnotation(org.databene.benerator.anno.Generator.class);
 			Source sourceAnno = testMethod.getAnnotation(Source.class);
-			DescriptorBased descriptorBasedAnno = testMethod.getAnnotation(DescriptorBased.class);
+			Descriptor descriptorBasedAnno = testMethod.getAnnotation(Descriptor.class);
 			// If there are method annotations, evaluate them, ...
 			if (generatorAnno != null)
 				generator = createGeneratorGenerator(generatorAnno, testMethod, context);
@@ -284,7 +284,7 @@ public class AnnotationMapper {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected Generator<Object[]> createDescriptorBasedGenerator(
-			DescriptorBased descriptorAnno, Method testMethod)
+			Descriptor descriptorAnno, Method testMethod)
 			throws IOException {
 		Generator<Object[]> generator;
 		String filename;
