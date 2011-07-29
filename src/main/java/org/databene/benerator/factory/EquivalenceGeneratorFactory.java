@@ -188,7 +188,8 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
 		Generator<Character> charGenerator = createCharacterGenerator(chars);
 		Set<Integer> counts = defaultCounts(minLength, maxLength);
-		Generator<Integer> lengthGenerator = new SequenceGenerator<Integer>(Integer.class, counts);
+		NonNullGenerator<Integer> lengthGenerator = GeneratorFactoryUtil.asNonNullGenerator(
+				new SequenceGenerator<Integer>(Integer.class, counts));
 		return new EquivalenceStringGenerator<Character>(charGenerator, lengthGenerator);
 	}
 	
