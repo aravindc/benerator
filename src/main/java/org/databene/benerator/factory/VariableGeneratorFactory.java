@@ -25,19 +25,14 @@ import static org.databene.model.data.TypeDescriptor.PATTERN;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.primitive.ScriptGenerator;
-import org.databene.benerator.primitive.ValueMapper;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.commons.BeanUtil;
-import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.Validator;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
-import org.databene.script.Script;
-import org.databene.script.ScriptUtil;
 
 /**
  * Factory class that creates {@link Generator}s for &lt;variable&gt;s.<br/><br/>
@@ -58,7 +53,7 @@ public class VariableGeneratorFactory {
 		
 		// check for script
 		TypeDescriptor type = descriptor.getTypeDescriptor();
-		generator = createScriptGenerator(type, context);
+		generator = TypeGeneratorFactory.createScriptGenerator(type, context);
 		if (generator != null) {
 	        generator = wrapWithPostprocessors(generator, type, context);
 	        generator = wrapWithProxy(generator, type);
@@ -80,20 +75,11 @@ public class VariableGeneratorFactory {
         	return null;
 	}
 	
-    protected static Generator<?> createScriptGenerator(TypeDescriptor descriptor, Context context) {
-        String scriptText = descriptor.getScript();
-        if (scriptText != null) {
-            Script script = ScriptUtil.parseScriptText(scriptText);
-            return new ScriptGenerator(script, context);
-        } else
-        	return null;
-    }
-
     static Generator<?> wrapWithPostprocessors(Generator<?> generator, TypeDescriptor descriptor, BeneratorContext context) {
 		generator = createConvertingGenerator(descriptor, generator, context);
 		if (descriptor instanceof SimpleTypeDescriptor) {
 			SimpleTypeDescriptor simpleType = (SimpleTypeDescriptor) descriptor;
-			generator = createMappingGenerator(simpleType, generator);
+			generator = TypeGeneratorFactory.createMappingGenerator(simpleType, generator);
 			generator = createTypeConvertingGenerator(simpleType, generator);
 		}
         generator = createValidatingGenerator(descriptor, generator, context);
@@ -129,14 +115,6 @@ public class VariableGeneratorFactory {
             generator = GeneratorFactoryUtil.createConvertingGenerator(descriptor, generator, context);
         }
         return generator;
-    }
-
-	static Generator<?> createMappingGenerator(SimpleTypeDescriptor descriptor, Generator<?> generator) {
-        if (descriptor == null || descriptor.getMap() == null)
-            return generator;
-        String mappingSpec = descriptor.getMap();
-        ValueMapper mapper = new ValueMapper(mappingSpec);
-        return GeneratorFactoryUtil.createConvertingGenerator(generator, mapper);
     }
 
     public static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor) {
