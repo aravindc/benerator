@@ -44,6 +44,7 @@ import org.databene.model.storage.StorageSystem;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.composite.AlternativeComponentBuilder;
 import org.databene.benerator.composite.ArrayElementBuilder;
 import org.databene.benerator.composite.ComponentBuilder;
@@ -295,7 +296,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<?> generator, BeneratorContext context) {
     	Generator<Long> source = GeneratorFactoryUtil.getCountGenerator(instance, true, context);
-    	Generator<Integer> countGenerator = new AsIntegerGeneratorWrapper<Number>((Generator) source);
+    	NonNullGenerator<Integer> countGenerator = GeneratorFactoryUtil.asNonNullGenerator(
+    			new AsIntegerGeneratorWrapper<Number>((Generator) source));
     	return new InstanceArrayGenerator(generator, countGenerator);
     }
 
