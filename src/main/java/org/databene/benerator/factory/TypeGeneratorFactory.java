@@ -31,10 +31,7 @@ import java.util.Date;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.primitive.ValueMapper;
-import org.databene.benerator.wrapper.ConvertingGenerator;
-import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
@@ -49,8 +46,6 @@ import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
-import org.databene.script.Script;
-import org.databene.script.ScriptUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +57,7 @@ import static org.databene.model.data.TypeDescriptor.*;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class TypeGeneratorFactory { // TODO replace explicit generator constructions with GeneratorFactory calls
+public class TypeGeneratorFactory {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(TypeGeneratorFactory.class);
     
@@ -78,21 +73,18 @@ public class TypeGeneratorFactory { // TODO replace explicit generator construct
     }
 
     protected static Generator<?> createScriptGenerator(TypeDescriptor descriptor, Context context) {
-    	Generator<?> generator = null;
         String scriptText = descriptor.getScript();
-        if (scriptText != null) {
-            Script script = ScriptUtil.parseScriptText(scriptText);
-            generator = new ScriptGenerator(script, context);
-        }
-        return generator;
+        if (scriptText != null)
+            return GeneratorFactoryUtil.createScriptGenerator(scriptText, context);
+        return null;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected static Generator<?> createValidatingGenerator(
             TypeDescriptor descriptor, Generator<?> generator, BeneratorContext context) {
-        Validator<?> validator = DescriptorUtil.getValidator(descriptor, context);
+        Validator validator = DescriptorUtil.getValidator(descriptor, context);
         if (validator != null)
-            generator = new ValidatingGeneratorProxy(generator, validator);
+            generator = GeneratorFactoryUtil.wrapWithValidator(validator, generator);
         return generator;
     }
 
@@ -113,7 +105,7 @@ public class TypeGeneratorFactory { // TODO replace explicit generator construct
 		generator = (Generator<E>) createConvertingGenerator(descriptor, generator, context);
 		if (descriptor instanceof SimpleTypeDescriptor) {
 			SimpleTypeDescriptor simpleType = (SimpleTypeDescriptor) descriptor;
-			generator = (Generator<E>) createMappingGenerator(simpleType, generator, context);
+			generator = (Generator<E>) createMappingGenerator(simpleType, generator);
 			generator = (Generator<E>) createTypeConvertingGenerator(simpleType, generator);
 		}
         generator = (Generator<E>) createValidatingGenerator(descriptor, generator, context);
@@ -121,7 +113,7 @@ public class TypeGeneratorFactory { // TODO replace explicit generator construct
 	}
     
     static Generator<?> createMappingGenerator(
-            SimpleTypeDescriptor descriptor, Generator<?> generator, BeneratorContext context) {
+            SimpleTypeDescriptor descriptor, Generator<?> generator) {
         if (descriptor == null || descriptor.getMap() == null)
             return generator;
         String mappingSpec = descriptor.getMap();
@@ -129,13 +121,12 @@ public class TypeGeneratorFactory { // TODO replace explicit generator construct
         return GeneratorFactoryUtil.createConvertingGenerator(generator, mapper);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     static Generator<?> createTypeConvertingGenerator(
             SimpleTypeDescriptor descriptor, Generator<?> generator) {
         if (descriptor == null || descriptor.getPrimitiveType() == null)
             return generator;
         Converter<?, ?> converter = createConverter(descriptor, generator.getGeneratedType());
-    	return (converter != null ? new ConvertingGenerator(generator, converter) : generator);
+    	return (converter != null ? GeneratorFactoryUtil.createConvertingGenerator(generator, converter) : generator);
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
