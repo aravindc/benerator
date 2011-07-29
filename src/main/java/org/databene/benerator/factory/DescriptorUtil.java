@@ -308,7 +308,7 @@ public class DescriptorUtil {
 	    return varGens;
     }
     
-	public static Converter<String, String> createScriptConverter(BeneratorContext context) {
+	public static Converter<String, String> createStringScriptConverter(BeneratorContext context) {
 		Converter<String, String> scriptConverter = new ConverterChain<String, String>(
 				new ScriptConverter(context),
 				new ToStringConverter(null)
