@@ -40,8 +40,8 @@ import org.databene.benerator.util.WrapperProvider;
 public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
 
     /** Generator that determines the cardinality of generation */
-    protected Generator<Integer> countGenerator;
-    boolean resettingCountGenerator;
+    protected NonNullGenerator<Integer> countGenerator;
+    boolean resettingCount;
     
     int minCount;
     int maxCount;
@@ -51,28 +51,24 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public CardinalGenerator(Generator<S> source, Generator<Integer> countGenerator) { 
-    	// TODO remove this constructor forcing children to explicitly select count generator reset
-        this(source, countGenerator, false);
-    }
-    
-    public CardinalGenerator(Generator<S> source, Generator<Integer> countGenerator, boolean resettingCountGenerator) {
+    public CardinalGenerator(Generator<S> source, boolean resettingCount, NonNullGenerator<Integer> countGenerator) {
         super(source);
         this.countGenerator = countGenerator;
-        this.resettingCountGenerator = resettingCountGenerator;
+        this.resettingCount = resettingCount;
     }
     
-    public CardinalGenerator(Generator<S> source) {
-        this(source, 0, 30, 1, SequenceManager.RANDOM_SEQUENCE);
+    public CardinalGenerator(Generator<S> source, boolean resettingCountGenerator) {
+        this(source, resettingCountGenerator, 0, 30, 1, SequenceManager.RANDOM_SEQUENCE);
     }
 
-    public CardinalGenerator(Generator<S> source, 
+    public CardinalGenerator(Generator<S> source, boolean resettingCountGenerator, 
     		int minCount, int maxCount, int countGranularity, Distribution countDistribution) {
         super(source);
         this.minCount = minCount;
         this.maxCount = maxCount;
         this.countGranularity = countGranularity;
         this.countDistribution = countDistribution;
+        this.resettingCount = resettingCountGenerator;
     }
     
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -89,7 +85,7 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
     @Override
     public void reset() {
     	assertInitialized();
-    	if (resettingCountGenerator)
+    	if (resettingCount)
     		countGenerator.reset();
         super.reset();
     }
