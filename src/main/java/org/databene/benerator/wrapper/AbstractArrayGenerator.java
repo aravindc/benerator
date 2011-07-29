@@ -46,7 +46,7 @@ public abstract class AbstractArrayGenerator<E, A> extends CardinalGenerator<E, 
 
     public AbstractArrayGenerator(Generator<E> source, Class<E> componentType, Class<A> generatedType, 
     		int minLength, int maxLength, Distribution lengthDistribution) {
-        super(source, minLength, maxLength, 1, SequenceManager.RANDOM_SEQUENCE);
+        super(source, false, minLength, maxLength, 1, SequenceManager.RANDOM_SEQUENCE);
         this.componentType = componentType;
         this.generatedType = generatedType;
     }
