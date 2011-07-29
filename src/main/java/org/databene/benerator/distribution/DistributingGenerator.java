@@ -47,6 +47,11 @@ public class DistributingGenerator<E> extends GeneratorProxy<E> {
     }
 	
 	@Override
+	public Class<E> getGeneratedType() {
+		return (getSource() != null ? getSource().getGeneratedType() : dataProvider.getGeneratedType());
+	}
+	
+	@Override
 	public void init(GeneratorContext context) {
 		dataProvider.init(context);
 		setSource(distribution.applyTo(dataProvider, unique));
