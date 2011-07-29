@@ -29,7 +29,7 @@ import org.databene.benerator.Generator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ProductWrapper<E> { // TODO efficiency where used
+public class ProductWrapper<E> {
 	
 	private E product;
 	private boolean wrapped = false;
