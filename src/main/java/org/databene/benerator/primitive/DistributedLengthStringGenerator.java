@@ -36,8 +36,8 @@ import org.databene.benerator.wrapper.ProductWrapper;
 public class DistributedLengthStringGenerator extends CardinalGenerator<Character, String> 
 		implements NonNullGenerator<String>{
 	
-	public DistributedLengthStringGenerator(Generator<Character> charGenerator, Generator<Integer> lengthGenerator) {
-		super(charGenerator, lengthGenerator);
+	public DistributedLengthStringGenerator(Generator<Character> charGenerator, NonNullGenerator<Integer> lengthGenerator) {
+		super(charGenerator, false, lengthGenerator);
 	}
 
 	public Class<String> getGeneratedType() {
