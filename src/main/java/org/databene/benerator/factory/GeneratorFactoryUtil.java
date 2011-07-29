@@ -42,6 +42,7 @@ import org.databene.benerator.distribution.FeatureWeight;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.DynamicCountGenerator;
+import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
@@ -85,6 +86,8 @@ import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
 import org.databene.platform.xls.XLSLineIterable;
 import org.databene.regex.RegexParser;
+import org.databene.script.Script;
+import org.databene.script.ScriptUtil;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.model.data.TypeDescriptor.PATTERN;
@@ -94,7 +97,7 @@ import static org.databene.model.data.TypeDescriptor.PATTERN;
  * Created: 08.03.2008 09:39:05
  * @author Volker Bergmann
  */
-public class GeneratorFactoryUtil {
+public class GeneratorFactoryUtil { // TODO replace explicit generator constructions with GeneratorFactoryUtil calls
 	
     /**
      * Creates a generator that combines several products of a source generator to a collection.
@@ -417,11 +420,17 @@ public class GeneratorFactoryUtil {
 			return new NullInjectingGeneratorProxy<T>(source, nullQuota);
 	}
 
-	public static <T> NonNullGenerator<T> asNonNullGenerator(Generator<T> source) { // TODO move this and other methods to WrapperFactory?
+	public static <T> NonNullGenerator<T> asNonNullGenerator(Generator<T> source) {
+		// TODO move this and other methods to WrapperFactory?
 		if (source instanceof AsNonNullGenerator)
 			return (NonNullGenerator<T>) source;
 		else
 			return new AsNonNullGenerator<T>(source);
 	}
+
+    public static Generator<?> createScriptGenerator(String scriptText, Context context) {
+        Script script = ScriptUtil.parseScriptText(scriptText);
+        return new ScriptGenerator(script, context);
+    }
 
 }
