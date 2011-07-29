@@ -27,6 +27,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.wrapper.CardinalGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ArrayUtil;
@@ -43,11 +44,11 @@ import org.databene.commons.ArrayUtil;
 public class InstanceArrayGenerator<S> extends CardinalGenerator<S, Object> {
     
     public InstanceArrayGenerator(Generator<S> source) {
-        super(source);
+        super(source, false);
     }
     
-    public InstanceArrayGenerator(Generator<S> source, Generator<Integer> countGenerator) {
-        super(source, countGenerator);
+    public InstanceArrayGenerator(Generator<S> source, NonNullGenerator<Integer> countGenerator) {
+        super(source, false, countGenerator);
     }
     
     public Class<Object> getGeneratedType() {
