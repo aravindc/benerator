@@ -129,7 +129,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
     		Generator<Character> charGenerator = createCharacterGenerator(chars);
     		if (lengthDistribution == null)
     			lengthDistribution = SequenceManager.RANDOM_SEQUENCE;
-    		Generator<Integer> lengthGenerator = lengthDistribution.createGenerator(Integer.class, minLength, maxLength, 1, false);
+    		NonNullGenerator<Integer> lengthGenerator = lengthDistribution.createGenerator(Integer.class, minLength, maxLength, 1, false);
     		return new DistributedLengthStringGenerator(charGenerator, lengthGenerator);
         }
 	}
