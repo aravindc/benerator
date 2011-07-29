@@ -52,7 +52,7 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
 	protected Class<P> generatedType;
     protected List<Generator<? extends S>> sources;
     private List<Generator<? extends S>> availableSources;
-	private WrapperProvider<S> sourceWrapper;
+	private WrapperProvider<S> sourceWrapperProvider;
     
     public MultiGeneratorWrapper(Class<P> generatedType, Generator<? extends S>... sources) {
     	this(generatedType, CollectionUtil.toList(sources));
@@ -62,7 +62,7 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     	this.generatedType = generatedType;
     	this.sources = new ArrayList<Generator<? extends S>>();
     	this.availableSources = new ArrayList<Generator<? extends S>>();
-    	this.sourceWrapper = new WrapperProvider<S>();
+    	this.sourceWrapperProvider = new WrapperProvider<S>();
         setSources(sources);
     }
 
@@ -144,7 +144,7 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     // helpers ---------------------------------------------------------------------------------------------------------
     
     protected ProductWrapper<S> getSourceWrapper() {
-    	return sourceWrapper.get();
+    	return sourceWrapperProvider.get();
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
