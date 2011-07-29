@@ -194,7 +194,7 @@ public class ComplexTypeGeneratorFactory {
 		if (pattern == null)
 		    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
 		FlatFileColumnDescriptor[] ffcd = FlatFileUtil.parseProperties(pattern);
-		Converter<String, String> scriptConverter = DescriptorUtil.createScriptConverter(context);
+		Converter<String, String> scriptConverter = DescriptorUtil.createStringScriptConverter(context);
 		FlatFileEntitySource iterable = new FlatFileEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);
 		iterable.setContext(context);
 		generator = new DataSourceGenerator<Entity>(iterable);
@@ -206,7 +206,7 @@ public class ComplexTypeGeneratorFactory {
 		String encoding = complexType.getEncoding();
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
-		Converter<String, String> scriptConverter = DescriptorUtil.createScriptConverter(context);
+		Converter<String, String> scriptConverter = DescriptorUtil.createStringScriptConverter(context);
 		char separator = DescriptorUtil.getSeparator(complexType, context);
 	    SourceFactory<Entity> fileProvider = new CSVEntitySourceFactory(complexType.getName(), scriptConverter, 
 	    		separator, encoding);
