@@ -47,15 +47,15 @@ public class RegexStringGenerator extends NonNullGeneratorProxy<String> {
     /** Optional String representation of a regular expression */
     private String pattern;
 
+    /** indicates if the generated values shall be unique */
+    private boolean unique;
+
     /** The locale from which to choose letters */
     private Locale locale;
 
     private int minLength;
 
     private int maxLength;
-
-    /** indicates if the generated values shall be unique */
-    private boolean unique;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -98,7 +98,15 @@ public class RegexStringGenerator extends NonNullGeneratorProxy<String> {
     public void setPattern(String pattern) {
         this.pattern = pattern;
     }
-
+    
+	public boolean isUnique() {
+		return unique;
+	}
+	
+	public void setUnique(boolean unique) {
+		this.unique = unique;
+	}
+	
     public Locale getLocale() {
         return locale;
     }
@@ -117,10 +125,6 @@ public class RegexStringGenerator extends NonNullGeneratorProxy<String> {
 
     public int getMaxLength() {
         return maxLength;
-    }
-
-    public void setMaxQuantity(int maxLength) {
-        this.maxLength = maxLength;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
