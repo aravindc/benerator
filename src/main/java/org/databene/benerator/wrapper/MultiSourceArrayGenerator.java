@@ -32,12 +32,12 @@ import org.databene.benerator.GeneratorContext;
  */
 public class MultiSourceArrayGenerator<S> extends GeneratorProxy<S[]> {
 
-	private Class<S> targetType;
+	private Class<S> componentType;
     private boolean unique;
     private Generator<? extends S>[] sources;
     
-	public MultiSourceArrayGenerator(Class<S> targetType, boolean unique, Generator<? extends S>... sources) {
-	    this.targetType = targetType;
+	public MultiSourceArrayGenerator(Class<S> componentType, boolean unique, Generator<? extends S>... sources) {
+	    this.componentType = componentType;
 	    this.unique = unique;
 	    this.sources = sources;
     }
@@ -49,13 +49,17 @@ public class MultiSourceArrayGenerator<S> extends GeneratorProxy<S[]> {
 	public Generator<? extends S>[] getSources() {
 		return sources;
 	}
+	
+	public void setSources(Generator<? extends S>[] sources) {
+		this.sources = sources;
+	}
     
     @Override
     public synchronized void init(GeneratorContext context) {
 		if (unique)
-			super.setSource(new UniqueMultiSourceArrayGenerator<S>(targetType, sources));
+			super.setSource(new UniqueMultiSourceArrayGenerator<S>(componentType, sources));
 		else
-			super.setSource(new SimpleMultiSourceArrayGenerator<S>(targetType, sources));
+			super.setSource(new SimpleMultiSourceArrayGenerator<S>(componentType, sources));
 	    super.init(context);
     }
     
