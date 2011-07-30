@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ import java.util.Set;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.sample.SampleGenerator;
-import org.databene.benerator.wrapper.AbstractCompositeStringGenerator;
+import org.databene.benerator.wrapper.CompositeStringGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.ConfigurationError;
@@ -104,15 +104,15 @@ public class TokenCombiner extends GeneratorProxy<String> {
 	    super.init(context);
 	}
 
-	protected class SimpleTokenCombinator extends AbstractCompositeStringGenerator {
+	protected class SimpleTokenCombinator extends CompositeStringGenerator {
 		
 		SimpleTokenCombinator(boolean unique) {
 	        super(unique);
         }
 
+		@Override
 		@SuppressWarnings("unchecked")
-	    @Override
-	    protected Generator<?>[] initSources(GeneratorContext context, boolean unique) {
+	    public void init(GeneratorContext context) {
 			try {
 				SampleGenerator<String>[] sources = null;
 				String absoluteUri = context.resolveRelativeUri(uri);
@@ -135,7 +135,8 @@ public class TokenCombiner extends GeneratorProxy<String> {
 		        	if (excludeSeed)
 		        		seed.add(StringUtil.concat(null, tokens));
 		        }
-		        return sources;
+		        setSources(sources);
+		        super.init(context);
 	        } catch (IOException e) {
 	    		throw new ConfigurationError("Error initializing " + getClass().getSimpleName() + " from URI " + uri, e);
 	        }
