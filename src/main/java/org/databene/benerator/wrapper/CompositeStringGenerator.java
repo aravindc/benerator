@@ -45,8 +45,8 @@ public class CompositeStringGenerator extends GeneratorWrapper<String[], String>
         this(false);
     }
 
-    public CompositeStringGenerator(boolean unique, Generator<?>... sources) {
-        super(wrap(unique, sources));
+    public CompositeStringGenerator(boolean unique, Generator<String>... sources) {
+        super(new MultiSourceArrayGenerator<String>(String.class, unique, sources));
         this.unique = unique;
     }
     
@@ -54,6 +54,10 @@ public class CompositeStringGenerator extends GeneratorWrapper<String[], String>
 		return unique;
 	}
 
+	public void setSources(Generator<String>[] sources) {
+		((MultiSourceArrayGenerator<String>) getSource()).setSources(sources);
+	}
+	
     // Generator interface ---------------------------------------------------------------------------------------------
 
     public Class<String> getGeneratedType() {
@@ -74,12 +78,8 @@ public class CompositeStringGenerator extends GeneratorWrapper<String[], String>
 
     @Override
     public String toString() {
-        int count = 0;
         Generator<String[]> source = getSource();
-        if (source != null)
-            count = ((MultiSourceArrayGenerator<String>) source).getSources().length;
-        return getClass().getSimpleName() + "[count=" + count + ", " +
-                "source=" + source + ", unique=" + unique + ']';
+        return getClass().getSimpleName() + "[unique=" + unique + ", source=" + source + ']';
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
