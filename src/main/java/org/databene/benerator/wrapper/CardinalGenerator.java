@@ -40,35 +40,35 @@ import org.databene.benerator.util.WrapperProvider;
 public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
 
     /** Generator that determines the cardinality of generation */
-    protected NonNullGenerator<Integer> countGenerator;
-    boolean resettingCount;
+    protected NonNullGenerator<Integer> cardinalGenerator;
+    boolean resettingCardinal;
     
-    int minCount;
-    int maxCount;
-    int countGranularity;
-    Distribution countDistribution;
-    WrapperProvider<Integer> countWrapperProvider = new WrapperProvider<Integer>();
+    int minCardinal;
+    int maxCardinal;
+    int cardinalGranularity;
+    Distribution cardinalDistribution;
+    WrapperProvider<Integer> cardinalWrapperProvider = new WrapperProvider<Integer>();
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public CardinalGenerator(Generator<S> source, boolean resettingCount, NonNullGenerator<Integer> countGenerator) {
+    public CardinalGenerator(Generator<S> source, boolean resettingCardinal, NonNullGenerator<Integer> cardinalGenerator) {
         super(source);
-        this.countGenerator = countGenerator;
-        this.resettingCount = resettingCount;
+        this.cardinalGenerator = cardinalGenerator;
+        this.resettingCardinal = resettingCardinal;
     }
     
-    public CardinalGenerator(Generator<S> source, boolean resettingCountGenerator) {
-        this(source, resettingCountGenerator, 0, 30, 1, SequenceManager.RANDOM_SEQUENCE);
+    public CardinalGenerator(Generator<S> source, boolean resettingCardinalGenerator) {
+        this(source, resettingCardinalGenerator, 0, 30, 1, SequenceManager.RANDOM_SEQUENCE);
     }
 
-    public CardinalGenerator(Generator<S> source, boolean resettingCountGenerator, 
-    		int minCount, int maxCount, int countGranularity, Distribution countDistribution) {
+    public CardinalGenerator(Generator<S> source, boolean resettingCardinalGenerator, 
+    		int minCardinal, int maxCardinal, int cardinalGranularity, Distribution cardinalDistribution) {
         super(source);
-        this.minCount = minCount;
-        this.maxCount = maxCount;
-        this.countGranularity = countGranularity;
-        this.countDistribution = countDistribution;
-        this.resettingCount = resettingCountGenerator;
+        this.minCardinal = minCardinal;
+        this.maxCardinal = maxCardinal;
+        this.cardinalGranularity = cardinalGranularity;
+        this.cardinalDistribution = (cardinalDistribution != null ? cardinalDistribution : SequenceManager.RANDOM_SEQUENCE);
+        this.resettingCardinal = resettingCardinalGenerator;
     }
     
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -76,25 +76,25 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
 	/** ensures consistency of the state */
     @Override
     public void init(GeneratorContext context) {
-    	if (countGenerator == null)
-    		countGenerator = countDistribution.createGenerator(Integer.class, minCount, maxCount, countGranularity, false);
-        countGenerator.init(context);
+    	if (cardinalGenerator == null)
+    		cardinalGenerator = cardinalDistribution.createGenerator(Integer.class, minCardinal, maxCardinal, cardinalGranularity, false);
+        cardinalGenerator.init(context);
         super.init(context);
     }
 
     @Override
     public void reset() {
     	assertInitialized();
-    	if (resettingCount)
-    		countGenerator.reset();
+    	if (resettingCardinal)
+    		cardinalGenerator.reset();
         super.reset();
     }
     
     // helpers ---------------------------------------------------------------------------------------------------------
     
-    protected Integer generateCount() {
-    	ProductWrapper<Integer> wrapper = countWrapperProvider.get();
-    	wrapper = countGenerator.generate(wrapper);
+    protected Integer generateCardinal() {
+    	ProductWrapper<Integer> wrapper = cardinalWrapperProvider.get();
+    	wrapper = cardinalGenerator.generate(wrapper);
     	if (wrapper == null)
     		return null;
     	return wrapper.unwrap();
