@@ -28,16 +28,13 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.wrapper.MultiGeneratorWrapper;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.commons.CollectionUtil;
 import org.databene.commons.CharSet;
-import org.databene.commons.ArrayFormat;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Generates unique strings of variable length.<br/>
@@ -45,27 +42,23 @@ import java.util.List;
  * Created: 16.11.2007 11:56:15
  * @author Volker Bergmann
  */
-public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String> implements NonNullGenerator<String> {
+public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String> implements VarLengthStringGenerator {
 
     private int minLength;
     private int maxLength;
-    private char[] charSet;
+    private Set<Character> chars;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
     public UniqueStringGenerator() {
-        this(4, 8, new CharSet('A', 'Z').getSet());
+        this(new CharSet('A', 'Z').getSet(), 4, 8);
     }
 
-    public UniqueStringGenerator(int minLength, int maxLength, Collection<Character> charSet) {
-        this(minLength, maxLength, CollectionUtil.toCharArray(charSet));
-    }
-
-	public UniqueStringGenerator(int minLength, int maxLength, char ... charSet) {
+    public UniqueStringGenerator(Set<Character> chars, int minLength, int maxLength) {
     	super(String.class);
         this.minLength = minLength;
         this.maxLength = maxLength;
-        this.charSet = charSet;
+        this.chars = chars;
     }
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -94,10 +87,15 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
     	// create sub generators
         List<Generator<? extends String>> subGens = new ArrayList<Generator<? extends String>>(maxLength - minLength + 1);
         for (int i = minLength; i <= maxLength; i++)
-            subGens.add(new UniqueFixedLengthStringGenerator(i, charSet));
+            subGens.add(new UniqueFixedLengthStringGenerator(chars, i, true));
         setSources(subGens);
         super.init(context);
     }
+
+	public String generateWithLength(int length) {
+		ProductWrapper<String> wrapper = generateFromSource(length - minLength, getSourceWrapper());
+		return (wrapper != null ? wrapper.unwrap() : null);
+	}
 
 	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
     	assertInitialized();
@@ -114,7 +112,7 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + minLength + "<=length<=" + maxLength + ", " +
-                "charSet=[" + ArrayFormat.formatChars(", ", charSet) + "]]";
+                "charSet=" + chars + "]";
     }
 
 }
