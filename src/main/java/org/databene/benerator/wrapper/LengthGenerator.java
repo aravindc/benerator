@@ -26,7 +26,7 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 
 /**
- * TODO Document class.<br/><br/>
+ * Abstract parent class for {@link Generator}s that generate objects of a variable length.<br/><br/>
  * Created: 01.08.2011 11:34:58
  * @since 0.7.0
  * @author Volker Bergmann
