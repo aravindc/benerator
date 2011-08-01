@@ -80,7 +80,7 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
     	    else
     	    	currentValue = wrapper.unwrap();
     	    repCount = 0;
-    	    totalReps = generateCount();
+    	    totalReps = generateCardinal();
         } else {
             wrapper.wrap(currentValue);
             repCount++;
@@ -91,7 +91,7 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
 	@Override
 	public void reset() {
 	    super.reset();
-	    countGenerator.reset();
+	    cardinalGenerator.reset();
 	    resetMembers();
 	}
 

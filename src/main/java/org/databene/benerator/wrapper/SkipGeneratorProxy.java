@@ -101,7 +101,7 @@ public class SkipGeneratorProxy<E> extends CardinalGenerator<E, E> {
 	}
 	
     public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
-    	Integer increment = generateCount();
+    	Integer increment = generateCardinal();
     	if (increment == null)
     		return null;
         for (long i = 0; i < increment - 1; i++)

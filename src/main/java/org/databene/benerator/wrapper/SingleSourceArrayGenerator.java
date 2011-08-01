@@ -73,7 +73,7 @@ public class SingleSourceArrayGenerator<S, P> extends CardinalGenerator<S, P> im
     }
 
 	public P generate() {
-    	Integer size = generateCount();
+    	Integer size = generateCardinal();
     	if (size == null)
     		return null;
     	// the following works for primitive types as well as for objects
