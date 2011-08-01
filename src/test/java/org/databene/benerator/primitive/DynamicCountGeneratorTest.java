@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class DynamicCountGeneratorTest extends GeneratorTest {
 	public void testMaxIsNull() {
 		DynamicCountGenerator generator = new DynamicCountGenerator(ONE, NULL, ONE, STEP, FALSE, true);
 		generator.init(context);
-		assertEquals(1L, generateUnwrapped(generator).longValue());
+		assertEquals(1L, GeneratorUtil.generateNonNull(generator).longValue());
 		generator.close();
 	}
 	

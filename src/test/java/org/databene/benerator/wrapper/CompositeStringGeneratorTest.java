@@ -41,16 +41,18 @@ import org.junit.Test;
  */
 public class CompositeStringGeneratorTest extends GeneratorTest {
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testConstant() {
-        Generator<String> generator = new CompositeStringGenerator(true, 
+		Generator<String> generator = new CompositeStringGenerator(true, 
                 new OneShotGenerator<String>("0"),
                 new OneShotGenerator<String>("1"));
         generator.init(context);
         expectUniquelyGeneratedSet(generator, "01").withCeasedAvailability();
     }
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testVariable() {
         Generator<String> generator = new CompositeStringGenerator(true,
                 new SequenceTestGenerator<String>("A", "B", "C"),

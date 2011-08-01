@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
 /**
@@ -49,7 +50,8 @@ public class UniqueStringGeneratorTest extends GeneratorClassTest {
     }
 
 	private UniqueStringGenerator create(int minLength, int maxLength, char... chars) {
-	    UniqueStringGenerator generator = new UniqueStringGenerator(minLength, maxLength, chars);
+	    UniqueStringGenerator generator = new UniqueStringGenerator(
+	    		CollectionUtil.toCharSet(chars), minLength, maxLength);
 	    generator.init(context);
 		return generator;
     }

@@ -45,7 +45,9 @@ public class LuhnGeneratorTest extends GeneratorClassTest {
 	
 	@Test
 	public void testPrefix() {
-		expectGenerations(initialize(new LuhnGenerator("123", 4, 8)), 100, new LuhnValidator(), new RegexValidator("123[0-9]{1,5}"));
+		expectGenerations(initialize(new LuhnGenerator("123", 4, 8, 4, null)), 100, 
+				new LuhnValidator(), 
+				new RegexValidator("123[0-9]{1,5}"));
 	}
 	
 }

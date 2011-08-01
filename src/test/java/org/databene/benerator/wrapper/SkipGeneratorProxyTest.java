@@ -68,8 +68,8 @@ public class SkipGeneratorProxyTest extends GeneratorTest {
         SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2);
         SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(source);
         generator.init(context);
-        assertEquals(1, (int) generateUnwrapped(generator));
-        assertEquals(2, (int) generateUnwrapped(generator));
+        assertEquals(1, (int) GeneratorUtil.generateNonNull(generator));
+        assertEquals(2, (int) GeneratorUtil.generateNonNull(generator));
         assertUnavailable(generator);
     }
 
