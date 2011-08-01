@@ -163,6 +163,18 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected ProductWrapper<String> generateFromSource(int index, ProductWrapper<S> wrapper) {
+    	assertInitialized();
+    	if (index < 0 || index > sources.size())
+    		throw new ProgrammerError("illegal generator index: " + index + " in " + this);
+		Generator<? extends S> source = sources.get(index);
+    	ProductWrapper test = source.generate((ProductWrapper) wrapper);
+		if (test == null)
+			sources.remove(source);
+    	return test;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected ProductWrapper<S> generateFromAvailableSource(int i, ProductWrapper<S> wrapper) {
     	assertInitialized();
     	if (i < 0 || i > availableSources.size())
