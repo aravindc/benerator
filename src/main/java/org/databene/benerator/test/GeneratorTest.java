@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,6 @@ package org.databene.benerator.test;
 import org.junit.Before;
 import static junit.framework.Assert.*;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -40,8 +39,12 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.ArrayFormat;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.Converter;
+import org.databene.commons.IOUtil;
 import org.databene.commons.Resettable;
 import org.databene.commons.Validator;
 import org.databene.commons.converter.ToStringConverter;
@@ -61,6 +64,7 @@ public abstract class GeneratorTest {
     public final Logger logger = LoggerFactory.getLogger(getClass());
     
     public BeneratorContext context;
+    private Converter<Object, String> formatter = new ToStringConverter();
 
     @Before
     public void setUp() throws Exception {
@@ -75,16 +79,20 @@ public abstract class GeneratorTest {
     	return generator;
     }
     
-	public <T> T generateUnwrapped(Generator<T> generator) { // TODO replace usages with GeneratorUtil.generate() calls
-		ProductWrapper<T> tmp = generator.generate(new ProductWrapper<T>());
-		return (tmp != null ? tmp.unwrap() : null);
-	}
-
+    public void close(Generator<?> generator) {
+    	IOUtil.close(generator);
+    }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	public void printProducts(Generator<?> generator, int n) {
     	ProductWrapper wrapper = new ProductWrapper();
-    	for (int i = 0; i < n; i++)
-    		System.out.println(generator.generate(wrapper).unwrap());
+    	for (int i = 0; i < n; i++) {
+			ProductWrapper<?> tmp = generator.generate(wrapper);
+			if (tmp == null)
+				System.out.println("<>");
+			else 
+				System.out.println(formatter.convert(tmp.unwrap()));
+		}
     }
     
     public static <T> Map<T, AtomicInteger> countProducts(Generator<T> generator, int n) {
@@ -100,6 +108,12 @@ public abstract class GeneratorTest {
     	return counter.getCounts();
     }
     
+	protected static <T> void assertEqualArrays(T expected, T actual) {
+		ArrayFormat format = new ArrayFormat();
+		assertTrue("Expected " + format.format(expected) + ", found: " + format.format(actual), 
+			ArrayUtil.equals(expected, actual));
+	}
+
     protected static <T> Helper expectGeneratedSequence(Generator<T> generator, T ... products) {
         expectGeneratedSequenceOnce(generator, products);
         generator.reset();
@@ -308,9 +322,8 @@ public abstract class GeneratorTest {
             assertNotNull("Generator is unavailable after generating " + count + " of " + products.length + " products: " + generator, wrapper);
 			T generatedProduct = wrapper.unwrap();
             if (generatedProduct.getClass().isArray())
-            	assertTrue("Expected " + Arrays.toString((Object[]) expectedProduct) + ", found: " + Arrays.toString((Object[]) generatedProduct), 
-            			Arrays.equals((Object[]) expectedProduct, (Object[]) generatedProduct));
-            else
+				assertEqualArrays(expectedProduct, generatedProduct);
+			else
             	assertEquals(expectedProduct, generatedProduct);
 			count++;
         }
