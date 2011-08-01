@@ -34,7 +34,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> implements NonNullGenerator<String> {
+public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> implements NonNullGenerator<String> { // TODO NonNullCardinalGenerator?
 
 	protected Integer currentLength;
 	
@@ -49,7 +49,7 @@ public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> 
 	@Override
 	public synchronized void init(GeneratorContext context) {
 		super.init(context);
-		currentLength = generateCount();
+		currentLength = generateCardinal();
 	}
 
 	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
@@ -63,7 +63,7 @@ public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> 
 			return null;
 		ProductWrapper<E> part = generateFromSource(); // try to select a new character and keep the previous length 
 		if (part == null) {                            // if you are through with the characters, ...
-			currentLength = generateCount();           // ...choose the next length value...
+			currentLength = generateCardinal();           // ...choose the next length value...
 			if (currentLength == null)
 				return null;
 			getSource().reset();                            // ...and reset character selection
@@ -81,7 +81,7 @@ public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> 
 	@Override
 	public void reset() {
 		super.reset();
-		currentLength = generateCount();
+		currentLength = generateCardinal();
 	}
 
 	private String createString(E part, Integer length) {
