@@ -27,14 +27,13 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
-import org.databene.benerator.distribution.sequence.BitReverseNaturalNumberGenerator;
-import org.databene.benerator.util.RandomUtil;
-import org.databene.benerator.util.ThreadSafeNonNullGenerator;
+import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ArrayFormat;
-import org.databene.commons.CustomCounter;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Generates unique strings of fixed length.<br/>
@@ -42,36 +41,26 @@ import java.util.Set;
  * Created: 15.11.2007 14:07:49
  * @author Volker Bergmann
  */
-public class UniqueFixedLengthStringGenerator extends ThreadSafeNonNullGenerator<String> { // TODO compare and merge with DigitsGenerator?
+public class UniqueFixedLengthStringGenerator extends NonNullGeneratorWrapper<int[], String> {
 
     public static final Set<Character> DEFAULT_CHAR_SET
             = CollectionUtil.toSet('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-    public static final Set<Character> ORDERED_CHAR_SET
-            = CollectionUtil.toSortedSet('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
     private static final int DEFAULT_LENGTH = 4;
+    private static final boolean DEFAULT_SCRAMBLED = false;
 
-    private int radix;
-    private int length;
-    private CustomCounter counter;
     private char[] digitSymbols;
-    private int[] displayColumn;
-    private int[] seed;
-    private int cycleCounter;
-
+    private int length;
+    private boolean scrambled;
+    
     public UniqueFixedLengthStringGenerator() {
-        this(DEFAULT_LENGTH, DEFAULT_CHAR_SET);
+        this(DEFAULT_CHAR_SET, DEFAULT_LENGTH, DEFAULT_SCRAMBLED);
     }
 
-    public UniqueFixedLengthStringGenerator(int length, Set<Character> charSet) {
-        this(length, CollectionUtil.toCharArray(charSet));
-    }
-
-    public UniqueFixedLengthStringGenerator(int length, char ... chars) {
-        radix = chars.length;
-        digitSymbols = chars;
+    public UniqueFixedLengthStringGenerator(Set<Character> chars, int length, boolean scrambled) {
+    	super(null);
+        this.digitSymbols = CollectionUtil.toCharArray(new TreeSet<Character>(chars));
         this.length = length;
-        this.displayColumn = new int[length];
-        this.seed = new int[length];
+        this.scrambled = scrambled;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -83,47 +72,22 @@ public class UniqueFixedLengthStringGenerator extends ThreadSafeNonNullGenerator
     @Override
     public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
-    	BitReverseNaturalNumberGenerator gen = new BitReverseNaturalNumberGenerator(length - 1);
-        gen.init(context);
-        for (int i = 0; i < length; i++) {
-            this.displayColumn[i] = gen.generate().intValue();
-            this.seed[i] = RandomUtil.randomInt(0, length - 1);
-        }
-        resetMembers();
+    	if (scrambled)
+    		setSource(new UniqueIntsGenerator(digitSymbols.length, length));
+    	else
+    		setSource(new IncrementalIntsGenerator(digitSymbols.length, length));
         super.init(context);
     }
     
-	@Override
 	public String generate() {
-        if (counter == null)
-            return null;
-        int[] digits = counter.getDigits();
-        char[] tmp = new char[length];
-        for (int i = 0; i < digits.length; i++)
-            tmp[displayColumn[i]] = digitSymbols[(seed[i] + digits[i] + cycleCounter) % radix];
-        String result = new String(tmp);
-        if (cycleCounter < radix - 1 && length > 0) {
-            cycleCounter++;
-        } else {
-            counter.increment();
-            cycleCounter = 0;
-            if (counter.hasOverrun() || radix == 1 || digits[length - 1] > 0) {
-                // counter + cycle have run through all combinations
-                counter = null;
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public void reset() {
-        super.reset();
-        resetMembers();
-    }
-
-	private void resetMembers() {
-	    this.counter = new CustomCounter(radix, length);
-        this.cycleCounter = 0;
+		ProductWrapper<int[]> wrapper = generateFromSource();
+		if (wrapper == null)
+			return null;
+		int[] ordinals = wrapper.unwrap();
+		char[] buffer = new char[length];
+		for (int i = 0; i < length; i++)
+			buffer[i] = digitSymbols[ordinals[i]];
+        return new String(buffer);
     }
 
     @Override
