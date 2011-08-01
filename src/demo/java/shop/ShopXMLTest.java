@@ -33,6 +33,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
 import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.validator.StringLengthValidator;
@@ -106,7 +107,7 @@ public class ShopXMLTest extends GeneratorTest {
             descriptor, false, Uniqueness.NONE, provider.getContext());
         generator.init(new BeneratorContext());
         for (int i = 0; i < 10; i++) {
-            T object = generateUnwrapped(generator);
+            T object = GeneratorUtil.generateNonNull(generator);
             logger.debug(object.toString());
             assertTrue("Invalid object: " + object, validator.valid(object));
         }
@@ -121,7 +122,7 @@ public class ShopXMLTest extends GeneratorTest {
         		"instance", descriptor, Uniqueness.NONE, provider.getContext());
         generator.init(new BeneratorContext());
         for (int i = 0; i < 10; i++) {
-            Entity entity = generateUnwrapped(generator);
+            Entity entity = GeneratorUtil.generateNonNull(generator);
             if (entity != null) {
 	            logger.debug(entity.toString());
 	            assertTrue("Invalid entity: " + entity, validator.valid(entity));
