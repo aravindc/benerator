@@ -38,7 +38,7 @@ import org.databene.benerator.primitive.LuhnGenerator;
 public class CreditCardNumberGenerator extends LuhnGenerator {
 	
 	public CreditCardNumberGenerator() {
-	    super("4", 16, 16); // VISA numbers start with '4' and can have 16 digits
+	    super("4", 16); // VISA numbers start with '4' and can have 16 digits
     }
 
 }

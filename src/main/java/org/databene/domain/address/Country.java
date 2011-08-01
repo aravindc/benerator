@@ -27,7 +27,7 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.primitive.DigitsGenerator;
+import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.benerator.primitive.RegexStringGenerator;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.Assert;
@@ -63,7 +63,7 @@ public class Country {
     private String phoneCode;
 	private boolean mobilePhoneCityRelated;
 	private RegexStringGenerator mobilePrefixGenerator;
-    private DigitsGenerator localNumberGenerator;
+    private RandomVarLengthStringGenerator localNumberGenerator;
     private Locale countryLocale;
     private Locale defaultLanguage;
     private Map<String, State> states;
@@ -79,7 +79,7 @@ public class Country {
         this.mobilePhoneCityRelated = "BR".equals(isoCode.toUpperCase()); // TODO v1.0 make configuration generic
         this.mobilePrefixGenerator = new RegexStringGenerator(mobilCodePattern);
         this.mobilePrefixGenerator.init(null);
-        this.localNumberGenerator = new DigitsGenerator(7);
+        this.localNumberGenerator = new RandomVarLengthStringGenerator("\\d", 7);
         this.localNumberGenerator.init(null);
         this.name = (name != null ? name : countryLocale.getDisplayCountry(Locale.US));
         importStates();
@@ -181,14 +181,16 @@ public class Country {
     }
 
 	public PhoneNumber generateMobileNumber(City city) {
+		String localNumber = localNumberGenerator.generate();
+		String mobilePrefix = mobilePrefixGenerator.generate();
 		if (mobilePhoneCityRelated)
 			return new PhoneNumber(phoneCode, 
 					city.getAreaCode(), 
-					localNumberGenerator.generate(mobilePrefixGenerator.generate()));
+					mobilePrefix + localNumber.substring(mobilePrefix.length()));
 		else
 			return new PhoneNumber(phoneCode, 
-					mobilePrefixGenerator.generate(), 
-					localNumberGenerator.generate());
+					mobilePrefix, 
+					localNumber);
     }
 
     private CityGenerator getCityGenerator() {

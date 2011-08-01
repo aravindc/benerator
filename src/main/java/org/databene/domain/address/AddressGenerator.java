@@ -28,7 +28,7 @@ package org.databene.domain.address;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.NonNullGenerator;
-import org.databene.benerator.primitive.DigitsGenerator;
+import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.slf4j.Logger;
@@ -49,6 +49,7 @@ public class AddressGenerator extends CompositeGenerator<Address> implements Non
     private CountryGenerator countryGenerator;
     private CityGenerator cityGenerator;
     private StreetNameGenerator streetNameGenerator;
+    RandomVarLengthStringGenerator localPhoneNumberGenerator;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -125,11 +126,13 @@ public class AddressGenerator extends CompositeGenerator<Address> implements Non
         cityGenerator.init(context);
         streetNameGenerator = registerComponent(new StreetNameGenerator(dataset));
         streetNameGenerator.init(context);
+        localPhoneNumberGenerator = new RandomVarLengthStringGenerator("\\d", 10);
+        localPhoneNumberGenerator.init(context);
     }
 	
     private PhoneNumber generatePhoneNumber(City city) {
         int localPhoneNumberLength = 10 - city.getAreaCode().length();
-        String localCode = DigitsGenerator.generate(localPhoneNumberLength);
+		String localCode = localPhoneNumberGenerator.generateWithLength(localPhoneNumberLength);
         return new PhoneNumber(city.getCountry().getPhoneCode(), city.getAreaCode(), localCode);
     }
 

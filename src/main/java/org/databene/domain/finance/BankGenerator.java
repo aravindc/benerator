@@ -28,7 +28,7 @@ package org.databene.domain.finance;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.NonNullGenerator;
-import org.databene.benerator.primitive.DigitsGenerator;
+import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.benerator.primitive.RegexStringGenerator;
 import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
@@ -41,17 +41,17 @@ import org.databene.benerator.wrapper.ProductWrapper;
  */
 public class BankGenerator extends CompositeGenerator<Bank> implements NonNullGenerator<Bank> {
 	
-	private DigitsGenerator bankCodeGenerator;
+	private RandomVarLengthStringGenerator bankCodeGenerator;
 	private RegexStringGenerator nameGenerator;
 	private RegexStringGenerator bicGenerator;
-	private DigitsGenerator binGenerator;
+	private RandomVarLengthStringGenerator binGenerator;
 
 	public BankGenerator() {
 		super(Bank.class);
-		this.bankCodeGenerator = registerComponent(new DigitsGenerator(8));
+		this.bankCodeGenerator = registerComponent(new RandomVarLengthStringGenerator("\\d", 8));
 		this.nameGenerator = registerComponent(new RegexStringGenerator("(Deutsche Bank|Dresdner Bank|Commerzbank|Spardabank|HVB)"));
 		this.bicGenerator = registerComponent(new RegexStringGenerator("[A-Z]{4}DE[A-Z0-9]{2}"));
-		this.binGenerator = registerComponent(new DigitsGenerator(4));
+		this.binGenerator = registerComponent(new RandomVarLengthStringGenerator("\\d", 4));
 	}
 	
     @Override

@@ -28,7 +28,7 @@ package org.databene.domain.address;
 
 import java.util.*;
 
-import org.databene.benerator.primitive.DigitsGenerator;
+import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
@@ -53,7 +53,8 @@ public class City {
     private Locale language;
     private int population;
     
-    private static DigitsGenerator localNumberGenerator = new DigitsGenerator(7, 8, 1);
+    private static RandomVarLengthStringGenerator localNumberGenerator = 
+    	new RandomVarLengthStringGenerator("\\d", 7, 8, 1);
 
     public City(State state, String name, String addition, String[] postalCodes, String areaCode) {
         if (areaCode == null)

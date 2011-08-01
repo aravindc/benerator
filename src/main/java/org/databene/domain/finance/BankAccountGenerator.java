@@ -28,7 +28,7 @@ package org.databene.domain.finance;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.NonNullGenerator;
-import org.databene.benerator.primitive.DigitsGenerator;
+import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.LocaleUtil;
@@ -45,14 +45,14 @@ public class BankAccountGenerator extends CompositeGenerator<BankAccount> implem
 	
 	private String countryCode;
 	private BankGenerator bankGenerator;
-	private DigitsGenerator accountNumberGenerator;
+	private RandomVarLengthStringGenerator accountNumberGenerator;
 
 	public BankAccountGenerator() {
 		super(BankAccount.class);
 		LocaleUtil.getFallbackLocale();
 		this.countryCode = Country.getDefault().getIsoCode();
 		this.bankGenerator = registerComponent(new BankGenerator());
-		this.accountNumberGenerator = registerComponent(new DigitsGenerator(8, 10, 1));
+		this.accountNumberGenerator = registerComponent(new RandomVarLengthStringGenerator("\\d", 10));
 	}
 	
     @Override
