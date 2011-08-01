@@ -84,7 +84,7 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
 
 	public ProductWrapper<C> generate(ProductWrapper<C> wrapper) {
         assertInitialized();
-        Integer size = generateCount();
+        Integer size = generateCardinal();
         if (size == null)
         	return null;
         C collection = BeanUtil.newInstance(collectionType);

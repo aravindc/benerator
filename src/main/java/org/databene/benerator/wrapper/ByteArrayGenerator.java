@@ -53,7 +53,7 @@ public class ByteArrayGenerator extends SingleSourceArrayGenerator<Byte, byte[]>
 
     @Override
     public ProductWrapper<byte[]> generate(ProductWrapper<byte[]> wrapper) {
-        Integer length = generateCount();
+        Integer length = generateCardinal();
         if (length == null)
         	return null;
         byte[] array = new byte[length.intValue()];
