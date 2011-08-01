@@ -30,7 +30,7 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.BooleanGenerator;
-import org.databene.benerator.primitive.DistributedLengthStringGenerator;
+import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.benerator.primitive.UniqueStringGenerator;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
@@ -122,16 +122,12 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 
 	@Override
 	public NonNullGenerator<String> createStringGenerator(Set<Character> chars,
-			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
-        if (unique) {
-            return new UniqueStringGenerator(minLength, maxLength, chars);
-        } else {
-    		Generator<Character> charGenerator = createCharacterGenerator(chars);
-    		if (lengthDistribution == null)
-    			lengthDistribution = SequenceManager.RANDOM_SEQUENCE;
-    		NonNullGenerator<Integer> lengthGenerator = lengthDistribution.createGenerator(Integer.class, minLength, maxLength, 1, false);
-    		return new DistributedLengthStringGenerator(charGenerator, lengthGenerator);
-        }
+			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, 
+			boolean unique) {
+        if (unique)
+            return new UniqueStringGenerator(chars, minLength, maxLength);
+        else
+    		return new RandomVarLengthStringGenerator(chars, minLength, maxLength, lengthGranularity, lengthDistribution);
 	}
 
 	@Override

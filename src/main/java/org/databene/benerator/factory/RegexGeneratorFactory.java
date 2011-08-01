@@ -157,7 +157,7 @@ public class RegexGeneratorFactory {
     	DefaultsProvider defaultsProvider = factory.getDefaultsProvider();
 		int minReps = max(minLength, minCount, defaultsProvider.defaultMinLength()); 
 		int maxReps = min(maxLength, maxCount, defaultsProvider.defaultMaxLength()); 
-		return factory.createStringGenerator(CollectionUtil.toSet(c), minReps, maxReps, null, unique);
+		return factory.createStringGenerator(CollectionUtil.toSet(c), minReps, maxReps, 1, null, unique);
     }
     
 	private static NonNullGenerator<String> createCharSetGenerator(
@@ -166,7 +166,7 @@ public class RegexGeneratorFactory {
 		DefaultsProvider defaultsProvider = factory.getDefaultsProvider();
 		int minReps = max(minLength, minCount, defaultsProvider.defaultMinLength()); 
 		int maxReps = min(maxLength, maxCount, defaultsProvider.defaultMaxLength());
-		return factory.createStringGenerator(charSet.getSet(), minReps, maxReps, null, unique);
+		return factory.createStringGenerator(charSet.getSet(), minReps, maxReps, 1, null, unique);
     }
     
     private static NonNullGenerator<String> createFromCustomCharClass(CustomCharClass ccc, int minCount, Integer maxCount, 

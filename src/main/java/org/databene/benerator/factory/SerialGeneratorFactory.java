@@ -118,7 +118,8 @@ public class SerialGeneratorFactory extends GeneratorFactory {
     
 	@Override
 	public NonNullGenerator<String> createStringGenerator(Set<Character> chars,
-			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
+			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, 
+			boolean unique) {
 		Generator<Character> charGenerator = createCharacterGenerator(chars);
 		Set<Integer> counts = defaultCounts(minLength, maxLength);
 		NonNullGenerator<Integer> lengthGenerator = GeneratorFactoryUtil.asNonNullGenerator(

@@ -209,7 +209,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
     }
 
 	public Generator<String> createStringGenerator(String pattern,
-			Integer minLength, Integer maxLength, Distribution lengthDistribution,
+			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution,
 			Locale locale, boolean unique) {
         if (maxLength == null)
             maxLength = defaultsProvider.defaultMaxLength();
@@ -223,21 +223,20 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
         }
         if (pattern == null)
             pattern = "[A-Z]{" + minLength + ',' + maxLength + '}';
-        Object regex;
-		regex = new RegexParser().parseRegex(pattern);
         if (lengthDistribution != null) {
+            Object regex = new RegexParser().parseRegex(pattern);
         	if (!(regex instanceof Factor))
         		throw new ConfigurationError("Illegal regular expression in the context of a length distribution: " + pattern);
         	Factor factor = (Factor) regex;
         	Object atom = factor.getAtom();
         	if (!(atom instanceof CustomCharClass))
         		throw new ConfigurationError("Illegal regex atom in the context of a length distribution: " + atom);
-        	Set<Character> chars = ((CustomCharClass) atom).getCharSet().getSet();
+        	Set<Character> chars = ((CustomCharClass) atom).getCharSet().getSet(); // TODO chars resolution already is implemented in CharacterGenerator
         	Quantifier quantifier = factor.getQuantifier();
         	minLength = Math.max(minLength, quantifier.getMin());
         	if (quantifier.getMax() != null)
         		maxLength = Math.min(maxLength, quantifier.getMax());
-			return createStringGenerator(chars, minLength, maxLength, lengthDistribution, unique);
+			return createStringGenerator(chars, minLength, maxLength, lengthGranularity, lengthDistribution, unique);
         }
         if (locale == null)
             locale = GeneratorFactoryUtil.defaultLocale();
@@ -245,7 +244,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
 	}
     
 	public abstract NonNullGenerator<String> createStringGenerator(Set<Character> chars,
-			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique);
+			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, boolean unique);
 
 	public abstract NonNullGenerator<String> createCompositeStringGenerator(
 			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, boolean unique);

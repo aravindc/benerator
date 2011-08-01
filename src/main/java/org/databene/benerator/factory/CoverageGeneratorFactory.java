@@ -71,10 +71,10 @@ public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // T
 	@SuppressWarnings("unchecked")
 	@Override
 	public NonNullGenerator<String> createStringGenerator(Set<Character> chars,
-			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
+			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, boolean unique) {
     	return GeneratorFactoryUtil.asNonNullGenerator(new GeneratorChain<String>(String.class, true, 
-    		super.createStringGenerator(chars, minLength, maxLength, lengthDistribution, unique),
-    		serialFactory.createStringGenerator(chars, minLength, maxLength, lengthDistribution, unique)
+    		super.createStringGenerator(chars, minLength, maxLength, lengthGranularity, lengthDistribution, unique),
+    		serialFactory.createStringGenerator(chars, minLength, maxLength, lengthGranularity, lengthDistribution, unique)
 		));
 	}
 	
