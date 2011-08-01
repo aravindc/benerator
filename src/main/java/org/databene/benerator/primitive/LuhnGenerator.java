@@ -23,6 +23,7 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.util.LuhnUtil;
 import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 import org.databene.commons.StringUtil;
@@ -35,23 +36,27 @@ import org.databene.commons.StringUtil;
  */
 public class LuhnGenerator extends NonNullGeneratorProxy<String> {
 	
-	String prefix;
-	int minLength;
-	int maxLength;
+	protected String prefix;
+	protected int minLength;
+	protected int maxLength;
+	protected int lengthGranularity;
+	protected Distribution lengthDistribution;
 	
 	public LuhnGenerator() {
-	    this("", 2, 10);
+	    this("", 16);
     }
 	
 	public LuhnGenerator(String prefix, int length) {
-	    this(prefix, length, length);
+	    this(prefix, length, length, 1, null);
     }
 
-	public LuhnGenerator(String prefix, int minLength, int maxLength) {
+	public LuhnGenerator(String prefix, int minLength, int maxLength, int lengthGranularity, Distribution lengthDistribution) {
 	    super();
 	    this.prefix = prefix;
 	    this.minLength = minLength;
 	    this.maxLength = maxLength;
+	    this.lengthGranularity = 1;
+	    this.lengthDistribution = lengthDistribution;
     }
 
 	public void setPrefix(String prefix) {
@@ -68,13 +73,15 @@ public class LuhnGenerator extends NonNullGeneratorProxy<String> {
 
 	@Override
 	public synchronized void init(GeneratorContext context) {
-		super.setSource(new DigitsGenerator(minLength, maxLength, prefix));
+		super.setSource(new RandomVarLengthStringGenerator("\\d", minLength, maxLength, lengthGranularity, lengthDistribution));
 	    super.init(context);
 	}
 	
 	@Override
     public String generate() throws IllegalGeneratorStateException {
 		String number = super.generate();
+		if (!StringUtil.isEmpty(prefix))
+			number = prefix + number.substring(prefix.length());
 		char checkDigit = LuhnUtil.requiredCheckDigit(number);
 		if (StringUtil.lastChar(number) == checkDigit)
 			return number;
