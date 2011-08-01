@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
 /**
@@ -40,49 +41,59 @@ public class UniqueFixedLengthStringGeneratorTest extends GeneratorClassTest {
     public UniqueFixedLengthStringGeneratorTest() {
         super(UniqueFixedLengthStringGenerator.class);
     }
-
+    
     @Test
     public void testZeroLength() {
-        expectGeneratedSequence(createAndInit(0), "").withCeasedAvailability();
+        expectGeneratedSequence(createAndInit(0, true), "").withCeasedAvailability();
     }
 
     @Test
     public void testConstantDigit() {
-        expectGeneratedSequence(createAndInit(1, '0'), "0").withCeasedAvailability();
+        expectGeneratedSequence(createAndInit(1, true, '0'), "0").withCeasedAvailability();
+    }
+
+    @Test
+    public void testTwoBinaryDigitsOrdered() {
+    	expectGeneratedSequence(createAndInit(2, false, '0', '1'), "00", "01", "10", "11").withCeasedAvailability();
+    }
+
+    @Test
+    public void testTwoBinaryDigitsScrambled() {
+    	expectGeneratedSequence(createAndInit(2, true, '0', '1'), "10", "01", "11", "00").withCeasedAvailability();
     }
 
     @Test
     public void testOneBinaryDigit() {
-    	expectUniquelyGeneratedSet(createAndInit(1, '0', '1'), "0", "1").withCeasedAvailability();
-        expectUniqueProducts(createAndInit(1, '0', '1'), 2).withCeasedAvailability();
+    	expectUniquelyGeneratedSet(createAndInit(1, true, '0', '1'), "0", "1").withCeasedAvailability();
+        expectUniqueProducts(createAndInit(1, true, '0', '1'), 2).withCeasedAvailability();
     }
 
     @Test
     public void testTwoBinaryDigits() {
-    	expectUniquelyGeneratedSet(createAndInit(2, '0', '1'), "00", "01", "10", "11").withCeasedAvailability();
-        expectUniqueProducts(createAndInit(2, '0', '1'), 4).withCeasedAvailability();
+    	expectUniquelyGeneratedSet(createAndInit(2, true, '0', '1'), "00", "01", "10", "11").withCeasedAvailability();
+        expectUniqueProducts(createAndInit(2, true, '0', '1'), 4).withCeasedAvailability();
     }
 
     @Test
     public void testTwoAlphaDigits() {
-    	expectUniquelyGeneratedSet(createAndInit(2, 'A', 'O'), "AA", "AO", "OA", "OO").withCeasedAvailability();
-        expectUniqueProducts(createAndInit(2, 'A', 'O'), 4).withCeasedAvailability();
-        expectUniqueProducts(createAndInit(2, 'A', 'B', 'C'), 9).withCeasedAvailability();
+    	expectUniquelyGeneratedSet(createAndInit(2, true, 'A', 'O'), "AA", "AO", "OA", "OO").withCeasedAvailability();
+        expectUniqueProducts(createAndInit(2, true, 'A', 'O'), 4).withCeasedAvailability();
+        expectUniqueProducts(createAndInit(2, true, 'A', 'B', 'C'), 9).withCeasedAvailability();
     }
 
     @Test
     public void testLongString() {
-        expectUniqueProducts(createAndInit(4, 'A', 'E', 'I', 'O', 'U'), 625).withCeasedAvailability();
+        expectUniqueProducts(createAndInit(4, true, 'A', 'E', 'I', 'O', 'U'), 625).withCeasedAvailability();
     }
 
     @Test
     public void testMany() {
-        UniqueFixedLengthStringGenerator generator = createAndInit(7, '0', '9', '2', '6', '4', '5', '3', '7', '8', '1');
+        UniqueFixedLengthStringGenerator generator = createAndInit(7, true, '0', '9', '2', '6', '4', '5', '3', '7', '8', '1');
         expectUniqueProducts(generator, 1000).withContinuedAvailability();
     }
 
-    private UniqueFixedLengthStringGenerator createAndInit(int length, char... chars) {
-    	return initialize(new UniqueFixedLengthStringGenerator(length, chars));
+    private UniqueFixedLengthStringGenerator createAndInit(int length, boolean scrambled, Character... chars) {
+    	return initialize(new UniqueFixedLengthStringGenerator(CollectionUtil.toSet(chars), length, scrambled));
     }
     
 }
