@@ -137,7 +137,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory { // TODO rename to
 			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, 
 			Uniqueness uniqueness) {
         if (uniqueness == Uniqueness.ORDERED)
-            return new IncrementalStringGenerator(chars, minLength, maxLength);
+            return new IncrementalStringGenerator(chars, minLength, maxLength, lengthGranularity);
         else if (uniqueness.isUnique())
             return new UniqueScrambledStringGenerator(chars, minLength, maxLength);
         else
