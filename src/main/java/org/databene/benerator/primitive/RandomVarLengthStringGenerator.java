@@ -130,4 +130,11 @@ public class RandomVarLengthStringGenerator extends LengthGenerator<Character, S
 	    return builder.toString();
     }
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[chars=" + chars + ", minLength=" + getMinLength() + ", " +
+				"maxLength=" + getMaxLength() + ", lengthGranularity=" + getLengthGranularity() + ", " +
+				"lengthDistribution=" + getLengthDistribution() + "]";
+	}
+	
 }
