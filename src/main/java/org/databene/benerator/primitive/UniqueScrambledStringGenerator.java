@@ -42,7 +42,7 @@ import java.util.Set;
  * Created: 16.11.2007 11:56:15
  * @author Volker Bergmann
  */
-public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String> implements VarLengthStringGenerator {
+public class UniqueScrambledStringGenerator extends MultiGeneratorWrapper<String, String> implements VarLengthStringGenerator {
 
     private int minLength;
     private int maxLength;
@@ -50,11 +50,11 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public UniqueStringGenerator() {
+    public UniqueScrambledStringGenerator() {
         this(new CharSet('A', 'Z').getSet(), 4, 8);
     }
 
-    public UniqueStringGenerator(Set<Character> chars, int minLength, int maxLength) {
+    public UniqueScrambledStringGenerator(Set<Character> chars, int minLength, int maxLength) {
     	super(String.class);
         this.minLength = minLength;
         this.maxLength = maxLength;
@@ -87,7 +87,7 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
     	// create sub generators
         List<Generator<? extends String>> subGens = new ArrayList<Generator<? extends String>>(maxLength - minLength + 1);
         for (int i = minLength; i <= maxLength; i++)
-            subGens.add(new UniqueFixedLengthStringGenerator(chars, i, true));
+            subGens.add(new UniqueFixedLengthStringGenerator(chars, i, false));
         setSources(subGens);
         super.init(context);
     }
