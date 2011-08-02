@@ -133,10 +133,8 @@ public class CharacterGenerator extends NonNullGeneratorProxy<Character> {
     public void init(GeneratorContext context) {
     	assertNotInitialized();
         try {
-            if (pattern != null) {
-                Object regex = new RegexParser(locale).parseSingleChar(pattern);
-                values = RegexParser.toSet(regex);
-            }
+            if (pattern != null)
+                values = RegexParser.charsOfPattern(pattern, locale);
             setSource(GeneratorFactoryUtil.asNonNullGenerator(new SampleGenerator<Character>(Character.class, values)));
             super.init(context);
         } catch (SyntaxError e) {
