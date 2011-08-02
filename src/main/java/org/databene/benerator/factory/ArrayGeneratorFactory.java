@@ -123,7 +123,7 @@ public class ArrayGeneratorFactory {
     	// TODO ...possibly with a NullableInstanceGeneratorFactory which takes over most of the ComponentBuilderFactory's functionality
     	for (int i = 0; i < generators.length; i++)
     		generators[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
-    	return context.getGeneratorFactory().createCompositeArrayGenerator(Object.class, generators, uniqueness.isUnique());
+    	return context.getGeneratorFactory().createCompositeArrayGenerator(Object.class, generators, uniqueness);
     }
 
     private static Generator<Object[]> createMutatingArrayGenerator(

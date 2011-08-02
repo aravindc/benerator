@@ -39,7 +39,7 @@ import org.junit.Test;
 public class UniqueStringGeneratorTest extends GeneratorClassTest {
 
     public UniqueStringGeneratorTest() {
-        super(UniqueStringGenerator.class);
+        super(UniqueScrambledStringGenerator.class);
     }
 
     @Test
@@ -49,8 +49,8 @@ public class UniqueStringGeneratorTest extends GeneratorClassTest {
         expectUniqueProducts(create(3, 4, '0', '1', '3'), 27 + 81).withCeasedAvailability();
     }
 
-	private UniqueStringGenerator create(int minLength, int maxLength, char... chars) {
-	    UniqueStringGenerator generator = new UniqueStringGenerator(
+	private UniqueScrambledStringGenerator create(int minLength, int maxLength, char... chars) {
+	    UniqueScrambledStringGenerator generator = new UniqueScrambledStringGenerator(
 	    		CollectionUtil.toCharSet(chars), minLength, maxLength);
 	    generator.init(context);
 		return generator;

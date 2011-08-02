@@ -67,6 +67,9 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
 	}
 	
 	
+	public abstract<T> Generator<T> createAlternativeGenerator(Class<T> targetType, Generator<T>[] sources, 
+			Uniqueness uniqueness);
+
     // boolean generator -----------------------------------------------------------------------------------------------
 
 	/**
@@ -204,13 +207,13 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @param characters the set of characters to choose from
      * @return a generator of the desired characteristics
      */
-    public Generator<Character> createCharacterGenerator(Set<Character> characters) {
+    public NonNullGenerator<Character> createCharacterGenerator(Set<Character> characters) {
         return new CharacterGenerator(defaultSubSet(characters));
     }
 
 	public Generator<String> createStringGenerator(String pattern,
-			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution,
-			Locale locale, boolean unique) {
+			Locale locale, Integer minLength, Integer maxLength, int lengthGranularity,
+			Distribution lengthDistribution, Uniqueness uniqueness) {
         if (maxLength == null)
             maxLength = defaultsProvider.defaultMaxLength();
         if (minLength == null) {
@@ -236,18 +239,20 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
         	minLength = Math.max(minLength, quantifier.getMin());
         	if (quantifier.getMax() != null)
         		maxLength = Math.min(maxLength, quantifier.getMax());
-			return createStringGenerator(chars, minLength, maxLength, lengthGranularity, lengthDistribution, unique);
+			return createStringGenerator(
+					chars, minLength, maxLength, lengthGranularity, lengthDistribution, uniqueness);
         }
         if (locale == null)
             locale = GeneratorFactoryUtil.defaultLocale();
-		return createRegexStringGenerator(pattern, minLength, maxLength, unique); 
+		return createRegexStringGenerator(pattern, minLength, maxLength, uniqueness); 
 	}
     
 	public abstract NonNullGenerator<String> createStringGenerator(Set<Character> chars,
-			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, boolean unique);
+			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, 
+			Uniqueness uniqueness);
 
 	public abstract NonNullGenerator<String> createCompositeStringGenerator(
-			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, boolean unique);
+			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, Uniqueness uniqueness);
 
 	/**
      * Creates a generator that produces Strings which match a regular expression in a locale
@@ -259,9 +264,8 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @throws ConfigurationError 
      */
     public NonNullGenerator<String> createRegexStringGenerator(String pattern, int minLength, Integer maxLength, 
-    		boolean unique) 
-            	throws ConfigurationError {
-    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, minLength, maxLength, unique, this);
+    		Uniqueness uniqueness) throws ConfigurationError {
+    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, minLength, maxLength, uniqueness, this);
         return GeneratorFactoryUtil.asNonNullGenerator(new ValidatingGeneratorProxy<String>(
                 generator, new StringLengthValidator(minLength, maxLength)));
     }
@@ -273,7 +277,8 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @param sources the source generators
      * @return a generator of the desired characteristics
      */
-	public abstract <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique);
+	public abstract <T> Generator<T[]> createCompositeArrayGenerator(
+			Class<T> componentType, Generator<T>[] sources, Uniqueness uniqueness);
 
     // wrappers --------------------------------------------------------------------------------------------------------
 

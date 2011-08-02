@@ -30,8 +30,9 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.BooleanGenerator;
+import org.databene.benerator.primitive.IncrementalStringGenerator;
 import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
-import org.databene.benerator.primitive.UniqueStringGenerator;
+import org.databene.benerator.primitive.UniqueScrambledStringGenerator;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.OneShotGenerator;
@@ -39,6 +40,7 @@ import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
+import org.databene.benerator.wrapper.GeneratorChain;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.benerator.wrapper.SimpleMultiSourceArrayGenerator;
 import org.databene.benerator.wrapper.UniqueMultiSourceArrayGenerator;
@@ -56,15 +58,25 @@ import org.databene.model.data.Uniqueness;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class VolumeGeneratorFactory extends GeneratorFactory {
+public class VolumeGeneratorFactory extends GeneratorFactory { // TODO rename to StochasticGeneratorFactory
 
 	public VolumeGeneratorFactory() {
 		super(new GentleDefaultsProvider());
 	}
 
 	@Override
-	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique) {
-        if (unique)
+	public <T> Generator<T> createAlternativeGenerator(Class<T> targetType, Generator<T>[] sources, 
+			Uniqueness uniqueness) {
+		if (uniqueness == Uniqueness.ORDERED)
+			return new GeneratorChain<T>(targetType, uniqueness.isUnique(), sources);
+		else
+			return new AlternativeGenerator<T>(targetType, sources);
+	}
+
+	@Override
+	public <T> Generator<T[]> createCompositeArrayGenerator(
+			Class<T> componentType, Generator<T>[] sources, Uniqueness uniqueness) {
+        if (uniqueness.isUnique())
         	return new UniqueMultiSourceArrayGenerator<T>(componentType, sources);
         else
         	return new SimpleMultiSourceArrayGenerator<T>(componentType, sources);
@@ -123,9 +135,11 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	@Override
 	public NonNullGenerator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, 
-			boolean unique) {
-        if (unique)
-            return new UniqueStringGenerator(chars, minLength, maxLength);
+			Uniqueness uniqueness) {
+        if (uniqueness == Uniqueness.ORDERED)
+            return new IncrementalStringGenerator(chars, minLength, maxLength);
+        else if (uniqueness.isUnique())
+            return new UniqueScrambledStringGenerator(chars, minLength, maxLength);
         else
     		return new RandomVarLengthStringGenerator(chars, minLength, maxLength, lengthGranularity, lengthDistribution);
 	}
@@ -194,13 +208,13 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public NonNullGenerator<String> createCompositeStringGenerator(
-			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, boolean unique) {
+			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, Uniqueness uniqueness) {
 		AlternativeGenerator<String> result = new AlternativeGenerator<String>(String.class);
 		for (int partCount = minParts; partCount <= maxParts; partCount++) {
 			Generator<String>[] sources = new Generator[partCount];
 			for (int i = 0; i < partCount; i++)
 				sources[i] = GeneratorFactoryUtil.stringGenerator(partGeneratorProvider.create());
-			result.addSource(new CompositeStringGenerator(unique, sources));
+			result.addSource(new CompositeStringGenerator(uniqueness.isUnique(), sources));
 		}
 		return GeneratorFactoryUtil.asNonNullGenerator(result);
 	}

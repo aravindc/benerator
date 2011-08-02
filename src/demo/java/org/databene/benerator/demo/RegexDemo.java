@@ -5,6 +5,7 @@ import static org.databene.benerator.util.GeneratorUtil.*;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.model.data.Uniqueness;
 
 /**
  * Demonstrates the use of the regular expression generator
@@ -22,13 +23,13 @@ public class RegexDemo {
     	BeneratorContext context = new BeneratorContext();
     	GeneratorFactory generatorFactory = context.getGeneratorFactory();
     	
-        Generator<String> phoneGenerator = generatorFactory.createRegexStringGenerator(PHONE_PATTERN, 1, 16, false);
+        Generator<String> phoneGenerator = generatorFactory.createRegexStringGenerator(PHONE_PATTERN, 1, 16, Uniqueness.NONE);
         phoneGenerator.init(context);
         for (int i = 0; i < 5; i++)
             System.out.println(generateNonNull(phoneGenerator));
         close(phoneGenerator);
         
-        Generator<String> emailGenerator = generatorFactory.createRegexStringGenerator(EMAIL_PATTERN, 1, 100, false);
+        Generator<String> emailGenerator = generatorFactory.createRegexStringGenerator(EMAIL_PATTERN, 1, 100, Uniqueness.NONE);
         emailGenerator.init(context);
         for (int i = 0; i < 5; i++)
             System.out.println(generateNonNull(emailGenerator));

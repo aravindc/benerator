@@ -6,6 +6,7 @@ import java.util.Locale;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.LocaleUtil;
+import org.databene.model.data.Uniqueness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.AfterClass;
@@ -51,7 +52,7 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
     public void testConstant() throws Exception {
         assertEquals("a", create("a").generate());
         assertEquals("ab", create("ab").generate());
-        assertEquals("abc@xyz.com", create("abc@xyz\\.com", 16, false).generate());
+        assertEquals("abc@xyz.com", create("abc@xyz\\.com", 16, Uniqueness.NONE).generate());
     }
 
     @Test
@@ -123,21 +124,23 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
 
     @Test
     public void testUniqueCharSets() throws Exception {
-        expectUniquelyGeneratedSet(create("[a]{1,2}", 30, true),
+        expectUniquelyGeneratedSet(create("[a]{1,2}", 30, Uniqueness.SIMPLE),
                 "a", "aa").withCeasedAvailability();
-        expectUniquelyGeneratedSet(create("x[ab]{3}x", 30, true),
+        expectUniquelyGeneratedSet(create("[ab]{3}", 30, Uniqueness.SIMPLE),
+                "aaa", "aab", "aba", "abb", "baa", "bab", "bba", "bbb").withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("x[ab]{3}x", 30, Uniqueness.SIMPLE),
                 "xaaax", "xaabx", "xabax", "xabbx", "xbaax", "xbabx", "xbbax", "xbbbx").withCeasedAvailability();
-        expectUniqueProducts(create("[01]{2}/[01]{2}", 30, true), 16).withCeasedAvailability();
-        expectUniquelyGeneratedSet(create("[01]{2,3}", 30, true),
+        expectUniqueProducts(create("[01]{2}/[01]{2}", 30, Uniqueness.SIMPLE), 16).withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("[01]{2,3}", 30, Uniqueness.SIMPLE),
                 "00", "01", "10", "11", "000", "001", "010", "011", "100", "101", "110", "111").withCeasedAvailability();
-        expectUniqueProducts(create("0[0-9]{2,4}/[1-9][0-9]5", 30, true), 5).withContinuedAvailability();
-        expectUniqueProducts(create("[0-9]{5}", 0, true), 1000).withContinuedAvailability();
+        expectUniqueProducts(create("0[0-9]{2,4}/[1-9][0-9]5", 30, Uniqueness.SIMPLE), 5).withContinuedAvailability();
+        expectUniqueProducts(create("[0-9]{5}", 0, Uniqueness.SIMPLE), 1000).withContinuedAvailability();
     }
 
     @Test
     public void testUniqueGroups() throws Exception {
-        expectUniquelyGeneratedSet(create("x(ab){1,2}x", 30, true), "xabx", "xababx").withCeasedAvailability();
-        expectUniquelyGeneratedSet(create("x(a[01]{2}){1,2}x", 30, true),
+        expectUniquelyGeneratedSet(create("x(ab){1,2}x", 30, Uniqueness.SIMPLE), "xabx", "xababx").withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("x(a[01]{2}){1,2}x", 30, Uniqueness.SIMPLE),
                 "xa00x", "xa01x", "xa10x", "xa11x",
                 "xa00a00x", "xa01a00x", "xa10a00x", "xa11a00x",
                 "xa00a01x", "xa01a01x", "xa10a01x", "xa11a01x",
@@ -148,11 +151,11 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
     
     @Test
     public void testUniqueAlternatives() throws Exception {
-        expectUniquelyGeneratedSet(create("x(a|b)x", 30, true), "xax", "xbx").withCeasedAvailability();
-        expectUniquelyGeneratedSet(create("x(a|b){2}x", 30, true), "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
-        expectUniquelyGeneratedSet(create("x(a|b){1,2}x", 30, true), "xax", "xbx", "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
-        expectUniquelyGeneratedSet(create("([a]{1,2}|b)", 30, true), "a", "aa", "b").withCeasedAvailability();
-        expectUniquelyGeneratedSet(create("x([01]{1,2}|b)x", 30, true),
+        expectUniquelyGeneratedSet(create("x(a|b)x", 30, Uniqueness.SIMPLE), "xax", "xbx").withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("x(a|b){2}x", 30, Uniqueness.SIMPLE), "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("x(a|b){1,2}x", 30, Uniqueness.SIMPLE), "xax", "xbx", "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("([a]{1,2}|b)", 30, Uniqueness.SIMPLE), "a", "aa", "b").withCeasedAvailability();
+        expectUniquelyGeneratedSet(create("x([01]{1,2}|b)x", 30, Uniqueness.SIMPLE),
                 "x0x", "x1x", "x00x", "x01x", "x10x", "x11x", "xbx").withCeasedAvailability();
     }
     
@@ -211,8 +214,9 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
 		return generator;
     }
     
-    private NonNullGenerator<String> create(String pattern, int maxLimit, boolean unique) {
-    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, 0, null, unique, new VolumeGeneratorFactory());
+    private NonNullGenerator<String> create(String pattern, int maxLimit, Uniqueness uniqueness) {
+    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, 0, null, uniqueness, 
+    			new VolumeGeneratorFactory());
     	generator.init(context);
 		return generator;
     }

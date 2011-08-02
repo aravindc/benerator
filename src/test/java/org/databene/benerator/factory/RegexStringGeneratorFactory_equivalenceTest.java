@@ -26,6 +26,7 @@ import java.util.Locale;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.LocaleUtil;
+import org.databene.model.data.Uniqueness;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -167,7 +168,8 @@ public class RegexStringGeneratorFactory_equivalenceTest extends GeneratorTest {
     }
     
     private NonNullGenerator<String> createGenerator(String pattern, int minLength, Integer maxLength) {
-    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, minLength, maxLength, false, new EquivalenceGeneratorFactory());
+    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, minLength, maxLength, 
+    			Uniqueness.NONE, new EquivalenceGeneratorFactory());
     	generator.init(context);
 		return generator;
     }

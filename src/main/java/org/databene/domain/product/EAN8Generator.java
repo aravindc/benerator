@@ -28,6 +28,7 @@ package org.databene.domain.product;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
+import org.databene.model.data.Uniqueness;
 
 /**
  * Generates 8-digit EAN codes.<br/>
@@ -38,6 +39,7 @@ import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 public class EAN8Generator extends NonNullGeneratorWrapper<String, String> {
 
     private boolean unique;
+    private boolean ordered;
 
     public EAN8Generator() {
         this(false);
@@ -48,6 +50,12 @@ public class EAN8Generator extends NonNullGeneratorWrapper<String, String> {
         setUnique(unique);
     }
 
+    public EAN8Generator(boolean unique, boolean ordered) {
+        super(null);
+        setUnique(unique);
+        setOrdered(ordered);
+    }
+
     public boolean isUnique() {
         return unique;
     }
@@ -56,6 +64,16 @@ public class EAN8Generator extends NonNullGeneratorWrapper<String, String> {
         this.unique = unique;
     }
 
+	public boolean isOrdered() {
+		return ordered;
+	}
+	
+	public void setOrdered(boolean ordered) {
+		this.ordered = ordered;
+	}
+	
+	
+	
     // Generator interface --------------------------------------------------------------------
     
     public Class<String> getGeneratedType() {
@@ -64,7 +82,8 @@ public class EAN8Generator extends NonNullGeneratorWrapper<String, String> {
 
     @Override
     public synchronized void init(GeneratorContext context) {
-        setSource(context.getGeneratorFactory().createRegexStringGenerator("[0-9]{7}", 7, 7, unique));
+    	Uniqueness uniqueness = Uniqueness.instance(unique, ordered);
+        setSource(context.getGeneratorFactory().createRegexStringGenerator("[0-9]{7}", 7, 7, uniqueness));
         super.init(context);
     }
     

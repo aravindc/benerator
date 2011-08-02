@@ -30,6 +30,7 @@ import org.databene.benerator.factory.EquivalenceGeneratorFactory;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.commons.Encodings;
+import org.databene.model.data.Uniqueness;
 
 /**
  * Demonstrates usages of the {@link GeneratorFactory}.<br/><br/>
@@ -56,7 +57,9 @@ public class GeneratorFactoryDemo {
 	}
 
 	private static void generateByWeightedLiteralList(GeneratorFactory generatorFactory) {
-		Generator<String> generator = generatorFactory.createFromWeightedLiteralList("'Alpha'^4,'Bravo'^1", String.class, null, false);
+		String valueSpec = "'Alpha'^4,'Bravo'^1";
+		Generator<String> generator = generatorFactory.createFromWeightedLiteralList(
+				valueSpec, String.class, null, false);
 		init(generator);
 		for (int i = 0; i < 10; i++)
 			System.out.println(generateNonNull(generator));
@@ -65,7 +68,8 @@ public class GeneratorFactoryDemo {
 
 	private static void generateByRegex(GeneratorFactory generatorFactory) {
 		// generating German phone numbers
-		Generator<String> generator = generatorFactory.createRegexStringGenerator("\\+49\\-[1-9]{2,5}\\-[1-9][0-9]{3,9}", 8, 20, false);
+		String pattern = "\\+49\\-[1-9]{2,5}\\-[1-9][0-9]{3,9}";
+		Generator<String> generator = generatorFactory.createRegexStringGenerator(pattern, 8, 20, Uniqueness.NONE);
 		init(generator);
 		for (int i = 0; i < 10; i++)
 			System.out.println(generateNonNull(generator));

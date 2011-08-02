@@ -50,4 +50,9 @@ public class BankAccountValidator implements Validator<BankAccount> {
 		);
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
+	
 }

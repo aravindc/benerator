@@ -230,13 +230,13 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
 
     @Test
     public void testGetUniqueRegexGenerator() {
-      Generator<String> generator = generatorFactory.createRegexStringGenerator("[0-9]{3}", 3, 3, true);
+      Generator<String> generator = generatorFactory.createRegexStringGenerator("[0-9]{3}", 3, 3, Uniqueness.SIMPLE);
       generator.init(context);
       expectUniqueGenerations(generator, 1000).withCeasedAvailability();
   }
 
     private void checkRegexGeneration(String pattern, int minLength, Integer maxLength, boolean nullable) {
-    	NonNullGenerator<String> generator = generatorFactory.createRegexStringGenerator(pattern, minLength, maxLength, false);
+    	NonNullGenerator<String> generator = generatorFactory.createRegexStringGenerator(pattern, minLength, maxLength, Uniqueness.NONE);
         generator.init(context);
         RegexStringGeneratorFactory_volumeTest.checkRegexGeneration(generator, pattern, minLength, maxLength, nullable);
     }
@@ -261,11 +261,13 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testGetHeterogenousArrayGenerator() {
         List<String> salutations = Arrays.asList("Hello", "Hi");
-        AttachedWeightSampleGenerator<String> salutationGenerator = new AttachedWeightSampleGenerator<String>(String.class, salutations);
+        AttachedWeightSampleGenerator<String> salutationGenerator = new AttachedWeightSampleGenerator<String>(
+        		String.class, salutations);
         List<String> names = Arrays.asList("Alice", "Bob", "Charly");
-        AttachedWeightSampleGenerator<String> nameGenerator = new AttachedWeightSampleGenerator<String>(String.class, names);
+        Generator<String> nameGenerator = new AttachedWeightSampleGenerator<String>(String.class, names);
         Generator[] sources = new Generator[] { salutationGenerator, nameGenerator };
-        Generator<Object[]> generator = generatorFactory.createCompositeArrayGenerator(Object.class, sources, false);
+        Generator<Object[]> generator = generatorFactory.createCompositeArrayGenerator(
+        		Object.class, sources, Uniqueness.NONE);
         generator.init(context);
         ProductWrapper<Object[]> wrapper = new ProductWrapper<Object[]>();
         for (int i = 0; i < 10; i++) {

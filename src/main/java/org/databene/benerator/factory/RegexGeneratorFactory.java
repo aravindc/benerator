@@ -34,6 +34,7 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.ConcatenatingGenerator;
 import org.databene.commons.CharSet;
 import org.databene.commons.CollectionUtil;
+import org.databene.model.data.Uniqueness;
 import org.databene.regex.Choice;
 import org.databene.regex.CustomCharClass;
 import org.databene.regex.Factor;
@@ -50,106 +51,109 @@ import org.databene.regex.Sequence;
 public class RegexGeneratorFactory {
 	
     public static NonNullGenerator<String> create(String pattern, GeneratorFactory factory) {
-        return create(pattern, 0, null, false, factory);
+        return create(pattern, 0, null, Uniqueness.NONE, factory);
     }
 
-    public static NonNullGenerator<String> create(String pattern, int minLength, Integer maxLength, boolean unique, 
-    		GeneratorFactory factory) {
+    public static NonNullGenerator<String> create(String pattern, int minLength, Integer maxLength, 
+    		Uniqueness uniqueness, GeneratorFactory factory) {
     	if (pattern == null)
     		throw new IllegalArgumentException("Not a regular expression: null");
         Object regex = new RegexParser().parseRegex(pattern);
-        return createFromObject(regex, minLength, maxLength, unique, factory);
+        return createFromObject(regex, minLength, maxLength, uniqueness, factory);
 	}
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    static NonNullGenerator<String> createFromObject(Object part, int minLength, Integer maxLength, boolean unique, 
-    		GeneratorFactory factory) {
+    static NonNullGenerator<String> createFromObject(Object part, int minLength, Integer maxLength, 
+    		Uniqueness uniqueness, GeneratorFactory factory) {
         if (part instanceof Factor)
-            return createFromFactor((Factor) part, minLength, maxLength, unique, factory);
+            return createFromFactor((Factor) part, minLength, maxLength, uniqueness, factory);
         else 
-        	return createFromObject(part, 1, 1, minLength, maxLength, unique, factory);
+        	return createFromObject(part, 1, 1, minLength, maxLength, uniqueness, factory);
     }
 
-    private static NonNullGenerator<String> createFromFactor(Factor part, int minLength, Integer maxLength, boolean unique, 
-    		GeneratorFactory factory) {
+    private static NonNullGenerator<String> createFromFactor(Factor part, int minLength, Integer maxLength, 
+    		Uniqueness uniqueness, GeneratorFactory factory) {
         int minCount = part.getQuantifier().getMin();
         Integer maxCount = part.getQuantifier().getMax();
         Object atom = part.getAtom();
-        return createFromObject(atom, minCount, maxCount, minLength, maxLength, unique, factory);
+        return createFromObject(atom, minCount, maxCount, minLength, maxLength, uniqueness, factory);
     }
 
     private static NonNullGenerator<String> createFromObject(Object object, int minCount, Integer maxCount, 
-    		int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
+    		int minLength, Integer maxLength, Uniqueness uniqueness, GeneratorFactory factory) {
         if (object instanceof Factor)
-            return createFromFactor((Factor) object, minLength, maxLength, unique, factory);
+            return createFromFactor((Factor) object, minLength, maxLength, uniqueness, factory);
         else if (object instanceof Character)
-        	return createFromCharacter((Character) object, minCount, maxCount, minLength, maxLength, unique, factory);
+        	return createFromCharacter((Character) object, minCount, maxCount, minLength, maxLength, 
+        			uniqueness.isUnique(), factory);
         else if (object instanceof CharSet)
-        	return createCharSetGenerator((CharSet) object, minCount, maxCount, minLength, maxLength, unique, factory);
+        	return createCharSetGenerator((CharSet) object, minCount, maxCount, minLength, maxLength, 
+        			uniqueness, factory);
         else if (object instanceof CustomCharClass)
-        	return createFromCustomCharClass((CustomCharClass) object, minCount, maxCount, minLength, maxLength, unique, 
-        			factory);
+        	return createFromCustomCharClass((CustomCharClass) object, minCount, maxCount, minLength, maxLength, 
+        			uniqueness, factory);
         else if (object instanceof Sequence)
-            return createFromSequence((Sequence) object, minCount, maxCount, minLength, maxLength, unique, factory);
+            return createFromSequence((Sequence) object, minCount, maxCount, minLength, maxLength, uniqueness, factory);
         else if (object instanceof Group)
-            return createFromGroup((Group) object, minCount, maxCount, minLength, maxLength, unique, factory);
+            return createFromGroup((Group) object, minCount, maxCount, minLength, maxLength, uniqueness, factory);
         else if (object instanceof Choice)
-            return createFromChoice((Choice) object, minCount, maxCount, minLength, maxLength, unique, factory);
+            return createFromChoice((Choice) object, minCount, maxCount, minLength, maxLength, uniqueness, factory);
         else if (object instanceof String)
-        	return GeneratorFactoryUtil.asNonNullGenerator(factory.createSingleValueGenerator((String) object, unique));
+        	return GeneratorFactoryUtil.asNonNullGenerator(factory.createSingleValueGenerator(
+        			(String) object, uniqueness.isUnique()));
         else if (object == null)
-        	return GeneratorFactoryUtil.asNonNullGenerator(new ConstantGenerator<String>(null)); // returns an unavailable generator
+        	return GeneratorFactoryUtil.asNonNullGenerator(new ConstantGenerator<String>(null)); // TODO returns an unavailable generator
         else
             throw new UnsupportedOperationException("Unsupported regex part type: " + object.getClass().getName());
     }
 
     @SuppressWarnings("unchecked")
     private static NonNullGenerator<String> createFromSequence(Sequence sequence, int minCount, Integer maxCount, 
-    		int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
+    		int minLength, Integer maxLength, Uniqueness uniqueness, GeneratorFactory factory) {
     	Object[] factors = sequence.getFactors();
 		Generator<String>[] componentGenerators = createComponentGenerators(
-				factors, minLength, maxLength, unique, factory);
+				factors, minLength, maxLength, uniqueness, factory);
     	Generator<String[]> partGenerator = factory.createCompositeArrayGenerator(
-    			String.class, componentGenerators, unique);
+    			String.class, componentGenerators, uniqueness);
     	return GeneratorFactoryUtil.asNonNullGenerator(new ConcatenatingGenerator(partGenerator));
     }
 
     @SuppressWarnings("rawtypes")
 	static NonNullGenerator[] createComponentGenerators(Object[] factors, int minLength, Integer maxLength, 
-			boolean unique, GeneratorFactory factory) {
+			Uniqueness uniqueness, GeneratorFactory factory) {
     	NonNullGenerator<?>[] components = new NonNullGenerator<?>[factors.length];
     	for (int i = 0; i < factors.length; i++)
-    		components[i] = createFromObject(factors[i], minLength, maxLength, unique, factory);
+    		components[i] = createFromObject(factors[i], minLength, maxLength, uniqueness, factory);
 	    return components;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static NonNullGenerator<String> createFromChoice(
             final Choice choice, final int minCount, final int maxCount, final int minLength, final Integer maxLength, 
-            final boolean unique, final GeneratorFactory factory) {
+            final Uniqueness uniqueness, final GeneratorFactory factory) {
     	final Object[] alternatives = choice.getAlternatives();
     	GeneratorProvider<String> generatorProvider = new GeneratorProvider<String>() {
 			public Generator<String> create() {
 		    	final Generator[] altGens = createComponentGenerators(
-		    			alternatives, minLength, maxLength, unique, factory);
+		    			alternatives, minLength, maxLength, uniqueness, factory);
 				return new AlternativeGenerator<String>(String.class, altGens);
 			}
 		};
-    	return factory.createCompositeStringGenerator(generatorProvider, minCount, maxCount, unique);
+    	return factory.createCompositeStringGenerator(generatorProvider, minCount, maxCount, uniqueness);
     }
 
 	private static NonNullGenerator<String> createFromGroup(
             final Group group, final int minCount, final Integer maxCount, 
             final int minLength, final Integer maxLength, 
-            final boolean unique, final GeneratorFactory factory) {
+            final Uniqueness uniqueness, final GeneratorFactory factory) {
 		GeneratorProvider<String> partGeneratorProvider = new GeneratorProvider<String>() {
 			
 			public Generator<String> create() {
-				return createFromObject(group.getRegex(), minLength, maxLength, unique, factory);
+				return createFromObject(group.getRegex(), minLength, maxLength, uniqueness, factory);
 			}
 		};
-		return factory.createCompositeStringGenerator(partGeneratorProvider, minCount, maxCount, unique);
+		return factory.createCompositeStringGenerator(partGeneratorProvider, minCount, maxCount, uniqueness);
     }
 
     private static NonNullGenerator<String> createFromCharacter(char c, int minCount, Integer maxCount, 
@@ -157,22 +161,23 @@ public class RegexGeneratorFactory {
     	DefaultsProvider defaultsProvider = factory.getDefaultsProvider();
 		int minReps = max(minLength, minCount, defaultsProvider.defaultMinLength()); 
 		int maxReps = min(maxLength, maxCount, defaultsProvider.defaultMaxLength()); 
-		return factory.createStringGenerator(CollectionUtil.toSet(c), minReps, maxReps, 1, null, unique);
+		return factory.createStringGenerator(CollectionUtil.toSet(c), minReps, maxReps, 1, null, (unique ? Uniqueness.ORDERED : Uniqueness.NONE));
     }
     
 	private static NonNullGenerator<String> createCharSetGenerator(
 			CharSet charSet, int minCount, Integer maxCount, int minLength, Integer maxLength, 
-			boolean unique, GeneratorFactory factory) {
+			Uniqueness uniqueness, GeneratorFactory factory) {
 		DefaultsProvider defaultsProvider = factory.getDefaultsProvider();
 		int minReps = max(minLength, minCount, defaultsProvider.defaultMinLength()); 
 		int maxReps = min(maxLength, maxCount, defaultsProvider.defaultMaxLength());
-		return factory.createStringGenerator(charSet.getSet(), minReps, maxReps, 1, null, unique);
+		return factory.createStringGenerator(charSet.getSet(), minReps, maxReps, 1, null, uniqueness);
     }
     
-    private static NonNullGenerator<String> createFromCustomCharClass(CustomCharClass ccc, int minCount, Integer maxCount, 
-    		int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
+    private static NonNullGenerator<String> createFromCustomCharClass(CustomCharClass ccc, 
+    		int minCount, Integer maxCount, int minLength, Integer maxLength, 
+    		Uniqueness uniqueness, GeneratorFactory factory) {
     	CharSet charSet = ccc.getCharSet();
-		return createCharSetGenerator(charSet, minCount, maxCount, minLength, maxLength, unique, factory);
+		return createCharSetGenerator(charSet, minCount, maxCount, minLength, maxLength, uniqueness, factory);
     }
     
 	private static int min(Integer v1, Integer v2, int defaultValue) {

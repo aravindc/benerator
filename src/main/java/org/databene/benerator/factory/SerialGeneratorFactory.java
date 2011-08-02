@@ -64,7 +64,14 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique) {
+	public <T> Generator<T> createAlternativeGenerator(
+			Class<T> targetType, Generator<T>[] sources, Uniqueness uniqueness) {
+		return new GeneratorChain<T>(targetType, uniqueness.isUnique(), sources);
+	}
+	
+	@Override
+	public <T> Generator<T[]> createCompositeArrayGenerator(
+			Class<T> componentType, Generator<T>[] sources, Uniqueness uniqueness) {
     	return new SimpleMultiSourceArrayGenerator<T>(componentType, sources);
 	}
 
@@ -119,7 +126,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 	@Override
 	public NonNullGenerator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, 
-			boolean unique) {
+			Uniqueness uniqueness) {
 		Generator<Character> charGenerator = createCharacterGenerator(chars);
 		Set<Integer> counts = defaultCounts(minLength, maxLength);
 		NonNullGenerator<Integer> lengthGenerator = GeneratorFactoryUtil.asNonNullGenerator(
@@ -130,7 +137,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public NonNullGenerator<String> createCompositeStringGenerator(
-			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, boolean unique) {
+			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, Uniqueness uniqueness) {
 		GeneratorChain<String> result = new GeneratorChain<String>(String.class, true);
 		Set<Integer> partCounts = defaultCounts(minParts, maxParts);
 		for (int partCount : partCounts) {
@@ -148,8 +155,9 @@ public class SerialGeneratorFactory extends GeneratorFactory {
     }
 
     @Override
-	public Generator<Character> createCharacterGenerator(Set<Character> characters) {
-        return new SequenceGenerator<Character>(Character.class, characters);
+	public NonNullGenerator<Character> createCharacterGenerator(Set<Character> characters) {
+        return GeneratorFactoryUtil.asNonNullGenerator(
+        		new SequenceGenerator<Character>(Character.class, characters));
     }
 
 	protected Set<Integer> defaultCounts(int minParts, int maxParts) {

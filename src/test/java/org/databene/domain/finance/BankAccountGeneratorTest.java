@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,8 +29,6 @@ package org.databene.domain.finance;
 import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
-import static junit.framework.Assert.*;
-
 /**
  * Tests the {@link BankAccountGenerator}.<br/>
  * <br/>
@@ -45,10 +43,7 @@ public class BankAccountGeneratorTest extends GeneratorTest {
 		BankAccountGenerator generator = new BankAccountGenerator();
 		generator.init(context);
 		BankAccountValidator validator = new BankAccountValidator();
-		for (int i = 0; i < 100; i++) {
-			BankAccount bankAccount = generator.generate();
-			assertTrue(validator.valid(bankAccount));
-		}
+		expectGenerations(generator, 100, validator);
 	}
 	
 }

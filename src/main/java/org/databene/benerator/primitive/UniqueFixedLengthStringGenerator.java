@@ -46,21 +46,21 @@ public class UniqueFixedLengthStringGenerator extends NonNullGeneratorWrapper<in
     public static final Set<Character> DEFAULT_CHAR_SET
             = CollectionUtil.toSet('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
     private static final int DEFAULT_LENGTH = 4;
-    private static final boolean DEFAULT_SCRAMBLED = false;
+    private static final boolean DEFAULT_ORDERED = false;
 
     private char[] digitSymbols;
     private int length;
-    private boolean scrambled;
+    private boolean ordered;
     
     public UniqueFixedLengthStringGenerator() {
-        this(DEFAULT_CHAR_SET, DEFAULT_LENGTH, DEFAULT_SCRAMBLED);
+        this(DEFAULT_CHAR_SET, DEFAULT_LENGTH, DEFAULT_ORDERED);
     }
 
-    public UniqueFixedLengthStringGenerator(Set<Character> chars, int length, boolean scrambled) {
+    public UniqueFixedLengthStringGenerator(Set<Character> chars, int length, boolean ordered) {
     	super(null);
         this.digitSymbols = CollectionUtil.toCharArray(new TreeSet<Character>(chars));
         this.length = length;
-        this.scrambled = scrambled;
+        this.ordered = ordered;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -72,10 +72,10 @@ public class UniqueFixedLengthStringGenerator extends NonNullGeneratorWrapper<in
     @Override
     public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
-    	if (scrambled)
-    		setSource(new UniqueIntsGenerator(digitSymbols.length, length));
-    	else
+    	if (ordered)
     		setSource(new IncrementalIntsGenerator(digitSymbols.length, length));
+    	else
+    		setSource(new UniqueIntsGenerator(digitSymbols.length, length));
         super.init(context);
     }
     

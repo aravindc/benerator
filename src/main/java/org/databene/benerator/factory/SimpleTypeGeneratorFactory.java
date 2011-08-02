@@ -417,7 +417,9 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Distribution lengthDistribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getLengthDistribution(), Uniqueness.NONE, false, context);
         Locale locale = descriptor.getLocale();
-        return context.getGeneratorFactory().createStringGenerator(pattern, minLength, maxLength, lengthGranularity, lengthDistribution, locale, uniqueness.isUnique());
+        GeneratorFactory factory = context.getGeneratorFactory();
+		return factory.createStringGenerator(pattern, locale, minLength, maxLength, lengthGranularity, 
+				lengthDistribution, uniqueness);
     }
     
     @SuppressWarnings("unchecked")

@@ -107,7 +107,7 @@ public class ArrayFlatFileDemo {
                     generatorFactory.createSampleGenerator(CollectionUtil.toList("BUY", "SALE"), String.class, false), // transaction type
                     GeneratorFactoryUtil.createConvertingGenerator(dateGenerator, dateRenderer), // transaction date
                     generatorFactory.createSampleGenerator(CollectionUtil.toList("Alice", "Bob", "Charly"), String.class, false), // partner
-                    generatorFactory.createRegexStringGenerator("[A-Z0-9]{6}", 6, 6, false), // article number
+                    generatorFactory.createRegexStringGenerator("[A-Z0-9]{6}", 6, 6, Uniqueness.NONE), // article number
                     generatorFactory.createNumberGenerator(Integer.class, 1, true, 20, true, 1, SequenceManager.RANDOM_SEQUENCE, Uniqueness.NONE), // item count
                     generatorFactory.createNumberGenerator(BigDecimal.class, // item price
                             new BigDecimal("0.50"), true, new BigDecimal("99.99"), true, new BigDecimal("0.01"),

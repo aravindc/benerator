@@ -28,6 +28,7 @@ package org.databene.domain.product;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
+import org.databene.model.data.Uniqueness;
 
 /**
  * Generates 13-digits EAN codes.<br/>
@@ -38,20 +39,38 @@ import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 public class EAN13Generator extends NonNullGeneratorWrapper<String, String> {
 
     private boolean unique;
+    private boolean ordered;
 
     public EAN13Generator() {
         this(false);
     }
 
     public EAN13Generator(boolean unique) {
+        this(unique, false);
+    }
+
+    public EAN13Generator(boolean unique, boolean ordered) {
         super(null);
         setUnique(unique);
+        setOrdered(ordered);
+    }
+    
+    public boolean isUnique() {
+    	return unique;
     }
 
     private void setUnique(boolean unique) {
         this.unique = unique;
     }
 
+	public boolean isOrdered() {
+		return ordered;
+	}
+	
+	public void setOrdered(boolean ordered) {
+		this.ordered = ordered;
+	}
+	
     // Generator interface ---------------------------------------------------------------------------------------------
 
     public Class<String> getGeneratedType() {
@@ -61,7 +80,8 @@ public class EAN13Generator extends NonNullGeneratorWrapper<String, String> {
     @Override
     public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
-        setSource(context.getGeneratorFactory().createRegexStringGenerator("[0-9]{12}", 12, 12, unique));
+        Uniqueness uniqueness = Uniqueness.instance(unique, ordered);
+		setSource(context.getGeneratorFactory().createRegexStringGenerator("[0-9]{12}", 12, 12, uniqueness));
         super.init(context);
     }
     

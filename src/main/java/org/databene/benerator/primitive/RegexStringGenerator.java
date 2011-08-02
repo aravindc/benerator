@@ -32,6 +32,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.wrapper.NonNullGeneratorProxy;
+import org.databene.model.data.Uniqueness;
 
 import java.util.Locale;
 
@@ -47,8 +48,9 @@ public class RegexStringGenerator extends NonNullGeneratorProxy<String> {
     /** Optional String representation of a regular expression */
     private String pattern;
 
-    /** indicates if the generated values shall be unique */
     private boolean unique;
+
+    private boolean ordered;
 
     /** The locale from which to choose letters */
     private Locale locale;
@@ -85,6 +87,7 @@ public class RegexStringGenerator extends NonNullGeneratorProxy<String> {
         this.pattern = pattern;
         this.maxLength = maxLength;
         this.unique = unique;
+        this.ordered = false;
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -105,6 +108,14 @@ public class RegexStringGenerator extends NonNullGeneratorProxy<String> {
 	
 	public void setUnique(boolean unique) {
 		this.unique = unique;
+	}
+	
+	public boolean isOrdered() {
+		return ordered;
+	}
+	
+	public void setOrdered(boolean ordered) {
+		this.ordered = ordered;
 	}
 	
     public Locale getLocale() {
@@ -133,7 +144,7 @@ public class RegexStringGenerator extends NonNullGeneratorProxy<String> {
     @Override
     public void init(GeneratorContext context) {
     	Generator<String> tmp = getGeneratorFactory(context).createRegexStringGenerator(
-    			pattern, minLength, maxLength, unique);
+    			pattern, minLength, maxLength, Uniqueness.instance(unique, ordered));
         try {
 			setSource(tmp);
             super.init(context);

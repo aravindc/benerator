@@ -71,6 +71,8 @@ public class BankGenerator extends CompositeGenerator<Bank> implements NonNullGe
 		String name = nameGenerator.generate();
 		String bankCode = bankCodeGenerator.generate();
 		String bic = bicGenerator.generate();
+		if (bic == null) // TODO remove
+			System.out.println();
 		String bin = binGenerator.generate();
 		return new Bank(name, bankCode, bic, bin);
 	}
