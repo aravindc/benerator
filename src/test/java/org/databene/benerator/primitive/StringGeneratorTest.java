@@ -21,7 +21,15 @@
 
 package org.databene.benerator.primitive;
 
+import static org.junit.Assert.*;
+
+import java.util.Locale;
+import java.util.Set;
+
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.commons.CollectionUtil;
+import org.databene.commons.Validator;
 import org.databene.commons.validator.PrefixValidator;
 import org.databene.commons.validator.RegexValidator;
 import org.databene.commons.validator.StringLengthValidator;
@@ -156,32 +164,98 @@ public class StringGeneratorTest extends GeneratorTest {
 	
 	@Test
 	public void testGermanLocale() {
-		// TODO implement
+		StringGenerator generator = new StringGenerator();
+		generator.setCharSet("[\\w^A-Za-z0-9_]");
+		generator.setLocale(Locale.GERMAN);
+		generator.setMinLength(5);
+		generator.setMaxLength(8);
+		initialize(generator);
+		expectGenerations(generator, N, 
+				new StringLengthValidator(5, 8),
+				new UmlautValidator());
 	}
 	
 	@Test
-	public void testLengthLimit() {
-		// TODO implement
+	public void testLengthLimit_nonUnique() {
+		StringGenerator generator = new StringGenerator();
+		generator.setCharSet("[AB]");
+		generator.setMinLength(5);
+		generator.setMaxLength(1000);
+		initialize(generator);
+		expectGenerations(generator, 100, new StringLengthValidator(5, 1000));
+	}
+	
+	@Test
+	public void testLengthLimit_unique() {
+		StringGenerator generator = new StringGenerator();
+		generator.setCharSet("[AB]");
+		generator.setMinLength(5);
+		generator.setMaxLength(1000);
+		generator.setOrdered(false);
+		generator.setUnique(true);
+		initialize(generator);
+		expectGenerations(generator, 100, new StringLengthValidator(5, 1000));
+	}
+	
+	@Test
+	public void testLengthLimit_ordered() {
+		StringGenerator generator = new StringGenerator();
+		generator.setCharSet("[AB]");
+		generator.setMinLength(5);
+		generator.setMaxLength(1000);
+		generator.setOrdered(true);
+		generator.setUnique(true);
+		initialize(generator);
+		expectGenerations(generator, 100, new StringLengthValidator(5, 1000));
 	}
 	
 	@Test
 	public void testLengthGranularity() {
-		// TODO implement
+		StringGenerator generator = new StringGenerator();
+		generator.setCharSet("[AB]");
+		generator.setMinLength(500);
+		generator.setMaxLength(1000);
+		generator.setLengthGranularity(250);
+		generator.setOrdered(true);
+		generator.setUnique(true);
+		initialize(generator);
+		expectGenerations(generator, 100, new LengthsValidator());
 	}
 	
 	@Test
 	public void testLengthDistribution() {
-		// TODO implement
+		StringGenerator generator = new StringGenerator();
+		generator.setCharSet("x");
+		generator.setMinLength(1);
+		generator.setMaxLength(5);
+		generator.setLengthGranularity(2);
+		generator.setLengthDistribution(SequenceManager.STEP_SEQUENCE);
+		generator.setOrdered(true);
+		generator.setUnique(true);
+		initialize(generator);
+		assertEquals("x", generator.generate());
+		assertEquals("xxx", generator.generate());
+		assertEquals("xxxxx", generator.generate());
+		assertUnavailable(generator);
+		generator.reset();
+		assertEquals("x", generator.generate());
+		assertEquals("xxx", generator.generate());
+		assertEquals("xxxxx", generator.generate());
+		assertUnavailable(generator);
+		generator.close();
 	}
 	
-	@Test
-	public void testOrdered() {
-		// TODO implement
-	}
-	
-	@Test
-	public void testUnordered() {
-		// TODO implement
+	public void testNonUnique() {
+		StringGenerator generator = new StringGenerator();
+		generator.setCharSet("[AB]");
+		generator.setMinLength(2);
+		generator.setMaxLength(3);
+		generator.setUnique(false);
+		generator.setOrdered(false);
+		initialize(generator);
+		expectGeneratedSet(generator, 100, 
+				"AA", "AB", "BA", "BB", 
+				"AAA", "AAB", "ABA", "ABB", "BAA", "BAB", "BBA", "BBB");
 	}
 	
 	@Test
@@ -212,4 +286,21 @@ public class StringGeneratorTest extends GeneratorTest {
 				"AAA", "AAB", "ABA", "ABB", "BAA", "BAB", "BBA", "BBB");
 	}
 	
+	public class UmlautValidator implements Validator<String> {
+		private Set<Character> allowedValues = CollectionUtil.toSet('Ä', 'ä', 'Ö', 'ö', 'Ü', 'ü', 'ß');
+		public boolean valid(String value) {
+			for (int i = 0; i < value.length(); i++)
+				if (!allowedValues.contains(value.charAt(i)))
+					return false;
+			return true;
+		}
+	}
+
+	public class LengthsValidator implements Validator<String> {
+		public boolean valid(String value) {
+			return value.length() == 500 || value.length() == 750 || value.length() == 1000;
+		}
+
+	}
+
 }

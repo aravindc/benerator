@@ -34,11 +34,21 @@ import org.junit.Test;
 public class IncrementalStringGeneratorTest extends GeneratorTest {
 
 	@Test
-	public void test() {
-		IncrementalStringGenerator generator = new IncrementalStringGenerator(CollectionUtil.toSet('A', 'B'), 2, 3);
+	public void testGranularity1() {
+		IncrementalStringGenerator generator = new IncrementalStringGenerator(CollectionUtil.toSet('A', 'B'), 1, 3, 1);
 		initialize(generator);
 		expectGeneratedSequence(generator, 
+				"A", "B",  
 				"AA", "AB", "BA", "BB", 
+				"AAA", "AAB", "ABA", "ABB", "BAA", "BAB", "BBA", "BBB");
+	}
+	
+	@Test
+	public void testGranularity2() {
+		IncrementalStringGenerator generator = new IncrementalStringGenerator(CollectionUtil.toSet('A', 'B'), 1, 3, 2);
+		initialize(generator);
+		expectGeneratedSequence(generator, 
+				"A", "B", 
 				"AAA", "AAB", "ABA", "ABB", "BAA", "BAB", "BBA", "BBB");
 	}
 	
