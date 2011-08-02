@@ -27,6 +27,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.GeneratorChain;
+import org.databene.commons.ArrayBuilder;
 
 /**
  * Creates Strings in an incremental manner.<br/><br/>
@@ -36,20 +37,21 @@ import org.databene.benerator.wrapper.GeneratorChain;
  */
 public class IncrementalStringGenerator extends GeneratorChain<String> implements NonNullGenerator<String> {
 
-	public IncrementalStringGenerator(Set<Character> chars, int minLength, int maxLength) {
-		super(String.class, false, createSources(chars, minLength, maxLength));
+	public IncrementalStringGenerator(Set<Character> chars, int minLength, int maxLength, int lengthGranularity) {
+		super(String.class, false, createSources(chars, minLength, maxLength, lengthGranularity));
 	}
-
-	@SuppressWarnings("unchecked")
-	private static Generator<? extends String>[] createSources(Set<Character> chars, int minLength, int maxLength) {
-		Generator<String>[] sources = new Generator[maxLength - minLength + 1];
-		for (int i = minLength; i <= maxLength; i++)
-			sources[i - minLength] = new UniqueFixedLengthStringGenerator(chars, i, true);
-		return sources;
-	}
-
+	
 	public String generate() {
 		return GeneratorUtil.generateNonNull(this);
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private static Generator<? extends String>[] createSources(Set<Character> chars, int minLength, int maxLength, 
+			int lengthGranularity) {
+		ArrayBuilder<Generator> builder = new ArrayBuilder<Generator>(Generator.class);
+		for (int i = minLength; i <= maxLength; i += lengthGranularity)
+			builder.add(new UniqueFixedLengthStringGenerator(chars, i, true));
+		return builder.toArray();
 	}
 
 }
