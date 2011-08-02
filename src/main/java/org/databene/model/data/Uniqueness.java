@@ -43,4 +43,8 @@ public enum Uniqueness {
 	    return unique;
     }
 	
+	public static Uniqueness instance(boolean unique, boolean ordered) {
+		return (unique ? (ordered ? Uniqueness.ORDERED : Uniqueness.SIMPLE) : Uniqueness.NONE);
+	}
+	
 }
