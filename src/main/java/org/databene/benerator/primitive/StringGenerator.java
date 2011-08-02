@@ -88,7 +88,15 @@ public class StringGenerator extends NonNullGeneratorProxy<String> {
 	public void setCharSet(String charSet) {
 		this.pattern = charSet;
 	}
-
+	
+	public Locale getLocale() {
+		return locale;
+	}
+	
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+	
 	public boolean isUnique() {
 		return unique;
 	}
@@ -145,6 +153,14 @@ public class StringGenerator extends NonNullGeneratorProxy<String> {
 		this.maxLength = maxLength;
 	}
 
+	public int getLengthGranularity() {
+		return lengthGranularity;
+	}
+	
+	public void setLengthGranularity(int lengthGranularity) {
+		this.lengthGranularity = lengthGranularity;
+	}
+	
 	public Distribution getLengthDistribution() {
 		return lengthDistribution;
 	}
@@ -188,6 +204,8 @@ public class StringGenerator extends NonNullGeneratorProxy<String> {
 		assertInitialized();
 		StringBuilder builder = new StringBuilder();
 		String base = super.generate();
+		if (base == null)
+			return null;
 		if (!StringUtil.isEmpty(prefix)){
 			builder.append(prefix);
 			base = base.substring(prefix.length());
