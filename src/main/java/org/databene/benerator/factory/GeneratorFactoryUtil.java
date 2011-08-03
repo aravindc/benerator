@@ -316,10 +316,10 @@ public class GeneratorFactoryUtil { // TODO replace explicit generator construct
     	};
     }
 
-	public static Generator<Long> getCountGenerator(final InstanceDescriptor descriptor, boolean resetToMin, BeneratorContext context) {
+	public static NonNullGenerator<Long> getCountGenerator(final InstanceDescriptor descriptor, boolean resetToMin, BeneratorContext context) {
     	Expression<Long> count = DescriptorUtil.getCount(descriptor);
     	if (count != null)
-    		return new ExpressionBasedGenerator<Long>(count, Long.class);
+    		return GeneratorFactoryUtil.asNonNullGenerator(new ExpressionBasedGenerator<Long>(count, Long.class));
     	else {
 			final Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor);
 			final Expression<Long> maxCount = DescriptorUtil.getMaxCount(descriptor);
@@ -327,13 +327,15 @@ public class GeneratorFactoryUtil { // TODO replace explicit generator construct
 				Long minCountValue = minCount.evaluate(context);
 				Long maxCountValue = maxCount.evaluate(context);
 				if (minCountValue.equals(maxCountValue))
-					return new ConstantGenerator<Long>(minCountValue);
+					return GeneratorFactoryUtil.asNonNullGenerator(new ConstantGenerator<Long>(minCountValue));
 			}
 			final Expression<Long> countGranularity = DescriptorUtil.getCountGranularity(descriptor);
 			final Expression<Distribution> countDistribution = 
 				getDistributionExpression(descriptor.getCountDistribution(), Uniqueness.NONE, true);
-			return new DynamicCountGenerator(minCount, maxCount, countGranularity, countDistribution, 
-					ExpressionUtil.constant(false), resetToMin);
+			return GeneratorFactoryUtil.asNonNullGenerator(
+					new DynamicCountGenerator(minCount, maxCount, countGranularity, countDistribution, 
+					ExpressionUtil.constant(false), resetToMin)
+				);
     	}
     }
 
