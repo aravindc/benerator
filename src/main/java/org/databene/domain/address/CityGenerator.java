@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
+import org.databene.benerator.sample.NonNullSampleGenerator;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 
@@ -49,7 +50,7 @@ public class CityGenerator extends AbstractDatasetGenerator<City> implements Non
 
 	@Override
 	protected Generator<City> createGeneratorForAtomicDataset(Dataset dataset) {
-		SampleGenerator<City> generator = new SampleGenerator<City>(City.class);
+		SampleGenerator<City> generator = new NonNullSampleGenerator<City>(City.class);
 		Country country = Country.getInstance(dataset.getName());
 		country.checkCities();
         for (State state : country.getStates())

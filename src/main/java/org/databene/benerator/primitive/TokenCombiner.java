@@ -27,7 +27,9 @@ import java.util.Set;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.sample.SampleGenerator;
+import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.sample.NonNullSampleGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
@@ -47,7 +49,7 @@ import org.databene.webdecs.DataContainer;
  * @since 0.6.3
  * @author Volker Bergmann
  */
-public class TokenCombiner extends GeneratorProxy<String> {
+public class TokenCombiner extends GeneratorProxy<String> implements NonNullGenerator<String> {
 
 	protected String uri;
 	private boolean unique;
@@ -105,6 +107,12 @@ public class TokenCombiner extends GeneratorProxy<String> {
 	    super.init(context);
 	}
 
+	public String generate() {
+		return GeneratorUtil.generateNonNull(this);
+	}
+	
+	
+	
 	protected class SimpleTokenCombinator extends CompositeStringGenerator {
 		
 		SimpleTokenCombinator(boolean unique) {
@@ -115,7 +123,7 @@ public class TokenCombiner extends GeneratorProxy<String> {
 		@SuppressWarnings("unchecked")
 	    public void init(GeneratorContext context) {
 			try {
-				SampleGenerator<String>[] sources = null;
+				NonNullSampleGenerator<String>[] sources = null;
 				String absoluteUri = context.resolveRelativeUri(uri);
 		        CSVLineIterator iterator = new CSVLineIterator(absoluteUri, separator, true, encoding);
 		        int tokenCount = -1;
@@ -124,9 +132,9 @@ public class TokenCombiner extends GeneratorProxy<String> {
 			        String[] tokens = container.getData();
 		        	if (sources == null) {
 		        		tokenCount = tokens.length;
-		        		sources = new SampleGenerator[tokenCount];
+		        		sources = new NonNullSampleGenerator[tokenCount];
 		        		for (int i = 0; i < tokenCount; i++) {
-		        			sources[i] = new SampleGenerator<String>(String.class);
+		        			sources[i] = new NonNullSampleGenerator<String>(String.class);
 		        			sources[i].setUnique(unique);
 		        		}
 		        	}
@@ -143,5 +151,5 @@ public class TokenCombiner extends GeneratorProxy<String> {
 	        }
 	    }
 	}
-	
+
 }

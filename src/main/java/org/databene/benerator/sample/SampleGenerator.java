@@ -45,7 +45,7 @@ import java.util.ArrayList;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class SampleGenerator<E> extends AbstractSampleGenerator<E> { // TODO create NonNull aternative?
+public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Keeps the Sample information */
     private List<E> samples = new ArrayList<E>();

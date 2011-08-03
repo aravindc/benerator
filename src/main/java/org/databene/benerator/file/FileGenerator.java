@@ -25,7 +25,7 @@ import java.io.File;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.sample.SampleGenerator;
+import org.databene.benerator.sample.NonNullSampleGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.FileUtil;
@@ -37,8 +37,7 @@ import org.databene.commons.IOUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class FileGenerator extends SampleGenerator<File> { 
-	// TODO make the class implement NonNullGenerator and remove its usages wrapped with AsNonNullGenerator
+public class FileGenerator extends NonNullSampleGenerator<File> { 
 	
 	private String rootUri;
 	private String filter;
@@ -51,6 +50,7 @@ public class FileGenerator extends SampleGenerator<File> {
     }
 	
 	public FileGenerator(String rootUri, String filter, boolean recursive, boolean files, boolean folders) {
+		super(File.class);
 	    this.rootUri = rootUri;
 	    this.filter = filter;
 	    this.recursive = recursive;

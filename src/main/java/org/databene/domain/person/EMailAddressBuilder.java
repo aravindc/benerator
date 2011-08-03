@@ -21,13 +21,11 @@
 
 package org.databene.domain.person;
 
-import static org.databene.benerator.util.GeneratorUtil.*;
-
 import java.io.IOException;
 import java.util.Locale;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.sample.SampleGenerator;
+import org.databene.benerator.sample.NonNullSampleGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
@@ -48,7 +46,7 @@ public class EMailAddressBuilder implements ThreadAware {
 	private DomainGenerator domainGenerator;
 	private CaseConverter caseConverter;  
 	private Converter<String, String> nameConverter;
-	private SampleGenerator<Character> joinGenerator;
+	private NonNullSampleGenerator<Character> joinGenerator;
 
 	public EMailAddressBuilder(String dataset) {
 		this.domainGenerator = new DomainGenerator(dataset);
@@ -60,14 +58,14 @@ public class EMailAddressBuilder implements ThreadAware {
 		} catch (IOException e) {
 			throw new ConfigurationError("Error in Converter setup", e);
 		}
-		this.joinGenerator = new SampleGenerator<Character>(Character.class, '_', '.', '0', '1');
+		this.joinGenerator = new NonNullSampleGenerator<Character>(Character.class, '_', '.', '0', '1');
     }
 
 	public String generate(String givenName, String familyName) {
 		String given = nameConverter.convert(givenName);
 		String family = nameConverter.convert(familyName);
 		String domain = domainGenerator.generate();
-		Character join = generateNonNull(joinGenerator);
+		Character join = joinGenerator.generate();
 		switch (join) {
 			case '.' : return given + '.' + family + '@' + domain;
 			case '_' : return given + '_' + family + '@' + domain;

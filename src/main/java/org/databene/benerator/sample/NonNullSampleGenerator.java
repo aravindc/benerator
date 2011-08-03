@@ -1,14 +1,9 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -24,30 +19,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain.lang;
+package org.databene.benerator.sample;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import org.databene.benerator.sample.NonNullSampleGenerator;
+import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 
 /**
- * Generates {@link Noun}s of a given {@link Locale}.<br/>
- * <br/>
- * Created at 11.07.2009 19:29:22
- * @since 0.6.0
+ * Generates data from a base of non-null sample values.<br/><br/>
+ * Created: 03.08.2011 10:30:24
+ * @since 0.7.0
  * @author Volker Bergmann
  */
+public class NonNullSampleGenerator<E> extends SampleGenerator<E> implements NonNullGenerator<E> {
 
-public class NounGenerator extends NonNullSampleGenerator<Noun> {
-	
-	public NounGenerator() throws IOException {
-		this(Locale.getDefault());
-	}
-	
-	public NounGenerator(Locale locale) throws IOException {
-		super(Noun.class);
-		addValues(Noun.getInstances(locale));
+    public NonNullSampleGenerator(Class<E> generatedType, E ... values) {
+    	super(generatedType, values);
+    }
+    
+    public NonNullSampleGenerator(Class<E> generatedType, Iterable<E> values) {
+		super(generatedType, values);
 	}
 
+	public E generate() {
+    	return GeneratorUtil.generateNonNull(this);
+    }
+    
 }
