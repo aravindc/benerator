@@ -46,6 +46,7 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
 
     private TypedIterable<E> iterable;
     private Iterator<E> iterator;
+    private boolean available;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -56,6 +57,7 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
     public IteratingGenerator(TypedIterable<E> iterable) {
         this.iterable = iterable;
         this.iterator = null;
+        this.available = false;
     }
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -84,8 +86,8 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
     public void init(GeneratorContext context) {
     	if (iterable == null)
     		throw new InvalidGeneratorSetupException("iterable", "is null");
+    	this.available = true;
     	super.init(context);
-		createIterator();
     }
 
     public Class<E> getGeneratedType() {
@@ -95,7 +97,11 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         try {
             assertInitialized();
-            if (iterator == null || !iterator.hasNext()) {
+            if (!available || (iterator != null && !iterator.hasNext()))
+            	return null;
+            if (iterator == null) // iterator is created lazily for avoiding script evaluation errors in init()
+        		createIterator();
+            if (!iterator.hasNext()) {
             	closeIterator();
             	return null;
             }
@@ -133,7 +139,6 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
 		if (iterator != null) {
             if (iterator instanceof Closeable)
                 IOUtil.close((Closeable) iterator);
-            iterator = null;
         }
 	}
 
