@@ -75,6 +75,7 @@ public class MemStore extends AbstractStorageSystem {
 	}
 
 	public HeavyweightTypedIterable<?> queryEntityIds(String entityName, String selector, Context context) {
+		// TODO v0.7 implement this
 		throw new UnsupportedOperationException(getClass() + " does not support queryEntityIds(...)");
 	}
 
