@@ -23,7 +23,6 @@ package org.databene.benerator.factory;
 
 import java.util.Date;
 
-import org.databene.commons.BeanUtil;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.NumberToNumberConverter;
@@ -47,14 +46,6 @@ public class MeanDefaultsProvider implements DefaultsProvider {
 
 	public <T extends Number> T defaultGranularity(Class<T> numberType) {
 		return NumberToNumberConverter.convert(1, numberType);
-	}
-
-	public <T extends Number> int defaultTotalDigits(Class<T> numberType) {
-		return NumberUtil.totalDigits(numberType);
-	}
-
-	public <T extends Number> int defaultFractionDigits(Class<T> numberType) {
-		return (BeanUtil.isIntegralNumberType(numberType) ? 0 : 4);
 	}
 
 	public int defaultMinLength() {

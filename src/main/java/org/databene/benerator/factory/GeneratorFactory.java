@@ -99,26 +99,6 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
     public <T extends Number> NonNullGenerator<T> createNumberGenerator(
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, T granularity,
             Distribution distribution, Uniqueness uniqueness) {
-        int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(granularity.doubleValue()));
-        int prefixDigits = (max != null ? MathUtil.prefixDigits(max.doubleValue()) : MathUtil.prefixDigits(min.doubleValue()));
-		int totalDigits = prefixDigits + fractionDigits;
-        return createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, 
-        		totalDigits, fractionDigits, granularity, distribution, uniqueness);
-    }
-    
-    /**
-     * Creates a generator for numbers.
-     *
-     * @param numberType   the number type, e.g. java.lang.Integer
-     * @param min          the minimum number to generate
-     * @param max          the maximum number to generate
-     * @param granularity    the resolution to use in number generation.
-     * @return a Number generator of the desired characteristics
-     */
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
-            Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
-            Integer totalDigits, Integer fractionDigits, T granularity,
-            Distribution distribution, Uniqueness uniqueness) { // TODO total-/fractionDigits
         Assert.notNull(numberType, "numberType");
         if (min != null && min.equals(max))
             return GeneratorFactoryUtil.asNonNullGenerator(new ConstantGenerator<T>(min));
@@ -133,7 +113,6 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
             	distribution = defaultDistribution(uniqueness);
         }
         return distribution.createGenerator(numberType, min, max, granularity, uniqueness.isUnique()); 
-        // TODO v0.7 define difference between granularity and fractionDigits and implement it accordingly
     }
 
     // sample source ------------------------------------------------------------------------------------------------

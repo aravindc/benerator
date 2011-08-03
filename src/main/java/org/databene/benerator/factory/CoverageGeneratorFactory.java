@@ -61,10 +61,12 @@ public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // T
 	@Override
 	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
-            Integer totalDigits, Integer fractionDigits, T granularity, Distribution distribution, Uniqueness uniqueness) {
+            T granularity, Distribution distribution, Uniqueness uniqueness) {
     	return GeneratorFactoryUtil.asNonNullGenerator(new GeneratorChain<T>(numberType, true, 
-    		super.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, totalDigits, fractionDigits, granularity, distribution, uniqueness),
-    		serialFactory.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, totalDigits, fractionDigits, granularity, distribution, uniqueness)
+    		super.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, 
+    				granularity, distribution, uniqueness),
+    		serialFactory.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, 
+    				granularity, distribution, uniqueness)
 		));
     }
     

@@ -26,6 +26,7 @@ changes
 - Renamed all 'precision' properties to 'granularity'
 - Removed 'name' property from Sequence
 - Renamed @DescriptorBased to @Descriptor
+- Removed totalDigits and fractionDigits features
 
 
 enhancements
@@ -51,3 +52,4 @@ enhancements
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
 - Bug fix in UniqueCompositeArrayGenerator
+- Bug fix in evaluation of dynamic selectors that make use of an entity attribute

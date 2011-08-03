@@ -46,14 +46,6 @@ public class GentleDefaultsProvider implements DefaultsProvider {
 		return NumberToNumberConverter.convert(1, numberType);
 	}
 	
-	public <T extends Number> int defaultTotalDigits(Class<T> numberType) {
-		return 1;
-	}
-	
-	public <T extends Number> int defaultFractionDigits(Class<T> numberType) {
-		return 0;
-	}
-	
 	public int defaultMinLength() {
 		return 1;
 	}

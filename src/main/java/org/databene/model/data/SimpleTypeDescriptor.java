@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.model.data;
 
 import org.databene.commons.operation.AndOperation;
-import org.databene.commons.operation.FirstArgSelector;
 import org.databene.commons.operation.MaxNumberStringOperation;
 import org.databene.commons.operation.MaxOperation;
 import org.databene.commons.operation.MinNumberStringOperation;
@@ -47,8 +46,6 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     public static final String MIN_INCLUSIVE = "minInclusive";
     public static final String MAX_INCLUSIVE = "maxInclusive";
 
-    public static final String TOTAL_DIGITS = "totalDigits";
-    public static final String FRACTION_DIGITS = "fractionDigits";
     public static final String GRANULARITY = "granularity";
 
     public static final String TRUE_QUOTA = "trueQuota";
@@ -78,8 +75,6 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         addConstraint(MAX,             String.class,  new MinNumberStringOperation());
         addConstraint(MIN_INCLUSIVE,   Boolean.class, new AndOperation());
         addConstraint(MAX_INCLUSIVE,   Boolean.class, new AndOperation());
-        addConstraint(TOTAL_DIGITS,    String.class,  new FirstArgSelector<String>());
-        addConstraint(FRACTION_DIGITS, String.class,  new FirstArgSelector<String>());
         addConfig(GRANULARITY,           String.class);
         // boolean setup
         addConfig(TRUE_QUOTA,          Double.class);
@@ -140,22 +135,6 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
 
     public void setMaxInclusive(Boolean maxInclusive) {
         setDetailValue(MAX_INCLUSIVE, maxInclusive);
-    }
-
-    public String getTotalDigits() {
-        return (String) getDetailValue(TOTAL_DIGITS);
-    }
-
-    public void setTotalDigits(String totalDigits) {
-        setDetailValue(TOTAL_DIGITS, totalDigits);
-    }
-
-    public String getFractionDigits() {
-        return (String) getDetailValue(FRACTION_DIGITS);
-    }
-
-    public void setFractionDigits(String fractionDigits) {
-        setDetailValue(FRACTION_DIGITS, fractionDigits);
     }
 
     public String getGranularity() {

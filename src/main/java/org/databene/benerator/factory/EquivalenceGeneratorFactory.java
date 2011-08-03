@@ -126,12 +126,11 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	@Override
 	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
-            Integer totalDigits, Integer fractionDigits, T granularity, Distribution distribution, Uniqueness uniqueness) {
-        // TODO v0.7 define difference between granularity and fractionDigits and implement it accordingly
+            T granularity, Distribution distribution, Uniqueness uniqueness) {
         Assert.notNull(numberType, "numberType");
         if (distribution != null)
         	return super.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, 
-        			totalDigits, fractionDigits, granularity, distribution, uniqueness);
+        			granularity, distribution, uniqueness);
         if (min == null)
         	min = (NumberUtil.isLimited(numberType) ? NumberUtil.minValue(numberType) : defaultsProvider.defaultMin(numberType));
         if (max == null)

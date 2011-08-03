@@ -392,13 +392,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Boolean minInclusive = descriptor.isMinInclusive();
         T max = DescriptorUtil.getNumberDetail(descriptor, MAX, targetType);
         Boolean maxInclusive = descriptor.isMaxInclusive();
-        Integer totalDigits = DescriptorUtil.getNumberDetail(descriptor, "totalDigits", Integer.class);
-        Integer fractionDigits = DescriptorUtil.getNumberDetail(descriptor, "fractionDigits", Integer.class);
         T granularity = DescriptorUtil.getNumberDetail(descriptor, GRANULARITY, targetType);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, false, context);
         return context.getGeneratorFactory().createNumberGenerator(targetType, min, minInclusive, max, maxInclusive, 
-                totalDigits, fractionDigits, granularity, distribution, uniqueness);
+                granularity, distribution, uniqueness);
     }
 
     private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {

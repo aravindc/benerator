@@ -30,8 +30,6 @@ import java.util.Date;
  * @author Volker Bergmann
  */
 public interface DefaultsProvider {
-	<T extends Number> int defaultTotalDigits(Class<T> numberType);
-	<T extends Number> int defaultFractionDigits(Class<T> numberType);
 	<T extends Number> T defaultGranularity(Class<T> numberType);
 	<T extends Number> T defaultMin(Class<T> numberType) ;
 	<T extends Number> T defaultMax(Class<T> numberType);
