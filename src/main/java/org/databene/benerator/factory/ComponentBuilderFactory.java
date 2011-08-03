@@ -26,6 +26,9 @@
 
 package org.databene.benerator.factory;
 
+import java.io.IOException;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
 import java.util.Collection;
 
 import org.databene.model.data.AlternativeGroupDescriptor;
@@ -227,7 +230,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	            String subSelector = typeDescriptor.getSubSelector();
 	            boolean subSelect = !StringUtil.isEmpty(subSelector);
 				String selectorToUse = (subSelect ? subSelector : selector);
-	            if (selectorToUse != null && selectorToUse.startsWith("select")) {
+	            if (isIndividualSelector(selectorToUse)) {
 	            	generator = new IteratingGenerator(sourceSystem.query(selectorToUse, true, context));
 	            } else {
 		            generator = new IteratingGenerator(sourceSystem.queryEntityIds(targetTypeName, selectorToUse, context));
@@ -257,6 +260,28 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         generator = GeneratorFactoryUtil.wrapWithProxy(generator, typeDescriptor);
         return builderFromGenerator(generator, descriptor, context);
     }
+
+	/**
+	 * helper method to check for selectors of individual fields like "select x from y" or 
+	 * "{'select x from y where id=' + z}". For such selectors it returns true, otherwise false
+	 */
+	protected static boolean isIndividualSelector(String selector) {
+		if (selector == null)
+			return false;
+		StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(selector));
+		tokenizer.ordinaryChar('\'');
+		tokenizer.ordinaryChar('"');
+		int token; 
+		try {
+			while ((token = tokenizer.nextToken()) != StreamTokenizer.TT_EOF) {
+				if (token == StreamTokenizer.TT_WORD)
+					return StringUtil.startsWithIgnoreCase(tokenizer.sval.trim(), "select");
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("Unexpected error", e);
+		}
+		return false;
+	}
 
     // non-public helpers ----------------------------------------------------------------------------------------------
 
