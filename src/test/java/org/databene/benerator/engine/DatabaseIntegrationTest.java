@@ -418,22 +418,50 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testStaticArraySelector() {
-		// TODO v0.7.0 implement test
-		// selector="{'select x, y from tbl where id = ' + x}"
+		parseAndExecute(
+				"<generate type='referer' count='2' consumer='cons'>" +
+				"  <variable name='a' source='db' subSelector='select id, n from referee where n=3' />" + 
+	        	"  <reference name='referee_id' script='a[0]' />" + 
+	        	"</generate>");
+			List<Entity> products = consumer.getProducts();
+			assertEquals(2, products.size());
+			assertEquals(3, products.get(0).get("referee_id"));
+			assertEquals(3, products.get(1).get("referee_id"));
+			closeAndCheckCleanup();
 	}
 
 	@Test
 	public void testDynamicArraySelector() {
-		// TODO v0.7.0 implement test
-		// selector="{{'select x, x from tbl where id = ' + x}}"
+		parseAndExecute(
+				"<generate type='referer' count='2' consumer='cons'>" +
+				"  <variable name='n' type='int' min='2' max='3' distribution='new org.databene.benerator.distribution.sequence.StepSequence(-1)'/>" + 
+				"  <variable name='a' source='db' subSelector=\"{{'select id, n from referee where id=' + n}}\"/>" + 
+	        	"  <reference name='referee_id' script='a[0]' />" + 
+	        	"</generate>");
+			List<Entity> products = consumer.getProducts();
+			assertEquals(2, products.size());
+			assertEquals(3, products.get(0).get("referee_id"));
+			assertEquals(2, products.get(1).get("referee_id"));
+			closeAndCheckCleanup();
 	}
 	
+	/* TODO
 	@Test
 	public void testStaticValueSelector() {
-		// TODO v0.7.0 implement test
-		// selector="{'select x from tbl where id = ' + x}"
+		parseAndExecute(
+				"<generate type='referer' count='2' consumer='cons'>" +
+				"  <variable name='v' type='int' min='2' distribution='increment' />" + 
+	        	"  <reference name='referee_id' source='db' " +
+	        	"	  subSelector=\"{'select n from referee where id=' + v}\" />" + 
+	        	"</generate>");
+			List<Entity> products = consumer.getProducts();
+			assertEquals(2, products.size());
+			assertEquals(2, products.get(0).get("referee_id"));
+			assertEquals(2, products.get(1).get("referee_id"));
+			closeAndCheckCleanup();
 	}
-
+	*/
+	
 	@Test
 	public void testDynamicValueSelectorUsingContextValue() {
 		context.set("key", 2);
