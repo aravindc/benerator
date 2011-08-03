@@ -435,9 +435,34 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	}
 
 	@Test
-	public void testDynamicValueSelector() {
-		// TODO v0.7.0 implement test
-		// selector="{{'select x from tbl where id = ' + x}}"
+	public void testDynamicValueSelectorUsingContextValue() {
+		context.set("key", 2);
+		parseAndExecute(
+				"<generate type='referer' count='2' consumer='cons'>" +
+				"  <id name='id' type='int' min='2' distribution='increment' />" + 
+	        	"  <reference name='referee_id' source='db' " +
+	        	"	  subSelector=\"{{'select n from referee where id=' + key}}\" />" + 
+	        	"</generate>");
+			List<Entity> products = consumer.getProducts();
+			assertEquals(2, products.size());
+			assertEquals(2, products.get(0).get("referee_id"));
+			assertEquals(2, products.get(1).get("referee_id"));
+			closeAndCheckCleanup();
+	}
+	
+	@Test
+	public void testDynamicValueSelectorUsingVariable() {
+		parseAndExecute(
+			"<generate type='referer' count='2' consumer='cons'>" +
+			"  <variable name='v' type='int' min='2' distribution='increment' />" + 
+        	"  <reference name='referee_id' source='db' " +
+        	"	  subSelector=\"{{'select n from referee where id=' + v}}\" />" + 
+        	"</generate>");
+		List<Entity> products = consumer.getProducts();
+		assertEquals(2, products.size());
+		assertEquals(2, products.get(0).get("referee_id"));
+		assertEquals(3, products.get(1).get("referee_id"));
+		closeAndCheckCleanup();
 	}
 	
 	@Test
