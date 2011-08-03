@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,7 +35,7 @@ import org.databene.task.Task;
  */
 public interface GeneratorTask extends Task {
 	Generator<?> getGenerator();
-	void flushConsumer(); // TODO v0.7 is this really necessary?
+	void flushConsumer();
 	void prepare(GeneratorContext context);
 	void close();
 }
