@@ -46,7 +46,6 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
-import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
@@ -363,7 +362,7 @@ public class DescriptorUtil {
             	DataSource<T> source = factory.create(uris[i], context);
                 sources[i] = new DataSourceGenerator<T>(source);
             }
-			generator = new AlternativeGenerator<T>(generatedType, sources); // TODO support equivalence partitions
+			generator = context.getGeneratorFactory().createAlternativeGenerator(generatedType, sources, Uniqueness.NONE);
 		} else {
 		    // iterate over (possibly large) data file
 			DataSource<T> source = factory.create(sourceName, context);
