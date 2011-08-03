@@ -111,7 +111,7 @@ public class GeneratorUtil {
 				LOGGER.error("Data set of generator has reached the cache limit and will be reduced to its size " +
 						"of " + cacheSize + " elements). " +
 						"If that is not acceptable then choose a distribution that does not cache data sets " +
-						"or increase the cache size.");
+						"or increase the cache size. Concerned generator: " + generator);
 				break;
 			}
 			list.add(wrapper.unwrap());
