@@ -36,6 +36,7 @@ import org.databene.benerator.primitive.UniqueScrambledStringGenerator;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.OneShotGenerator;
+import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AlternativeGenerator;
@@ -83,10 +84,11 @@ public class VolumeGeneratorFactory extends GeneratorFactory { // TODO rename to
 	}
 
 	@Override
-	public <T> Generator<T> createSampleGenerator(Collection<? extends T> values,
+	public <T> Generator<T> createSampleGenerator(Collection<T> values,
 			Class<T> generatedType, boolean unique) {
-		// TODO uniqueness
-        return new AttachedWeightSampleGenerator<T>(generatedType, values);
+        SampleGenerator<T> generator = new SampleGenerator<T>(generatedType, values);
+        generator.setUnique(unique);
+		return generator;
 	}
 
 	@Override
