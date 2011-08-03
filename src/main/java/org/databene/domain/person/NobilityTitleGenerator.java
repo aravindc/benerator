@@ -53,7 +53,7 @@ public class NobilityTitleGenerator extends GeneratorProxy<String> {
     }
 
     public NobilityTitleGenerator(Gender gender, Locale locale) {
-        super(null);
+        super(String.class);
         this.gender = gender;
         this.locale = locale;
     }

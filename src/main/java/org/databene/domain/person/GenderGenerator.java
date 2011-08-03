@@ -54,6 +54,7 @@ public class GenderGenerator extends NonNullGeneratorProxy<Gender> {
     }
 
     public GenderGenerator(double femaleQuota) {
+	    super(Gender.class);
         setFemaleQuota(femaleQuota);
     }
 

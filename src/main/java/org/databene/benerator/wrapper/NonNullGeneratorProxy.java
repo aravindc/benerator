@@ -35,8 +35,8 @@ public abstract class NonNullGeneratorProxy<E> extends GeneratorProxy<E> impleme
 	
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public NonNullGeneratorProxy() {
-        this(null);
+    public NonNullGeneratorProxy(Class<E> generatedType) {
+        super(generatedType);
     }
     
     public NonNullGeneratorProxy(NonNullGenerator<E> source) {

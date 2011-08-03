@@ -52,7 +52,9 @@ public class QueryGenerator<E> extends GeneratorProxy<E> {
 		this(null, null, true);
 	}
 
-    public QueryGenerator(String selector, StorageSystem target, boolean simplifying) {
+    @SuppressWarnings("unchecked")
+	public QueryGenerator(String selector, StorageSystem target, boolean simplifying) {
+    	super((Class<E>) Object.class);
 		this.target = target;
 		this.selector = selector;
 		this.simplifying = simplifying;

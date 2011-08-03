@@ -83,7 +83,7 @@ public class RegexStringGenerator extends NonNullGeneratorProxy<String> {
 
     /** Initializes the generator with the String representation of a regular expression */
     public RegexStringGenerator(String pattern, Integer maxLength, boolean unique) {
-        super();
+	    super(String.class);
         this.pattern = pattern;
         this.maxLength = maxLength;
         this.unique = unique;

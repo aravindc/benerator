@@ -53,6 +53,7 @@ public class BirthDateGenerator extends NonNullGeneratorProxy<Date> {
     }
 
     public BirthDateGenerator(int minAgeYears, int maxAgeYears) {
+	    super(Date.class);
         this.minAgeYears = minAgeYears;
         this.maxAgeYears = maxAgeYears;
     }

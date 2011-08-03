@@ -46,7 +46,7 @@ public class EANGenerator extends NonNullGeneratorProxy<String> {
     }
 
     public EANGenerator(boolean unique) {
-        super(null);
+	    super(String.class);
         this.unique = unique;
     }
 

@@ -81,7 +81,9 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
         this(url, encoding, new NoOpConverter());
     }
 
-    public WeightedCSVSampleGenerator(String uri, String encoding, Converter<String, E> converter) {
+    @SuppressWarnings("unchecked")
+	public WeightedCSVSampleGenerator(String uri, String encoding, Converter<String, E> converter) {
+    	super((Class<E>) Object.class);
         setSource(new AttachedWeightSampleGenerator<E>());
         this.converter = converter;
         this.encoding = encoding;

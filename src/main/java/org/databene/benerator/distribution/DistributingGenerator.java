@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,16 +40,11 @@ public class DistributingGenerator<E> extends GeneratorProxy<E> {
 	private boolean unique;
 
 	public DistributingGenerator(Generator<E> dataProvider, Distribution distribution, boolean unique) {
-		super(null);
+		super(dataProvider.getGeneratedType());
 		this.dataProvider = dataProvider;
 		this.distribution = distribution;
 		this.unique = unique;
     }
-	
-	@Override
-	public Class<E> getGeneratedType() {
-		return (getSource() != null ? getSource().getGeneratedType() : dataProvider.getGeneratedType());
-	}
 	
 	@Override
 	public void init(GeneratorContext context) {

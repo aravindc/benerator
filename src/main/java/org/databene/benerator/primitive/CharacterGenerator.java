@@ -77,6 +77,7 @@ public class CharacterGenerator extends NonNullGeneratorProxy<Character> {
      * @see org.databene.commons.LocaleUtil#getFallbackLocale()
      */
     public CharacterGenerator(String pattern, Locale locale) {
+	    super(Character.class);
         this.pattern = pattern;
         this.locale = locale;
         this.values = new HashSet<Character>();
@@ -87,6 +88,7 @@ public class CharacterGenerator extends NonNullGeneratorProxy<Character> {
      * @see org.databene.commons.LocaleUtil#getFallbackLocale()
      */
     public CharacterGenerator(Collection<Character> values) {
+	    super(Character.class);
         this.pattern = null;
         this.locale = LocaleUtil.getFallbackLocale();
         this.values = new HashSet<Character>(values);

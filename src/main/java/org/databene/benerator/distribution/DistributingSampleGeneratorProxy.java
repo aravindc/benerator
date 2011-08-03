@@ -44,7 +44,7 @@ public class DistributingSampleGeneratorProxy<E> extends GeneratorProxy<E> {
 	private boolean unique;
 
 	public DistributingSampleGeneratorProxy(Generator<E> dataProvider, Distribution distribution, boolean unique) {
-		super(null);
+		super(dataProvider.getGeneratedType());
 		this.dataProvider = dataProvider;
 		this.distribution = distribution;
 		this.unique = unique;

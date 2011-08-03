@@ -27,6 +27,8 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.InvalidGeneratorSetupException;
 
 /**
  * Wraps another Generator of same product type.<br/>
@@ -36,22 +38,30 @@ import org.databene.benerator.Generator;
  */
 public abstract class GeneratorProxy<E> extends GeneratorWrapper<E, E> {
 	
+	protected Class<E> generatedType;
+	
     // constructors ----------------------------------------------------------------------------------------------------
 
-    protected GeneratorProxy() {
-        this(null);
+    public GeneratorProxy(Class<E> generatedType) {
+        super(null);
+        this.generatedType = generatedType;
     }
-
+    
     public GeneratorProxy(Generator<E> source) {
         super(source);
+        if (source == null)
+        	throw new InvalidGeneratorSetupException("source is null");
     }
     
     // Generator interface implementation ------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
     public Class<E> getGeneratedType() {
-    	Generator<E> source = getSource();
-        return (source != null ? source.getGeneratedType() : (Class<E>) Object.class); // TODO v1.0 possibly there is a better way to handle this?
+		if (getSource() != null)
+			return getSource().getGeneratedType();
+		else if (generatedType != null)
+			return generatedType;
+		else
+			throw new IllegalGeneratorStateException("Generator not initialized correctly: " + this);
     }
 
     public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {

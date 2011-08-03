@@ -48,6 +48,7 @@ public class DBSequenceGenerator extends NonNullGeneratorProxy<Long> {
     }
     
     public DBSequenceGenerator(String name, DBSystem database, boolean cached) {
+	    super(Long.class);
 	    this.name = name;
 	    this.database = database;
 	    this.cached = cached;

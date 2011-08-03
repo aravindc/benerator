@@ -420,7 +420,7 @@ public class DBSystem extends AbstractStorageSystem {
     	    sql = "'select * from " + type + " WHERE ' + " + selector;
     	if (script)
     		sql = '{' + sql + '}';
-        HeavyweightIterable<ResultSet> iterable = createQuery(sql, context, connection);
+        HeavyweightIterable<ResultSet> iterable = createQuery(sql, context, connection); // TODO migrate to DataSource
         return new EntityResultSetIterable(iterable, (ComplexTypeDescriptor) getTypeDescriptor(type));
     }
 

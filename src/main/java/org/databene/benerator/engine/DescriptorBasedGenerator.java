@@ -37,6 +37,7 @@ public class DescriptorBasedGenerator extends GeneratorProxy<Object> {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public DescriptorBasedGenerator(String uri, String generatorName, BeneratorContext context) throws IOException {
+		super(Object.class);
 		ConverterManager.getInstance().setContext(context);
 		DescriptorRunner descriptorRunner = new DescriptorRunner(uri);
 		BeneratorRootStatement rootStatement = descriptorRunner.parseDescriptorFile();

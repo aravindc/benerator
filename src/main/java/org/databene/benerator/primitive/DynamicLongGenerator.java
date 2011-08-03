@@ -57,7 +57,7 @@ public class DynamicLongGenerator extends GeneratorProxy<Long> {
     public DynamicLongGenerator(Expression<Long> min, Expression<Long> max, 
     		Expression<Long> granularity, Expression<? extends Distribution> distribution,
     	    Expression<Boolean> unique) {
-        super(null);
+        super(Long.class);
         this.min = min;
         this.max = max;
         this.granularity = granularity;

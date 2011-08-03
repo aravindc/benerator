@@ -39,7 +39,7 @@ import org.databene.model.data.Entity;
  * @author Volker Bergmann
  * @since 0.3.04
  */
-public class EntityResultSetIterable implements HeavyweightTypedIterable<Entity> {
+public class EntityResultSetIterable implements HeavyweightTypedIterable<Entity> { // TODO migrate to DataSource
 
     private HeavyweightIterable<ResultSet> iterable;
     private ComplexTypeDescriptor entityDescriptor;

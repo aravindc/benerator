@@ -23,6 +23,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.commons.ArrayUtil;
 
 /**
  * Keeps an array of generators, of which it combines the products to an array.<br/><br/>
@@ -36,7 +37,9 @@ public class MultiSourceArrayGenerator<S> extends GeneratorProxy<S[]> {
     private boolean unique;
     private Generator<? extends S>[] sources;
     
+	@SuppressWarnings("unchecked")
 	public MultiSourceArrayGenerator(Class<S> componentType, boolean unique, Generator<? extends S>... sources) {
+		super(ArrayUtil.arrayType(componentType));
 	    this.componentType = componentType;
 	    this.unique = unique;
 	    this.sources = sources;

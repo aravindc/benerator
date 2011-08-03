@@ -64,7 +64,7 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
     }
 
     public StreetNameGenerator(String datasetName) {
-        super(null);
+        super(String.class);
         this.datasetName = datasetName;
     }
     

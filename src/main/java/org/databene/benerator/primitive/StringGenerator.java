@@ -68,6 +68,7 @@ public class StringGenerator extends NonNullGeneratorProxy<String> {
 			boolean ordered, String prefix, Character minInitial,
 			String suffix, int minLength, int maxLength, int lengthGranularity, 
 			Distribution lengthDistribution) {
+	    super(String.class);
 		this.pattern = pattern;
 		this.locale = locale;
 		this.unique = unique;

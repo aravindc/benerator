@@ -51,6 +51,7 @@ public class SequencedDatasetCSVGenerator<E> extends GeneratorProxy<E> {
 	@SuppressWarnings("unchecked")
     public SequencedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting,
             Distribution distribution, String encoding, Converter<String, E> converter) {
+		super((Class<E>) Object.class);
         List<E> samples = parseFiles(datasetName, separator, nesting, filenamePattern, encoding, converter);
 		setSource(new SampleGenerator<E>((Class<E>) samples.get(0).getClass(), distribution, false, samples));
     }

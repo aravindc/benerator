@@ -34,7 +34,6 @@ import org.databene.benerator.wrapper.GeneratorProxy;
  */
 public class WeigthedLiteralGenerator<E> extends GeneratorProxy<E> {
 	
-	private Class<E> targetType;
 	private boolean unique;
 	private String valueSpec;
 	
@@ -47,14 +46,10 @@ public class WeigthedLiteralGenerator<E> extends GeneratorProxy<E> {
     }
 
 	public WeigthedLiteralGenerator(Class<E> targetType, String valueSpec, boolean unique) {
-		this.targetType = targetType;
+		super(targetType);
 		this.valueSpec = valueSpec;
 	    this.unique = unique;
     }
-
-	public void setTargetType(Class<E> targetType) {
-		this.targetType = targetType;
-	}
 
 	public void setValueSpec(String valueSpec) {
 		this.valueSpec = valueSpec;
@@ -68,7 +63,8 @@ public class WeigthedLiteralGenerator<E> extends GeneratorProxy<E> {
 	public synchronized void init(GeneratorContext context) {
 		if (valueSpec == null)
 			throw new InvalidGeneratorSetupException("'codes' is null");
-	    super.setSource(context.getGeneratorFactory().createFromWeightedLiteralList(valueSpec, targetType, null, unique));
+	    super.setSource(context.getGeneratorFactory().createFromWeightedLiteralList(
+	    		valueSpec, getGeneratedType(), null, unique));
 	    super.init(context);
     }
 

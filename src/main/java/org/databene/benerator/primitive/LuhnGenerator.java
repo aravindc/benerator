@@ -51,7 +51,7 @@ public class LuhnGenerator extends NonNullGeneratorProxy<String> {
     }
 
 	public LuhnGenerator(String prefix, int minLength, int maxLength, int lengthGranularity, Distribution lengthDistribution) {
-	    super();
+	    super(String.class);
 	    this.prefix = prefix;
 	    this.minLength = minLength;
 	    this.maxLength = maxLength;

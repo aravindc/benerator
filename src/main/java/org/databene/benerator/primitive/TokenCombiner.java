@@ -66,6 +66,7 @@ public class TokenCombiner extends GeneratorProxy<String> {
     }
 
 	public TokenCombiner(String uri, boolean unique, char separator, String encoding, boolean excludeSeed) {
+		super(String.class);
 	    this.uri = uri;
 		this.unique = unique;
 		this.separator = separator;
