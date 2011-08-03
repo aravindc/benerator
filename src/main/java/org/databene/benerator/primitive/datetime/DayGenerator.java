@@ -109,7 +109,6 @@ public class DayGenerator extends ThreadSafeNonNullGenerator<Date> {
 		int count = 0;
 		Calendar calendar = (Calendar) minCalendar.clone();
 		do {
-			// TODO v0.7.0 tune performance
 			calendar.add(Calendar.YEAR, yearGranularity);
 			calendar.add(Calendar.MONTH, monthGranularity);
 			calendar.add(Calendar.DAY_OF_MONTH, dayGranularity);
