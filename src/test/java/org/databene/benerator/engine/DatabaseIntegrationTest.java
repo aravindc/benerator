@@ -101,7 +101,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		context.setDefaultOneToOne(true);
 		parseAndExecute(
 				"<generate type='referer' consumer='cons'>" +
-	        	"  <reference name='referee_id' nullable='false' source='db' />" + // TODO should source='db' be optional?
+	        	"  <reference name='referee_id' nullable='false' source='db' />" + // TODO v1.0 should source='db' be optional?
 	        	"</generate>");
 		List<Entity> products = consumer.getProducts();
 		assertEquals(2, products.size());
@@ -117,7 +117,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		context.setDefaultOneToOne(false);
 		parseAndExecute(
 				"<generate type='referer' count='3' consumer='cons'>" +
-	        	"  <reference name='referee_id' nullable='false' source='db' />" + // TODO should source='db' be optional?
+	        	"  <reference name='referee_id' nullable='false' source='db' />" + // TODO v1.0 should source='db' be optional?
 	        	"</generate>");
 		List<Entity> products = consumer.getProducts();
 		assertEquals(3, products.size());
@@ -394,26 +394,63 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	
 	@Test
 	public void testStaticEntitySelector_partial() {
-		// TODO v0.7.0 implement test
-		// selector="{'id = ' + x}"
+		parseAndExecute(
+				"<generate type='referer' count='2' consumer='cons'>" +
+				"  <variable name='e' type='referee' source='db' subSelector='id=3' />" + 
+	        	"  <reference name='referee_id' script='e.id' />" + 
+	        	"</generate>");
+			List<Entity> products = consumer.getProducts();
+			assertEquals(2, products.size());
+			assertEquals(3, products.get(0).get("referee_id"));
+			assertEquals(3, products.get(1).get("referee_id"));
+			closeAndCheckCleanup();
 	}
-
+	
+	
 	@Test
 	public void testStaticEntitySelector_complete() {
-		// TODO v0.7.0 implement test
-		// selector="{'select * from tbl where id = ' + x}"
+		parseAndExecute(
+				"<generate type='referer' count='2' consumer='cons'>" +
+				"  <variable name='e' type='referee' source='db' subSelector='select * from referee where id=3' />" + 
+	        	"  <reference name='referee_id' script='e.id' />" + 
+	        	"</generate>");
+			List<Entity> products = consumer.getProducts();
+			assertEquals(2, products.size());
+			assertEquals(3, products.get(0).get("referee_id"));
+			assertEquals(3, products.get(1).get("referee_id"));
+			closeAndCheckCleanup();
 	}
 
 	@Test
 	public void testDynamicEntitySelector_partial() {
-		// TODO v0.7.0 implement test
-		// selector="{{'id = ' + x}}"
+		parseAndExecute(
+				"<generate type='referer' count='2' consumer='cons'>" +
+				"  <variable name='n' type='int' min='2' max='3' " +
+				"    distribution='new org.databene.benerator.distribution.sequence.StepSequence(-1)'/>" + 
+				"  <variable name='e' type='referee' source='db' subSelector=\"{{'id=' + n}}\" />" + 
+	        	"  <reference name='referee_id' script='e.id' />" + 
+	        	"</generate>");
+			List<Entity> products = consumer.getProducts();
+			assertEquals(2, products.size());
+			assertEquals(3, products.get(0).get("referee_id"));
+			assertEquals(2, products.get(1).get("referee_id"));
+			closeAndCheckCleanup();
 	}
 
 	@Test
 	public void testDynamicEntitySelector_complete() {
-		// TODO v0.7.0 implement test
-		// selector="{{'select * from tbl where id = ' + x}}"
+		parseAndExecute(
+				"<generate type='referer' count='2' consumer='cons'>" +
+				"  <variable name='n' type='int' min='2' max='3' " +
+				"    distribution='new org.databene.benerator.distribution.sequence.StepSequence(-1)'/>" + 
+				"  <variable name='e' type='referee' source='db' subSelector=\"{{'select * from referee where id=' + n}}\" />" + 
+	        	"  <reference name='referee_id' script='e.id' />" + 
+	        	"</generate>");
+			List<Entity> products = consumer.getProducts();
+			assertEquals(2, products.size());
+			assertEquals(3, products.get(0).get("referee_id"));
+			assertEquals(2, products.get(1).get("referee_id"));
+			closeAndCheckCleanup();
 	}
 
 	@Test
@@ -445,22 +482,20 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			closeAndCheckCleanup();
 	}
 	
-	/* TODO
 	@Test
 	public void testStaticValueSelector() {
 		parseAndExecute(
 				"<generate type='referer' count='2' consumer='cons'>" +
 				"  <variable name='v' type='int' min='2' distribution='increment' />" + 
 	        	"  <reference name='referee_id' source='db' " +
-	        	"	  subSelector=\"{'select n from referee where id=' + v}\" />" + 
+	        	"	  subSelector='select n from referee where id=3' />" + 
 	        	"</generate>");
 			List<Entity> products = consumer.getProducts();
 			assertEquals(2, products.size());
-			assertEquals(2, products.get(0).get("referee_id"));
-			assertEquals(2, products.get(1).get("referee_id"));
+			assertEquals(3, products.get(0).get("referee_id"));
+			assertEquals(3, products.get(1).get("referee_id"));
 			closeAndCheckCleanup();
 	}
-	*/
 	
 	@Test
 	public void testDynamicValueSelectorUsingContextValue() {
@@ -506,12 +541,6 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		assertEquals(2, products.get(0).get("referee_id"));
 		assertEquals(3, products.get(1).get("referee_id"));
 		closeAndCheckCleanup();
-	}
-	
-	@Test
-	public void testCacheBehavior() {
-		// TODO v0.7.0 implement test
-		// verify that a distribution like 'random' fetches a query result only once in N <generate> loops
 	}
 	
 	
