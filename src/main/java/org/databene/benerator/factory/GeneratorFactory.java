@@ -36,9 +36,6 @@ import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.model.data.Uniqueness;
-import org.databene.regex.CustomCharClass;
-import org.databene.regex.Factor;
-import org.databene.regex.Quantifier;
 import org.databene.regex.RegexParser;
 
 import java.util.*;
@@ -225,20 +222,9 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
         	}
         }
         if (pattern == null)
-            pattern = "[A-Z]{" + minLength + ',' + maxLength + '}';
+            pattern = "[A-Z]";
         if (lengthDistribution != null) {
-            Object regex = new RegexParser().parseRegex(pattern);
-        	if (!(regex instanceof Factor))
-        		throw new ConfigurationError("Illegal regular expression in the context of a length distribution: " + pattern);
-        	Factor factor = (Factor) regex;
-        	Object atom = factor.getAtom();
-        	if (!(atom instanceof CustomCharClass))
-        		throw new ConfigurationError("Illegal regex atom in the context of a length distribution: " + atom);
-        	Set<Character> chars = ((CustomCharClass) atom).getCharSet().getSet(); // TODO chars resolution already is implemented in CharacterGenerator
-        	Quantifier quantifier = factor.getQuantifier();
-        	minLength = Math.max(minLength, quantifier.getMin());
-        	if (quantifier.getMax() != null)
-        		maxLength = Math.min(maxLength, quantifier.getMax());
+        	Set<Character> chars = RegexParser.charsOfPattern(pattern, locale);
 			return createStringGenerator(
 					chars, minLength, maxLength, lengthGranularity, lengthDistribution, uniqueness);
         }
