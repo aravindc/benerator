@@ -34,7 +34,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> implements NonNullGenerator<String> { // TODO NonNullCardinalGenerator?
+public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> implements NonNullGenerator<String> {
 
 	protected Integer currentLength;
 	
