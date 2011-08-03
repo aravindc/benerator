@@ -76,7 +76,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	
 	
 	// generation of database references -------------------------------------------------------------------------------
-
+	
 	@Test
 	public void testScriptResolution() {
 		context.set("tblName", "referee");
@@ -438,6 +438,21 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	public void testDynamicValueSelector() {
 		// TODO v0.7.0 implement test
 		// selector="{{'select x from tbl where id = ' + x}}"
+	}
+	
+	@Test
+	public void testDynamicValueSelectorUsingAttribute() {
+		parseAndExecute(
+			"<generate type='referer' count='2' consumer='cons'>" +
+			"  <id name='id' type='int' min='2' distribution='increment' />" + 
+        	"  <reference name='referee_id' source='db' " +
+        	"	  subSelector=\"{{'select n from referee where id=' + referer.id}}\" />" + 
+        	"</generate>");
+		List<Entity> products = consumer.getProducts();
+		assertEquals(2, products.size());
+		assertEquals(2, products.get(0).get("referee_id"));
+		assertEquals(3, products.get(1).get("referee_id"));
+		closeAndCheckCleanup();
 	}
 	
 	@Test
