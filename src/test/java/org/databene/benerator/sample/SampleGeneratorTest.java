@@ -38,24 +38,24 @@ import static junit.framework.Assert.*;
  * Created: 07.06.2006 21:59:02
  * @author Volker Bergmann
  */
-public class SequencedSampleGeneratorTest extends GeneratorClassTest {
+public class SampleGeneratorTest extends GeneratorClassTest {
 
-    private static Logger logger = LoggerFactory.getLogger(SequencedSampleGeneratorTest.class);
+    private static Logger logger = LoggerFactory.getLogger(SampleGeneratorTest.class);
 
-    public SequencedSampleGeneratorTest() {
+    public SampleGeneratorTest() {
         super(SampleGenerator.class);
     }
 
     @Test
     public void testDistribution() throws Exception {
         Integer[] samples = new Integer[] { 0, 1, 2 };
-        SampleGenerator<Integer> g = new SampleGenerator<Integer>(Integer.class);
-        g.setValues(samples);
-        g.init(context);
+        SampleGenerator<Integer> generator = new SampleGenerator<Integer>(Integer.class);
+        generator.setValues(samples);
+        generator.init(context);
         int n = 10000;
         int[] sampleCount = new int[3];
         for (int i = 0; i < n; i++) {
-            sampleCount[GeneratorUtil.generateNonNull(g)] ++;
+            sampleCount[GeneratorUtil.generateNonNull(generator)] ++;
         }
         for (int i = 0; i < sampleCount.length; i++) {
             int count = sampleCount[i];
