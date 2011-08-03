@@ -120,7 +120,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
 	public abstract <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
             Distribution distribution, boolean unique);
 
-    public abstract <T> Generator<T> createSampleGenerator(Collection<? extends T> values, Class<T> generatedType, boolean unique);
+    public abstract <T> Generator<T> createSampleGenerator(Collection<T> values, Class<T> generatedType, boolean unique);
 
     /**
      * Creates a generator that chooses from a set of samples, using an individual weight for each sample.

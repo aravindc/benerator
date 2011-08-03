@@ -76,7 +76,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	public <T> Generator<T> createSampleGenerator(Collection<? extends T> values, Class<T> generatedType, boolean unique) {
+	public <T> Generator<T> createSampleGenerator(Collection<T> values, Class<T> generatedType, boolean unique) {
         return new SequenceGenerator<T>(generatedType, values);
 	}
 
