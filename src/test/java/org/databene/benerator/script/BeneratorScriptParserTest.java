@@ -174,7 +174,7 @@ public class BeneratorScriptParserTest {
 
 	@Test
 	public void testStaticCall() throws Exception {
-		checkExpression(1, "Math.abs(-1)");
+		checkExpression(2., "Math.sqrt(4)");
 	}
 	
 	@Test

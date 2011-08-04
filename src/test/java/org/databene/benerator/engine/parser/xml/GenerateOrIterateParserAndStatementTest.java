@@ -32,13 +32,13 @@ import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonIterable;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.HeavyweightIterator;
-import org.databene.commons.HeavyweightTypedIterable;
-import org.databene.commons.iterator.IteratorTestCase;
 import org.databene.jdbacl.hsql.HSQLUtil;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.platform.db.DBSystem;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.DataSource;
+import org.databene.webdecs.util.DataIteratorTestCase;
 import org.junit.Test;
 
 /**
@@ -355,9 +355,9 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	        );
 	        context.set("db", db);
 			statement.execute(context);
-			HeavyweightTypedIterable<?> check = db.query("select N from GOIPAST", true, context);
-			HeavyweightIterator<?> iterator = check.iterator();
-			IteratorTestCase.expectNextElements(iterator, 2, 2).withNoNext();
+			DataSource<?> check = db.query("select N from GOIPAST", true, context);
+			DataIterator<?> iterator = check.iterator();
+			DataIteratorTestCase.expectNextElements(iterator, 2, 2).withNoNext();
 			iterator.close();
         } catch (Exception e) {
         	e.printStackTrace();

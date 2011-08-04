@@ -26,17 +26,17 @@
 
 package org.databene.platform.db;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.jdbacl.DBUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -65,11 +65,11 @@ public class DBSystemTest {
 	}
 	
 	@Test
-	public void testReadOnly() throws IOException {
+	public void testReadOnly() {
 		db.setReadOnly(true);
 
 		// test select w/ readOnly
-		HeavyweightTypedIterable<?> result = db.query("select id from Test", true, null);
+		DataSource<?> result = db.query("select id from Test", true, null);
 		result.iterator().close();
 
 		// test insert w/ readOnly
@@ -133,10 +133,10 @@ public class DBSystemTest {
 	@Test
 	public void testUpdater() throws Exception {
 		db.execute("insert into TEST (ID, NAME) values (1, 'Alice')");
-        HeavyweightTypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
-        Iterator<Entity> iterator = entities.iterator();
-        assertTrue(iterator.hasNext());
-        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), iterator.next());
+		DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+        DataIterator<Entity> iterator = entities.iterator();
+        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 
+        		iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
 	@Test
@@ -145,10 +145,10 @@ public class DBSystemTest {
         Entity entity = new Entity("TEST", "ID", 1, "NAME", "Alice");
         inserter.startConsuming(entity);
         inserter.finishConsuming(entity);
-        HeavyweightTypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
-        Iterator<Entity> iterator = entities.iterator();
-        assertTrue(iterator.hasNext());
-        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), iterator.next());
+        DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+        DataIterator<Entity> iterator = entities.iterator();
+        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 
+        		iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
 	@Test
@@ -157,10 +157,10 @@ public class DBSystemTest {
         Entity entity = new Entity("Xyz", "ID", 1, "NAME", "Alice");
         inserter.startConsuming(entity);
         inserter.finishConsuming(entity);
-        HeavyweightTypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
-        Iterator<Entity> iterator = entities.iterator();
-        assertTrue(iterator.hasNext());
-        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), iterator.next());
+        DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+        DataIterator<Entity> iterator = entities.iterator();
+        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 
+        		iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
 	@Test

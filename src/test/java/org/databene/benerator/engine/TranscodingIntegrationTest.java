@@ -24,11 +24,12 @@ package org.databene.benerator.engine;
 import static org.junit.Assert.*;
 
 import java.io.Closeable;
-import java.util.Iterator;
 
-import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.DataSource;
 import org.junit.After;
 import org.junit.Test;
 
@@ -74,11 +75,11 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		runner.run();
 		DBSystem t = (DBSystem) context.get("t");
 		// check countries
-		HeavyweightTypedIterable<Entity> iterable = t.queryEntities("country", null, context);
-		Iterator<Entity> iterator = iterable.iterator();
+		DataSource<Entity> iterable = t.queryEntities("country", null, context);
+		DataIterator<Entity> iterator = iterable.iterator();
 		assertNextCountry(1, "United States", iterator);
 		assertNextCountry(2, "Germany", iterator);
-		assertFalse(iterator.hasNext());
+		assertNull(iterator.next(new DataContainer<Entity>()));
 		((Closeable) iterator).close();
 		// check states
 		iterable = t.queryEntities("state", null, context);
@@ -87,7 +88,7 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		assertNextState(4, 1, "Florida", iterator);
 		assertNextState(5, 2, "Bayern", iterator);
 		assertNextState(6, 2, "Hamburg", iterator);
-		assertFalse(iterator.hasNext());
+		assertNull(iterator.next(new DataContainer<Entity>()));
 		((Closeable) iterator).close();
 	}
 
@@ -98,11 +99,11 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		runner.run();
 		DBSystem t = (DBSystem) context.get("t");
 		// check countries
-		HeavyweightTypedIterable<Entity> iterable = t.queryEntities("country", null, context);
-		Iterator<Entity> iterator = iterable.iterator();
+		DataSource<Entity> iterable = t.queryEntities("country", null, context);
+		DataIterator<Entity> iterator = iterable.iterator();
 		assertNextCountry(1000, "United States", iterator);
 		assertNextCountry(2000, "Germany", iterator);
-		assertFalse(iterator.hasNext());
+		assertNull(iterator.next(new DataContainer<Entity>()));
 		((Closeable) iterator).close();
 		// check states
 		iterable = t.queryEntities("state", null, context);
@@ -111,7 +112,7 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		assertNextState(2, 1000, "Florida", iterator);
 		assertNextState(3, 2000, "Bayern", iterator);
 		assertNextState(4, 2000, "Hamburg", iterator);
-		assertFalse(iterator.hasNext());
+		assertNull(iterator.next(new DataContainer<Entity>()));
 		((Closeable) iterator).close();
 	}
 	
@@ -122,10 +123,10 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		runner.run();
 		DBSystem t = (DBSystem) context.get("t");
 		// check countries
-		HeavyweightTypedIterable<Entity> iterable = t.queryEntities("country", null, context);
-		Iterator<Entity> iterator = iterable.iterator();
+		DataSource<Entity> iterable = t.queryEntities("country", null, context);
+		DataIterator<Entity> iterator = iterable.iterator();
 		assertNextCountry(1, "Germany", iterator);
-		assertFalse(iterator.hasNext());
+		assertNull(iterator.next(new DataContainer<Entity>()));
 		((Closeable) iterator).close();
 		// check states
 		iterable = t.queryEntities("state", null, context);
@@ -133,7 +134,7 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		assertNextState(2, 1, "Bayern", iterator);
 		assertNextState(3, 1, "Hamburg", iterator);
 		assertNextState(4, null, "No State", iterator); // checking transcoding of 'null' refs
-		assertFalse(iterator.hasNext());
+		assertNull(iterator.next(new DataContainer<Entity>()));
 		((Closeable) iterator).close();
 	}
 
@@ -144,11 +145,11 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		runner.run();
 		DBSystem t = (DBSystem) context.get("t");
 		// check countries
-		HeavyweightTypedIterable<Entity> iterable = t.queryEntities("country", null, context);
-		Iterator<Entity> iterator = iterable.iterator();
+		DataSource<Entity> iterable = t.queryEntities("country", null, context);
+		DataIterator<Entity> iterator = iterable.iterator();
 		assertNextCountry(1, "Germany", iterator);
 		assertNextCountry(10, "United States", iterator);
-		assertFalse(iterator.hasNext());
+		assertNull(iterator.next(new DataContainer<Entity>()));
 		((Closeable) iterator).close();
 		// check states
 		iterable = t.queryEntities("state", null, context);
@@ -157,7 +158,7 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		assertNextState(3, 1, "Hamburg", iterator);
 		assertNextState(110, 10, "California", iterator);
 		assertNextState(120, 10, "Florida", iterator);
-		assertFalse(iterator.hasNext());
+		assertNull(iterator.next(new DataContainer<Entity>()));
 		((Closeable) iterator).close();
 	}
 
@@ -169,10 +170,10 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		DBSystem t = (DBSystem) context.get("t");
 		
 		// check countries
-		HeavyweightTypedIterable<Entity> iterable = t.queryEntities("country", null, context);
-		Iterator<Entity> iterator = iterable.iterator();
+		DataSource<Entity> iterable = t.queryEntities("country", null, context);
+		DataIterator<Entity> iterator = iterable.iterator();
 		assertNextCountry(1, "Germany", iterator);
-		assertFalse(iterator.hasNext());
+		assertNull(iterator.next(new DataContainer<Entity>()));
 		((Closeable) iterator).close();
 		
 		// check states
@@ -180,7 +181,7 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		iterator = iterable.iterator();
 		assertNextState(2, 1, "Bayern", iterator);
 		assertNextState(5, 1, "Hamburg", iterator);
-		assertFalse(iterator.hasNext());
+		assertNull(iterator.next(new DataContainer<Entity>()));
 		((Closeable) iterator).close();
 		
 		// check cities
@@ -188,7 +189,7 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		iterator = iterable.iterator();
 		assertNextCity(3, 2, "München", iterator);
 		assertNextCity(4, 2, "Ingolstadt", iterator);
-		assertFalse(iterator.hasNext());
+		assertNull(iterator.next(new DataContainer<Entity>()));
 		((Closeable) iterator).close();
 	}
 
@@ -196,22 +197,19 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 
-	private void assertNextCountry(int id, String name, Iterator<Entity> iterator) {
-		assertTrue(iterator.hasNext());
+	private void assertNextCountry(int id, String name, DataIterator<Entity> iterator) {
 		Entity expectedCountry = new Entity("COUNTRY", "ID", id, "NAME", name);
-		assertEquals(expectedCountry, iterator.next());
+		assertEquals(expectedCountry, iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
-	private void assertNextState(int id, Integer countryId, String name, Iterator<Entity> iterator) {
-		assertTrue(iterator.hasNext());
+	private void assertNextState(int id, Integer countryId, String name, DataIterator<Entity> iterator) {
 		Entity expectedState = new Entity("STATE", "ID", id, "COUNTRY_FK", countryId, "NAME", name);
-		assertEquals(expectedState, iterator.next());
+		assertEquals(expectedState, iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
-	private void assertNextCity(int id, Integer stateId, String name, Iterator<Entity> iterator) {
-		assertTrue(iterator.hasNext());
+	private void assertNextCity(int id, Integer stateId, String name, DataIterator<Entity> iterator) {
 		Entity expectedCity = new Entity("CITY", "ID", id, "STATE_FK", stateId, "NAME", name);
-		assertEquals(expectedCity, iterator.next());
+		assertEquals(expectedCity, iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
 }

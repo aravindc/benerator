@@ -35,10 +35,7 @@ import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
-import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.expression.ConstantExpression;
-import org.databene.commons.iterator.TypedIterableProxy;
-import org.databene.commons.iterator.HeavyweightIterableAdapter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
@@ -47,6 +44,9 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
+import org.databene.webdecs.DataSource;
+import org.databene.webdecs.util.DataSourceFromIterable;
+import org.databene.webdecs.util.DataSourceProxy;
 
 /**
  * Tests the {@link ComponentBuilderFactory}'s reference-related methods.<br/>
@@ -206,18 +206,18 @@ public class ReferenceComponentBuilderFactoryTest {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 
-		public HeavyweightTypedIterable<?> query(String selector, boolean simplify, Context context) {
+		public DataSource<?> query(String selector, boolean simplify, Context context) {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 
-		public HeavyweightTypedIterable<Entity> queryEntities(String type, String selector, Context context) {
+		public DataSource<Entity> queryEntities(String type, String selector, Context context) {
 			throw new UnsupportedOperationException("queryEntities() not implemented");
 		}
 
-        public HeavyweightTypedIterable<?> queryEntityIds(String entityName, String selector, Context context) {
-			HeavyweightIterableAdapter<String> source = 
-				new HeavyweightIterableAdapter<String>(CollectionUtil.toList("Alice", "Bob"));
-			return new TypedIterableProxy<String>(String.class, source);
+        public DataSource<?> queryEntityIds(String entityName, String selector, Context context) {
+			DataSource<String> source = 
+				new DataSourceFromIterable<String>(CollectionUtil.toList("Alice", "Bob"), String.class);
+			return new DataSourceProxy<String>(source);
 		}
 
 		public void store(Entity entity) {

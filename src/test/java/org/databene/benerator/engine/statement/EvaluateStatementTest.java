@@ -25,12 +25,12 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.Encodings;
 import org.databene.commons.Expression;
-import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.storage.AbstractStorageSystem;
+import org.databene.webdecs.DataSource;
 import org.junit.Test;
 
 import static org.databene.commons.expression.ExpressionUtil.*;
@@ -145,17 +145,17 @@ public class EvaluateStatementTest {
 			return "id";
 		}
 
-		public HeavyweightTypedIterable<Entity> queryEntities(String type,
+		public DataSource<Entity> queryEntities(String type,
 				String selector, Context context) {
 			return null;
 		}
 
-		public HeavyweightTypedIterable<?> queryEntityIds(String entityName,
+		public DataSource<?> queryEntityIds(String entityName,
 				String selector, Context context) {
 			return null;
 		}
 
-		public HeavyweightTypedIterable<?> query(String selector, boolean simplify, Context context) {
+		public DataSource<?> query(String selector, boolean simplify, Context context) {
 			return null;
 		}
 

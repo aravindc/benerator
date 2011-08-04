@@ -392,6 +392,8 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	
 	// selector resolution ---------------------------------------------------------------------------------------------
 	
+	// TODO test difference between null result and no result
+	
 	@Test
 	public void testStaticEntitySelector_partial() {
 		parseAndExecute(
