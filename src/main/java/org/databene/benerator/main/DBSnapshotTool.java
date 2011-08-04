@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,6 +42,8 @@ import org.databene.platform.db.DBSystem;
 import org.databene.platform.db.SQLEntityExporter;
 import org.databene.platform.dbunit.DbUnitEntityExporter;
 import org.databene.platform.xls.XLSEntityExporter;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,7 +160,10 @@ public class DBSnapshotTool {
                 }
 				logger.info(note);
 				Thread.yield();
-                for (Entity entity : db.queryEntities(descriptor.getName(), null, null)) {
+                DataIterator<Entity> source = db.queryEntities(descriptor.getName(), null, null).iterator();
+                DataContainer<Entity> container = new DataContainer<Entity>();
+				while ((container = source.next(container)) != null) {
+					Entity entity = container.getData();
                     exporter.startConsuming(entity);
                     exporter.finishConsuming(entity);
                     count++;

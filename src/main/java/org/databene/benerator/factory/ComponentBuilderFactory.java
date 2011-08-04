@@ -62,7 +62,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.wrapper.AsIntegerGeneratorWrapper;
-import org.databene.benerator.wrapper.IteratingGenerator;
+import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
@@ -231,9 +231,9 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	            boolean subSelect = !StringUtil.isEmpty(subSelector);
 				String selectorToUse = (subSelect ? subSelector : selector);
 	            if (isIndividualSelector(selectorToUse)) {
-	            	generator = new IteratingGenerator(sourceSystem.query(selectorToUse, true, context));
+	            	generator = new DataSourceGenerator(sourceSystem.query(selectorToUse, true, context));
 	            } else {
-		            generator = new IteratingGenerator(sourceSystem.queryEntityIds(targetTypeName, selectorToUse, context));
+		            generator = new DataSourceGenerator(sourceSystem.queryEntityIds(targetTypeName, selectorToUse, context));
 		            if (selectorToUse == null && distribution == null)
 		            	if (context.isDefaultOneToOne())
 		            		distribution = new ExpandSequence();

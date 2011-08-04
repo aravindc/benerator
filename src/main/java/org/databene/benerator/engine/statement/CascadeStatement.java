@@ -21,12 +21,10 @@
 
 package org.databene.benerator.engine.statement;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import static java.io.StreamTokenizer.*;
 import java.io.StringReader;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +38,6 @@ import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
-import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SyntaxError;
 import org.databene.jdbacl.SQLUtil;
@@ -57,6 +54,8 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.db.DBSystem;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,10 +100,11 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
         ComponentAndVariableSupport<Entity> cavs = new ComponentAndVariableSupport<Entity>(variables, componentBuilders, context);
         cavs.init(context);
 
-		Iterator<Entity> iterator = ref.resolveReferences(parent.currentEntity(), source, context);
-		while (iterator.hasNext())
-			mutateAndTranscodeEntity(iterator.next(), identity, cavs, context);
-		IOUtil.close((Closeable) iterator);
+        DataIterator<Entity> iterator = ref.resolveReferences(parent.currentEntity(), source, context);
+        DataContainer<Entity> container = new DataContainer<Entity>();
+		while ((container = iterator.next(container)) != null)
+			mutateAndTranscodeEntity(container.getData(), identity, cavs, context);
+		IOUtil.close(iterator);
 	}
 
 	public DBSystem getSource(BeneratorContext context) {
@@ -229,7 +229,7 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 			}
 		}
 
-		public HeavyweightIterator<Entity> resolveReferences(Entity currentEntity, DBSystem db, BeneratorContext context) {
+		public DataIterator<Entity> resolveReferences(Entity currentEntity, DBSystem db, BeneratorContext context) {
 			initIfNecessary(currentEntity.type(), db, context);
 			DBTable parentTable = database.getTable(currentEntity.type());
 			if (parentTable.equals(refereeTable))
@@ -251,7 +251,7 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 			this.targetTable = (parentTable.equalsIgnoreCase(refereeTable.getName()) ? refererTable : refereeTable);
 		}
 
-		private HeavyweightIterator<Entity> resolveToManyReference( // TODO test
+		private DataIterator<Entity> resolveToManyReference( // TODO test
 				Entity fromEntity, DBForeignKeyConstraint fk, DBSystem db, BeneratorContext context) {
 			StringBuilder selector = new StringBuilder();
 			String[] refererColumnNames = fk.getColumnNames();
@@ -265,7 +265,7 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 			return db.queryEntities(fk.getTable().getName(), selector.toString(), context).iterator();
 		}
 
-		private HeavyweightIterator<Entity> resolveToOneReference( // TODO test
+		private DataIterator<Entity> resolveToOneReference( // TODO test
 				Entity fromEntity, DBForeignKeyConstraint fk, DBSystem db, BeneratorContext context) {
 			StringBuilder selector = new StringBuilder();
 			String[] refererColumnNames = fk.getColumnNames();

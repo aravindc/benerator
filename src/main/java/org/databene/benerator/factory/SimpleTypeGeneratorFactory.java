@@ -49,7 +49,7 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.AsByteGeneratorWrapper;
 import org.databene.benerator.wrapper.ByteArrayGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
-import org.databene.benerator.wrapper.IteratingGenerator;
+import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.commons.Condition;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
@@ -181,10 +181,10 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             Object sourceObject = context.get(source);
             if (sourceObject instanceof StorageSystem)
             	if (!StringUtil.isEmpty(subSelector)) {
-            		generator = new IteratingGenerator(((StorageSystem) sourceObject).query(subSelector, true, context));
+            		generator = new DataSourceGenerator(((StorageSystem) sourceObject).query(subSelector, true, context));
                     generator = GeneratorFactoryUtil.createCyclicHeadGenerator(generator);
             	} else
-            		generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector, true, context));
+            		generator = new DataSourceGenerator(((StorageSystem) sourceObject).query(selector, true, context));
             else if (sourceObject instanceof Generator)
                 generator = (Generator<?>) sourceObject;
             else // TODO v0.7.0 support Iterable
@@ -221,10 +221,10 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	        String selector = descriptor.getSelector();
 	        String subSelector = descriptor.getSubSelector();
 	        if (!StringUtil.isEmpty(subSelector)) {
-	        	generator = new IteratingGenerator(storage.queryEntities(descriptor.getName(), subSelector, context));
+	        	generator = new DataSourceGenerator(storage.queryEntities(descriptor.getName(), subSelector, context));
 		        generator = GeneratorFactoryUtil.createCyclicHeadGenerator(generator);
 	        } else
-		        generator = new IteratingGenerator(storage.queryEntities(descriptor.getName(), selector, context));
+		        generator = new DataSourceGenerator(storage.queryEntities(descriptor.getName(), selector, context));
 	    } else if (sourceObject instanceof Generator) {
 	        generator = (Generator<?>) sourceObject;
 	    } else

@@ -40,7 +40,6 @@ import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.DataSourceGenerator;
-import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.benerator.wrapper.UniqueMultiSourceArrayGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
@@ -205,9 +204,9 @@ public class ArrayGeneratorFactory {
 	        String selector = descriptor.getSelector();
 	        String subSelector = descriptor.getSubSelector();
 	        if (!StringUtil.isEmpty(subSelector))
-	        	generator = GeneratorFactoryUtil.createCyclicHeadGenerator(new IteratingGenerator(storage.query(subSelector, false, context)));
+	        	generator = GeneratorFactoryUtil.createCyclicHeadGenerator(new DataSourceGenerator(storage.query(subSelector, false, context)));
 	        else
-	        	generator = new IteratingGenerator(storage.query(selector, false, context));
+	        	generator = new DataSourceGenerator(storage.query(selector, false, context));
 	    } else if (sourceObject instanceof EntitySource) {
 	    	DataSourceGenerator<Entity> entityGenerator = new DataSourceGenerator<Entity>((EntitySource) sourceObject);
 			generator = new ConvertingGenerator<Entity, Object[]>(entityGenerator, new Entity2ArrayConverter());

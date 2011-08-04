@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,8 +28,8 @@ package org.databene.platform.db;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.StringUtil;
 import org.databene.model.storage.StorageSystem;
 
@@ -80,7 +80,7 @@ public class QueryGenerator<E> extends GeneratorProxy<E> {
 	    	throw new InvalidGeneratorSetupException("no query defined");
 	    
 	    // initialize
-		setSource(new IteratingGenerator(target.query(selector, simplifying, context)));
+		setSource(new DataSourceGenerator(target.query(selector, simplifying, context)));
 	    super.init(context);
     }
 

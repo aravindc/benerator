@@ -84,7 +84,7 @@ import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
-import org.databene.platform.xls.XLSLineIterable;
+import org.databene.platform.xls.XLSLineSource;
 import org.databene.regex.RegexParser;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
@@ -160,7 +160,7 @@ public class GeneratorFactoryUtil { // TODO replace explicit generator construct
      * @return a generator of the desired characteristics
      */
     public static Generator<Object[]> createXLSLineGenerator(String uri) {
-        return new DataSourceGenerator<Object[]>(new XLSLineIterable(uri, false, null));
+        return new DataSourceGenerator<Object[]>(new XLSLineSource(uri, false, null));
     }
 
     /**

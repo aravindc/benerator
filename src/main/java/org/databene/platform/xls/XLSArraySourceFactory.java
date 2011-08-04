@@ -27,7 +27,7 @@ import org.databene.commons.Converter;
 import org.databene.webdecs.DataSource;
 
 /**
- * {@link SourceFactory} implementation which creates {@link XLSLineIterable}s.<br/><br/>
+ * {@link SourceFactory} implementation which creates {@link XLSLineSource}s.<br/><br/>
  * Created: 19.07.2011 08:31:10
  * @since 0.7.0
  * @author Volker Bergmann
@@ -41,7 +41,7 @@ public class XLSArraySourceFactory implements SourceFactory<Object[]> {
     }
 
 	public DataSource<Object[]> create(String uri, BeneratorContext context) {
-		return new XLSLineIterable(uri, true, scriptConverter);
+		return new XLSLineSource(uri, true, scriptConverter);
 	}
 
 }

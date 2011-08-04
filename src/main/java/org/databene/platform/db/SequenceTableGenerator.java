@@ -32,11 +32,12 @@ import org.databene.benerator.GeneratorState;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.SimpleNonNullGenerator;
-import org.databene.commons.HeavyweightIterator;
-import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.IOUtil;
 import org.databene.jdbacl.DBUtil;
 import org.databene.script.ScriptUtil;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.DataSource;
 
 /**
  * Uses a database table to fetch and increment values like a database sequence.<br/><br/>
@@ -122,21 +123,22 @@ public class SequenceTableGenerator<E extends Number> extends SimpleNonNullGener
     }
 
 	@Override
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public E generate() {
 		if (this.state == GeneratorState.CLOSED)
 			return null;
 		assertInitialized();
-		HeavyweightTypedIterable<?> iterable = database.query(query, true, context);
-		HeavyweightIterator<?> iterator = null;
+		DataSource<?> iterable = database.query(query, true, context);
+		DataIterator<?> iterator = null;
 		E result;
 		try {
 			iterator = iterable.iterator();
-			if (!iterator.hasNext()) {
+			DataContainer<?> container = iterator.next(new DataContainer());
+			if (container == null) {
 				close();
 				return null;
 			}
-			result = (E) iterator.next();
+			result = (E) container.getData();
 			incrementorStrategy.run(result.longValue(), (BeneratorContext) context);
 		} finally {
 			IOUtil.close(iterator);

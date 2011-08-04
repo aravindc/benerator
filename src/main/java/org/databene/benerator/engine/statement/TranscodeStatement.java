@@ -21,7 +21,6 @@
 
 package org.databene.benerator.engine.statement;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +35,6 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
-import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
@@ -48,6 +46,9 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.db.DBSystem;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,17 +140,18 @@ public class TranscodeStatement extends SequentialStatement implements CascadePa
 		
 		// iterate rows
 		String selector = ExpressionUtil.evaluate(selectorEx, context);
-		HeavyweightTypedIterable<Entity> iterable = source.queryEntities(tableName, selector, context);
+		DataSource<Entity> iterable = source.queryEntities(tableName, selector, context);
     	List<ComponentBuilder<Entity>> componentBuilders = 
     		ComplexTypeGeneratorFactory.createMutatingComponentBuilders(type, Uniqueness.NONE, context);
         Map<String, Generator<?>> variables = DescriptorUtil.parseVariables(type, context);
         ComponentAndVariableSupport<Entity> cavs = new ComponentAndVariableSupport<Entity>(variables, componentBuilders, context);
         cavs.init(context);
-        Iterator<Entity> iterator = iterable.iterator();
+        DataIterator<Entity> iterator = iterable.iterator();
 		mapper.registerSource(source.getId(), source.getConnection());
 		long rowCount = 0;
-	    while (iterator.hasNext()) {
-			Entity sourceEntity = iterator.next();
+		DataContainer<Entity> container = new DataContainer<Entity>();
+	    while ((container = iterator.next(container)) != null) {
+			Entity sourceEntity = container.getData();
 	    	Object sourcePK = sourceEntity.idComponentValues();
 	    	boolean mapNk = parent.needsNkMapping(tableName);
 	    	String nk = null;
