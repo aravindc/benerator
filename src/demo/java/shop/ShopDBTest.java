@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,6 +35,8 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.Validator;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,8 +121,12 @@ public class ShopDBTest extends TestCase {
     private void checkEntities(String entityName, Validator<Entity> validator,
             int expectedCount, DBSystem db) {
         assertEquals("Wrong number of '" + entityName + "' instances.", expectedCount, db.countEntities(entityName));
-        for (Entity entity : db.queryEntities(entityName, null, null))
-            assertTrue("Invalid entity: " + entity, validator.valid(entity));
+        DataIterator<Entity> iterator = db.queryEntities(entityName, null, null).iterator();
+        DataContainer<Entity> container = new DataContainer<Entity>();
+        while ((container = iterator.next(container)) != null) {
+            Entity entity = container.getData();
+			assertTrue("Invalid entity: " + entity, validator.valid(entity));
+        }
     }
 
     private void runAsClass(String file, String database, String stage) throws IOException {

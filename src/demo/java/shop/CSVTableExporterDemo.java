@@ -2,14 +2,15 @@ package shop;
 
 import java.io.IOException;
 
-import org.databene.commons.HeavyweightIterator;
-import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
 import org.databene.model.data.Entity;
 import org.databene.model.storage.StorageSystem;
 import org.databene.platform.csv.CSVEntityExporter;
 import org.databene.platform.db.DBSystem;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,21 +46,20 @@ public class CSVTableExporterDemo {
     }
 
 	private static void exportTableAsCSV(StorageSystem db, String filename) {
-        HeavyweightTypedIterable<Entity> entities = db.queryEntities("db_data", null, null);
-        HeavyweightIterator<Entity> iterator = null;
+        DataSource<Entity> entities = db.queryEntities("db_data", null, null);
+        DataIterator<Entity> iterator = null;
         try {
 			iterator = entities.iterator();
-			if (iterator.hasNext()) {
-			    Entity cursor = iterator.next();
-			    CSVEntityExporter exporter = new CSVEntityExporter(filename, cursor.descriptor());
-				try {
-			        logger.info("exporting data, please wait...");
-			        exporter.startConsuming(cursor);
-			        while (iterator.hasNext())
-			            exporter.startConsuming(iterator.next());
-				} finally {
-					exporter.close();
-				}
+		    DataContainer<Entity> container = iterator.next(new DataContainer<Entity>());
+			Entity cursor = container.getData();
+		    CSVEntityExporter exporter = new CSVEntityExporter(filename, cursor.descriptor());
+			try {
+		        logger.info("exporting data, please wait...");
+		        exporter.startConsuming(cursor);
+		        while ((container = iterator.next(container)) != null)
+		            exporter.startConsuming(container.getData());
+			} finally {
+				exporter.close();
 			}
 		} finally {
 	        IOUtil.close(iterator);
