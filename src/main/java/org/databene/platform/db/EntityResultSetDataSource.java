@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,39 +28,35 @@ package org.databene.platform.db;
 
 import java.sql.ResultSet;
 
-import org.databene.commons.HeavyweightIterable;
-import org.databene.commons.HeavyweightIterator;
-import org.databene.commons.HeavyweightTypedIterable;
+import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.DataSource;
 
 /**
  * Iterates a ResultSet, returning Entities.
  * @author Volker Bergmann
  * @since 0.3.04
  */
-public class EntityResultSetIterable implements HeavyweightTypedIterable<Entity> { // TODO migrate to DataSource
+public class EntityResultSetDataSource extends AbstractEntitySource {
 
-    private HeavyweightIterable<ResultSet> iterable;
+    private DataSource<ResultSet> source;
     private ComplexTypeDescriptor entityDescriptor;
     
-    public EntityResultSetIterable(HeavyweightIterable<ResultSet> iterable,
+    public EntityResultSetDataSource(DataSource<ResultSet> source,
             ComplexTypeDescriptor entityDescriptor) {
-        this.iterable = iterable;
+        this.source = source;
         this.entityDescriptor = entityDescriptor;
     }
 
-    public Class<Entity> getType() {
-        return Entity.class;
-    }
-
-    public HeavyweightIterator<Entity> iterator() {
-        return new ResultSetEntityIterator(iterable.iterator(), entityDescriptor);
+    public DataIterator<Entity> iterator() {
+        return new ResultSetEntityIterator(source.iterator(), entityDescriptor);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + '[' + iterable + ']';
+        return getClass().getSimpleName() + '[' + source + ']';
     }
     
 }
