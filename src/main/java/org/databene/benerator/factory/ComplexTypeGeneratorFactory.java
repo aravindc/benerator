@@ -128,7 +128,7 @@ public class ComplexTypeGeneratorFactory {
         
         Generator<Entity> generator = null;
         if (sourceObject != null)
-            generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
+            generator = createSourceGeneratorFromObject(descriptor, context, sourceObject);
         else {
         	String lcSourceName = sourceSpec.toLowerCase();
         	if (lcSourceName.endsWith(".xml"))
@@ -143,8 +143,8 @@ public class ComplexTypeGeneratorFactory {
 	        	try {
 		        	BeanSpec sourceBeanSpec = BeneratorScriptParser.resolveBeanSpec(sourceSpec, context);
 		        	sourceObject = sourceBeanSpec.getBean();
-		        	generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
-		        	if (sourceBeanSpec.isReference())
+		        	generator = createSourceGeneratorFromObject(descriptor, context, sourceObject);
+		        	if (sourceBeanSpec.isReference() && !(sourceObject instanceof StorageSystem))
 		        		generator = GeneratorFactoryUtil.wrapNonClosing(generator);
 	        	} catch (Exception e) {
 	        		throw new UnsupportedOperationException("Error resolving source: " + sourceSpec, e);
@@ -166,15 +166,16 @@ public class ComplexTypeGeneratorFactory {
 
     @SuppressWarnings("unchecked")
     private static Generator<Entity> createSourceGeneratorFromObject(ComplexTypeDescriptor descriptor,
-            BeneratorContext context, Generator<Entity> generator, Object sourceObject) {
+            BeneratorContext context, Object sourceObject) {
+    	Generator<Entity> generator;
 	    if (sourceObject instanceof StorageSystem) {
 	        StorageSystem storage = (StorageSystem) sourceObject;
 	        String selector = descriptor.getSelector();
 	        String subSelector = descriptor.getSubSelector();
 	        if (!StringUtil.isEmpty(subSelector))
-	        	generator = GeneratorFactoryUtil.createCyclicHeadGenerator(new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), subSelector, context)));
+	        	generator = GeneratorFactoryUtil.createCyclicHeadGenerator(new DataSourceGenerator<Entity>(storage.queryEntities(descriptor.getName(), subSelector, context)));
 	        else 
-	        	generator = new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
+	        	generator = new DataSourceGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
 	    } else if (sourceObject instanceof EntitySource) {
 	        generator = new DataSourceGenerator<Entity>((EntitySource) sourceObject);
 	    } else if (sourceObject instanceof Generator) {
