@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,8 @@
 
 package org.databene.model.data;
 
+import org.databene.webdecs.util.AbstractDataSource;
+
 /**
  * Abstract implementation of {@link EntitySource} 
  * to be used as parent class for custom implementations.<br/>
@@ -35,10 +37,10 @@ package org.databene.model.data;
  * @author Volker Bergmann
  */
 
-public abstract class AbstractEntitySource implements EntitySource {
+public abstract class AbstractEntitySource extends AbstractDataSource<Entity> implements EntitySource {
 
-    public Class<Entity> getType() {
-	    return Entity.class;
-    }
+    public AbstractEntitySource() {
+		super(Entity.class);
+	}
 
 }
