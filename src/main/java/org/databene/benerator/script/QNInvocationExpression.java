@@ -75,7 +75,7 @@ public class QNInvocationExpression extends DynamicExpression<Object> {
 	    }
     	try {
     		Class<?> type = DefaultClassProvider.resolveByObjectOrDefaultInstance(objectOrClassName, context);
-    		return BeanUtil.invokeStatic(type, methodName, args);
+    		return BeanUtil.invokeStatic(type, methodName, false, args);
     	} catch (ConfigurationError e) {
     		if (LOGGER.isDebugEnabled())
     			LOGGER.debug("Class not found: " + objectOrClassName);
@@ -83,7 +83,7 @@ public class QNInvocationExpression extends DynamicExpression<Object> {
     	QNExpression ownerEx = new QNExpression(Arrays.copyOfRange(qn, 0, qnLength));
     	Object owner = ownerEx.evaluate(context);
     	if (owner != null)
-			return BeanUtil.invoke(owner, methodName, args);
+			return BeanUtil.invoke(false, owner, methodName, args);
     	throw new UnsupportedOperationException("Cannot evaluate " + objectOrClassName);
     }
 
