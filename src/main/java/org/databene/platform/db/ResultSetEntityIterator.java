@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,10 +29,11 @@ package org.databene.platform.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
 
 /**
  * Iterates a ResultSet returning Entity objects.
@@ -40,38 +41,36 @@ import org.databene.model.data.Entity;
  * @author Volker Bergmann
  * |since 0.3.04
  */
-public class ResultSetEntityIterator implements HeavyweightIterator<Entity> {
+public class ResultSetEntityIterator implements DataIterator<Entity> {
 
-    private HeavyweightIterator<ResultSet> resultSetIterator;
+    private DataIterator<ResultSet> source;
     
     private ComplexTypeDescriptor descriptor;
 
-    public ResultSetEntityIterator(HeavyweightIterator<ResultSet> resultSetIterator, ComplexTypeDescriptor descriptor) {
-        this.resultSetIterator = resultSetIterator;
+    public ResultSetEntityIterator(DataIterator<ResultSet> source, ComplexTypeDescriptor descriptor) {
+        this.source = source;
         this.descriptor = descriptor;
     }
 
-    public boolean hasNext() {
-        return resultSetIterator.hasNext();
-    }
-    
-    public Entity next() {
-        if (!hasNext())
-            throw new IllegalStateException("No more row available. Check 'hasNext()' before calling next()!");
-        try {
-    	    ResultSet resultSet = resultSetIterator.next();
-            return ResultSet2EntityConverter.convert(resultSet, descriptor);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public Class<Entity> getType() {
+		return Entity.class;
+	}
 
-    public void remove() {
-        throw new UnsupportedOperationException();
+	public DataContainer<Entity> next(DataContainer<Entity> container) {
+		try {
+			DataContainer<ResultSet> feed = source.next(new DataContainer<ResultSet>());
+			if (feed == null)
+				return null;
+			ResultSet resultSet = feed.getData();
+			Entity result = ResultSet2EntityConverter.convert(resultSet, descriptor);
+			return container.setData(result);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
     }
 
 	public void close() {
-		IOUtil.close(resultSetIterator);
+		IOUtil.close(source);
 	}
 
 }
