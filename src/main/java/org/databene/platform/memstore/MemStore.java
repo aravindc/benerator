@@ -28,17 +28,18 @@ import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
-import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.OrderedMap;
 import org.databene.commons.StringUtil;
 import org.databene.commons.collection.OrderedNameMap;
-import org.databene.commons.iterator.TypedIterableProxy;
-import org.databene.commons.iterator.FilterExIterable;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.storage.AbstractStorageSystem;
 import org.databene.script.ScriptUtil;
+import org.databene.webdecs.DataSource;
+import org.databene.webdecs.util.DataSourceFromIterable;
+import org.databene.webdecs.util.DataSourceProxy;
+import org.databene.webdecs.util.FilterExDataSource;
 
 /**
  * Simple heap-based implementation of the AbstractStorageSystem interface.<br/><br/>
@@ -64,22 +65,22 @@ public class MemStore extends AbstractStorageSystem {
 		return id;
 	}
 
-	public HeavyweightTypedIterable<Entity> queryEntities(String entityType, String selector, Context context) {
+	public DataSource<Entity> queryEntities(String entityType, String selector, Context context) {
 		Map<?, Entity> idMap = getOrCreateIdMapForType(entityType);
-		HeavyweightTypedIterable<Entity> result = new TypedIterableProxy<Entity>(Entity.class, idMap.values());
+		DataSource<Entity> result = new DataSourceProxy<Entity>(new DataSourceFromIterable<Entity>(idMap.values(), Entity.class));
 		if (!StringUtil.isEmpty(selector)) {
 			Expression<Boolean> filterEx = new ScriptExpression<Boolean>(ScriptUtil.parseScriptText(selector));
-			result = new TypedIterableProxy<Entity>(Entity.class, new FilterExIterable<Entity>(result, filterEx , context));
+			result = new DataSourceProxy<Entity>(new FilterExDataSource<Entity>(result, filterEx , context));
 		}
 		return result;
 	}
 
-	public HeavyweightTypedIterable<?> queryEntityIds(String entityName, String selector, Context context) {
+	public DataSource<?> queryEntityIds(String entityName, String selector, Context context) {
 		// TODO v0.7 implement this
 		throw new UnsupportedOperationException(getClass() + " does not support queryEntityIds(...)");
 	}
 
-	public HeavyweightTypedIterable<?> query(String selector, boolean simplify, Context context) {
+	public DataSource<?> query(String selector, boolean simplify, Context context) {
 		throw new UnsupportedOperationException(getClass() + " does not support query(String, Context)");
 	}
 

@@ -30,9 +30,9 @@ import java.io.Closeable;
 import java.io.Flushable;
 
 import org.databene.commons.Context;
-import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
+import org.databene.webdecs.DataSource;
 
 /**
  * Abstraction of an Entity storage system.<br/><br/>
@@ -47,13 +47,13 @@ public interface StorageSystem extends DescriptorProvider, Closeable, Flushable 
     String getId();
     
     /** Creates an iterator that provides all entities of given type. */
-    HeavyweightTypedIterable<Entity> queryEntities(String type, String selector, Context context);
+    DataSource<Entity> queryEntities(String type, String selector, Context context);
     
     /** Queries for entity ids */
-    HeavyweightTypedIterable<?> queryEntityIds(String entityName, String selector, Context context);
+    DataSource<?> queryEntityIds(String entityName, String selector, Context context);
 
     /** Creates an Iterable for repetitive iteration through the results of the specified query. */
-    HeavyweightTypedIterable<?> query(String selector, boolean simplify, Context context);
+    DataSource<?> query(String selector, boolean simplify, Context context);
     
     /** Persists a new entity. */
     void store(Entity entity);

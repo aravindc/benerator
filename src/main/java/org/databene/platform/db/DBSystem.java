@@ -30,7 +30,6 @@ import org.databene.commons.*;
 import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
-import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.version.VersionNumber;
 import org.databene.jdbacl.ColumnInfo;
@@ -57,6 +56,8 @@ import org.databene.model.storage.AbstractStorageSystem;
 import org.databene.model.storage.StorageSystem;
 import org.databene.model.storage.StorageSystemInserter;
 import org.databene.model.storage.StorageSystemUpdater;
+import org.databene.webdecs.DataSource;
+import org.databene.webdecs.util.ConvertingDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -399,7 +400,7 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     @SuppressWarnings("null")
-    public HeavyweightTypedIterable<Entity> queryEntities(String type, String selector, Context context) {
+    public DataSource<Entity> queryEntities(String type, String selector, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("queryEntities(" + type + ")");
     	Connection connection = getThreadContext().connection;
@@ -420,8 +421,8 @@ public class DBSystem extends AbstractStorageSystem {
     	    sql = "'select * from " + type + " WHERE ' + " + selector;
     	if (script)
     		sql = '{' + sql + '}';
-        HeavyweightIterable<ResultSet> iterable = createQuery(sql, context, connection); // TODO migrate to DataSource
-        return new EntityResultSetIterable(iterable, (ComplexTypeDescriptor) getTypeDescriptor(type));
+        DataSource<ResultSet> source = createQuery(sql, context, connection);
+        return new EntityResultSetDataSource(source, (ComplexTypeDescriptor) getTypeDescriptor(type));
     }
 
     public long countEntities(String tableName) {
@@ -431,7 +432,7 @@ public class DBSystem extends AbstractStorageSystem {
         return DBUtil.queryLong(query, getThreadContext().connection);
     }
 
-    public HeavyweightTypedIterable<?> queryEntityIds(String tableName, String selector, Context context) {
+    public DataSource<?> queryEntityIds(String tableName, String selector, Context context) {
         logger.debug("queryEntityIds({}, {})", tableName, selector);
         
         // check for script
@@ -459,13 +460,13 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public HeavyweightTypedIterable<?> query(String query, boolean simplify, Context context) {
+    public DataSource<?> query(String query, boolean simplify, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("query(" + query + ")");
         Connection connection = getThreadContext().connection;
-        QueryIterable resultSetIterable = createQuery(query, context, connection);
+        QueryDataSource resultSetIterable = createQuery(query, context, connection);
         ResultSetConverter converter = new ResultSetConverter(Object.class, simplify);
-		return new ConvertingIterable<ResultSet, Object>(resultSetIterable, converter);
+		return new ConvertingDataSource<ResultSet, Object>(resultSetIterable, converter);
     }
     
     public Consumer<Entity> inserter() {
@@ -643,8 +644,8 @@ public class DBSystem extends AbstractStorageSystem {
 		return importer;
 	}
 
-	private QueryIterable createQuery(String query, Context context, Connection connection) {
-	    return new QueryIterable(connection, query, fetchSize, (dynamicQuerySupported ? context : null));
+	private QueryDataSource createQuery(String query, Context context, Connection connection) {
+	    return new QueryDataSource(connection, query, fetchSize, (dynamicQuerySupported ? context : null));
     }
       
     private PreparedStatement getStatement(
