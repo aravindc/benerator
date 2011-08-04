@@ -27,7 +27,7 @@ import java.util.Iterator;
 import org.databene.commons.Converter;
 import org.databene.document.xls.XLSLineIterator;
 import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.DataSource;
+import org.databene.webdecs.util.AbstractDataSource;
 
 /**
  * {@link Iterable} implementation which creates {@link Iterator}s 
@@ -36,20 +36,17 @@ import org.databene.webdecs.DataSource;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class XLSLineIterable implements DataSource<Object[]> {
+public class XLSLineSource extends AbstractDataSource<Object[]> {
 	
 	String uri;
 	Converter<String, ?> preprocessor;
 	boolean usingHeaders;
 
-	public XLSLineIterable(String uri, boolean usingHeaders, Converter<String, ?> preprocessor) {
+	public XLSLineSource(String uri, boolean usingHeaders, Converter<String, ?> preprocessor) {
+		super(Object[].class);
 		this.uri = uri;
 		this.usingHeaders = usingHeaders;
 		this.preprocessor = preprocessor;
-	}
-
-	public Class<Object[]> getType() {
-		return Object[].class;
 	}
 
 	public DataIterator<Object[]> iterator() {
