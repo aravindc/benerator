@@ -21,8 +21,6 @@
 
 package org.databene.benerator.wrapper;
 
-import java.io.Closeable;
-
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
@@ -72,7 +70,7 @@ public class DataSourceGenerator<E> extends AbstractGenerator<E> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
 	public boolean isParallelizable() {
-	    return true;
+	    return false;
     }
 
 	public boolean isThreadSafe() {
@@ -88,17 +86,16 @@ public class DataSourceGenerator<E> extends AbstractGenerator<E> {
     	if (source == null)
     		throw new InvalidGeneratorSetupException("source", "is null");
     	super.init(context);
-		createIterator();
     }
 
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         try {
             assertInitialized();
             if (iterator == null)
-            	return null;
+            	iterator = source.iterator(); // iterator initialized lazily to reflect context state at invocation
         	DataContainer<E> tmp = iterator.next(container.get());
             if (tmp == null) {
-            	closeIterator();
+                IOUtil.close(iterator);
             	return null;
             }
 			return wrapper.wrap(tmp.getData());
@@ -109,31 +106,17 @@ public class DataSourceGenerator<E> extends AbstractGenerator<E> {
 
 	@Override
     public void reset() {
-        closeIterator();
+        IOUtil.close(iterator);
+        iterator = null;
         super.reset();
-        createIterator();
     }
 
     @Override
     public void close() {
-        closeIterator();
+        IOUtil.close(iterator);
         super.close();
-        if (source instanceof Closeable)
-        	IOUtil.close((Closeable) source);
+       	IOUtil.close(source);
     }
-
-    // private helpers -------------------------------------------------------------------------------------------------    
-    
-	private void createIterator() {
-	    iterator = source.iterator();
-    }
-
-    private void closeIterator() {
-		if (iterator != null) {
-            iterator.close();
-            iterator = null;
-        }
-	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
