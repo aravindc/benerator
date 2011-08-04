@@ -53,6 +53,8 @@ public class LocalSequenceGenerator extends NonNullGeneratorProxy<Long> {
 	private static final Map<String, IncrementalIdGenerator> MAP 
 		= new HashMap<String, IncrementalIdGenerator>();
 	
+	private boolean cached;
+	
 	// Initialization --------------------------------------------------------------------------------------------------
 
 	static {
@@ -64,7 +66,41 @@ public class LocalSequenceGenerator extends NonNullGeneratorProxy<Long> {
 	}
 	
 	public LocalSequenceGenerator(String name) {
+		this(name, true);
+	}
+	
+	public LocalSequenceGenerator(String name, boolean cached) {
 		super(getOrCreateSource(name, 1));
+		this.cached = cached;
+	}
+	
+	public boolean isCached() {
+		return cached;
+	}
+	
+	public void setCached(boolean cached) {
+		this.cached = cached;
+	}
+	
+	// Generator interface ---------------------------------------------------------------------------------------------
+
+    @Override
+    public Long generate() {
+    	Long result = super.generate();
+    	if (!cached)
+    		persist();
+		return result;
+    }
+    
+	@Override
+	public void reset() {
+		// ignore reset - we need to generate unique values!
+	}
+	
+	@Override
+	public void close() {
+		persist();
+		super.close();
 	}
 	
 	// static methods --------------------------------------------------------------------------------------------------
@@ -98,19 +134,6 @@ public class LocalSequenceGenerator extends NonNullGeneratorProxy<Long> {
         }
     }
 
-	// Generator interface ---------------------------------------------------------------------------------------------
-
-	@Override
-	public void reset() {
-		// ignore reset - we need to generate unique values!
-	}
-	
-	@Override
-	public void close() {
-		persist();
-		super.close();
-	}
-	
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private static void init() {
