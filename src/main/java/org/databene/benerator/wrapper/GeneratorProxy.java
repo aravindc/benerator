@@ -69,4 +69,9 @@ public abstract class GeneratorProxy<E> extends GeneratorWrapper<E, E> {
     	return getSource().generate(wrapper);
     }
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + getSource() + ']';
+	}
+	
 }
