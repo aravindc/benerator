@@ -46,7 +46,6 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
 
     private TypedIterable<E> iterable;
     private Iterator<E> iterator;
-    private boolean available;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -57,7 +56,6 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
     public IteratingGenerator(TypedIterable<E> iterable) {
         this.iterable = iterable;
         this.iterator = null;
-        this.available = false;
     }
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -86,7 +84,6 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
     public void init(GeneratorContext context) {
     	if (iterable == null)
     		throw new InvalidGeneratorSetupException("iterable", "is null");
-    	this.available = true;
     	super.init(context);
     }
 
@@ -97,7 +94,7 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         try {
             assertInitialized();
-            if (!available || (iterator != null && !iterator.hasNext()))
+            if (iterator != null && !iterator.hasNext())
             	return null;
             if (iterator == null) // iterator is created lazily for avoiding script evaluation errors in init()
         		createIterator();
