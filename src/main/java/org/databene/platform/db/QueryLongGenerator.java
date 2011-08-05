@@ -26,10 +26,10 @@
 
 package org.databene.platform.db;
 
+import org.databene.benerator.StorageSystem;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Converter;
 import org.databene.commons.converter.ConverterManager;
-import org.databene.model.storage.StorageSystem;
 
 /**
  * Generates {@link Long} values based on a database query.<br/>

@@ -26,9 +26,9 @@
 
 package org.databene.platform.db;
 
+import org.databene.benerator.StorageSystem;
 import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.primitive.HiLoGenerator;
-import org.databene.model.storage.StorageSystem;
 
 /**
  *  * Creates Unique keys efficiently by connecting a database, retrieving a (unique) sequence value 

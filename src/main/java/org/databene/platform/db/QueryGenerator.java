@@ -28,10 +28,10 @@ package org.databene.platform.db;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.StorageSystem;
 import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.StringUtil;
-import org.databene.model.storage.StorageSystem;
 
 /**
  * Generates values based on a database query.<br/>
