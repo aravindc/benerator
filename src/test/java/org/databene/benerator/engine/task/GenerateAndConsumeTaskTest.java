@@ -65,7 +65,7 @@ public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
     public void testFlat() throws Exception {
 		Generator<Entity> generator = new IteratingGenerator<Entity>(new AB());
 		final ListConsumer consumer = new ListConsumer();
-		Expression<Consumer<?>> consumerExpr = new ConstantExpression<Consumer<?>>(consumer);
+		Expression<Consumer> consumerExpr = new ConstantExpression<Consumer>(consumer);
 		BeneratorContext context = new BeneratorContext();
 		GenerateAndConsumeTask task = new GenerateAndConsumeTask("tn", generator, context);
 		task.setConsumer(consumerExpr);
