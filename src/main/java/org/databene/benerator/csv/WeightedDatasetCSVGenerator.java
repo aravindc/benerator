@@ -102,7 +102,7 @@ public class WeightedDatasetCSVGenerator<E> extends AbstractDatasetGenerator<E> 
 	@Override
 	protected Generator<E> createGeneratorForAtomicDataset(Dataset dataset) {
 		String filename = DatasetUtil.filenameOfDataset(dataset.getName(), filenamePattern);
-		LOGGER.info("Creating weighted data set CSV generator for file {}", filename);
+		LOGGER.debug("Creating weighted data set CSV generator for file {}", filename);
 		if (IOUtil.isURIAvailable(filename)) {
 			List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(filename, separator, encoding, converter);
 			AttachedWeightSampleGenerator<E> generator = new AttachedWeightSampleGenerator<E>();
