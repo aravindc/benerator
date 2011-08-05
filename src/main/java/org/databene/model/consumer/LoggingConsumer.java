@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,30 +36,27 @@ import org.slf4j.LoggerFactory;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class LoggingConsumer<E> extends AbstractConsumer<E> {
+public class LoggingConsumer extends AbstractConsumer {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoggingConsumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingConsumer.class);
 
-    public void startConsuming(E object) {
-        if (logger.isInfoEnabled())
-            logger.info("startConsuming(" + object + ")");
+    public void startConsuming(Object object) {
+        LOGGER.info("startConsuming({})", object);
     }
     
     @Override
-    public void finishConsuming(E object) {
-        if (logger.isInfoEnabled())
-            logger.info("finishConsuming(" + object + ")");
+    public void finishConsuming(Object object) {
+        LOGGER.info("finishConsuming({})", object);
     }
 
     @Override
     public void flush() {
-        if (logger.isInfoEnabled())
-            logger.info("flush()");
+        LOGGER.info("flush()");
     }
 
     @Override
     public void close() {
-        if (logger.isInfoEnabled())
-            logger.info("close()");
+        LOGGER.info("close()");
     }
+
 }

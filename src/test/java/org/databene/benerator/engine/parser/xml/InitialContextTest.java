@@ -29,6 +29,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.factory.ConsumerMock;
 import org.databene.commons.SysUtil;
+import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
@@ -61,8 +62,8 @@ public class InitialContextTest {
 	                    BeneratorContext context = runner.getContext();
 	                    context.setValidate(false);
 	                    runner.run();
-	                    assertNotNull("Consumer was not invoked", ConsumerMock.lastInstance.lastEntity);
-	                    assertEquals("Alice", ConsumerMock.lastInstance.lastEntity.get("name"));
+	                    assertNotNull("Consumer was not invoked", ConsumerMock.lastInstance.lastProduct);
+	                    assertEquals("Alice", ((Entity) ConsumerMock.lastInstance.lastProduct).get("name"));
                     } catch (IOException e) {
 	                    throw new RuntimeException(e);
                     }

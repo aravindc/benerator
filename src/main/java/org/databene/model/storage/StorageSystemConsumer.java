@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.model.storage;
 
 import org.databene.model.consumer.AbstractConsumer;
-import org.databene.model.data.Entity;
 
 /**
  * Stores an Entity in the associated {@link StorageSystem}. It replaces the class SystemProcessor.<br/>
@@ -36,7 +35,7 @@ import org.databene.model.data.Entity;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public abstract class StorageSystemConsumer extends AbstractConsumer<Entity> {
+public abstract class StorageSystemConsumer extends AbstractConsumer {
 
     protected final StorageSystem system;
 

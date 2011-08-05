@@ -27,6 +27,7 @@ changes
 - Removed 'name' property from Sequence
 - Renamed @DescriptorBased to @Descriptor
 - Removed totalDigits and fractionDigits features
+- Removed generic parameter from Consumer interface
 
 
 enhancements

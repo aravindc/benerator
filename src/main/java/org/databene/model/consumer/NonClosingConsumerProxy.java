@@ -31,9 +31,9 @@ import org.databene.benerator.engine.ResourceManager;
  * @since 0.6.6
  * @author Volker Bergmann
  */
-public class NonClosingConsumerProxy<E> extends ConsumerProxy<E> {
+public class NonClosingConsumerProxy extends ConsumerProxy {
 
-	public NonClosingConsumerProxy(Consumer<E> target) {
+	public NonClosingConsumerProxy(Consumer target) {
 		super(target);
 	}
 

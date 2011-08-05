@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,27 +39,27 @@ import org.databene.commons.IOUtil;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class ConsumerChain<E> extends AbstractConsumer<E> {
+public class ConsumerChain extends AbstractConsumer {
 
-    private List<Consumer<E>> components;
+    private List<Consumer> components;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public ConsumerChain(Consumer<E> ... components) {
+    public ConsumerChain(Consumer ... components) {
     	setComponents(components);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    public void setComponents(Consumer<E>... components) {
+    public void setComponents(Consumer... components) {
     	this.components = CollectionUtil.toList(components);
     }
 
-    public void addComponent(Consumer<E> component) {
+    public void addComponent(Consumer component) {
         this.components.add(component);
     }
     
-    public Consumer<E> getComponent(int index) {
+    public Consumer getComponent(int index) {
         return this.components.get(index);
     }
     
@@ -69,30 +69,30 @@ public class ConsumerChain<E> extends AbstractConsumer<E> {
 
     // Processor interface ---------------------------------------------------------------------------------------------
 
-    public void startConsuming(E object) {
-        for (Consumer<E> processor : components)
+    public void startConsuming(Object object) {
+        for (Consumer processor : components)
             processor.startConsuming(object);
     }
 
     @Override
-	public void finishConsuming(E object) {
-        for (Consumer<E> processor : components)
+	public void finishConsuming(Object object) {
+        for (Consumer processor : components)
             processor.finishConsuming(object);
     }
 
     @Override
 	public void flush() {
-        for (Consumer<E> processor : components)
+        for (Consumer processor : components)
             processor.flush();
     }
 
     @Override
 	public void close() {
-        for (Consumer<E> consumer : components)
+        for (Consumer consumer : components)
             IOUtil.close(consumer);
     }
 
-    public List<Consumer<E>> getComponents() {
+    public List<Consumer> getComponents() {
     	return components;
     }
 }

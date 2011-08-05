@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,8 +37,8 @@ package org.databene.model.consumer;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public abstract class AbstractConsumer<E> implements Consumer<E> {
-    public void finishConsuming(E object) { }
+public abstract class AbstractConsumer implements Consumer {
+    public void finishConsuming(Object object) { }
     public void flush() { }
     public void close() { }
 }

@@ -38,7 +38,7 @@ import org.databene.model.data.PrimitiveType;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class AddingConsumer extends AbstractConsumer<Object> {
+public class AddingConsumer extends AbstractConsumer {
 
 	private Accessor<Object, Number> accessor;
 	

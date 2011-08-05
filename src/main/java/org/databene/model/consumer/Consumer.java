@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,9 +38,9 @@ import java.io.Closeable;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public interface Consumer<E> extends Closeable {
-    void startConsuming(E object);
-    void finishConsuming(E object);
+public interface Consumer extends Closeable {
+    void startConsuming(Object object);
+    void finishConsuming(Object object);
     void flush();
     void close();
 }

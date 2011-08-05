@@ -81,7 +81,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		Statement statement = parse(
 				"<generate type='dummy' count='{c}' threads='{tc}' pageSize='{ps}' consumer='cons'/>");
-		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(false);
+		ConsumerMock consumer = new ConsumerMock(false);
 		context.set("cons", consumer);
 		context.set("c", 100);
 		context.set("tc", 10);
@@ -92,6 +92,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertEquals(100L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void testArray() throws Exception {
 		Statement statement = parse(
@@ -99,10 +100,10 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				"  <value pattern='ABC' />" +
 				"  <value type='int' constant='42' />" +
 				"</generate>");
-		ConsumerMock<Object[]> consumer = new ConsumerMock<Object[]>(true);
+		ConsumerMock consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 		statement.execute(context);
-		List<Object[]> products = consumer.getProducts();
+		List<Object[]> products = (List) consumer.getProducts();
 		assertEquals(5, products.size());
 		Object[] array1 = products.get(0);
 		assertEquals(2, array1.length);
@@ -117,7 +118,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
     @Test
 	public void testGeneratePageSize2() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
-		ConsumerMock<Entity> cons = new ConsumerMock<Entity>(false);
+		ConsumerMock cons = new ConsumerMock(false);
 		context.set("cons", cons);
 		Statement statement = parse(
 			"<generate type='top' count='4' pageSize='2' consumer='cons' />"
@@ -139,7 +140,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
     @Test
 	public void testGeneratePageSize0() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
-		ConsumerMock<Entity> cons = new ConsumerMock<Entity>(false);
+		ConsumerMock cons = new ConsumerMock(false);
 		context.set("cons", cons);
 		Statement statement = parse(
 			"<generate type='top' count='4' pageSize='0' consumer='cons' />"
@@ -155,7 +156,6 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertEquals(4L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
 	}
 
-	@SuppressWarnings("unchecked")
     @Test
 	public void testSimpleSubGenerate() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
@@ -164,12 +164,12 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
         		"    <generate type='sub' count='2' consumer='new " + ConsumerMock.class.getName() + "(false, 2)'/>" +
         		"</generate>"
         );
-		ConsumerMock<Entity> outerConsumer = new ConsumerMock<Entity>(false, 1);
+		ConsumerMock outerConsumer = new ConsumerMock(false, 1);
 		context.set("cons1", outerConsumer);
 		statement.execute(context);
 		assertEquals(3, outerConsumer.startConsumingCount.get());
 		assertTrue(outerConsumer.closeCount.get() == 0);
-		ConsumerMock<Entity> innerConsumer = (ConsumerMock<Entity>) ConsumerMock.instances.get(2);
+		ConsumerMock innerConsumer = ConsumerMock.instances.get(2);
 		assertEquals(6, innerConsumer.startConsumingCount.get());
 		assertTrue(innerConsumer.flushCount.get() > 0);
 		assertTrue(outerConsumer.closeCount.get() == 0);
@@ -177,7 +177,6 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertEquals(9L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
 	}
 
-	@SuppressWarnings("unchecked")
     @Test
 	public void testSubGenerateLifeCycle() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
@@ -189,14 +188,14 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
         		"</generate>"
         );
 		statement.execute(context);
-		ConsumerMock<Entity> innerConsumer = (ConsumerMock<Entity>) ConsumerMock.instances.get(0);
+		ConsumerMock innerConsumer = ConsumerMock.instances.get(0);
 		assertEquals(6, innerConsumer.products.size());
-		assertEquals(1, innerConsumer.products.get(0).get("x"));
-		assertEquals(2, innerConsumer.products.get(1).get("x"));
-		assertEquals(1, innerConsumer.products.get(2).get("x"));
-		assertEquals(2, innerConsumer.products.get(3).get("x"));
-		assertEquals(1, innerConsumer.products.get(4).get("x"));
-		assertEquals(2, innerConsumer.products.get(5).get("x"));
+		assertEquals(1, ((Entity) innerConsumer.products.get(0)).get("x"));
+		assertEquals(2, ((Entity) innerConsumer.products.get(1)).get("x"));
+		assertEquals(1, ((Entity) innerConsumer.products.get(2)).get("x"));
+		assertEquals(2, ((Entity) innerConsumer.products.get(3)).get("x"));
+		assertEquals(1, ((Entity) innerConsumer.products.get(4)).get("x"));
+		assertEquals(2, ((Entity) innerConsumer.products.get(5)).get("x"));
 		assertTrue(innerConsumer.flushCount.get() > 0);
 		assertTrue(innerConsumer.closeCount.get() > 0);
 		assertEquals(9L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
@@ -205,7 +204,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
     @Test
 	public void testSubGeneratePageSize2() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
-		ConsumerMock<Entity> cons = new ConsumerMock<Entity>(false);
+		ConsumerMock cons = new ConsumerMock(false);
 		context.set("cons", cons);
 		Statement statement = parse(
 				"<generate type='top' count='2' pageSize='1' consumer='cons'>" +
@@ -241,7 +240,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
     @Test
 	public void testSubGeneratePageSize0() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
-		ConsumerMock<Entity> cons = new ConsumerMock<Entity>(false);
+		ConsumerMock cons = new ConsumerMock(false);
 		context.set("cons", cons);
 		Statement statement = parse(
 				"<generate type='top' count='2' pageSize='1' consumer='cons'>" +
@@ -273,7 +272,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				"    <attribute name='n' type='int' distribution='step' />" +
 				"    <generate type='inner' count='pName.n' consumer='cons'/>" + 
         		"</generate>");
-		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true, 1);
+		ConsumerMock consumer = new ConsumerMock(true, 1);
 		context.set("cons", consumer);
 		statement.execute(context);
 		assertEquals(9, consumer.startConsumingCount.get());
@@ -288,7 +287,8 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertEquals(new Entity("inner"), consumer.products.get(8));
 	}
 
-	private void assertOuter(int n, Entity entity) {
+	private void assertOuter(int n, Object object) {
+		Entity entity = (Entity) object;
 	    assertNotNull(entity);
 	    assertEquals("outer", entity.type());
 	    assertEquals(n, ((Integer) entity.get("n")).intValue());
@@ -314,7 +314,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	public void testIterate() throws Exception {
 		Statement statement = parse("<iterate type='Person' source='personSource' consumer='cons' />");
 		context.set("personSource", new PersonIterable());
-		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true);
+		ConsumerMock consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 		statement.execute(context);
 		assertEquals(2, consumer.products.size());
@@ -325,7 +325,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	@Test
 	public void testGenerate() throws Exception {
 		Statement statement = parse("<generate type='Person' count='2' consumer='cons' />");
-		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(false);
+		ConsumerMock consumer = new ConsumerMock(false);
 		context.set("cons", consumer);
 		statement.execute(context);
 		assertEquals(2, consumer.startConsumingCount.get());

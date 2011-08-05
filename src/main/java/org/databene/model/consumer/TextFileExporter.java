@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class TextFileExporter<E> extends FormattingConsumer<E> implements FileExporter<E> {
+public class TextFileExporter extends FormattingConsumer implements FileExporter {
 
     private static final Logger LOG = LoggerFactory.getLogger(TextFileExporter.class);
 
@@ -80,7 +80,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
      * Overwrite this method in child classes e.g. for writing a file header.
      * @param data the first data item to write to the file
      */
-    protected void postInitPrinter(E data) {
+    protected void postInitPrinter(Object data) {
     	// overwrite this in child classes, e.g. for writing a file header
     }
 
@@ -90,7 +90,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
      * Overwrite this in a child class for custom output formats.
      * @param data the data object to output
      */
-    protected void startConsumingImpl(E data) {
+    protected void startConsumingImpl(Object data) {
     	printer.print(plainConverter.convert(data));
     	println();
     }
@@ -139,7 +139,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-	public final synchronized void startConsuming(E data) {
+	public final synchronized void startConsuming(Object data) {
         try {
             if (printer == null)
                 initPrinter(data);
@@ -173,7 +173,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
 
 	// private helpers -------------------------------------------------------------------------------------------------
     
-    protected void initPrinter(E data) throws IOException {
+    protected void initPrinter(Object data) throws IOException {
         if (uri == null)
             throw new ConfigurationError("Property 'uri' not set on bean " + getClass().getName());
         wasAppended = (append && IOUtil.isURIAvailable(uri));

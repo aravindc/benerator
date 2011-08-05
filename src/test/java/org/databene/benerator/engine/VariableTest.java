@@ -39,17 +39,18 @@ import org.junit.Test;
  */
 public class VariableTest extends BeneratorIntegrationTest {
 
-	private ConsumerMock<Entity> consumer;
+	private ConsumerMock consumer;
 	
     @Before
 	public void setUpSourceAndConsumer() throws Exception {
-		consumer = new ConsumerMock<Entity>(true);
+		consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 		context.set("pit", new PersonIterable());
 	}
 	
 	// test methods ----------------------------------------------------------------------------------------------------
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testIterateThis() {
 		parseAndExecute(
@@ -57,7 +58,7 @@ public class VariableTest extends BeneratorIntegrationTest {
 				"	<variable name='_n' script='this.name' converter='org.databene.commons.converter.ToUpperCaseConverter' />" +
 				"	<attribute name='name' script='_n' />" +
 				"</iterate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = (List<Entity>) consumer.getProducts();
 		assertEquals(2, products.size());
 		assertEquals("ALICE", products.get(0).get("name"));
 		assertEquals(23,      products.get(0).get("age"));

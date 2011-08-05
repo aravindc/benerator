@@ -42,7 +42,7 @@ public class PerfTrackingConsumerTest {
 
 	@Test
 	public void test() {
-		ConsumerMock<Object> mock = new ConsumerMock<Object>(false, 1, MIN_LATENCY, MAX_LATENCY);
+		ConsumerMock mock = new ConsumerMock(false, 1, MIN_LATENCY, MAX_LATENCY);
 		PerfTrackingConsumer tracker = new PerfTrackingConsumer();
 		tracker.setTarget(mock);
 		for (int i = 0; i < 10; i++) {

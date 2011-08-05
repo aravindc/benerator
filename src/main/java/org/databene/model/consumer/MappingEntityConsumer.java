@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,7 +32,7 @@ import org.databene.model.data.Entity;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class MappingEntityConsumer extends ConsumerProxy<Entity> {
+public class MappingEntityConsumer extends ConsumerProxy {
 	
 	private ComponentNameMapper mapper;
 	private Stack<Entity> stack;
@@ -41,7 +41,7 @@ public class MappingEntityConsumer extends ConsumerProxy<Entity> {
 	    this(null, null);
     }
 
-	public MappingEntityConsumer(Consumer<Entity> target, String mappingSpec) {
+	public MappingEntityConsumer(Consumer target, String mappingSpec) {
 		super(target);
 	    this.mapper = new ComponentNameMapper(mappingSpec);
 	    stack = new Stack<Entity>();
@@ -52,14 +52,17 @@ public class MappingEntityConsumer extends ConsumerProxy<Entity> {
 	}
 	
 	@Override
-	public void startConsuming(Entity input) {
-		Entity output = mapper.convert(input);
+	public void startConsuming(Object object) {
+		if (!(object instanceof Entity))
+			throw new IllegalArgumentException("Expected Entity");
+		Entity entity = (Entity) object;
+		Entity output = mapper.convert(entity);
 		stack.push(output);
 		target.startConsuming(output);
     }
 
 	@Override
-	public void finishConsuming(Entity object) {
+	public void finishConsuming(Object object) {
 	    super.finishConsuming(stack.pop());
 	}
 	

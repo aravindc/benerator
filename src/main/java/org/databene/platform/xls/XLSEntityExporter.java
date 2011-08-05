@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class XLSEntityExporter extends FormattingConsumer<Entity> implements FileExporter<Entity> {
+public class XLSEntityExporter extends FormattingConsumer implements FileExporter {
 
     private static final Logger logger = LoggerFactory.getLogger(CSVEntityExporter.class);
     
@@ -103,9 +103,11 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void startConsuming(Entity entity) {
-        if (logger.isDebugEnabled())
-            logger.debug("exporting " + entity);
+    public void startConsuming(Object object) {
+        logger.debug("exporting {}", object);
+        if (!(object instanceof Entity))
+        	throw new IllegalArgumentException("Expecting Entity");
+        Entity entity = (Entity) object;
         HSSFSheet sheet = getOrCreateSheet(entity);
         HSSFRow row = sheet.createRow(sheet.getLastRowNum() + 1);
         int i = 0;

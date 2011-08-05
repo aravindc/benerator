@@ -54,7 +54,7 @@ public class PerfTrackingConsumerIntegrationTest extends BeneratorIntegrationTes
 				"	</consumer>" +
 				"</generate>");
 		statement.execute(context);
-		ConsumerMock<?> consumerMock = ConsumerMock.instances.get(0);
+		ConsumerMock consumerMock = ConsumerMock.instances.get(0);
 		assertEquals(10, consumerMock.startConsumingCount.get());
 		checkStats(statement);
 	}
@@ -66,7 +66,7 @@ public class PerfTrackingConsumerIntegrationTest extends BeneratorIntegrationTes
 				"	<consumer spec='new org.databene.platform.contiperf.PerfTrackingConsumer(new org.databene.benerator.test.ConsumerMock(false, 0, 50, 100))'/>" +
 				"</generate>");
 		statement.execute(context);
-		ConsumerMock<?> consumerMock = ConsumerMock.instances.get(0);
+		ConsumerMock consumerMock = ConsumerMock.instances.get(0);
 		assertEquals(10, consumerMock.startConsumingCount.get());
 		checkStats(statement);
 	}
@@ -76,7 +76,7 @@ public class PerfTrackingConsumerIntegrationTest extends BeneratorIntegrationTes
 		while (tmp instanceof StatementProxy)
 			tmp = ((StatementProxy) tmp).getRealStatement(context);
 	    GenerateOrIterateStatement realStatement = (GenerateOrIterateStatement) tmp;
-		ConsumerChain<?> chain = (ConsumerChain<?>) ((GenerateAndConsumeTask) realStatement.getTarget()).getConsumer();
+		ConsumerChain chain = (ConsumerChain) ((GenerateAndConsumeTask) realStatement.getTarget()).getConsumer();
 		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
 		LatencyCounter counter = tracker.getTracker().getCounter();
 		assertEquals(10, counter.sampleCount());

@@ -58,9 +58,9 @@ import org.xml.sax.helpers.AttributesImpl;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileExporter<Entity> {
+public class XMLEntityExporter extends AbstractConsumer implements FileExporter {
 
-    private static final Logger logger = LoggerFactory.getLogger(XMLEntityExporter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XMLEntityExporter.class);
     
     // defaults --------------------------------------------------------------------------------------------------------
     
@@ -108,18 +108,18 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileE
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void startConsuming(Entity entity) {
-        if (logger.isDebugEnabled())
-            logger.debug("startConsuming(" + entity + ')');
+    public void startConsuming(Object object) {
+        LOGGER.debug("startConsuming({})", object);
         if (out == null)
             initHandler();
+        Entity entity = (Entity) object;
         renderElementStart(entity);
     }
 
     @Override
-    public void finishConsuming(Entity entity) {
-        if (logger.isDebugEnabled())
-            logger.debug("finishConsuming(" + entity + ')');
+    public void finishConsuming(Object object) {
+        LOGGER.debug("finishConsuming({})", object);
+    	Entity entity = (Entity) object;
         try {
 			handler.endElement("", "", entity.type());
 		} catch (SAXException e) {
@@ -182,7 +182,7 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileE
     }
 
     private void initHandler() {
-        logger.debug("Initializing " + uri);
+        LOGGER.debug("Initializing {}", uri);
         // create file
         try {
 			// create file and write header

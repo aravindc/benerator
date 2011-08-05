@@ -44,12 +44,13 @@ public class CustomWeightFunctionIntegrationTest extends BeneratorIntegrationTes
 				"distribution='new " + StandardWeightingFunction.class.getName() + "(50,30,20)' />" +
 		"</generate>";
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void test() {
-		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true);
+		ConsumerMock consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 		parseAndExecute(xml);
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = (List<Entity>) consumer.getProducts();
 		assertEquals(1000, products.size());
 		int a = 0, b = 0, c = 0;
 		for (Entity e : products) {

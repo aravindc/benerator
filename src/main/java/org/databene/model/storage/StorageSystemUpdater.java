@@ -36,8 +36,8 @@ public class StorageSystemUpdater extends StorageSystemConsumer {
 	    super(system);
     }
 
-    public void startConsuming(Entity entity) {
-		system.update(entity);
+    public void startConsuming(Object object) {
+		system.update((Entity) object);
     }
 
 }

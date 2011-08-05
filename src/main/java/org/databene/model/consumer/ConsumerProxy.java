@@ -27,27 +27,27 @@ package org.databene.model.consumer;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class ConsumerProxy<E> implements Consumer<E> {
+public abstract class ConsumerProxy implements Consumer {
 
-	protected Consumer<E> target;
+	protected Consumer target;
 
-	public ConsumerProxy(Consumer<E> target) {
+	public ConsumerProxy(Consumer target) {
 	    this.target = target;
     }
 
-	public Consumer<E> getTarget() {
+	public Consumer getTarget() {
 		return target;
 	}
 
-	public void setTarget(Consumer<E> target) {
+	public void setTarget(Consumer target) {
     	this.target = target;
     }
 
-	public void startConsuming(E object) {
+	public void startConsuming(Object object) {
 		target.startConsuming(object);
 	}
 	
-	public void finishConsuming(E object) {
+	public void finishConsuming(Object object) {
 	    target.finishConsuming(object);
     }
 

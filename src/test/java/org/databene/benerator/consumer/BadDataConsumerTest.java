@@ -35,13 +35,12 @@ import org.junit.Test;
  */
 public class BadDataConsumerTest {
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void test() {
 		// the real consumer throws an exception on every second invocation
-		Consumer<Integer> realTarget = new AbstractConsumer<Integer>() {
+		Consumer realTarget = new AbstractConsumer() {
 			int count = 0;
-			public void startConsuming(Integer object) {
+			public void startConsuming(Object object) {
 				if (count++ % 2 == 1)
 					throw new RuntimeException();
 			}

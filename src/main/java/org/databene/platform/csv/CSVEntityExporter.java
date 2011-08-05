@@ -50,7 +50,7 @@ import java.util.List;
  * Created: 21.08.2007 21:16:59
  * @author Volker Bergmann
  */
-public class CSVEntityExporter extends TextFileExporter<Entity> {
+public class CSVEntityExporter extends TextFileExporter {
 
 	private static final Logger logger = LoggerFactory.getLogger(CSVEntityExporter.class);
     
@@ -154,9 +154,11 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     // Callback methods for parent class functionality -----------------------------------------------------------------
 
     @Override
-	protected void startConsumingImpl(Entity entity) {
-        if (logger.isDebugEnabled())
-            logger.debug("exporting " + entity);
+	protected void startConsumingImpl(Object object) {
+        logger.debug("exporting {}", object);
+        if (!(object instanceof Entity))
+        	throw new IllegalArgumentException("Expecting entity");
+        Entity entity = (Entity) object;
         if (lfRequired)
         	println();
         else
@@ -180,7 +182,8 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     }
 
     @Override
-	protected void postInitPrinter(Entity entity) {
+	protected void postInitPrinter(Object object) {
+    	Entity entity = (Entity) object;
     	// determine columns from entity, if they have not been predefined
     	if (columns == null && entity != null)
 			columns = CollectionUtil.toArray(entity.getComponents().keySet());

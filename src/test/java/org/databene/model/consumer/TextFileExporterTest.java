@@ -48,7 +48,7 @@ public class TextFileExporterTest {
 	@Test
 	public void test() throws IOException {
 		String uri = "target" + File.separator + getClass().getSimpleName() + ".txt";
-		TextFileExporter<String> exporter = new TextFileExporter<String>(uri);
+		TextFileExporter exporter = new TextFileExporter(uri);
 		exporter.startConsuming("test");
 		exporter.close();
 		assertEquals(uri, exporter.getUri());

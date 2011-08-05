@@ -30,10 +30,10 @@ import org.databene.model.consumer.Consumer;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consumer<Object> {
+public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consumer {
 	
 	private String id;
-	private Consumer<Object> target;
+	private Consumer target;
 	
 	// constructors ----------------------------------------------------------------------------------------------------
 
@@ -41,11 +41,11 @@ public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consume
 	    this(null);
     }
 	
-	public PerfTrackingConsumer(Consumer<Object> target) {
+	public PerfTrackingConsumer(Consumer target) {
 	    this(target, "Unnamed");
     }
 	
-	public PerfTrackingConsumer(Consumer<Object> target, String id) {
+	public PerfTrackingConsumer(Consumer target, String id) {
 		this.id = id;
 	    this.target = target;
     }
@@ -56,7 +56,7 @@ public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consume
     	this.id = id;
     }
 
-    public void setTarget(Consumer<Object> target) {
+    public void setTarget(Consumer target) {
 	    this.target = target;
     }
 	

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -78,24 +78,24 @@ public class DescriptorRunnerTest {
 	
 	
 	
-	static class TestExporter implements FileExporter<String> {
+	static class TestExporter implements FileExporter {
 
         public String getUri() {
 	        return EXPORT_FILE_URI;
         }
 
-        public void startConsuming(String object) { }
-        public void finishConsuming(String object) { }
+        public void startConsuming(Object object) { }
+        public void finishConsuming(Object object) { }
         public void flush() { }
         public void close() { }
 	}
 	
-	static class MyConsumer extends AbstractConsumer<Entity> {
+	static class MyConsumer extends AbstractConsumer {
 		
-		List<Entity> products = new ArrayList<Entity>();
+		List<Object> products = new ArrayList<Object>();
 
-        public void startConsuming(Entity entity) {
-	        products.add(entity);
+        public void startConsuming(Object object) {
+	        products.add(object);
         }
 	}
 

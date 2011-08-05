@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,7 +40,6 @@ import org.w3c.dom.Document;
  */
 public class XMLConsumerExpressionTest {
 	
-    @SuppressWarnings("rawtypes")
 	@Test
 	public void testInlineConsumerClass() throws Exception {
 		Document doc = XMLUtil.parseString("<generate " +
@@ -52,7 +51,6 @@ public class XMLConsumerExpressionTest {
 		assertNotNull("Context not set", consumerMock.context);
 	}
 	
-    @SuppressWarnings("rawtypes")
 	@Test
 	public void testInlineConsumerSpec() throws Exception {
 		Document doc = XMLUtil.parseString("<generate " +
@@ -65,7 +63,6 @@ public class XMLConsumerExpressionTest {
 		assertEquals(2, consumerMock.id);
 	}
 	
-    @SuppressWarnings("rawtypes")
 	@Test
 	public void testConsumerBean() throws Exception {
 		Document doc = XMLUtil.parseString("<generate>" +
@@ -87,8 +84,8 @@ public class XMLConsumerExpressionTest {
 				new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
 		context.set("myc", new ConsumerMock(3));
-		ConsumerChain<?> consumerChain = (ConsumerChain<?>) expression.evaluate(context);
-		ConsumerMock consumerMock = (ConsumerMock) ((ConsumerProxy<?>) consumerChain.getComponent(0)).getTarget();
+		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(context);
+		ConsumerMock consumerMock = (ConsumerMock) ((ConsumerProxy) consumerChain.getComponent(0)).getTarget();
 		assertEquals(3, consumerMock.id);
 	}
 	
@@ -100,8 +97,8 @@ public class XMLConsumerExpressionTest {
 				new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
 		context.set("myc", new ConsumerMock());
-		ConsumerChain<?> consumerChain = (ConsumerChain<?>) expression.evaluate(context);
-		ConsumerMock consumerMock = (ConsumerMock) ((ConsumerProxy<?>) consumerChain.getComponent(0)).getTarget();
+		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(context);
+		ConsumerMock consumerMock = (ConsumerMock) ((ConsumerProxy) consumerChain.getComponent(0)).getTarget();
 		assertEquals(1, consumerMock.id);
 		assertEquals(2, consumerChain.componentCount());
 		ConsumerMock component2 = (ConsumerMock) consumerChain.getComponent(1);

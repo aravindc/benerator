@@ -46,11 +46,11 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 
 	private MemStore src; 
 	private MemStore dst; 
-	private ConsumerMock<Entity> consumer;
+	private ConsumerMock consumer;
 	
 	@Before
 	public void setUpConsumerAndDescriptor() throws Exception {
-		consumer = new ConsumerMock<Entity>(true);
+		consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 
 		// create source store and prefill it
@@ -89,11 +89,12 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testIterate() {
 		MemStore.ignoreClose = false;
 		parseAndExecute("<iterate source='src' type='product' consumer='cons'/>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = (List<Entity>) consumer.getProducts();
 		assertEquals(3, products.size());
 		int index = 3;
 		for (Entity product : products) {
@@ -103,15 +104,17 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testIterateWithSelector() {
 		MemStore.ignoreClose = false;
 		parseAndExecute("<iterate source='src' type='product' selector='_candidate.id == 4' consumer='cons'/>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = (List<Entity>) consumer.getProducts();
 		assertEquals(1, products.size());
 		assertEquals(4, products.get(0).get("id"));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testVariable() {
 		MemStore.ignoreClose = false;
@@ -123,7 +126,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 			"	<attribute name='prod_id' type='int' script='p.id' />" +
 			"</generate>"
 		);
-		List<Entity> orders = consumer.getProducts();
+		List<Entity> orders = (List<Entity>) consumer.getProducts();
 		assertEquals(3, orders.size());
 		int index = 1;
 		for (Entity order : orders) {
@@ -134,6 +137,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testAttribute() {
 		MemStore.ignoreClose = false;
@@ -143,7 +147,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 			"	<attribute name='product' source='src' type='product' />" +
 			"</generate>"
 		);
-		Collection<Entity> orders = consumer.getProducts();
+		Collection<Entity> orders = (List<Entity>) consumer.getProducts();
 		assertEquals(3, orders.size());
 		int index = 1;
 		for (Entity order : orders) {

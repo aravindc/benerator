@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,9 +48,9 @@ import java.text.ParseException;
  * Created: 26.08.2007 06:17:41
  * @author Volker Bergmann
  */
-public class FlatFileEntityExporter extends TextFileExporter<Entity> {
+public class FlatFileEntityExporter extends TextFileExporter {
 	
-    private static final Logger logger = LoggerFactory.getLogger(FlatFileEntityExporter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlatFileEntityExporter.class);
 
     private Converter<Entity, String> converters[];
 
@@ -150,15 +150,17 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
     // Callback methods for TextFileExporter ---------------------------------------------------------------------------
     
 	@Override
-	protected void postInitPrinter(Entity entity) {
+	protected void postInitPrinter(Object object) {
         if (this.converters == null)
             throw new ConfigurationError("Property 'columns' not set on bean " + getClass().getName());
 	}
 
 	@Override
-	protected void startConsumingImpl(Entity entity) {
-        if (logger.isDebugEnabled())
-            logger.debug("exporting " + entity);
+	protected void startConsumingImpl(Object object) {
+        LOGGER.debug("exporting {}", object);
+        if (!(object instanceof Entity))
+        	throw new IllegalArgumentException("Expected Entity");
+        Entity entity = (Entity) object;
         for (Converter<Entity, String> converter : converters)
             printer.print(converter.convert(entity));
         printer.print(lineSeparator);

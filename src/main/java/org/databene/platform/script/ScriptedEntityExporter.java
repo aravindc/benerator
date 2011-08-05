@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,9 +42,9 @@ import java.io.IOException;
  * Created: 01.09.2007 18:05:04
  * @author Volker Bergmann
  */
-public class ScriptedEntityExporter extends TextFileExporter<Entity> {
+public class ScriptedEntityExporter extends TextFileExporter {
 
-    private static final Logger logger = LoggerFactory.getLogger(ScriptedEntityExporter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScriptedEntityExporter.class);
 
     private String headerScript;
     private String partScript;
@@ -98,7 +98,7 @@ public class ScriptedEntityExporter extends TextFileExporter<Entity> {
     // Consumer interface ----------------------------------------------------------------------------------------------
 
 	@Override
-	protected void postInitPrinter(Entity entity) {
+	protected void postInitPrinter(Object object) {
 		try {
 			docWriter = new ScriptedDocumentWriter<Entity>(printer, headerScript, partScript, footerScript);
 			if (append)
@@ -109,10 +109,10 @@ public class ScriptedEntityExporter extends TextFileExporter<Entity> {
 	}
 
 	@Override
-	protected void startConsumingImpl(Entity entity) {
+	protected void startConsumingImpl(Object object) {
         try {
-            if (logger.isDebugEnabled())
-                logger.debug("Exporting " + entity);
+            LOGGER.debug("Exporting {}", object);
+            Entity entity = (Entity) object;
             docWriter.writeElement(entity);
         } catch (IOException e) {
             throw new ConfigurationError(e);

@@ -44,7 +44,6 @@ import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ConsumerChain;
 import org.databene.model.consumer.NonClosingConsumerProxy;
-import org.databene.model.data.Entity;
 import org.databene.model.storage.StorageSystem;
 import org.databene.model.storage.StorageSystemInserter;
 import org.w3c.dom.Element;
@@ -56,7 +55,7 @@ import org.w3c.dom.Element;
  * @author Volker Bergmann
  */
 
-public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
+public class XMLConsumerExpression extends DynamicExpression<Consumer> {
 	
 	private Escalator escalator;
 
@@ -71,10 +70,9 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
 		this.resourceManager = resourceManager;
     }
 
-	@SuppressWarnings("unchecked")
-    public Consumer<Entity> evaluate(Context context) {
+    public Consumer evaluate(Context context) {
 		BeneratorContext beneratorContext = (BeneratorContext) context;
-		ConsumerChain<Entity> consumerChain = new ConsumerChain<Entity>();
+		ConsumerChain consumerChain = new ConsumerChain();
 		
 		// parse consumer attribute
 		if (entityElement.hasAttribute(ATT_CONSUMER)) {
@@ -105,19 +103,18 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
 			String entityName = parseStringAttribute(entityElement, ATT_NAME, context, false);
 			escalator.escalate("No consumers defined for " + entityName, this, null);
 		}
-		for (Consumer<Entity> consumer : consumerChain.getComponents())
+		for (Consumer consumer : consumerChain.getComponents())
 			resourceManager.addResource(consumer);
 		return consumerChain;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public static void addConsumer(BeanSpec beanSpec, BeneratorContext context, ConsumerChain<?> chain) {
+    public static void addConsumer(BeanSpec beanSpec, BeneratorContext context, ConsumerChain chain) {
     	Consumer consumer;
     	Object bean = beanSpec.getBean();
     	boolean ref = beanSpec.isReference();
     	// check consumer type
     	if (bean instanceof Consumer) {
-    		consumer = (Consumer<?>) bean;
+    		consumer = (Consumer) bean;
     	} else if (bean instanceof StorageSystem) {
     		consumer = new StorageSystemInserter((StorageSystem) bean);
     	} else

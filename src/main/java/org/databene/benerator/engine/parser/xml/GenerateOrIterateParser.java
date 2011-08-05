@@ -213,8 +213,8 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		return task;
     }
 
-	private Expression<Consumer<?>> parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
-		return new CachedExpression<Consumer<?>>(new XMLConsumerExpression(entityElement, consumersExpected, resourceManager));
+	private Expression<Consumer> parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
+		return new CachedExpression<Consumer>(new XMLConsumerExpression(entityElement, consumersExpected, resourceManager));
 	}
 
 	private InstanceDescriptor mapDescriptorElement(Element element, BeneratorContext context) {

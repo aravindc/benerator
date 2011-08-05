@@ -469,15 +469,15 @@ public class DBSystem extends AbstractStorageSystem {
 		return new ConvertingDataSource<ResultSet, Object>(resultSetIterable, converter);
     }
     
-    public Consumer<Entity> inserter() {
+    public Consumer inserter() {
     	return new StorageSystemInserter(this);
     }
     
-    public Consumer<Entity> inserter(String table) {
+    public Consumer inserter(String table) {
     	return new StorageSystemInserter(this, table);
     }
     
-    public Consumer<Entity> updater() {
+    public Consumer updater() {
     	return new StorageSystemUpdater(this);
     }
     

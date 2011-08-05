@@ -35,7 +35,7 @@ import org.databene.commons.converter.ToStringConverter;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
+public abstract class FormattingConsumer extends AbstractConsumer {
 
 	protected ToStringConverter plainConverter = new ToStringConverter();
 

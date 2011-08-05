@@ -141,7 +141,7 @@ public class DBSystemTest {
 	
 	@Test
 	public void testInserter() throws Exception {
-        Consumer<Entity> inserter = db.inserter();
+        Consumer inserter = db.inserter();
         Entity entity = new Entity("TEST", "ID", 1, "NAME", "Alice");
         inserter.startConsuming(entity);
         inserter.finishConsuming(entity);
@@ -153,7 +153,7 @@ public class DBSystemTest {
 	
 	@Test
 	public void testInserter_table() throws Exception {
-        Consumer<Entity> inserter = db.inserter("TEST");
+        Consumer inserter = db.inserter("TEST");
         Entity entity = new Entity("Xyz", "ID", 1, "NAME", "Alice");
         inserter.startConsuming(entity);
         inserter.finishConsuming(entity);

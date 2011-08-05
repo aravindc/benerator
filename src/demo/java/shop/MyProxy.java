@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,6 @@ package shop;
 import org.databene.commons.IOUtil;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.Consumer;
-import org.databene.model.data.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,42 +37,43 @@ import org.slf4j.LoggerFactory;
  * <br/>
  * Created: 26.08.2007 14:47:40
  */
-public class MyProxy extends AbstractConsumer<Entity> {
+public class MyProxy extends AbstractConsumer {
 
     private static Logger logger = LoggerFactory.getLogger(MyProxy.class);
 
-    private Consumer<Entity> target;
+    private Consumer target;
 
     public MyProxy() {
         this(null);
     }
 
-    public MyProxy(Consumer<Entity> target) {
+    public MyProxy(Consumer target) {
         this.target = target;
     }
     
     // properties ------------------------------------------------------------------------------------------------------
 
-    public Consumer<Entity> getTarget() {
+    public Consumer getTarget() {
         return target;
     }
 
-    public void setTarget(Consumer<Entity> target) {
+    public void setTarget(Consumer target) {
         this.target = target;
     }
     
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void startConsuming(Entity object) {
+    public void startConsuming(Object object) {
         logger.info(object.toString());
         target.startConsuming(object);
     }
 
     @Override
-    public void finishConsuming(Entity object) {
+    public void finishConsuming(Object object) {
         logger.info(object.toString());
         target.finishConsuming(object);
     }
+    
     @Override
     public void flush() {
         target.flush();

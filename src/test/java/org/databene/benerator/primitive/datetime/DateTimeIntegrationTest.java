@@ -46,11 +46,11 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 	private static final Date MAX_DATE = TimeUtil.date(2008, 9,  3);
 	private static final int INDIVIDUAL_DATE_COUNT = 4;
 	
-	private ConsumerMock<Object[]> consumer;
+	private ConsumerMock consumer;
 	
 	@Before
 	public void setUpContext() {
-		consumer = new ConsumerMock<Object[]>(true);
+		consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 	}
 
@@ -58,6 +58,7 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 	
 	// test methods ----------------------------------------------------------------------------------------------------
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testDateWithMinMaxAndGranularity() {
 		// create DateTimeGenerator from XML descriptor
@@ -65,7 +66,7 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 			"<generate type='entity' count='500' consumer='cons'>" +
         	"  <value type='date' min='2008-09-29' max='2008-10-02' granularity='0000-00-01'/>" +
         	"</generate>");
-		List<Object[]> products = consumer.getProducts();
+		List<Object[]> products = (List<Object[]>) consumer.getProducts();
 		HashSet<Date> usedDates = new HashSet<Date>();
 		for (Object[] product : products) {
 			Date date = (Date) product[0];
@@ -76,6 +77,7 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 		assertEquals(INDIVIDUAL_DATE_COUNT, usedDates.size());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testDateWithMinAndMax() {
 		// create DateTimeGenerator from XML descriptor
@@ -83,7 +85,7 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 			"<generate type='entity' count='500' consumer='cons'>" +
         	"  <value type='date' min='2008-09-29' max='2008-10-02' />" +
         	"</generate>");
-		List<Object[]> products = consumer.getProducts();
+		List<Object[]> products = (List<Object[]>) consumer.getProducts();
 		HashSet<Date> usedDates = new HashSet<Date>();
 		for (Object[] product : products) {
 			Date date = (Date) product[0];
@@ -94,6 +96,7 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 		assertEquals(INDIVIDUAL_DATE_COUNT, usedDates.size());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testDateWithMin() {
 		// create DateTimeGenerator from XML descriptor
@@ -101,7 +104,7 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 			"<generate type='entity' count='500' consumer='cons'>" +
         	"  <value type='date' min='2008-09-29' />" +
         	"</generate>");
-		List<Object[]> products = consumer.getProducts();
+		List<Object[]> products = (List<Object[]>) consumer.getProducts();
 		HashSet<Date> usedDates = new HashSet<Date>();
 		for (Object[] product : products) {
 			Date date = (Date) product[0];
@@ -111,6 +114,7 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 		assertTrue(usedDates.size() > 10);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testDateWithMax() {
 		// create DateTimeGenerator from XML descriptor
@@ -118,7 +122,7 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 			"<generate type='entity' count='500' consumer='cons'>" +
         	"  <value type='date' max='2008-10-02' />" +
         	"</generate>");
-		List<Object[]> products = consumer.getProducts();
+		List<Object[]> products = (List<Object[]>) consumer.getProducts();
 		HashSet<Date> usedDates = new HashSet<Date>();
 		for (Object[] product : products) {
 			Date date = (Date) product[0];

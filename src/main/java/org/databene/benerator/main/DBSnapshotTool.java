@@ -126,7 +126,7 @@ public class DBSnapshotTool {
         String lineSeparator = SystemInfo.getLineSeparator();
 		long startTime = System.currentTimeMillis();
 
-		Consumer<Entity> exporter = null;
+		Consumer exporter = null;
         DBSystem db = null;
         int count = 0;
         try {

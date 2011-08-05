@@ -118,12 +118,13 @@ public class SequenceTableGeneratorTest extends GeneratorTest {
         }
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testIntegration() throws Exception {
-		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true);
+		ConsumerMock consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 		new DescriptorRunner("org/databene/platform/db/SequenceTableIntegrationTest.ben.xml", context).run();
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = (List<Entity>) consumer.getProducts();
 		assertEquals(2, products.size());
 		assertEquals(new Entity("x", "id", 2000), products.get(0));
 		assertEquals(new Entity("x", "id", 2001), products.get(1));

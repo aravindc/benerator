@@ -55,7 +55,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @since 0.3.04
  * @author Volker Bergmann
  */
-public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
+public class DbUnitEntityExporter extends AbstractConsumer {
     
     // attributes ------------------------------------------------------------------------------------------------------
 
@@ -114,7 +114,10 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void startConsuming(Entity entity) {
+    public void startConsuming(Object object) {
+    	if (!(object instanceof Entity))
+    		throw new IllegalArgumentException("Expected entity");
+    	Entity entity = (Entity) object;
         try {
             if (logger.isDebugEnabled())
                 logger.debug("exporting " + entity);

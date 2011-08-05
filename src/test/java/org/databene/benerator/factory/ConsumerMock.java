@@ -35,7 +35,7 @@ import org.databene.commons.context.ContextAware;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;
 
-public class ConsumerMock extends AbstractConsumer<Entity> implements ContextAware {
+public class ConsumerMock extends AbstractConsumer implements ContextAware {
 	
 	public static final HashMap<Integer, ConsumerMock> instances 
 		= new HashMap<Integer, ConsumerMock>();
@@ -43,7 +43,7 @@ public class ConsumerMock extends AbstractConsumer<Entity> implements ContextAwa
 	
 	public static ConsumerMock lastInstance;
 	
-	public Entity lastEntity;
+	public Object lastProduct;
 	public int id;
 	public AtomicInteger invocationCount;
 	public boolean closed;
@@ -65,8 +65,8 @@ public class ConsumerMock extends AbstractConsumer<Entity> implements ContextAwa
 	    this.context = context;
 	}
 
-    public void startConsuming(Entity object) {
-        lastEntity = object;
+    public void startConsuming(Object object) {
+        lastProduct = object;
         invocationCount.incrementAndGet();
     }
     
@@ -77,7 +77,7 @@ public class ConsumerMock extends AbstractConsumer<Entity> implements ContextAwa
     }
     
     public void enrolCustomer(String name, int age) throws Exception {
-        lastEntity = new Entity("Person", "name", name, "age", age);
+        lastProduct = new Entity("Person", "name", name, "age", age);
         System.out.println("enrolled: " + name + " (" + age + ") - " + Thread.currentThread().getName());
         Thread.sleep(50 + random.nextInt(100));
     }

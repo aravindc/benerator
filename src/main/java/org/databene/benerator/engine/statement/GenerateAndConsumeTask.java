@@ -61,14 +61,14 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 	private String taskName;
     private Generator<?> generator;
     //private boolean isSubCreator;
-    private Expression<Consumer<?>> consumerExpr;
+    private Expression<Consumer> consumerExpr;
     private List<Statement> subStatements;
     private ResourceManager resourceManager;
     private volatile AtomicBoolean generatorInitialized;
     private BeneratorContext context;
     private WrapperProvider<?> productWrapperProvider = new WrapperProvider<Object>();
 
-    private Consumer<?> consumer;
+    private Consumer consumer;
     
     public GenerateAndConsumeTask(String taskName, Generator<?> generator, 
     		/*boolean isSubCreator,*/ BeneratorContext context) {
@@ -88,7 +88,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 		return resourceManager;
 	}
 
-	public void setConsumer(Expression<Consumer<?>> consumerExpr) {
+	public void setConsumer(Expression<Consumer> consumerExpr) {
         this.consumerExpr = consumerExpr;
 	}
     
@@ -105,7 +105,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 			consumer.flush();
     }
 
-    public Consumer<?> getConsumer() {
+    public Consumer getConsumer() {
     	if (consumer == null)
     		consumer = ExpressionUtil.evaluate(consumerExpr, context);
     	return consumer;

@@ -44,9 +44,9 @@ import org.slf4j.LoggerFactory;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class SQLEntityExporter extends TextFileExporter<Entity> {
+public class SQLEntityExporter extends TextFileExporter {
 
-    private static final Logger logger = LoggerFactory.getLogger(CSVEntityExporter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CSVEntityExporter.class);
     
     // defaults --------------------------------------------------------------------------------------------------------
     
@@ -82,17 +82,19 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     // Callback methods for parent class functionality -----------------------------------------------------------------
 
 	@Override
-    protected void startConsumingImpl(Entity entity) {
-        if (logger.isDebugEnabled())
-            logger.debug("exporting " + entity);
+    protected void startConsumingImpl(Object object) {
         if (dialect == null)
         	throw new ConfigurationError("'dialect' not set in " + getClass().getSimpleName());
+        LOGGER.debug("exporting {}", object);
+        if (!(object instanceof Entity))
+        	throw new IllegalArgumentException("Expected Entity");
+        Entity entity = (Entity) object;
         String sql = createSQLInsert(entity);
         printer.println(sql);
     }
 
 	@Override
-    protected void postInitPrinter(Entity entity) {
+    protected void postInitPrinter(Object object) {
     	// nothing special to do
     }
 
@@ -125,7 +127,7 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
         }
         builder.append(");");
         String sql = builder.toString();
-        logger.debug("built SQL statement: " + sql);
+        LOGGER.debug("built SQL statement: " + sql);
         return sql;
     }
 

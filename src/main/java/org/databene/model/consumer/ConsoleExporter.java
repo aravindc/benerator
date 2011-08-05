@@ -40,7 +40,7 @@ import org.databene.model.data.Entity;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class ConsoleExporter extends FormattingConsumer<Object> {
+public class ConsoleExporter extends FormattingConsumer {
 	
 	private Long limit;
 	private CompositeFormatter compositeFormatter;

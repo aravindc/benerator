@@ -49,11 +49,12 @@ public class DefaultComponentIntegrationTest extends BeneratorIntegrationTest {
 		checkFile("org/databene/benerator/engine/defaultComponent-db.ben.xml");
 	}
 
+	@SuppressWarnings("unchecked")
 	public void checkFile(String uri) throws IOException {
-		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true);
+		ConsumerMock consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 		new DescriptorRunner(uri, context).run();
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = (List<Entity>) consumer.getProducts();
 		long currentMillies = System.currentTimeMillis();
 		for (Entity product : products) {
 			// check created_by

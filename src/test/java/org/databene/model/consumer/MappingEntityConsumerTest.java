@@ -45,7 +45,7 @@ public class MappingEntityConsumerTest {
 		Entity input = new Entity("Person", "name", "Alice", "age", 23);
 		consumer.startConsuming(input);
 		consumer.finishConsuming(input);
-		assertEquals(new Entity("Person", "givenName", "Alice", "age", 23), target.lastEntity);
+		assertEquals(new Entity("Person", "givenName", "Alice", "age", 23), target.lastProduct);
 	}
 	
 }

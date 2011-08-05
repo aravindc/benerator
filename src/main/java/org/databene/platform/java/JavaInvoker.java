@@ -33,7 +33,7 @@ import org.databene.model.data.Entity;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class JavaInvoker extends AbstractConsumer<Object> {
+public class JavaInvoker extends AbstractConsumer {
 	
 	private Object target;
 	private String methodName;

@@ -74,12 +74,13 @@ public class GeneratorFactoryUtilTest extends GeneratorTest {
 		assertEquals(SequenceManager.EXPAND_SEQUENCE, 
 				GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.SIMPLE, true, context));
 	}
-/*
+	/*
 	@Test
 	public void testGetCountGenerator_default() {
 		InstanceDescriptor descriptor = new InstanceDescriptor("inst");
-		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
+		NonNullGenerator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
+		//Long x = countGenerator.generate();
 		assertUnavailable(countGenerator); // TODO why this?
 	}
 	*/

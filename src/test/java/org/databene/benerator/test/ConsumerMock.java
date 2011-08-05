@@ -36,20 +36,20 @@ import org.databene.model.consumer.Consumer;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ConsumerMock<E> implements Consumer<E> {
+public class ConsumerMock implements Consumer {
 	
 	public static final String START_CONSUMING = "sc";
 	public static final String FINISH_CONSUMING = "fc";
 	public static final String FLUSH = "fl";
 	public static final String CLOSE = "cl";
 
-	public static Map<Integer, ConsumerMock<?>> instances = new HashMap<Integer, ConsumerMock<?>>();
+	public static Map<Integer, ConsumerMock> instances = new HashMap<Integer, ConsumerMock>();
 	
 	private final int minDelay;
 	private final int delayDelta;
 	
 	private final boolean storeProducts;
-	public List<E> products;
+	public List<Object> products;
 	public List<String> invocations;
 
 	public volatile AtomicInteger startConsumingCount = new AtomicInteger();
@@ -76,16 +76,16 @@ public class ConsumerMock<E> implements Consumer<E> {
 	    } else
 	    	this.delayDelta = 0;
 	    if (storeProducts)
-	    	products = new ArrayList<E>();
+	    	products = new ArrayList<Object>();
 	    this.invocations = new ArrayList<String>();
 	    instances.put(id, this);
     }
 	
-	public List<E> getProducts() {
+	public List<?> getProducts() {
     	return products;
     }
 
-	public void startConsuming(E product) {
+	public void startConsuming(Object product) {
 		invocations.add(START_CONSUMING);
 	    startConsumingCount.incrementAndGet();
 	    if (storeProducts) {
@@ -102,7 +102,7 @@ public class ConsumerMock<E> implements Consumer<E> {
 	    }
     }
 
-	public void finishConsuming(E product) {
+	public void finishConsuming(Object product) {
 		invocations.add(FINISH_CONSUMING);
 	    finishConsumingCount.incrementAndGet();
     }

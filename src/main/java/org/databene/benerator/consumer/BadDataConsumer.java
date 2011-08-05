@@ -31,7 +31,6 @@ import org.databene.model.consumer.ConsumerProxy;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class BadDataConsumer extends ConsumerProxy {
 	
 	Consumer badDataTarget;

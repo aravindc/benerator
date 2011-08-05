@@ -158,7 +158,7 @@ public class DescriptorRunner implements ResourceManager {
 		if (!resourceManager.addResource(resource))
 			return false;
 		else if (resource instanceof FileExporter)
-			generatedFiles.add(((FileExporter<?>) resource).getUri());
+			generatedFiles.add(((FileExporter) resource).getUri());
 	    return true;
     }
 

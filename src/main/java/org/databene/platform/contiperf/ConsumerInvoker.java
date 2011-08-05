@@ -34,9 +34,9 @@ import org.databene.model.consumer.Consumer;
 public class ConsumerInvoker implements Invoker {
 	
 	private String id;
-	private Consumer<Object> consumer;
+	private Consumer consumer;
 
-	public ConsumerInvoker(String id, Consumer<Object> consumer) {
+	public ConsumerInvoker(String id, Consumer consumer) {
 		this.id = id;
 	    this.consumer = consumer;
     }

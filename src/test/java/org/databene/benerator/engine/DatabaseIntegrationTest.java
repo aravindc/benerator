@@ -47,12 +47,12 @@ import org.junit.Test;
 public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 
 	private DBSystem db; 
-	private ConsumerMock<Entity> consumer;
+	private ConsumerMock consumer;
 	
 	@Before
 	public void setUpDatabase() throws Exception {
 		DBUtil.resetMonitors();
-		consumer = new ConsumerMock<Entity>(true);
+		consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
 		db = new DBSystem("db", dbUrl, HSQLUtil.DRIVER, 
@@ -88,12 +88,18 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	@Test
 	public void testDbRef_default_nullable() {
 		parseAndExecute("<generate type='referer' count='3' consumer='cons'/>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
 		for (Entity product : products) {
 			assertNull(product.get("referee_id"));
 		}
 		closeAndCheckCleanup();
+	}
+
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected List<Entity> getConsumedEntities() {
+		return (List) consumer.getProducts();
 	}
 
 	@Test
@@ -103,7 +109,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 				"<generate type='referer' consumer='cons'>" +
 	        	"  <reference name='referee_id' nullable='false' source='db' />" + // TODO v1.0 should source='db' be optional?
 	        	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(2, products.size());
 		for (Entity product : products) {
 			int ref = (Integer) product.get("referee_id");
@@ -119,7 +125,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 				"<generate type='referer' count='3' consumer='cons'>" +
 	        	"  <reference name='referee_id' nullable='false' source='db' />" + // TODO v1.0 should source='db' be optional?
 	        	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
 		for (Entity product : products) {
 			int ref = (Integer) product.get("referee_id");
@@ -136,7 +142,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			"<generate type='referer' count='3' consumer='cons'>" +
         	"  <reference name='referee_id' targetType='referee' source='db' distribution='new org.databene.benerator.distribution.function.ExponentialFunction(-0.5)' />" +
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
 		for (Entity product : products) {
 			int ref = (Integer) product.get("referee_id");
@@ -151,7 +157,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			"<generate type='referer' count='3' consumer='cons'>" +
         	"  <reference name='referee_id' values='1' />" +
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
 		for (Entity product : products) {
 			assertEquals(1, product.get("referee_id"));
@@ -165,7 +171,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			"<generate type='referer' count='3' consumer='cons'>" +
         	"  <reference name='referee_id' constant='1' />" +
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
 		for (Entity product : products) {
 			assertEquals(1, product.get("referee_id"));
@@ -180,7 +186,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			"<generate type='referer' count='3' consumer='cons'>" +
         	"  <reference name='referee_id' constant='{rid}' />" +
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
 		for (Entity product : products) {
 			assertEquals(2, product.get("referee_id"));
@@ -195,7 +201,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			"<generate type='referer' count='3' consumer='cons'>" +
         	"  <attribute name='referee_id' constant='{rid}' />" +
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
 		for (Entity product : products) {
 			assertEquals(2, product.get("referee_id"));
@@ -210,7 +216,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			"<generate type='referer' count='3' consumer='cons'>" +
         	"  <reference name='referee_id' script='rid + 1' />" +
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
 		for (Entity product : products) {
 			assertEquals(3, product.get("referee_id"));
@@ -227,7 +233,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
         	"	  selector=\"{ftl:select id from referee where id=${key}}\" " +
         	"     nullable='false'/>" +
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(1, products.size());
 		assertEquals(2, products.get(0).get("referee_id"));
 		closeAndCheckCleanup();
@@ -242,7 +248,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
         	"	  subSelector='{ftl:select id from referee order by id}' " +
         	"     nullable='false'/>" +
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
 		assertEquals(2, products.get(0).get("referee_id"));
 		assertEquals(2, products.get(1).get("referee_id"));
@@ -259,7 +265,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
         	"	  selector='{ftl:id=${key}}' " +
         	"     nullable='false'/>" +
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(1, products.size());
 		assertEquals(2, products.get(0).get("referee_id"));
 		closeAndCheckCleanup();
@@ -275,7 +281,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
         	"  <attribute name='n' source='db' " +
         	"	  selector=\"{{'select n+1 from referee where id = ' + this.id}}\" cyclic='true' />" +
         	"</iterate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(2, products.size());
 		assertEquals(3, products.get(0).get("n"));
 		assertEquals(4, products.get(1).get("n"));
@@ -291,7 +297,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			"<generate type='referer' count='3' consumer='cons'>" +
         	"  <attribute name='the_date' generator='" + CurrentDateTimeGenerator.class.getName() + "' />" +
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
 		for (Entity entity : products)
 			assertTrue(TimeUtil.isNow(((Date) entity.get("the_date")).getTime(), 2000));
@@ -310,7 +316,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	        	"	</generate>" +
 	        	"</generate>");
 		// check generated products
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(6, products.size());
 		// check transactions
 		List<String> expectedInvocations = CollectionUtil.toList(
@@ -342,7 +348,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	        	"	</generate>" +
 	        	"</generate>");
 		// check generated products
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(6, products.size());
 		// check transactions
 		List<String> expectedInvocations = CollectionUtil.toList(
@@ -370,7 +376,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	        	"	</generate>" +
 	        	"</generate>");
 		// check generated products
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(6, products.size());
 		// check transactions
 		List<String> expectedInvocations = CollectionUtil.toList(
@@ -401,7 +407,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 				"  <variable name='e' type='referee' source='db' subSelector='id=3' />" + 
 	        	"  <reference name='referee_id' script='e.id' />" + 
 	        	"</generate>");
-			List<Entity> products = consumer.getProducts();
+			List<Entity> products = getConsumedEntities();
 			assertEquals(2, products.size());
 			assertEquals(3, products.get(0).get("referee_id"));
 			assertEquals(3, products.get(1).get("referee_id"));
@@ -416,7 +422,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 				"  <variable name='e' type='referee' source='db' subSelector='select * from referee where id=3' />" + 
 	        	"  <reference name='referee_id' script='e.id' />" + 
 	        	"</generate>");
-			List<Entity> products = consumer.getProducts();
+			List<Entity> products = getConsumedEntities();
 			assertEquals(2, products.size());
 			assertEquals(3, products.get(0).get("referee_id"));
 			assertEquals(3, products.get(1).get("referee_id"));
@@ -432,7 +438,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 				"  <variable name='e' type='referee' source='db' subSelector=\"{{'id=' + n}}\" />" + 
 	        	"  <reference name='referee_id' script='e.id' />" + 
 	        	"</generate>");
-			List<Entity> products = consumer.getProducts();
+			List<Entity> products = getConsumedEntities();
 			assertEquals(2, products.size());
 			assertEquals(3, products.get(0).get("referee_id"));
 			assertEquals(2, products.get(1).get("referee_id"));
@@ -448,7 +454,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 				"  <variable name='e' type='referee' source='db' subSelector=\"{{'select * from referee where id=' + n}}\" />" + 
 	        	"  <reference name='referee_id' script='e.id' />" + 
 	        	"</generate>");
-			List<Entity> products = consumer.getProducts();
+			List<Entity> products = getConsumedEntities();
 			assertEquals(2, products.size());
 			assertEquals(3, products.get(0).get("referee_id"));
 			assertEquals(2, products.get(1).get("referee_id"));
@@ -462,7 +468,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 				"  <variable name='a' source='db' subSelector='select id, n from referee where n=3' />" + 
 	        	"  <reference name='referee_id' script='a[0]' />" + 
 	        	"</generate>");
-			List<Entity> products = consumer.getProducts();
+			List<Entity> products = getConsumedEntities();
 			assertEquals(2, products.size());
 			assertEquals(3, products.get(0).get("referee_id"));
 			assertEquals(3, products.get(1).get("referee_id"));
@@ -477,7 +483,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 				"  <variable name='a' source='db' subSelector=\"{{'select id, n from referee where id=' + n}}\"/>" + 
 	        	"  <reference name='referee_id' script='a[0]' />" + 
 	        	"</generate>");
-			List<Entity> products = consumer.getProducts();
+			List<Entity> products = getConsumedEntities();
 			assertEquals(2, products.size());
 			assertEquals(3, products.get(0).get("referee_id"));
 			assertEquals(2, products.get(1).get("referee_id"));
@@ -492,7 +498,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	        	"  <reference name='referee_id' source='db' " +
 	        	"	  subSelector='select n from referee where id=3' />" + 
 	        	"</generate>");
-			List<Entity> products = consumer.getProducts();
+			List<Entity> products = getConsumedEntities();
 			assertEquals(2, products.size());
 			assertEquals(3, products.get(0).get("referee_id"));
 			assertEquals(3, products.get(1).get("referee_id"));
@@ -508,7 +514,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	        	"  <reference name='referee_id' source='db' " +
 	        	"	  subSelector=\"{{'select n from referee where id=' + key}}\" />" + 
 	        	"</generate>");
-			List<Entity> products = consumer.getProducts();
+			List<Entity> products = getConsumedEntities();
 			assertEquals(2, products.size());
 			assertEquals(2, products.get(0).get("referee_id"));
 			assertEquals(2, products.get(1).get("referee_id"));
@@ -523,7 +529,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
         	"  <reference name='referee_id' source='db' " +
         	"	  subSelector=\"{{'select n from referee where id=' + v}}\" />" + 
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(2, products.size());
 		assertEquals(2, products.get(0).get("referee_id"));
 		assertEquals(3, products.get(1).get("referee_id"));
@@ -538,7 +544,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
         	"  <reference name='referee_id' source='db' " +
         	"	  subSelector=\"{{'select n from referee where id=' + referer.id}}\" />" + 
         	"</generate>");
-		List<Entity> products = consumer.getProducts();
+		List<Entity> products = getConsumedEntities();
 		assertEquals(2, products.size());
 		assertEquals(2, products.get(0).get("referee_id"));
 		assertEquals(3, products.get(1).get("referee_id"));
