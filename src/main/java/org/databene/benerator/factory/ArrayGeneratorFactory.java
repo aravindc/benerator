@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.StorageSystem;
 import org.databene.benerator.composite.AbstractComponentBuilder;
 import org.databene.benerator.composite.ArrayElementTypeConverter;
 import org.databene.benerator.composite.BlankArrayGenerator;
@@ -50,7 +51,6 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.model.data.Mode;
 import org.databene.model.data.Uniqueness;
-import org.databene.model.storage.StorageSystem;
 import org.databene.platform.array.Entity2ArrayConverter;
 import org.databene.platform.csv.CSVArraySourceFactory;
 import org.databene.platform.xls.XLSArraySourceFactory;

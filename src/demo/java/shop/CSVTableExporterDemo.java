@@ -2,10 +2,10 @@ package shop;
 
 import java.io.IOException;
 
+import org.databene.benerator.StorageSystem;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
 import org.databene.model.data.Entity;
-import org.databene.model.storage.StorageSystem;
 import org.databene.platform.csv.CSVEntityExporter;
 import org.databene.platform.db.DBSystem;
 import org.databene.webdecs.DataContainer;

@@ -29,6 +29,7 @@ package org.databene.benerator.factory;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
+import org.databene.benerator.StorageSystem;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.ConstantGenerator;
@@ -43,7 +44,6 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
-import org.databene.model.storage.StorageSystem;
 import org.databene.webdecs.DataSource;
 import org.databene.webdecs.util.DataSourceFromIterable;
 import org.databene.webdecs.util.DataSourceProxy;

@@ -34,7 +34,6 @@ import org.databene.model.data.Mode;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
-import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.*;
 import org.databene.benerator.composite.BlankEntityGenerator;
 import org.databene.benerator.composite.ComponentBuilder;

@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.databene.benerator.engine.expression.ScriptExpression;
+import org.databene.benerator.storage.AbstractStorageSystem;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
@@ -34,7 +35,6 @@ import org.databene.commons.collection.OrderedNameMap;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.model.storage.AbstractStorageSystem;
 import org.databene.script.ScriptUtil;
 import org.databene.webdecs.DataSource;
 import org.databene.webdecs.util.DataSourceFromIterable;

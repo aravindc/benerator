@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.databene.benerator.StorageSystem;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.Assert;
@@ -54,7 +55,6 @@ import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.jdbacl.DBExecutionResult;
 import org.databene.jdbacl.DBUtil;
-import org.databene.model.storage.StorageSystem;
 import org.databene.platform.db.DBSystem;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;

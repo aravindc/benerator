@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.StorageSystem;
 import org.databene.benerator.csv.SequencedDatasetCSVGenerator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.distribution.Distribution;
@@ -68,7 +69,6 @@ import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
-import org.databene.model.storage.StorageSystem;
 import org.databene.script.ScriptConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

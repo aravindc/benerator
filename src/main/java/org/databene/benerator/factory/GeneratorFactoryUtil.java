@@ -36,6 +36,7 @@ import java.util.Set;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.StorageSystem;
 import org.databene.benerator.distribution.AttachedWeight;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.FeatureWeight;
@@ -83,7 +84,6 @@ import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
-import org.databene.model.storage.StorageSystem;
 import org.databene.platform.xls.XLSLineSource;
 import org.databene.regex.RegexParser;
 import org.databene.script.Script;
