@@ -29,6 +29,7 @@ changes
 - Removed totalDigits and fractionDigits features
 - Removed generic parameter from Consumer interface
 - Moved Consumer interface to org.databene.benerator, moved general implementations to org.databene.consumer
+- Moved StorageSystem interface to org.databene.benerator, moved implementations to org.databene.storage
 
 
 enhancements
