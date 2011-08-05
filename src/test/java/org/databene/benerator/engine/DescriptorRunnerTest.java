@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.databene.model.consumer.AbstractConsumer;
-import org.databene.model.consumer.FileExporter;
+import org.databene.benerator.consumer.AbstractConsumer;
+import org.databene.benerator.consumer.FileExporter;
 import org.databene.model.data.Entity;
 
 import org.junit.Test;

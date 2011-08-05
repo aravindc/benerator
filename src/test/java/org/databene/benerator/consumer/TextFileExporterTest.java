@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,16 +24,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.consumer;
+package org.databene.benerator.consumer;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.databene.benerator.consumer.TextFileExporter;
+import org.databene.commons.IOUtil;
+import org.databene.commons.SystemInfo;
+import org.junit.Test;
+
+import static junit.framework.Assert.*;
 
 /**
- * Common interface for all classes that export .<br/>
+ * Tests the {@link TextFileExporter}.<br/>
  * <br/>
- * Created at 26.02.2009 17:46:23
+ * Created at 28.02.2009 07:19:13
  * @since 0.5.8
  * @author Volker Bergmann
  */
 
-public interface FileExporter extends Consumer {
-	String getUri();
+public class TextFileExporterTest {
+	
+	@Test
+	public void test() throws IOException {
+		String uri = "target" + File.separator + getClass().getSimpleName() + ".txt";
+		TextFileExporter exporter = new TextFileExporter(uri);
+		exporter.startConsuming("test");
+		exporter.close();
+		assertEquals(uri, exporter.getUri());
+		String content = IOUtil.getContentOfURI(uri);
+		assertEquals("test" + SystemInfo.getLineSeparator(), content);
+	}
+	
 }

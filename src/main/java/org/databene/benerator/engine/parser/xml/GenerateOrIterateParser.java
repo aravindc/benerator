@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.databene.benerator.Consumer;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
@@ -51,7 +52,6 @@ import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.consumer.Consumer;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;

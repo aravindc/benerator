@@ -28,6 +28,7 @@ changes
 - Renamed @DescriptorBased to @Descriptor
 - Removed totalDigits and fractionDigits features
 - Removed generic parameter from Consumer interface
+- Moved Consumer interface to org.databene.benerator, moved general implementations to org.databene.consumer
 
 
 enhancements

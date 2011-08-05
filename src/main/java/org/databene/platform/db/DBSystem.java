@@ -26,6 +26,7 @@
 
 package org.databene.platform.db;
 
+import org.databene.benerator.Consumer;
 import org.databene.commons.*;
 import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
@@ -50,7 +51,6 @@ import org.databene.jdbacl.model.DBUniqueConstraint;
 import org.databene.jdbacl.model.Database;
 import org.databene.jdbacl.model.cache.CachingDBImporter;
 import org.databene.jdbacl.model.jdbc.JDBCDBImporter;
-import org.databene.model.consumer.Consumer;
 import org.databene.model.data.*;
 import org.databene.model.storage.AbstractStorageSystem;
 import org.databene.model.storage.StorageSystem;

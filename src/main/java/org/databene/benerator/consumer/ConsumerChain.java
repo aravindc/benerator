@@ -24,10 +24,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.consumer;
+package org.databene.benerator.consumer;
 
 import java.util.List;
 
+import org.databene.benerator.Consumer;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.IOUtil;
 

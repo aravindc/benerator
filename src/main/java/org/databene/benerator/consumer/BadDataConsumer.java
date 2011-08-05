@@ -21,8 +21,8 @@
 
 package org.databene.benerator.consumer;
 
-import org.databene.model.consumer.Consumer;
-import org.databene.model.consumer.ConsumerProxy;
+import org.databene.benerator.Consumer;
+
 
 /**
  * {@link Consumer} proxy that forwards data to 'real consumer' and if the real consumer 

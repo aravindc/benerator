@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.consumer;
+package org.databene.benerator.consumer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -32,6 +32,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.databene.benerator.consumer.ConsoleExporter;
 import org.databene.commons.Patterns;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.TimestampFormatter;

@@ -32,13 +32,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.BeneratorFactory;
+import org.databene.benerator.consumer.FileExporter;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.commons.IOUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.DataModel;
 import org.databene.profile.Profiler;
 import org.databene.profile.Profiling;

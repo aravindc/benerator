@@ -26,10 +26,10 @@
 
 package org.databene.platform.csv;
 
-import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.benerator.consumer.TextFileExporter;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;

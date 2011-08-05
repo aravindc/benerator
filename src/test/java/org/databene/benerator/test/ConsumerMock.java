@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.databene.model.consumer.Consumer;
+import org.databene.benerator.Consumer;
 
 /**
  * Mock implementation of the {@link Consumer} interface to be used for testing.<br/><br/>

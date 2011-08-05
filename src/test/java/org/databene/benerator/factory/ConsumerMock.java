@@ -30,9 +30,9 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.databene.benerator.consumer.AbstractConsumer;
 import org.databene.commons.Context;
 import org.databene.commons.context.ContextAware;
-import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;
 
 public class ConsumerMock extends AbstractConsumer implements ContextAware {

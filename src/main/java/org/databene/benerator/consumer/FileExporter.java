@@ -3,7 +3,12 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License (GPL).
+ * GNU General Public License.
+ *
+ * For redistributing this software or a derivative work under a license other
+ * than the GPL-compatible Free Software License as defined by the Free
+ * Software Foundation or approved by OSI, you must first obtain a commercial
+ * license to this software product from Volker Bergmann.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -19,44 +24,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.consumer;
+package org.databene.benerator.consumer;
+
+import org.databene.benerator.Consumer;
 
 /**
- * Parent class for {@link Consumer}s that serve as proxy to other Consumers.<br/><br/>
- * Created: 22.10.2009 16:18:07
- * @since 0.6.0
+ * Common interface for all classes that export .<br/>
+ * <br/>
+ * Created at 26.02.2009 17:46:23
+ * @since 0.5.8
  * @author Volker Bergmann
  */
-public abstract class ConsumerProxy implements Consumer {
 
-	protected Consumer target;
-
-	public ConsumerProxy(Consumer target) {
-	    this.target = target;
-    }
-
-	public Consumer getTarget() {
-		return target;
-	}
-
-	public void setTarget(Consumer target) {
-    	this.target = target;
-    }
-
-	public void startConsuming(Object object) {
-		target.startConsuming(object);
-	}
-	
-	public void finishConsuming(Object object) {
-	    target.finishConsuming(object);
-    }
-
-	public void flush() {
-	    target.flush();
-    }
-
-	public void close() {
-	    target.close();
-    }
-
+public interface FileExporter extends Consumer {
+	String getUri();
 }

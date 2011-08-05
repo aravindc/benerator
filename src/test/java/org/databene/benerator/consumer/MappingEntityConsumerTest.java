@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,23 +19,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine;
+package org.databene.benerator.consumer;
 
-import org.databene.benerator.Consumer;
-import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
-import org.databene.task.Task;
+import static org.junit.Assert.*;
+
+import org.databene.benerator.consumer.MappingEntityConsumer;
+import org.databene.benerator.factory.ConsumerMock;
+import org.databene.model.data.Entity;
+import org.junit.Test;
 
 /**
- * Parent interface for {@link Task}s that use a {@link Generator} to generate data 
- * and a {@link Consumer} to consume it.<br/><br/>
- * Created: 27.03.2010 07:32:45
+ * Tests the {@link MappingEntityConsumer}.<br/><br/>
+ * Created: 22.02.2010 20:09:02
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public interface GeneratorTask extends Task {
-	Generator<?> getGenerator();
-	void flushConsumer();
-	void prepare(GeneratorContext context);
-	void close();
+public class MappingEntityConsumerTest {
+
+	@Test
+	public void test() {
+		ConsumerMock target = new ConsumerMock();
+		MappingEntityConsumer consumer = new MappingEntityConsumer();
+		consumer.setTarget(target);
+		consumer.setMappings("'name'->'givenName', 'none'->'some'");
+		
+		Entity input = new Entity("Person", "name", "Alice", "age", 23);
+		consumer.startConsuming(input);
+		consumer.finishConsuming(input);
+		assertEquals(new Entity("Person", "givenName", "Alice", "age", 23), target.lastProduct);
+	}
+	
 }

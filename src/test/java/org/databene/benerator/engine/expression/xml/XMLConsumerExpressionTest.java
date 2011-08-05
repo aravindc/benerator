@@ -23,12 +23,12 @@ package org.databene.benerator.engine.expression.xml;
 
 import static org.junit.Assert.*;
 
+import org.databene.benerator.consumer.ConsumerChain;
+import org.databene.benerator.consumer.ConsumerProxy;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.factory.ConsumerMock;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.consumer.ConsumerChain;
-import org.databene.model.consumer.ConsumerProxy;
 import org.junit.Test;
 import org.w3c.dom.Document;
 

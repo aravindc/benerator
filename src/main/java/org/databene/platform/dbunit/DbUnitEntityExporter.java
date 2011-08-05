@@ -38,12 +38,12 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import org.databene.benerator.consumer.AbstractConsumer;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Encodings;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

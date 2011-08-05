@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,27 +19,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.consumer;
+package org.databene.benerator.consumer;
 
-import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.Consumer;
 
 /**
- * {@link Consumer} proxy that prevents its delegate from being closed.
- * Note: Users of this class must ensure that the delegate is closed 
- * a different way (e.g. by a {@link ResourceManager}).<br/><br/>
- * Created: 14.04.2011 11:36:07
- * @since 0.6.6
+ * Parent class for {@link Consumer}s that serve as proxy to other Consumers.<br/><br/>
+ * Created: 22.10.2009 16:18:07
+ * @since 0.6.0
  * @author Volker Bergmann
  */
-public class NonClosingConsumerProxy extends ConsumerProxy {
+public abstract class ConsumerProxy implements Consumer {
 
-	public NonClosingConsumerProxy(Consumer target) {
-		super(target);
+	protected Consumer target;
+
+	public ConsumerProxy(Consumer target) {
+	    this.target = target;
+    }
+
+	public Consumer getTarget() {
+		return target;
 	}
 
-	@Override
-	public void close() {
-		// don't close the target here, that's the job of the target's originator
+	public void setTarget(Consumer target) {
+    	this.target = target;
+    }
+
+	public void startConsuming(Object object) {
+		target.startConsuming(object);
 	}
 	
+	public void finishConsuming(Object object) {
+	    target.finishConsuming(object);
+    }
+
+	public void flush() {
+	    target.flush();
+    }
+
+	public void close() {
+	    target.close();
+    }
+
 }

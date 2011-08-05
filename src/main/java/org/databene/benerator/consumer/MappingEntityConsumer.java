@@ -19,10 +19,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.consumer;
+package org.databene.benerator.consumer;
 
 import java.util.Stack;
 
+import org.databene.benerator.Consumer;
 import org.databene.model.data.ComponentNameMapper;
 import org.databene.model.data.Entity;
 

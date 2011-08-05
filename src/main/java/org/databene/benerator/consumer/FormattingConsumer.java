@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.consumer;
+package org.databene.benerator.consumer;
 
 import org.databene.commons.Capitalization;
 import org.databene.commons.converter.ToStringConverter;

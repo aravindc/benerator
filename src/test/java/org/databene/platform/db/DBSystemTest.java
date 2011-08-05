@@ -30,9 +30,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.databene.benerator.Consumer;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.jdbacl.DBUtil;
-import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;

@@ -23,8 +23,7 @@ package org.databene.benerator.consumer;
 
 import static org.junit.Assert.*;
 
-import org.databene.model.consumer.AbstractConsumer;
-import org.databene.model.consumer.Consumer;
+import org.databene.benerator.Consumer;
 import org.junit.Test;
 
 /**

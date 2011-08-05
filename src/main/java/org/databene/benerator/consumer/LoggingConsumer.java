@@ -24,8 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.consumer;
+package org.databene.benerator.consumer;
 
+import org.databene.benerator.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

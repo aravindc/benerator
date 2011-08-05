@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.databene.benerator.Consumer;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
@@ -48,7 +49,6 @@ import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
 import org.databene.commons.MessageHolder;
 import org.databene.commons.expression.ExpressionUtil;
-import org.databene.model.consumer.Consumer;
 import org.databene.task.TaskResult;
 
 /**

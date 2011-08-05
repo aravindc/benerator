@@ -26,9 +26,9 @@
 
 package shop;
 
+import org.databene.benerator.Consumer;
+import org.databene.benerator.consumer.AbstractConsumer;
 import org.databene.commons.IOUtil;
-import org.databene.model.consumer.AbstractConsumer;
-import org.databene.model.consumer.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

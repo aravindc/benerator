@@ -29,6 +29,7 @@ package org.databene.benerator.engine.task;
 import java.util.Iterator;
 import java.util.List;
 
+import org.databene.benerator.Consumer;
 import org.databene.benerator.Generator;
 import org.databene.benerator.consumer.ListConsumer;
 import org.databene.benerator.engine.BeneratorContext;
@@ -38,7 +39,6 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.TypedIterable;
 import org.databene.commons.expression.ConstantExpression;
-import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 import org.databene.task.Task;
 import org.databene.task.test.AbstractTaskTest;

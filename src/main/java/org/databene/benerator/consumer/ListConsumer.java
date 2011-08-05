@@ -24,8 +24,8 @@ package org.databene.benerator.consumer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.databene.model.consumer.AbstractConsumer;
-import org.databene.model.consumer.Consumer;
+import org.databene.benerator.Consumer;
+
 
 
 /**

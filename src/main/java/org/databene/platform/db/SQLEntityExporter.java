@@ -29,10 +29,10 @@ package org.databene.platform.db;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.databene.benerator.consumer.TextFileExporter;
 import org.databene.commons.ConfigurationError;
 import org.databene.jdbacl.DatabaseDialect;
 import org.databene.jdbacl.DatabaseDialectManager;
-import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityExporter;
 import org.slf4j.Logger;

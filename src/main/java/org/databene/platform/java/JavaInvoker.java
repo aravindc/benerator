@@ -21,9 +21,9 @@
 
 package org.databene.platform.java;
 
+import org.databene.benerator.Consumer;
+import org.databene.benerator.consumer.AbstractConsumer;
 import org.databene.commons.BeanUtil;
-import org.databene.model.consumer.AbstractConsumer;
-import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 
 /**

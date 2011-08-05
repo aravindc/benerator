@@ -26,10 +26,10 @@
 
 package org.databene.platform.flat;
 
-import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComponentAccessor;
 import org.databene.document.flat.FlatFileColumnDescriptor;
+import org.databene.benerator.consumer.TextFileExporter;
 import org.databene.commons.*;
 import org.databene.commons.converter.AccessingConverter;
 import org.databene.commons.converter.ConverterChain;

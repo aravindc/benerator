@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,33 +19,28 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.consumer;
+package org.databene.benerator.consumer;
 
-import static org.junit.Assert.*;
-
-import org.databene.benerator.factory.ConsumerMock;
-import org.databene.model.data.Entity;
-import org.junit.Test;
+import org.databene.benerator.Consumer;
+import org.databene.benerator.engine.ResourceManager;
 
 /**
- * Tests the {@link MappingEntityConsumer}.<br/><br/>
- * Created: 22.02.2010 20:09:02
- * @since 0.6.0
+ * {@link Consumer} proxy that prevents its delegate from being closed.
+ * Note: Users of this class must ensure that the delegate is closed 
+ * a different way (e.g. by a {@link ResourceManager}).<br/><br/>
+ * Created: 14.04.2011 11:36:07
+ * @since 0.6.6
  * @author Volker Bergmann
  */
-public class MappingEntityConsumerTest {
+public class NonClosingConsumerProxy extends ConsumerProxy {
 
-	@Test
-	public void test() {
-		ConsumerMock target = new ConsumerMock();
-		MappingEntityConsumer consumer = new MappingEntityConsumer();
-		consumer.setTarget(target);
-		consumer.setMappings("'name'->'givenName', 'none'->'some'");
-		
-		Entity input = new Entity("Person", "name", "Alice", "age", 23);
-		consumer.startConsuming(input);
-		consumer.finishConsuming(input);
-		assertEquals(new Entity("Person", "givenName", "Alice", "age", 23), target.lastProduct);
+	public NonClosingConsumerProxy(Consumer target) {
+		super(target);
+	}
+
+	@Override
+	public void close() {
+		// don't close the target here, that's the job of the target's originator
 	}
 	
 }
