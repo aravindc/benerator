@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,17 +33,18 @@ import org.databene.benerator.file.FileBuilder;
 import org.databene.commons.DocumentWriter;
 import org.databene.commons.IOUtil;
 import org.databene.commons.format.Alignment;
-import org.databene.document.flat.BeanFlatFileWriter;
-import org.databene.document.flat.FlatFileColumnDescriptor;
+import org.databene.document.fixedwidth.BeanFixedWidthWriter;
+import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
 
 import java.io.*;
 
 /**
- * Demonstrates how to format JavaBeans in a flat file.<br/>
+ * Demonstrates how to format JavaBeans in a fixed width file.<br/>
  * <br/>
  * Created: 07.06.2007 12:04:39
+ * @author Volker Bergmann
  */
-public class PersonFlatFileDemo {
+public class PersonFixedWidthDemo {
 
     private static final String FILE_NAME = "persons.flat";
     private static final int LENGTH = 5;
@@ -51,15 +52,15 @@ public class PersonFlatFileDemo {
     public static void main(String[] args) throws IOException {
         Writer out = null;
         try {
-            FlatFileColumnDescriptor[] descriptors = new FlatFileColumnDescriptor[] {
-                    new FlatFileColumnDescriptor("salutation", 8, Alignment.LEFT),
-                    new FlatFileColumnDescriptor("title", 10, Alignment.LEFT),
-                    new FlatFileColumnDescriptor("givenName", 20, Alignment.LEFT),
-                    new FlatFileColumnDescriptor("familyName", 20, Alignment.LEFT)
+            FixedWidthColumnDescriptor[] descriptors = new FixedWidthColumnDescriptor[] {
+                    new FixedWidthColumnDescriptor("salutation", 8, Alignment.LEFT),
+                    new FixedWidthColumnDescriptor("title", 10, Alignment.LEFT),
+                    new FixedWidthColumnDescriptor("givenName", 20, Alignment.LEFT),
+                    new FixedWidthColumnDescriptor("familyName", 20, Alignment.LEFT)
             };
             //out = new BufferedWriter(new FileWriter(FILE_NAME));
             out = new OutputStreamWriter(System.out);
-            DocumentWriter<Person> writer = new BeanFlatFileWriter<Person>(out, descriptors);
+            DocumentWriter<Person> writer = new BeanFixedWidthWriter<Person>(out, descriptors);
             System.out.println("Running...");
             long startMillis = System.currentTimeMillis();
             PersonGenerator generator = new PersonGenerator();

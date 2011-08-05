@@ -38,8 +38,8 @@ import org.databene.benerator.wrapper.MultiSourceArrayGenerator;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.format.Alignment;
-import org.databene.document.flat.FlatFileColumnDescriptor;
-import org.databene.document.flat.ArrayFlatFileWriter;
+import org.databene.document.fixedwidth.ArrayFixedWidthWriter;
+import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.script.AbstractScript;
 
@@ -54,7 +54,7 @@ import java.math.BigDecimal;
  * Created: 07.06.2007 12:04:39
  * @author Volker Bergmann
  */
-public class ArrayFlatFileDemo {
+public class ArrayFixedWidthDemo {
 
     private static final String FILE_NAME = "persons.flat";
     private static final int LENGTH = 5;
@@ -62,20 +62,20 @@ public class ArrayFlatFileDemo {
     public static void main(String[] args) throws IOException {
         Writer out = null;
         try {
-            FlatFileColumnDescriptor[] descriptors = new FlatFileColumnDescriptor[] {
-                    new FlatFileColumnDescriptor("rowType", 1, Alignment.RIGHT),
-                    new FlatFileColumnDescriptor("recordNumber", 8, Alignment.RIGHT),
-                    new FlatFileColumnDescriptor("type", 4, Alignment.LEFT),
-                    new FlatFileColumnDescriptor("date", 8, Alignment.LEFT),
-                    new FlatFileColumnDescriptor("partner", 6, Alignment.LEFT),
-                    new FlatFileColumnDescriptor("articleNumber", 6, Alignment.RIGHT),
-                    new FlatFileColumnDescriptor("itemCount", 3, Alignment.LEFT),
-                    new FlatFileColumnDescriptor("itemPrice", 6, Alignment.LEFT)
+            FixedWidthColumnDescriptor[] descriptors = new FixedWidthColumnDescriptor[] {
+                    new FixedWidthColumnDescriptor("rowType", 1, Alignment.RIGHT),
+                    new FixedWidthColumnDescriptor("recordNumber", 8, Alignment.RIGHT),
+                    new FixedWidthColumnDescriptor("type", 4, Alignment.LEFT),
+                    new FixedWidthColumnDescriptor("date", 8, Alignment.LEFT),
+                    new FixedWidthColumnDescriptor("partner", 6, Alignment.LEFT),
+                    new FixedWidthColumnDescriptor("articleNumber", 6, Alignment.RIGHT),
+                    new FixedWidthColumnDescriptor("itemCount", 3, Alignment.LEFT),
+                    new FixedWidthColumnDescriptor("itemPrice", 6, Alignment.LEFT)
             };
             //out = new BufferedWriter(new FileWriter(FILE_NAME));
             out = new OutputStreamWriter(System.out);
             HeaderScript headerScript = new HeaderScript(LENGTH);
-            DocumentWriter<Object[]> writer = new ArrayFlatFileWriter<Object>(out, headerScript, null, descriptors);
+            DocumentWriter<Object[]> writer = new ArrayFixedWidthWriter<Object>(out, headerScript, null, descriptors);
             System.out.println("Running...");
             long startMillis = System.currentTimeMillis();
             TransactionGenerator generator = new TransactionGenerator();

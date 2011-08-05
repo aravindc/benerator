@@ -49,10 +49,10 @@ import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
-import org.databene.document.flat.FlatFileColumnDescriptor;
-import org.databene.document.flat.FlatFileUtil;
+import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
+import org.databene.document.fixedwidth.FixedWidthUtil;
 import org.databene.platform.dbunit.DbUnitEntitySource;
-import org.databene.platform.flat.FlatFileEntitySource;
+import org.databene.platform.fixedwidth.FixedWidthEntitySource;
 import org.databene.platform.xls.XLSEntitySourceFactory;
 import org.databene.platform.csv.CSVEntitySourceFactory;
 import org.databene.script.ScriptConverter;
@@ -193,9 +193,9 @@ public class ComplexTypeGeneratorFactory {
 		String pattern = descriptor.getPattern();
 		if (pattern == null)
 		    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
-		FlatFileColumnDescriptor[] ffcd = FlatFileUtil.parseProperties(pattern);
+		FixedWidthColumnDescriptor[] ffcd = FixedWidthUtil.parseProperties(pattern);
 		Converter<String, String> scriptConverter = DescriptorUtil.createStringScriptConverter(context);
-		FlatFileEntitySource iterable = new FlatFileEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);
+		FixedWidthEntitySource iterable = new FixedWidthEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);
 		iterable.setContext(context);
 		generator = new DataSourceGenerator<Entity>(iterable);
 		return generator;
