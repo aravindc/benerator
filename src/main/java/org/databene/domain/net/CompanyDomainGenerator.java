@@ -40,6 +40,8 @@ import org.databene.domain.address.Country;
 import org.databene.domain.organization.CompanyName;
 import org.databene.domain.organization.CompanyNameGenerator;
 import org.databene.text.DelocalizingConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generates web domains for companies.<br/><br/>
@@ -48,6 +50,8 @@ import org.databene.text.DelocalizingConverter;
  * @author Volker Bergmann
  */
 public class CompanyDomainGenerator extends AbstractNonNullGenerator<String> {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(CompanyDomainGenerator.class);
 
 	private CompanyNameGenerator companyNameGenerator;
 	private TopLevelDomainGenerator tldGenerator;
@@ -58,6 +62,7 @@ public class CompanyDomainGenerator extends AbstractNonNullGenerator<String> {
 	}
 
 	public CompanyDomainGenerator(String datasetName) {
+		LOGGER.debug("Creating instance of {} for dataset {}", getClass(), datasetName);
 		companyNameGenerator = new CompanyNameGenerator(false, false, false, datasetName);
 		tldGenerator = new TopLevelDomainGenerator();
 		normalizer = new Normalizer();
