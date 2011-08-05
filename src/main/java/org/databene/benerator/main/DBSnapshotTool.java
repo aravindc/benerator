@@ -29,13 +29,13 @@ package org.databene.benerator.main;
 import java.util.Arrays;
 import java.util.List;
 
+import org.databene.benerator.Consumer;
 import org.databene.commons.IOUtil;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.ui.ProgressMonitor;
-import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.db.DBSystem;
