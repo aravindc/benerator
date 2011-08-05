@@ -39,6 +39,8 @@ import org.databene.commons.Converter;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generates data from a csv file set that is organized as {@link Dataset}.
@@ -51,6 +53,8 @@ import org.databene.commons.converter.NoOpConverter;
  */
 public class WeightedDatasetCSVGenerator<E> extends AbstractDatasetGenerator<E> {
     
+	private static final Logger LOGGER = LoggerFactory.getLogger(WeightedDatasetCSVGenerator.class);
+	
     protected String filenamePattern;
     protected String encoding;
     protected char separator;
@@ -98,6 +102,7 @@ public class WeightedDatasetCSVGenerator<E> extends AbstractDatasetGenerator<E> 
 	@Override
 	protected Generator<E> createGeneratorForAtomicDataset(Dataset dataset) {
 		String filename = DatasetUtil.filenameOfDataset(dataset.getName(), filenamePattern);
+		LOGGER.info("Creating weighted data set CSV generator for file {}", filename);
 		if (IOUtil.isURIAvailable(filename)) {
 			List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(filename, separator, encoding, converter);
 			AttachedWeightSampleGenerator<E> generator = new AttachedWeightSampleGenerator<E>();

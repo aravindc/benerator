@@ -34,6 +34,8 @@ import org.databene.commons.converter.CaseConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.domain.net.DomainGenerator;
 import org.databene.text.DelocalizingConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generates email addresses of random domain for a given person name.<br/><br/>
@@ -42,6 +44,8 @@ import org.databene.text.DelocalizingConverter;
  * @author Volker Bergmann
  */
 public class EMailAddressBuilder implements ThreadAware {
+	
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private DomainGenerator domainGenerator;
 	private CaseConverter caseConverter;  
@@ -49,6 +53,7 @@ public class EMailAddressBuilder implements ThreadAware {
 	private NonNullSampleGenerator<Character> joinGenerator;
 
 	public EMailAddressBuilder(String dataset) {
+		logger.debug("Creating instance of {} for dataset {}", getClass(), dataset);
 		this.domainGenerator = new DomainGenerator(dataset);
 		this.caseConverter = new CaseConverter(false);
 		try {
