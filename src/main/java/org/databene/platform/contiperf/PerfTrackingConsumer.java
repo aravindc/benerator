@@ -21,8 +21,8 @@
 
 package org.databene.platform.contiperf;
 
+import org.databene.benerator.Consumer;
 import org.databene.contiperf.Invoker;
-import org.databene.model.consumer.Consumer;
 
 /**
  * {@link Consumer} implementation that calls a ContiPerf {@link PerfTrackingConsumer}.<br/><br/>

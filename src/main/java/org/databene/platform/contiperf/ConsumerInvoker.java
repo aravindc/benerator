@@ -21,8 +21,8 @@
 
 package org.databene.platform.contiperf;
 
+import org.databene.benerator.Consumer;
 import org.databene.contiperf.Invoker;
-import org.databene.model.consumer.Consumer;
 
 /**
  * ContiPerf {@link Invoker} implementation which calls the {@link Consumer#startConsuming(Object)} 

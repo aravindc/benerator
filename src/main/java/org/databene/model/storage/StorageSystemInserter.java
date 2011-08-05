@@ -21,8 +21,8 @@
 
 package org.databene.model.storage;
 
+import org.databene.benerator.Consumer;
 import org.databene.benerator.composite.EntityRenamer;
-import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 
 /**

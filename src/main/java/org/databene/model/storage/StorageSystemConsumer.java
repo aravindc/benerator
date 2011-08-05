@@ -26,7 +26,7 @@
 
 package org.databene.model.storage;
 
-import org.databene.model.consumer.AbstractConsumer;
+import org.databene.benerator.consumer.AbstractConsumer;
 
 /**
  * Stores an Entity in the associated {@link StorageSystem}. It replaces the class SystemProcessor.<br/>

@@ -21,7 +21,7 @@
 
 package org.databene.model.storage;
 
-import org.databene.model.consumer.Consumer;
+import org.databene.benerator.Consumer;
 import org.databene.model.data.Entity;
 
 /**
