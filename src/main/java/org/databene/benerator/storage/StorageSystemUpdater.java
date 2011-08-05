@@ -19,37 +19,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.storage;
+package org.databene.benerator.storage;
 
 import org.databene.benerator.Consumer;
-import org.databene.benerator.composite.EntityRenamer;
+import org.databene.benerator.StorageSystem;
 import org.databene.model.data.Entity;
 
 /**
- * {@link Consumer} implementation that inserts entities into database tables.<br/><br/>
- * Created: 02.08.2010 19:38:56
+ * {@link Consumer} implementation that updates database rows.<br/><br/>
+ * Created: 02.08.2010 20:25:22
  * @since 0.6.3
  * @author Volker Bergmann
  */
-public class StorageSystemInserter extends StorageSystemConsumer {
+public class StorageSystemUpdater extends StorageSystemConsumer {
 
-    private String tableName;
-
-    public StorageSystemInserter(StorageSystem system) {
-        this(system, null);
-    }
-
-    public StorageSystemInserter(StorageSystem system, String tableName) {
-    	super(system);
-        this.tableName = tableName;
+	public StorageSystemUpdater(StorageSystem system) {
+	    super(system);
     }
 
     public void startConsuming(Object object) {
-    	Entity entity = (Entity) object;
-    	if (tableName == null)
-    		system.store(entity);
-    	else
-    		system.store(EntityRenamer.rename(entity, tableName));
+		system.update((Entity) object);
     }
 
 }

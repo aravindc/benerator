@@ -24,39 +24,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.storage;
 
-import org.databene.benerator.consumer.AbstractConsumer;
+package org.databene.benerator.storage;
+
+import org.databene.benerator.StorageSystem;
 
 /**
- * Stores an Entity in the associated {@link StorageSystem}. It replaces the class SystemProcessor.<br/>
+ * Abstract implementation of the StorageSystem interface.
+ * When writing a custom implementation of SystemStorage interface, 
+ * inherit from this class for assuring future compatibility.
+ * If the interface would change in future versions, the future 
+ * version of this class will try to compensate.<br/>
  * <br/>
- * Created: 29.01.2008 09:35:07
+ * Created: 27.01.2008 07:25:39
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public abstract class StorageSystemConsumer extends AbstractConsumer {
-
-    protected final StorageSystem system;
-
-    protected StorageSystemConsumer(StorageSystem system) {
-        this.system = system;
-    }
-
-    @Override
-    public void flush() {
-        system.flush();
-    }
-
-    @Override
-    public void close() {
-        system.close();
-    }
-    
-    @Override
-    public String toString() {
-    	return getClass().getSimpleName() + "[" + system + "]";
-    }
-
+public abstract class AbstractStorageSystem implements StorageSystem {
+	
+	public Object execute(String command) {
+		return null;
+	}
+	
 }
-

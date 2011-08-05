@@ -30,6 +30,7 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringAttribute;
 
 import org.databene.benerator.Consumer;
+import org.databene.benerator.StorageSystem;
 import org.databene.benerator.consumer.ConsumerChain;
 import org.databene.benerator.consumer.NonClosingConsumerProxy;
 import org.databene.benerator.engine.BeneratorContext;
@@ -37,6 +38,7 @@ import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.parser.xml.BeanParser;
 import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.benerator.storage.StorageSystemInserter;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Escalator;
@@ -44,8 +46,6 @@ import org.databene.commons.LoggerEscalator;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.storage.StorageSystem;
-import org.databene.model.storage.StorageSystemInserter;
 import org.w3c.dom.Element;
 
 /**
