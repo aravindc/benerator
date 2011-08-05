@@ -51,6 +51,9 @@ import org.databene.commons.Encodings;
 import org.databene.commons.bean.PropertyAccessConverter;
 import org.databene.domain.address.CityGenerator;
 import org.databene.domain.address.Country;
+import org.databene.domain.person.FamilyNameGenerator;
+import org.databene.domain.person.Gender;
+import org.databene.domain.person.GivenNameGenerator;
 import org.databene.text.NameNormalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,10 +67,9 @@ import org.slf4j.LoggerFactory;
 public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName> 
 		implements NonNullGenerator<CompanyName> {
 	
-	protected static final Logger logger = LoggerFactory.getLogger(CompanyNameGenerator.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(CompanyNameGenerator.class);
 
     private static final String ORG = "/org/databene/domain/organization/";
-    private static final String PERS = "/org/databene/domain/person/";
 
     protected static Map<String, Generator<String>> locationGenerators = 
     	new HashMap<String, Generator<String>>();
@@ -91,6 +93,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 
     public CompanyNameGenerator(boolean sector, boolean location, boolean legalForm, String datasetName) {
     	super(DatasetUtil.REGION_NESTING, datasetName);
+    	LOGGER.debug("Creating instance of {} for dataset {}", getClass(), datasetName);
     	this.sector = sector;
     	this.location = location;
     	this.legalForm = legalForm;
@@ -127,7 +130,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 				initWithDataset(datasetName, context);
 			} catch (Exception e) {
 				String fallbackDataset = DatasetUtil.fallbackRegionName();
-				logger.warn("Error initializing location generator for dataset " + datasetName + ", falling back to " + fallbackDataset);
+				LOGGER.warn("Error initializing location generator for dataset " + datasetName + ", falling back to " + fallbackDataset);
 				initWithDataset(fallbackDataset, context);
 			}
 	    }
@@ -184,7 +187,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 	                );
 		        shortNameGenerator.addSource(tech);
 	        } catch (Exception e) {
-	        	logger.info("Cannot create technical company name generator: " + e.getMessage());
+	        	LOGGER.info("Cannot create technical company name generator: " + e.getMessage());
 	        }
 	    }
 
@@ -193,19 +196,19 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 		    	TokenCombiner artificial = new TokenCombiner(ORG + "artificialName.csv", false, '-', Encodings.UTF_8, false);
 		    	shortNameGenerator.addSource(artificial);
 	        } catch (Exception e) {
-	        	logger.info("Cannot create artificial company name generator: " + e.getMessage());
+	        	LOGGER.info("Cannot create artificial company name generator: " + e.getMessage());
 	        }
 	    }
 
 		private void createPersonNameGenerator(String datasetToUse) {
 		    try {
 		        Generator<String> person = new MessageGenerator("{0} {1}", 
-		                new WeightedDatasetCSVGenerator<String>(PERS + "givenName_male_{0}.csv", datasetToUse, DatasetUtil.REGION_NESTING),
-		                new WeightedDatasetCSVGenerator<String>(PERS + "familyName_{0}.csv", datasetToUse, DatasetUtil.REGION_NESTING)
+		                new GivenNameGenerator(datasetToUse, Gender.MALE),
+		                new FamilyNameGenerator(datasetToUse)
 		            );
 		        shortNameGenerator.addSource(person);
 	        } catch (Exception e) {
-	        	logger.info("Cannot create person-based company name generator: " + e.getMessage());
+	        	LOGGER.info("Cannot create person-based company name generator: " + e.getMessage());
 	        }
 	    }
 
@@ -217,7 +220,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 					sectorGenerator = GeneratorFactoryUtil.injectNulls(source, 0.7);
 	        		sectorGenerator.init(context);
 	        	} catch (Exception e) {
-	        		logger.info("Cannot create sector generator: " + e.getMessage() + ". Falling back to US");
+	        		LOGGER.info("Cannot create sector generator: " + e.getMessage() + ". Falling back to US");
 	        		initSectorGenerator("US");
 	        	}
 	        }
@@ -231,7 +234,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 	        				datasetName, DatasetUtil.REGION_NESTING, Encodings.UTF_8);
 	        		legalFormGenerator.init(context);
 	        	} catch (Exception e) {
-	        		logger.error("Cannot create legal form generator: " + e.getMessage() + ". Falling back to US. ");
+	        		LOGGER.error("Cannot create legal form generator: " + e.getMessage() + ". Falling back to US. ");
 	        		initLegalFormGenerator("US");
 	        	}
 	        }
@@ -254,7 +257,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 			                    			new ConstantGenerator<String>(country.getLocalName()), 
 			                    			city);
 		        	} catch (Exception e) {
-		        		logger.info("Cannot create location generator: " + e.getMessage());
+		        		LOGGER.info("Cannot create location generator: " + e.getMessage());
 		                locationBaseGen = new ConstantGenerator<String>(null);
 		        	}
 		        } else
