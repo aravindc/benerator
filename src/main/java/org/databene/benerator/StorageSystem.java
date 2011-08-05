@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.model.storage;
+package org.databene.benerator;
 
 import java.io.Closeable;
 import java.io.Flushable;
