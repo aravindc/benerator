@@ -48,7 +48,7 @@ import org.databene.commons.expression.ExpressionUtil;
  */
 public class BeneratorRootStatement extends SequentialStatement {
 
-	Map<String, String> attributes;
+	private Map<String, String> attributes;
 	
     public BeneratorRootStatement(Map<String, String> attributes) {
     	this.attributes = new HashMap<String, String>(attributes);
@@ -57,6 +57,8 @@ public class BeneratorRootStatement extends SequentialStatement {
     @Override
     public void execute(BeneratorContext context) {
     	mapAttributesTo(context);
+    	if (context.isDefaultImports())
+    		context.importDefaults();
     	super.execute(context);
     }
 

@@ -28,12 +28,14 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.factory.EquivalenceGeneratorFactory;
-import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.ConfigurationError;
 import org.databene.model.data.Entity;
 import org.junit.Test;
 
@@ -43,7 +45,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class BeneratorRootStatementTest extends GeneratorTest {
+public class BeneratorRootStatementTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testGeneratorFactoryConfig() {
@@ -63,11 +65,44 @@ public class BeneratorRootStatementTest extends GeneratorTest {
 	public void testGetGenerator_include() throws Exception {
         check("org/databene/benerator/engine/statement/including.ben.xml");
 	}
+	
+	@Test
+	public void testDefaultImports_default() throws Exception {
+		// given the default settings
+		String xml = "<setup/>";
+		// when executing the RootStatement
+		BeneratorContext context = parseAndExecute(xml);
+		// then the default imports should have been applied, 
+		// thus org.databene.benerator.consumer.ConsoleExporter can be found
+	    context.forName("ConsoleExporter");
+	}
+	
+	@Test
+	public void testDefaultImports_true() throws Exception {
+		// given that defaults import is requested explicitly
+		String xml = "<setup defaultImports='true'/>";
+		// when executing the RootStatement
+		BeneratorContext context = parseAndExecute(xml);
+		// then org.databene.benerator.consumer.ConsoleExporter can be found
+	    context.forName("ConsoleExporter");
+	}
+
+	@Test(expected = ConfigurationError.class)
+	public void testDefaultImports_false() throws Exception {
+		// given that defaults import is disabled
+		String xml = "<setup defaultImports='false'/>";
+		// when executing the RootStatement
+		BeneratorContext context = parseAndExecute(xml);
+		// then the default imports have not been applied, 
+		// and org.databene.benerator.consumer.ConsoleExporter cannot be found
+	    context.forName("ConsoleExporter");
+	}
+
+	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void check(String uri) throws IOException {
-	    BeneratorRootStatement statement = null;
 		DescriptorRunner runner = new DescriptorRunner(uri);
-        statement = runner.parseDescriptorFile();
+	    BeneratorRootStatement statement = runner.parseDescriptorFile();
         Generator<?> generator = statement.getGenerator("Person", runner.getContext());
 		assertEquals(Entity.class, generator.getGeneratedType());
         assertNotNull(generator);

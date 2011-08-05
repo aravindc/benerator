@@ -41,17 +41,18 @@
 			<xs:complexContent>
 				<xs:extension base="block-statement">
 					<xs:attribute name="defaultScript"        type="xs:string"/>
-					<xs:attribute name="defaultNull"          type="xs:string"/>
+					<xs:attribute name="defaultNull"          type="xs:boolean"/>
 		            <xs:attribute name="defaultEncoding"      type="xs:string"/>
 		            <xs:attribute name="defaultLineSeparator" type="xs:string"/>
 		            <xs:attribute name="defaultTimeZone"      type="xs:string"/>
 		            <xs:attribute name="defaultLocale"        type="xs:string"/>
 		            <xs:attribute name="defaultDataset"       type="xs:string"/>
-					<xs:attribute name="defaultPageSize"      type="xs:string"/>
+					<xs:attribute name="defaultPageSize"      type="xs:long"/>
 					<xs:attribute name="defaultSeparator"     type="xs:string"/>
-					<xs:attribute name="defaultOneToOne"      type="xs:string"/>
+					<xs:attribute name="defaultOneToOne"      type="xs:boolean"/>
 					<xs:attribute name="defaultErrorHandler"  type="errorhandler-type"/>
-					<xs:attribute name="maxCount"             type="xs:string"/>
+					<xs:attribute name="defaultImports"       type="xs:boolean"/>
+					<xs:attribute name="maxCount"             type="xs:long"/>
 		            <xs:attribute name="acceptUnknownSimpleTypes" type="xs:string"/>
 				</xs:extension>
 			</xs:complexContent>

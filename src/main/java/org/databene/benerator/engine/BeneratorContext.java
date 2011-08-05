@@ -77,6 +77,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     protected String  contextUri           = "./";
     public    Long    maxCount             = null;
     public    boolean defaultOneToOne      = false;
+    public    boolean defaultImports       = true;
     public    boolean acceptUnknownSimpleTypes = false;
 
 
@@ -159,7 +160,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 		importPackage("org.databene.commons.format");
 		importPackage("org.databene.commons.validator");
 		// import standard platforms
-		importPackage("org.databene.platform.flat");
+		importPackage("org.databene.platform.fixedwidth");
 		importPackage("org.databene.platform.csv");
 		importPackage("org.databene.platform.dbunit");
 		importPackage("org.databene.platform.xls");
@@ -317,4 +318,12 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 		return getGeneratorFactory().getDefaultsProvider();
 	}
 
+	public void setDefaultImports(boolean defaultImports) {
+		this.defaultImports = defaultImports;
+	}
+	
+	public boolean isDefaultImports() {
+		return defaultImports;
+	}
+	
 }

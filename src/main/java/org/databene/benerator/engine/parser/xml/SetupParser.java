@@ -60,7 +60,8 @@ public class SetupParser extends AbstractBeneratorDescriptorParser {
 			ATT_DEFAULT_ERR_HANDLER,
 			ATT_MAX_COUNT,
 			ATT_ACCEPT_UNKNOWN_SIMPLE_TYPES,
-			ATT_GENERATOR_FACTORY
+			ATT_GENERATOR_FACTORY,
+			ATT_DEFAULT_IMPORTS
 		);
 
 	private static final Set<String> XML_ATTRIBUTES = CollectionUtil.toSet(

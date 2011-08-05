@@ -31,6 +31,8 @@ changes
 - Moved Consumer interface to org.databene.benerator, moved general implementations to org.databene.consumer
 - Moved StorageSystem interface to org.databene.benerator, moved implementations to org.databene.storage
 - Renamed platform 'flat' to 'fixedwidth' and classes 'FlatFile...' to 'FixedColumnWidth...'
+- <import defaults="true" /> is not necessary any longer: defaults are imported automatically, 
+  they are only left out when using <setup ... defaultImports="false"> in the root element
 
 
 enhancements
