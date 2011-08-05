@@ -103,7 +103,7 @@ public class RegexGeneratorFactory {
         	return GeneratorFactoryUtil.asNonNullGenerator(factory.createSingleValueGenerator(
         			(String) object, uniqueness.isUnique()));
         else if (object == null)
-        	return GeneratorFactoryUtil.asNonNullGenerator(new ConstantGenerator<String>(null)); // TODO returns an unavailable generator
+        	return GeneratorFactoryUtil.asNonNullGenerator(new ConstantGenerator<String>(null, String.class));
         else
             throw new UnsupportedOperationException("Unsupported regex part type: " + object.getClass().getName());
     }
