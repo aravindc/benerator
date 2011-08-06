@@ -26,8 +26,8 @@ import static org.junit.Assert.assertEquals;
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.SequenceTestGenerator;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.junit.Test;
 
 /**
@@ -42,7 +42,7 @@ public class DistributingSampleGeneratorProxyTest extends GeneratorTest {
 	public void testSourceHandling() {
 		SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3);
 		Distribution distribution = new TestDistribution();
-		NonNullGenerator<Integer> generator = GeneratorFactoryUtil.asNonNullGenerator(
+		NonNullGenerator<Integer> generator = WrapperFactory.asNonNullGenerator(
 				new DistributingSampleGeneratorProxy<Integer>(source, distribution, false));
 		
 		// on initialization, DistributingSampleGeneratorProxy scans throug all available 3 source values 
@@ -73,7 +73,7 @@ public class DistributingSampleGeneratorProxyTest extends GeneratorTest {
 		@SuppressWarnings("unchecked")
         public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity,
                 boolean unique) {
-	        return (NonNullGenerator<T>) GeneratorFactoryUtil.asNonNullGenerator(new SequenceTestGenerator<Integer>(0, 1, 2));
+	        return (NonNullGenerator<T>) WrapperFactory.asNonNullGenerator(new SequenceTestGenerator<Integer>(0, 1, 2));
         }
 	}
 	

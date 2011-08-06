@@ -43,6 +43,7 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
 import org.databene.benerator.wrapper.GeneratorChain;
 import org.databene.benerator.wrapper.UniqueMultiSourceArrayGenerator;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.Assert;
 import org.databene.commons.CollectionUtil;
@@ -95,7 +96,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	public <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
             Distribution distribution, boolean unique) {
 	    List<WeightedSample<?>> samples = CollectionUtil.toList(BeneratorScriptParser.parseWeightedLiteralList(valueSpec));
-		List<?> values = GeneratorFactoryUtil.extractValues((List) samples);
+		List<?> values = FactoryUtil.extractValues((List) samples);
 	    Converter<?, T> typeConverter = new AnyConverter<T>(targetType);
 	    Collection<T> convertedValues = ConverterManager.convertAll((List) values, typeConverter);
 	    return createSampleGenerator(convertedValues, targetType, true);
@@ -103,7 +104,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 
     @Override
 	public <T> Generator<T> createWeightedSampleGenerator(Collection<WeightedSample<T>> samples, Class<T> targetType) {
-    	List<T> values = GeneratorFactoryUtil.extractValues(samples);
+    	List<T> values = FactoryUtil.extractValues(samples);
 	    return createSampleGenerator(values, targetType, true);
     }
 
@@ -138,7 +139,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
         if (granularity == null)
         	granularity = defaultsProvider.defaultGranularity(numberType);
         if (((Comparable<T>) min).compareTo(max) == 0) // if min==max then return min once
-            return GeneratorFactoryUtil.asNonNullGenerator(new OneShotGenerator<T>(min));
+            return WrapperFactory.asNonNullGenerator(new OneShotGenerator<T>(min));
         if (minInclusive == null)
         	minInclusive = true;
         if (maxInclusive == null)
@@ -187,7 +188,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
         	// 0 is not contained in the range (or it is a border value), so add a value in the middle of the range
         	values.addIfViable((Number) engine.divide(engine.add(min, max), 2));
         }
-		return GeneratorFactoryUtil.asNonNullGenerator(new SequenceGenerator<T>(numberType, values.getAll()));
+		return WrapperFactory.asNonNullGenerator(new SequenceGenerator<T>(numberType, values.getAll()));
     }
     
 	@Override
@@ -196,7 +197,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 			Uniqueness uniqueness) {
 		Generator<Character> charGenerator = createCharacterGenerator(chars);
 		Set<Integer> counts = defaultCounts(minLength, maxLength);
-		NonNullGenerator<Integer> lengthGenerator = GeneratorFactoryUtil.asNonNullGenerator(
+		NonNullGenerator<Integer> lengthGenerator = WrapperFactory.asNonNullGenerator(
 				new SequenceGenerator<Integer>(Integer.class, counts));
 		return new EquivalenceStringGenerator<Character>(charGenerator, lengthGenerator);
 	}
@@ -210,21 +211,21 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 		for (int partCount : partCounts) {
 			Generator<String>[] sources = new Generator[partCount];
 			for (int i = 0; i < partCount; i++)
-				sources[i] = GeneratorFactoryUtil.stringGenerator(partGeneratorProvider.create());
+				sources[i] = WrapperFactory.asStringGenerator(partGeneratorProvider.create());
 			result.addSource(new CompositeStringGenerator(true, sources));
 		}
-		return GeneratorFactoryUtil.asNonNullGenerator(result);
+		return WrapperFactory.asNonNullGenerator(result);
 	}
 	
     @Override
 	public Generator<Character> createCharacterGenerator(String pattern, Locale locale, boolean unique) {
-        Character[] chars = CollectionUtil.toArray(defaultSubSet(GeneratorFactoryUtil.fullLocaleCharSet(pattern, locale)), Character.class);
+        Character[] chars = CollectionUtil.toArray(defaultSubSet(FactoryUtil.fullLocaleCharSet(pattern, locale)), Character.class);
         return new SequenceGenerator<Character>(Character.class, chars);
     }
 
     @Override
 	public NonNullGenerator<Character> createCharacterGenerator(Set<Character> characters) {
-        return GeneratorFactoryUtil.asNonNullGenerator(
+        return WrapperFactory.asNonNullGenerator(
         		new SequenceGenerator<Character>(Character.class, defaultSubSet(characters)));
     }
 
@@ -296,7 +297,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
     @Override
 	public Generator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota)  {
 		if (nullable == null || nullable || (nullQuota != null && nullQuota > 0))
-			return GeneratorFactoryUtil.createNullStartingGenerator(source);
+			return WrapperFactory.prependNull(source);
 		else
 			return source;
 	}

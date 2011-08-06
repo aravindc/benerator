@@ -28,9 +28,9 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.UniqueLongValidator;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.junit.Test;
 
 /**
@@ -62,7 +62,7 @@ public class ExpandGeneratorProxyTest extends GeneratorTest {
 	@Test
 	public void testNormal() {
 		Generator<Long> feed = new IncrementGenerator(1, 1, N);
-		NonNullGenerator<Long> generator = GeneratorFactoryUtil.asNonNullGenerator(
+		NonNullGenerator<Long> generator = WrapperFactory.asNonNullGenerator(
 			ExpandGeneratorProxy.uniqueProxy(feed, CACHE_SIZE, BUCKET_SIZE));
 		generator.init(context);
 		UniqueLongValidator validator = new UniqueLongValidator(N);

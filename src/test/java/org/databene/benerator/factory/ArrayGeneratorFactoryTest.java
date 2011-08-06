@@ -31,6 +31,7 @@ import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.test.PersonIterable;
 import org.databene.benerator.util.GeneratorUtil;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.converter.ArrayElementExtractor;
@@ -100,7 +101,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		descriptor.setNesting("org/databene/benerator/factory/testnesting");
 		descriptor.setDataset("DACH");
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.SIMPLE, context);
-		Generator<String> g = GeneratorFactoryUtil.createConvertingGenerator(generator, 
+		Generator<String> g = WrapperFactory.applyConverter(generator, 
 				new ArrayElementExtractor<String>(String.class, 0));
 		generator.init(context);
 		expectUniquelyGeneratedSet(g, "de", "at", "ch");
@@ -125,7 +126,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		descriptor.setNesting("org/databene/benerator/factory/testnesting");
 		descriptor.setDataset("DACH");
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.SIMPLE, context);
-		Generator<String> g = GeneratorFactoryUtil.createConvertingGenerator(generator, new ArrayElementExtractor<String>(
+		Generator<String> g = WrapperFactory.applyConverter(generator, new ArrayElementExtractor<String>(
 				String.class, 0));
 		generator.init(context);
 		expectUniquelyGeneratedSet(g, "de", "at", "ch");

@@ -27,8 +27,8 @@
 package org.databene.benerator.csv;
 
 import org.databene.benerator.NonNullGenerator;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.Encodings;
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -47,7 +47,7 @@ public class WeightedDatasetCSVGeneratorTest extends GeneratorTest {
     @Test
     public void testDE() {
         WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "DE", REGION, Encodings.UTF_8);
-        NonNullGenerator<String> generator = GeneratorFactoryUtil.asNonNullGenerator(source);
+        NonNullGenerator<String> generator = WrapperFactory.asNonNullGenerator(source);
         generator.init(context);
         boolean mueller = false;
         for (int i = 0; i < 1000; i++) {
@@ -60,7 +60,7 @@ public class WeightedDatasetCSVGeneratorTest extends GeneratorTest {
     @Test
     public void testEurope() {
         WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "europe", REGION, Encodings.UTF_8);
-        NonNullGenerator<String> generator = GeneratorFactoryUtil.asNonNullGenerator(source);
+        NonNullGenerator<String> generator = WrapperFactory.asNonNullGenerator(source);
         generator.init(context);
         boolean mueller = false; // German name
         boolean garcia = false;  // Spanish name

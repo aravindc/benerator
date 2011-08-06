@@ -30,9 +30,9 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.wrapper.NonNullGeneratorProxy;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.CollectionUtil;
 
 /**
@@ -74,7 +74,7 @@ public class GenderGenerator extends NonNullGeneratorProxy<Gender> {
     		new WeightedSample<Gender>(Gender.MALE, 1 - femaleQuota)
 	    );
 		Generator<Gender> source = context.getGeneratorFactory().createWeightedSampleGenerator(samples, Gender.class);
-		setSource(GeneratorFactoryUtil.asNonNullGenerator(source));
+		setSource(WrapperFactory.asNonNullGenerator(source));
         super.init(context);
     }
 

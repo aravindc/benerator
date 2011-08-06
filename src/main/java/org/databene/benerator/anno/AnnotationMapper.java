@@ -53,7 +53,6 @@ import org.databene.benerator.factory.CoverageGeneratorFactory;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.EquivalenceGeneratorFactory;
 import org.databene.benerator.factory.GeneratorFactory;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.GentleDefaultsProvider;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.factory.MeanDefaultsProvider;
@@ -61,6 +60,7 @@ import org.databene.benerator.factory.SerialGeneratorFactory;
 import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ParseException;
@@ -162,7 +162,7 @@ public class AnnotationMapper {
 			// apply offset
 			Offset offset = testMethod.getAnnotation(Offset.class);
 			if (offset != null)
-				generator = GeneratorFactoryUtil.wrapWithOffset(generator, offset.value());
+				generator = WrapperFactory.applyOffset(generator, offset.value());
 			
 			// evaluate @TestFeed annotation
 			InvocationCount testCount = testMethod.getAnnotation(InvocationCount.class);
@@ -257,7 +257,7 @@ public class AnnotationMapper {
 		if (offset != null)
 			mapAnnotation(offset, descriptor);
 		Generator generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
-		generator = GeneratorFactoryUtil.createConvertingGenerator(generator, new Entity2JavaConverter());
+		generator = WrapperFactory.applyConverter(generator, new Entity2JavaConverter());
 		generator.init(context);
 		return generator;
 	}

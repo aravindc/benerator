@@ -41,6 +41,7 @@ import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
 import org.databene.benerator.wrapper.GeneratorChain;
 import org.databene.benerator.wrapper.SimpleMultiSourceArrayGenerator;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.Assert;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Converter;
@@ -85,7 +86,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 	public <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
             Distribution distribution, boolean unique) {
 	    List<WeightedSample<?>> samples = CollectionUtil.toList(BeneratorScriptParser.parseWeightedLiteralList(valueSpec));
-    	List<?> values = GeneratorFactoryUtil.extractValues((List) samples);
+    	List<?> values = FactoryUtil.extractValues((List) samples);
 	    Converter<?, T> typeConverter = new AnyConverter<T>(targetType);
 	    Collection<T> convertedValues = ConverterManager.convertAll((List) values, typeConverter);
 	    return createSampleGenerator(convertedValues, targetType, true);
@@ -93,7 +94,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 
     @Override
 	public <T> Generator<T> createWeightedSampleGenerator(Collection<WeightedSample<T>> samples, Class<T> targetType) {
-    	List<T> values = GeneratorFactoryUtil.extractValues(samples);
+    	List<T> values = FactoryUtil.extractValues(samples);
 	    return createSampleGenerator(values, targetType, true);
     }
 
@@ -128,7 +129,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 			Uniqueness uniqueness) {
 		Generator<Character> charGenerator = createCharacterGenerator(chars);
 		Set<Integer> counts = defaultCounts(minLength, maxLength);
-		NonNullGenerator<Integer> lengthGenerator = GeneratorFactoryUtil.asNonNullGenerator(
+		NonNullGenerator<Integer> lengthGenerator = WrapperFactory.asNonNullGenerator(
 				new SequenceGenerator<Integer>(Integer.class, counts));
 		return new EquivalenceStringGenerator<Character>(charGenerator, lengthGenerator);
 	}
@@ -142,10 +143,10 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 		for (int partCount : partCounts) {
 			Generator<String>[] sources = new Generator[partCount];
 			for (int i = 0; i < partCount; i++)
-				sources[i] = GeneratorFactoryUtil.stringGenerator(partGeneratorProvider.create());
+				sources[i] = WrapperFactory.asStringGenerator(partGeneratorProvider.create());
 			result.addSource(new CompositeStringGenerator(true, sources));
 		}
-		return GeneratorFactoryUtil.asNonNullGenerator(result);
+		return WrapperFactory.asNonNullGenerator(result);
 	}
 	
     @Override
@@ -155,7 +156,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 
     @Override
 	public NonNullGenerator<Character> createCharacterGenerator(Set<Character> characters) {
-        return GeneratorFactoryUtil.asNonNullGenerator(
+        return WrapperFactory.asNonNullGenerator(
         		new SequenceGenerator<Character>(Character.class, characters));
     }
 
@@ -186,7 +187,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
     @Override
 	public Generator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota)  {
 		if (nullable == null || nullable || (nullQuota != null && nullQuota > 0))
-			return GeneratorFactoryUtil.createNullStartingGenerator(source);
+			return WrapperFactory.prependNull(source);
 		else
 			return source;
 	}

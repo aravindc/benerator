@@ -24,10 +24,10 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.converter.NumberToNumberConverter;
 
@@ -65,7 +65,7 @@ public class WeightedNumbers<E> extends Sequence {
 			generator.addSample(
 					NumberToNumberConverter.convert((Number) samples[i].getValue(), numberType), 
 					samples[i].getWeight());
-		return GeneratorFactoryUtil.asNonNullGenerator(generator);
+		return WrapperFactory.asNonNullGenerator(generator);
     }
 
 	@Override

@@ -39,9 +39,9 @@ import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
-import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.UniqueMultiSourceArrayGenerator;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
@@ -84,7 +84,7 @@ public class ArrayGeneratorFactory {
             generator = createMutatingArrayGenerator(instanceName, type, uniqueness, generator, context);
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
-        generator = GeneratorFactoryUtil.wrapWithProxy(generator, type);
+        generator = DescriptorUtil.wrapWithProxy(generator, type);
         logger.debug("Created {}", generator);
         return generator;
     }
@@ -155,7 +155,7 @@ public class ArrayGeneratorFactory {
 		        	Object sourceObject = sourceBeanSpec.getBean();
 		        	generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
 		        	if (sourceBeanSpec.isReference())
-		        		generator = GeneratorFactoryUtil.wrapNonClosing(generator);
+		        		generator = WrapperFactory.preventClosing(generator);
 		        	return generator;
 	        	} catch (Exception e) {
 	        		throw new UnsupportedOperationException("Unknown source type: " + sourceName);
@@ -167,10 +167,10 @@ public class ArrayGeneratorFactory {
         		= new ScriptExpression<Boolean>(ScriptUtil.parseScriptText(descriptor.getFilter()));
         	generator = new FilteringGenerator<Object[]>(generator, filter);
         }
-    	Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
+    	Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
         if (distribution != null)
         	generator = new DistributingGenerator<Object[]>(generator, distribution, uniqueness.isUnique());
-        generator = GeneratorFactoryUtil.wrapWithProxy(generator, descriptor);
+        generator = DescriptorUtil.wrapWithProxy(generator, descriptor);
     	return generator;
     }
 
@@ -181,18 +181,17 @@ public class ArrayGeneratorFactory {
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
 		char separator = DescriptorUtil.getSeparator(arrayType, context);
-		SourceFactory<Object[]> factory = new CSVArraySourceFactory(arrayType.getName(), new ScriptConverter(context), separator, encoding);
-		Generator<Object[]> generator = DescriptorUtil.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
-		generator = new ConvertingGenerator<Object[], Object[]>(generator, new ArrayElementTypeConverter(arrayType));
-		return generator;
+		DataSourceFactory<Object[]> factory = new CSVArraySourceFactory(arrayType.getName(), new ScriptConverter(context), separator, encoding);
+		Generator<Object[]> generator = SourceFactory.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
+		return WrapperFactory.applyConverter(generator, new ArrayElementTypeConverter(arrayType));
     }
 
 	private static Generator<Object[]> createXLSSourceGenerator(ArrayTypeDescriptor arrayType, BeneratorContext context,
             String sourceName) {
 		logger.debug("createXLSSourceGenerator({})", arrayType);
-		SourceFactory<Object[]> factory = new XLSArraySourceFactory(new ScriptConverter(context));
-		Generator<Object[]> generator = DescriptorUtil.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
-		generator = new ConvertingGenerator<Object[], Object[]>(generator, new ArrayElementTypeConverter(arrayType));
+		DataSourceFactory<Object[]> factory = new XLSArraySourceFactory(new ScriptConverter(context));
+		Generator<Object[]> generator = SourceFactory.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
+		generator = WrapperFactory.applyConverter(generator, new ArrayElementTypeConverter(arrayType));
 		return generator;
     }
 
@@ -204,12 +203,12 @@ public class ArrayGeneratorFactory {
 	        String selector = descriptor.getSelector();
 	        String subSelector = descriptor.getSubSelector();
 	        if (!StringUtil.isEmpty(subSelector))
-	        	generator = GeneratorFactoryUtil.createCyclicHeadGenerator(new DataSourceGenerator(storage.query(subSelector, false, context)));
+	        	generator = WrapperFactory.applyHeadCycler(new DataSourceGenerator(storage.query(subSelector, false, context)));
 	        else
 	        	generator = new DataSourceGenerator(storage.query(selector, false, context));
 	    } else if (sourceObject instanceof EntitySource) {
 	    	DataSourceGenerator<Entity> entityGenerator = new DataSourceGenerator<Entity>((EntitySource) sourceObject);
-			generator = new ConvertingGenerator<Entity, Object[]>(entityGenerator, new Entity2ArrayConverter());
+			generator = WrapperFactory.applyConverter(entityGenerator, new Entity2ArrayConverter());
 	    } else if (sourceObject instanceof Generator) {
 	        generator = (Generator<Object[]>) sourceObject;
 	    } else

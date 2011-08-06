@@ -32,7 +32,7 @@ import org.databene.benerator.sample.NonNullSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Encodings;
 import org.databene.commons.StringUtil;
@@ -101,7 +101,7 @@ public class TokenCombiner extends GeneratorProxy<String> implements NonNullGene
 		Generator<String> source = new SimpleTokenCombinator(unique);
 		if (excludeSeed) { 
 			BlacklistValidator<String> validator = new BlacklistValidator<String>(seed);
-			source = new ValidatingGeneratorProxy<String>(source, validator);
+			source = WrapperFactory.applyValidator(validator, source);
 		}
 		super.setSource(source);
 	    super.init(context);

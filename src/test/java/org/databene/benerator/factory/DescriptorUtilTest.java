@@ -195,12 +195,12 @@ public class DescriptorUtilTest {
 		
 		// test 'weighted'
 		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType").withDistribution("weighted");
-		Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, true, context);
+		Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, true, context);
 		assertTrue(distribution instanceof AttachedWeight);
 		
 		// test 'weighted[population]'
 		SimpleTypeDescriptor descriptor2 = new SimpleTypeDescriptor("myType").withDistribution("weighted[population]");
-		Distribution distribution2 = GeneratorFactoryUtil.getDistribution(descriptor2.getDistribution(), Uniqueness.NONE, true, context);
+		Distribution distribution2 = FactoryUtil.getDistribution(descriptor2.getDistribution(), Uniqueness.NONE, true, context);
 		assertTrue(distribution2 instanceof FeatureWeight);
 		assertEquals("population", ((FeatureWeight) distribution2).getWeightFeature());
 	}
@@ -332,7 +332,7 @@ public class DescriptorUtilTest {
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
 		descriptor.setDistribution(distributionSpec);
-		Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, true, context);
+		Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, true, context);
 		assertNotNull(distribution);
 		assertTrue(distribution instanceof WeightFunction);
 		assertEquals(expectedValue, ((WeightFunction) distribution).value(0));

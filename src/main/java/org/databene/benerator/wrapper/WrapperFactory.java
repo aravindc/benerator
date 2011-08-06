@@ -31,7 +31,10 @@ import java.math.BigInteger;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
+import org.databene.commons.Converter;
+import org.databene.commons.Validator;
+import org.databene.commons.converter.MessageConverter;
+import org.databene.commons.validator.StringLengthValidator;
 
 /**
  * Provides wrappers for number {@link Generator}s that converts 
@@ -44,13 +47,13 @@ import org.databene.benerator.factory.GeneratorFactoryUtil;
 
 public class WrapperFactory {
 
-    public static <T extends Number> NonNullGenerator<T> asNonNullNumberGenerator(
+    public static <T extends Number> NonNullGenerator<T> asNonNullNumberGeneratorOfType(
     		Class<T> numberType, NonNullGenerator<? extends Number> source, T min, T granularity) {
-    	return GeneratorFactoryUtil.asNonNullGenerator(wrapNumberGenerator(numberType, source, min, granularity));
+    	return asNonNullGenerator(asNumberGeneratorOfType(numberType, source, min, granularity));
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <T extends Number> Generator<T> wrapNumberGenerator(
+    public static <T extends Number> Generator<T> asNumberGeneratorOfType(
     		Class<T> numberType, Generator<? extends Number> source, T min, T granularity) {
     	if (numberType.equals(source.getGeneratedType()))
     	 	return (Generator<T>) source;
@@ -74,4 +77,95 @@ public class WrapperFactory {
     		throw new UnsupportedOperationException("Not a supported number type: " + numberType);
     }
     
+	public static <T> NonNullGenerator<T> asNonNullGenerator(Generator<T> source) {
+		if (source instanceof AsNonNullGenerator)
+			return (NonNullGenerator<T>) source;
+		else
+			return new AsNonNullGenerator<T>(source);
+	}
+
+    // formatting generators -------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a generator that accepts products from a source generator
+     * and converts them to target products by the converter
+     *
+     * @param source    the source generator
+     * @param converter the converter to apply to the products of the source generator
+     * @return a generator of the desired characteristics
+     */
+    @SuppressWarnings("rawtypes")
+	public static <S, T> Generator<T> applyConverter(Generator<S> source, Converter... converter) {
+        return new ConvertingGenerator<S, T>(source, converter);
+    }
+
+    /**
+     * Creates a generator that generates messages by reading the products of several source generators and
+     * combining them by a Java MessageFormat.
+     *
+     * @param pattern   the MessageFormat pattern
+     * @param minLength the minimum length of the generated value
+     * @param maxLength the maximum length of the generated value
+     * @param sources   the source generators of which to assemble the products
+     * @return a generator of the desired characteristics
+     * @see java.text.MessageFormat
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Generator<String> createMessageGenerator(
+            String pattern, int minLength, int maxLength, Generator ... sources) {
+        SimpleMultiSourceArrayGenerator<Object> source = new SimpleMultiSourceArrayGenerator<Object>(
+        		Object.class, sources);
+		Converter converter = new MessageConverter(pattern, null);
+		Generator<String> generator = WrapperFactory.applyConverter(source, converter);
+        generator = applyValidator(new StringLengthValidator(minLength, maxLength), generator);
+        return generator;
+    }
+
+	@SuppressWarnings("unchecked")
+	public static Generator<String>[] asStringGenerators(Generator<?>[] sources) {
+		Generator<String>[] result = new Generator[sources.length];
+		for (int i = 0; i < sources.length; i++)
+			result[i] = asStringGenerator(sources[i]);
+		return result;
+	}
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Generator<String> asStringGenerator(Generator<?> source) {
+		if (source.getGeneratedType() == String.class)
+			return (Generator<String>) source;
+		else
+			return new AsStringGenerator(source);
+	}
+
+    public static <T> OffsetBasedGenerator<T> applyOffset(Generator<T> generator, int offset) {
+		return new OffsetBasedGenerator<T>(generator, offset);
+	}
+
+	public static <T> Generator<T> preventClosing(Generator<T> generator) {
+		return new NonClosingGeneratorProxy<T>(generator);
+	}
+
+	public static <T> Generator<T> applyValidator(Validator<T> validator, Generator<T> generator) {
+		return new ValidatingGeneratorProxy<T>(generator, validator);
+	}
+
+	public static <T> Generator<T> applyCycler(Generator<T> generator) {
+		return new CyclicGeneratorProxy<T>(generator);
+	}
+
+	public static <T> Generator<T> applyHeadCycler(Generator<T> source) {
+		return new CyclicGeneratorProxy<T>(new NShotGeneratorProxy<T>(source, 1));
+	}
+
+	public static <T> Generator<T> prependNull(Generator<T> source) {
+		return new NullStartingGenerator<T>(source);
+	}
+
+	public static <T> Generator<T> injectNulls(Generator<T> source, double nullQuota) {
+		if (nullQuota == 0.)
+			return source;
+		else
+			return new NullInjectingGeneratorProxy<T>(source, nullQuota);
+	}
+
 }

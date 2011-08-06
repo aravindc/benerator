@@ -27,6 +27,7 @@
 package org.databene.benerator.factory;
 
 import static org.databene.model.data.SimpleTypeDescriptor.*;
+import static org.databene.model.data.TypeDescriptor.PATTERN;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,15 +39,18 @@ import java.util.Map;
 import javax.validation.ConstraintValidator;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
-import static org.databene.benerator.factory.GeneratorFactoryUtil.mapDetailsToBeanProperties;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.dataset.DatasetUtil;
+import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.parser.ModelParser;
+import org.databene.benerator.primitive.DynamicCountGenerator;
+import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
-import org.databene.benerator.wrapper.DataSourceGenerator;
+import org.databene.benerator.util.ExpressionBasedGenerator;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -81,7 +85,6 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableHolder;
 import org.databene.script.ScriptConverter;
-import org.databene.webdecs.DataSource;
 import org.w3c.dom.Element;
 
 /**
@@ -112,6 +115,18 @@ public class DescriptorUtil {
 				&& ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(components.get(0).getName()));
 	}
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Generator<?> createConvertingGenerator(TypeDescriptor descriptor,
+            Generator<?> generator, BeneratorContext context) {
+        Converter<?, ?> converter = DescriptorUtil.getConverter(descriptor, context);
+        if (converter != null) {
+            if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN))
+                BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
+            return WrapperFactory.applyConverter((Generator) generator, converter);
+        }
+        return generator;
+    }
+
 	public static Generator<?> getGeneratorByName(TypeDescriptor descriptor, BeneratorContext context) {
     	try {
 	        Generator<?> generator = null;
@@ -121,9 +136,9 @@ public class DescriptorUtil {
 	        		generatorSpec = generatorSpec.substring(1, generatorSpec.length() - 1);
 	        	BeanSpec generatorBeanSpec = BeneratorScriptParser.resolveBeanSpec(generatorSpec, context);
 	        	generator = (Generator<?>) generatorBeanSpec.getBean();
-	            mapDetailsToBeanProperties(descriptor, generator, context);
+	            FactoryUtil.mapDetailsToBeanProperties(descriptor, generator, context);
 	            if (generatorBeanSpec.isReference()) {
-	            	generator = GeneratorFactoryUtil.wrapNonClosing(generator);
+	            	generator = WrapperFactory.preventClosing(generator);
 	            	generator.init(context);
 	            }
 	        }
@@ -314,33 +329,30 @@ public class DescriptorUtil {
 			);
 		return scriptConverter;
 	}
-/*
-    public static <T extends Number> T getMax(SimpleTypeDescriptor descriptor, Class<T> targetType, boolean unique) {
-        try {
-            String detailValue = (String) descriptor.getDetailValue(MAX);
-            if (detailValue == null)
-            	if (unique)
-            		return NumberUtil.maxValue(targetType);
-            	else
-            		detailValue = (String) descriptor.getDetailDefault(MAX);
-            return AnyConverter.convert(detailValue, targetType);
-        } catch (ConversionException e) {
-            throw new ConfigurationError(e);
-        }
-    }
 
-    public static <T extends Number> T getNumberDetailOrDefault(SimpleTypeDescriptor descriptor, String detailName, Class<T> targetType) {
-        try {
-            String detailValue = (String) descriptor.getDetailValue(detailName);
-            if (detailValue == null)
-                detailValue = (String) descriptor.getDetailDefault(detailName);
-            return AnyConverter.convert(detailValue, targetType);
-        } catch (ConversionException e) {
-            throw new ConfigurationError(e);
-        }
+	public static NonNullGenerator<Long> createDynamicCountGenerator(final InstanceDescriptor descriptor, boolean resetToMin, 
+			BeneratorContext context) {
+    	Expression<Long> count = DescriptorUtil.getCount(descriptor);
+    	if (count != null)
+    		return WrapperFactory.asNonNullGenerator(new ExpressionBasedGenerator<Long>(count, Long.class));
+    	else {
+			final Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor);
+			final Expression<Long> maxCount = DescriptorUtil.getMaxCount(descriptor);
+			if (minCount.isConstant() && maxCount.isConstant() && descriptor.getCountDistribution() == null) {
+				Long minCountValue = minCount.evaluate(context);
+				Long maxCountValue = maxCount.evaluate(context);
+				if (minCountValue.equals(maxCountValue))
+					return WrapperFactory.asNonNullGenerator(new ConstantGenerator<Long>(minCountValue));
+			}
+			final Expression<Long> countGranularity = DescriptorUtil.getCountGranularity(descriptor);
+			final Expression<Distribution> countDistribution = 
+				FactoryUtil.getDistributionExpression(descriptor.getCountDistribution(), Uniqueness.NONE, true);
+			return WrapperFactory.asNonNullGenerator(
+					new DynamicCountGenerator(minCount, maxCount, countGranularity, countDistribution, 
+					ExpressionUtil.constant(false), resetToMin)
+				);
+    	}
     }
-*/
-
 
     public static <T extends Number> T getNumberDetail(SimpleTypeDescriptor descriptor, String detailName, Class<T> targetType) {
         try {
@@ -349,26 +361,6 @@ public class DescriptorUtil {
         } catch (ConversionException e) {
             throw new ConfigurationError(e);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-	public static <T> Generator<T> createRawSourceGenerator(String nesting, String dataset,
-            String sourceName, SourceFactory<T> factory, Class<T> generatedType, BeneratorContext context) {
-	    Generator<T> generator;
-		if (dataset != null && nesting != null) {
-		    String[] uris = DatasetUtil.getDataFiles(sourceName, dataset, nesting);
-            Generator<T>[] sources = new Generator[uris.length];
-            for (int i = 0; i < uris.length; i++) {
-            	DataSource<T> source = factory.create(uris[i], context);
-                sources[i] = new DataSourceGenerator<T>(source);
-            }
-			generator = context.getGeneratorFactory().createAlternativeGenerator(generatedType, sources, Uniqueness.NONE);
-		} else {
-		    // iterate over (possibly large) data file
-			DataSource<T> source = factory.create(sourceName, context);
-		    generator = new DataSourceGenerator<T>(source);
-		}
-		return generator;
     }
 
 	public static void parseComponentConfig(Element element, TypeDescriptor type, BeneratorContext context) {
@@ -390,6 +382,21 @@ public class DescriptorUtil {
 
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
+	protected static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor) {
+		boolean cyclic = descriptor.isCyclic() != null && descriptor.isCyclic().booleanValue();
+		if (cyclic)
+			generator = WrapperFactory.applyCycler(generator);
+		int offset = getOffset(descriptor);
+		if (offset > 0)
+			generator = WrapperFactory.applyOffset(generator, offset);
+		return generator;
+    }
+
+	protected static int getOffset(TypeDescriptor descriptor) {
+		Integer offset = descriptor.getOffset();
+		return (offset != null ? offset : 0);
+	}
+
 	private static Collection<InstanceDescriptor> variablesOfThisAndParents(TypeDescriptor type) {
         Collection<InstanceDescriptor> variables = new ArrayList<InstanceDescriptor>();
         while (type instanceof VariableHolder) {

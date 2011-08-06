@@ -22,7 +22,7 @@
 package org.databene.platform.csv;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.factory.SourceFactory;
+import org.databene.benerator.factory.DataSourceFactory;
 import org.databene.commons.converter.ArrayTypeConverter;
 import org.databene.commons.Converter;
 import org.databene.document.csv.CSVLineSource;
@@ -31,12 +31,12 @@ import org.databene.webdecs.util.ConvertingDataSource;
 import org.databene.webdecs.util.OffsetDataSource;
 
 /**
- * {@link SourceFactory} which creates array {@link Iterable}s for CSV files.<br/><br/>
+ * {@link DataSourceFactory} which creates array {@link Iterable}s for CSV files.<br/><br/>
  * Created: 19.07.2011 08:23:39
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class CSVArraySourceFactory implements SourceFactory<Object[]> {
+public class CSVArraySourceFactory implements DataSourceFactory<Object[]> {
 	
 	@SuppressWarnings("unused")
 	private Converter<String, ?> preprocessor; // TODO use preprocessor

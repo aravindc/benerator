@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,6 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.NumberUtil;
 import static org.databene.commons.NumberUtil.*;
@@ -49,8 +48,8 @@ public class WedgeSequence extends Sequence {
     public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	if (max == null)
     		max = NumberUtil.maxValue(numberType);
-		Generator<? extends Number> base = new WedgeLongGenerator(toLong(min), toLong(max), toLong(granularity));
-		return GeneratorFactoryUtil.asNonNullGenerator(WrapperFactory.wrapNumberGenerator(numberType, base, min, max));
+		NonNullGenerator<? extends Number> base = new WedgeLongGenerator(toLong(min), toLong(max), toLong(granularity));
+		return WrapperFactory.asNonNullNumberGeneratorOfType(numberType, base, min, granularity);
     }
 
 }

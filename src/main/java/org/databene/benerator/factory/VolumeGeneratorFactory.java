@@ -45,8 +45,10 @@ import org.databene.benerator.wrapper.GeneratorChain;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.benerator.wrapper.SimpleMultiSourceArrayGenerator;
 import org.databene.benerator.wrapper.UniqueMultiSourceArrayGenerator;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.converter.ConverterManager;
+import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.iterator.ArrayIterable;
 import org.databene.model.data.Uniqueness;
 
@@ -109,15 +111,13 @@ public class VolumeGeneratorFactory extends GeneratorFactory { // TODO rename to
 	    	String[] values = new String[samples.length];
 	    	for (int i = 0; i < samples.length; i++) {
 	    		T rawValue = samples[i].getValue();
-	    		if (rawValue == null)
-	    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
-				String value = String.valueOf(rawValue);
+				String value = ToStringConverter.convert(rawValue, null);
 	    		values[i] = value;
 	    	}
 	        IteratingGenerator<String> source = new IteratingGenerator<String>(new ArrayIterable<String>(values, String.class));
 	        if (distribution == null)
 	        	distribution = SequenceManager.RANDOM_SEQUENCE;
-	        Generator<T> gen = GeneratorFactoryUtil.createConvertingGenerator(source, ConverterManager.getInstance().createConverter(String.class, targetType));
+	        Generator<T> gen = WrapperFactory.applyConverter(source, ConverterManager.getInstance().createConverter(String.class, targetType));
 	    	return distribution.applyTo(gen, unique);
 	    }
     }
@@ -153,7 +153,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory { // TODO rename to
     			nullable = defaultsProvider.defaultNullable();
     		nullQuota = (nullable ?  defaultsProvider.defaultNullQuota() : 0);
     	}
-		return GeneratorFactoryUtil.injectNulls(source, nullQuota);
+		return WrapperFactory.injectNulls(source, nullQuota);
 	}
 
     @Override
@@ -215,10 +215,10 @@ public class VolumeGeneratorFactory extends GeneratorFactory { // TODO rename to
 		for (int partCount = minParts; partCount <= maxParts; partCount++) {
 			Generator<String>[] sources = new Generator[partCount];
 			for (int i = 0; i < partCount; i++)
-				sources[i] = GeneratorFactoryUtil.stringGenerator(partGeneratorProvider.create());
+				sources[i] = WrapperFactory.asStringGenerator(partGeneratorProvider.create());
 			result.addSource(new CompositeStringGenerator(uniqueness.isUnique(), sources));
 		}
-		return GeneratorFactoryUtil.asNonNullGenerator(result);
+		return WrapperFactory.asNonNullGenerator(result);
 	}
 
 }

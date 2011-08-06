@@ -22,9 +22,9 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.Mutator;
 
 /**
@@ -40,7 +40,7 @@ public class DefaultComponentBuilder<E> extends AbstractComponentBuilder<E> {
 	private WrapperProvider<Object> productWrapper = new WrapperProvider<Object>();
 	
     public DefaultComponentBuilder(Generator<?> source, Mutator mutator, double nullQuota) {
-		this(GeneratorFactoryUtil.injectNulls(source, nullQuota), mutator);
+		this(WrapperFactory.injectNulls(source, nullQuota), mutator);
 	}
 
     public DefaultComponentBuilder(Generator<?> source, Mutator mutator) {

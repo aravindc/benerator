@@ -27,8 +27,8 @@
 package org.databene.platform.db;
 
 import org.databene.benerator.StorageSystem;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.primitive.HiLoGenerator;
+import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
  *  * Creates Unique keys efficiently by connecting a database, retrieving a (unique) sequence value 
@@ -48,7 +48,7 @@ public class QueryHiLoGenerator extends HiLoGenerator {
     }
     
 	public QueryHiLoGenerator(String selector, StorageSystem source, int maxLo) {
-        super(GeneratorFactoryUtil.asNonNullGenerator(new QueryLongGenerator(selector, source)), maxLo);
+        super(WrapperFactory.asNonNullGenerator(new QueryLongGenerator(selector, source)), maxLo);
     }
     
     @Override

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,8 +24,8 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
+import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
  * Sequence implementation that returns the first n values of another Generator (default 1).
@@ -61,7 +61,7 @@ public class HeadSequence extends Sequence {
     public <T extends Number> NonNullGenerator<T> createGenerator(
     		Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	Generator<T> source = STEP_SEQ.createGenerator(numberType, min, max, granularity, unique);
-		return GeneratorFactoryUtil.asNonNullGenerator(new NShotGeneratorProxy<T>(source, size));
+		return WrapperFactory.asNonNullGenerator(new NShotGeneratorProxy<T>(source, size));
 	}
 
 }

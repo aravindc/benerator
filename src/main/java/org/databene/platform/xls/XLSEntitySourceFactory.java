@@ -22,18 +22,18 @@
 package org.databene.platform.xls;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.factory.SourceFactory;
+import org.databene.benerator.factory.DataSourceFactory;
 import org.databene.commons.Converter;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 
 /**
- * {@link SourceFactory} implementation which creates XLS entity sources.<br/><br/>
+ * {@link DataSourceFactory} implementation which creates XLS entity sources.<br/><br/>
  * Created: 05.05.2010 15:08:03
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public class XLSEntitySourceFactory implements SourceFactory<Entity> {
+public class XLSEntitySourceFactory implements DataSourceFactory<Entity> {
 	
 	private String entityType;
 	private Converter<String, ?> scriptConverter;

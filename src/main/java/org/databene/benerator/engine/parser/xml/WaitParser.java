@@ -28,9 +28,10 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.WaitStatement;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
+import org.databene.benerator.factory.FactoryUtil;
 import org.databene.benerator.primitive.DynamicLongGenerator;
 import org.databene.benerator.util.ExpressionBasedGenerator;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ExpressionUtil;
@@ -61,7 +62,7 @@ public class WaitParser extends AbstractBeneratorDescriptorParser {
 		Expression<Long> duration  = parseLongAttribute(ATT_DURATION, element, null);
 		if (duration != null) {
 			ExpressionBasedGenerator<Long> base = new ExpressionBasedGenerator<Long>(duration, Long.class);
-			return new WaitStatement(GeneratorFactoryUtil.asNonNullGenerator(base));
+			return new WaitStatement(WrapperFactory.asNonNullGenerator(base));
 		}
 		
 		// check for distribution
@@ -70,10 +71,10 @@ public class WaitParser extends AbstractBeneratorDescriptorParser {
 		Expression<Long> granularity  = parseLongAttribute(ATT_GRANULARITY, element, null);
 		String distSpec  = getAttribute(ATT_DISTRIBUTION, element);
 		Expression<Distribution> distribution 
-			= GeneratorFactoryUtil.getDistributionExpression(distSpec, Uniqueness.NONE, false);
+			= FactoryUtil.getDistributionExpression(distSpec, Uniqueness.NONE, false);
 		Generator<Long> durationGenerator = new DynamicLongGenerator(min, max, granularity, 
 				distribution, ExpressionUtil.constant(false));
-	    return new WaitStatement(GeneratorFactoryUtil.asNonNullGenerator(durationGenerator));
+	    return new WaitStatement(WrapperFactory.asNonNullGenerator(durationGenerator));
     }
 
 }

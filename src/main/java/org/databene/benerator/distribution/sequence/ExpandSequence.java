@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorOpts;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
+import org.databene.benerator.wrapper.WrapperFactory;
 
 import static org.databene.commons.NumberUtil.*;
 
@@ -73,7 +73,7 @@ public class ExpandSequence extends Sequence {
 			Class<T> numberType, T min, T max, T granularity, boolean unique) {
 		NonNullGenerator<T> source = SequenceManager.STEP_SEQUENCE.createGenerator(numberType, min, max, granularity, unique);
 		int cacheSize = cacheSize(min, max, granularity);
-		return GeneratorFactoryUtil.asNonNullGenerator(
+		return WrapperFactory.asNonNullGenerator(
 				new ExpandGeneratorProxy<T>(source, duplicationQuota(unique), cacheSize, bucketSize(cacheSize)));
 	}
 

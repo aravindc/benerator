@@ -27,9 +27,9 @@
 package org.databene.domain.product;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.NonNullGeneratorProxy;
+import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
  * Generates EAN8 and EAN13 codes at the configured ratio.<br/>
@@ -71,7 +71,7 @@ public class EANGenerator extends NonNullGeneratorProxy<String> {
     @Override
     public void init(GeneratorContext context) {
     	assertNotInitialized();
-        setSource(GeneratorFactoryUtil.asNonNullGenerator(new AlternativeGenerator<String>(String.class,
+        setSource(WrapperFactory.asNonNullGenerator(new AlternativeGenerator<String>(String.class,
                 new EAN8Generator(unique),
                 new EAN13Generator(unique))));
         super.init(context);

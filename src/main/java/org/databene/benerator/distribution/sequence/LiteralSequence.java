@@ -23,9 +23,9 @@ package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.NumberToNumberConverter;
 
@@ -69,7 +69,7 @@ public class LiteralSequence extends Sequence {
 		NumberToNumberConverter<Number, T> converter = new NumberToNumberConverter<Number, T>(Number.class, numberType);
 		for (int i = 0; i < numbers.length; i++)
 			ts[i] = converter.convert(numbers[i]);
-	    return GeneratorFactoryUtil.asNonNullGenerator(new PredefinedSequenceGenerator<T>((T[]) ts));
+	    return WrapperFactory.asNonNullGenerator(new PredefinedSequenceGenerator<T>((T[]) ts));
     }
 
 }

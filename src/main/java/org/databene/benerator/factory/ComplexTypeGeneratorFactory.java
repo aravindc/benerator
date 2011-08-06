@@ -57,6 +57,7 @@ import org.databene.platform.xls.XLSEntitySourceFactory;
 import org.databene.platform.csv.CSVEntitySourceFactory;
 import org.databene.script.ScriptConverter;
 import org.databene.script.ScriptUtil;
+import org.databene.webdecs.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +94,7 @@ public class ComplexTypeGeneratorFactory {
             generator = createMutatingEntityGenerator(instanceName, type, uniqueness, context, generator);
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
-        generator = GeneratorFactoryUtil.wrapWithProxy(generator, type);
+        generator = DescriptorUtil.wrapWithProxy(generator, type);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return generator;
@@ -144,7 +145,7 @@ public class ComplexTypeGeneratorFactory {
 		        	sourceObject = sourceBeanSpec.getBean();
 		        	generator = createSourceGeneratorFromObject(descriptor, context, sourceObject);
 		        	if (sourceBeanSpec.isReference() && !(sourceObject instanceof StorageSystem))
-		        		generator = GeneratorFactoryUtil.wrapNonClosing(generator);
+		        		generator = WrapperFactory.preventClosing(generator);
 	        	} catch (Exception e) {
 	        		throw new UnsupportedOperationException("Error resolving source: " + sourceSpec, e);
 	        	}
@@ -157,7 +158,7 @@ public class ComplexTypeGeneratorFactory {
         		= new ScriptExpression<Boolean>(ScriptUtil.parseScriptText(descriptor.getFilter()));
         	generator = new FilteringGenerator<Entity>(generator, filter);
         }
-    	Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
+    	Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
         if (distribution != null)
         	generator = new DistributingGenerator<Entity>(generator, distribution, uniqueness.isUnique());
     	return generator;
@@ -171,9 +172,10 @@ public class ComplexTypeGeneratorFactory {
 	        StorageSystem storage = (StorageSystem) sourceObject;
 	        String selector = descriptor.getSelector();
 	        String subSelector = descriptor.getSubSelector();
-	        if (!StringUtil.isEmpty(subSelector))
-	        	generator = GeneratorFactoryUtil.createCyclicHeadGenerator(new DataSourceGenerator<Entity>(storage.queryEntities(descriptor.getName(), subSelector, context)));
-	        else 
+	        if (!StringUtil.isEmpty(subSelector)) {
+				DataSource<Entity> dataSource = storage.queryEntities(descriptor.getName(), subSelector, context);
+				generator = WrapperFactory.applyHeadCycler(new DataSourceGenerator<Entity>(dataSource));
+			} else 
 	        	generator = new DataSourceGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
 	    } else if (sourceObject instanceof EntitySource) {
 	        generator = new DataSourceGenerator<Entity>((EntitySource) sourceObject);
@@ -208,14 +210,14 @@ public class ComplexTypeGeneratorFactory {
 		    encoding = context.getDefaultEncoding();
 		Converter<String, String> scriptConverter = DescriptorUtil.createStringScriptConverter(context);
 		char separator = DescriptorUtil.getSeparator(complexType, context);
-	    SourceFactory<Entity> fileProvider = new CSVEntitySourceFactory(complexType.getName(), scriptConverter, 
+	    DataSourceFactory<Entity> fileProvider = new CSVEntitySourceFactory(complexType.getName(), scriptConverter, 
 	    		separator, encoding);
 	    return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
     
     private static Generator<Entity> createXLSSourceGenerator(
 			ComplexTypeDescriptor complexType, BeneratorContext context, String sourceName) {
-	    SourceFactory<Entity> fileProvider = new XLSEntitySourceFactory(
+	    DataSourceFactory<Entity> fileProvider = new XLSEntitySourceFactory(
 	    		complexType.getName(), new ScriptConverter(context));
 		return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
@@ -281,9 +283,9 @@ public class ComplexTypeGeneratorFactory {
     }
 	
 	private static Generator<Entity> createEntitySourceGenerator(ComplexTypeDescriptor complexType,
-            BeneratorContext context, String sourceName, SourceFactory<Entity> factory) {
-	    Generator<Entity> generator = DescriptorUtil.createRawSourceGenerator(complexType.getNesting(), complexType.getDataset(), sourceName, factory, Entity.class, context);
-		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(complexType));
+            BeneratorContext context, String sourceName, DataSourceFactory<Entity> factory) {
+	    Generator<Entity> generator = SourceFactory.createRawSourceGenerator(complexType.getNesting(), complexType.getDataset(), sourceName, factory, Entity.class, context);
+		generator = WrapperFactory.applyConverter(generator, new ComponentTypeConverter(complexType));
 		return generator;
     }
 

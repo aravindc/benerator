@@ -101,7 +101,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
             Distribution distribution, Uniqueness uniqueness) {
         Assert.notNull(numberType, "numberType");
         if (min != null && min.equals(max))
-            return GeneratorFactoryUtil.asNonNullGenerator(new ConstantGenerator<T>(min));
+            return WrapperFactory.asNonNullGenerator(new ConstantGenerator<T>(min));
         if (min == null)
         	min = defaultsProvider.defaultMin(numberType);
         if (granularity == null)
@@ -170,7 +170,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @return a generator of the desired characteristics
      */
     public Generator<Character> createCharacterGenerator(String pattern, Locale locale, boolean unique) {
-        Set<Character> chars = GeneratorFactoryUtil.fullLocaleCharSet(pattern, locale);
+        Set<Character> chars = FactoryUtil.fullLocaleCharSet(pattern, locale);
     	if (unique)
 	        return new SequenceGenerator<Character>(Character.class, chars);
     	else
@@ -208,7 +208,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
 					chars, minLength, maxLength, lengthGranularity, lengthDistribution, uniqueness);
         }
         if (locale == null)
-            locale = GeneratorFactoryUtil.defaultLocale();
+            locale = FactoryUtil.defaultLocale();
 		return createRegexStringGenerator(pattern, minLength, maxLength, uniqueness); 
 	}
     
@@ -231,8 +231,8 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
     public NonNullGenerator<String> createRegexStringGenerator(String pattern, int minLength, Integer maxLength, 
     		Uniqueness uniqueness) throws ConfigurationError {
     	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, minLength, maxLength, uniqueness, this);
-        return GeneratorFactoryUtil.asNonNullGenerator(new ValidatingGeneratorProxy<String>(
-                generator, new StringLengthValidator(minLength, maxLength)));
+        return WrapperFactory.asNonNullGenerator(WrapperFactory.applyValidator(
+        		new StringLengthValidator(minLength, maxLength), generator));
     }
 
     // collection generators -------------------------------------------------------------------------------------------

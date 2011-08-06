@@ -49,8 +49,8 @@ import org.databene.benerator.wrapper.AccessingGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.AsByteGeneratorWrapper;
 import org.databene.benerator.wrapper.ByteArrayGenerator;
-import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.DataSourceGenerator;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.Condition;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
@@ -89,7 +89,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     public static Generator<?> createSimpleTypeGenerator(
 			SimpleTypeDescriptor descriptor, boolean nullable, Uniqueness uniqueness,
 			BeneratorContext context) {
-        logger.debug("create({})", descriptor.getName());
+        logger.debug("createSimpleTypeGenerator({})", descriptor.getName());
         Generator<?> generator = null;
         generator = createConstantGenerator(descriptor, context);
         if (generator == null)
@@ -108,7 +108,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             throw new ConfigurationError("Can't handle descriptor " + descriptor);
         // create wrappers
         generator = wrapWithPostprocessors(generator, descriptor, context);
-        generator = GeneratorFactoryUtil.wrapWithProxy(generator, descriptor);
+        generator = DescriptorUtil.wrapWithProxy(generator, descriptor);
         // done
         logger.debug("Created {}", generator);
         return generator;
@@ -137,7 +137,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		if ("".equals(valueSpec))
 			return new ConstantGenerator<String>("");
         try {
-			Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
+			Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
 			return context.getGeneratorFactory().createFromWeightedLiteralList(valueSpec, targetType, distribution, uniqueness.isUnique());
         } catch (org.databene.commons.ParseException e) {
 	        throw new ConfigurationError("Error parsing samples: " + valueSpec, e);
@@ -182,7 +182,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             if (sourceObject instanceof StorageSystem)
             	if (!StringUtil.isEmpty(subSelector)) {
             		generator = new DataSourceGenerator(((StorageSystem) sourceObject).query(subSelector, true, context));
-                    generator = GeneratorFactoryUtil.createCyclicHeadGenerator(generator);
+                    generator = WrapperFactory.applyHeadCycler(generator);
             	} else
             		generator = new DataSourceGenerator(((StorageSystem) sourceObject).query(selector, true, context));
             else if (sourceObject instanceof Generator)
@@ -194,7 +194,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         } else if (lcn.endsWith(".xls")) {
             return createSimpleTypeXLSSourceGenerator(descriptor, source, uniqueness, context);
         } else if (lcn.endsWith(".txt")) {
-            generator = GeneratorFactoryUtil.createTextLineGenerator(source);
+            generator = SourceFactory.createTextLineGenerator(source);
         } else {
         	try {
 	        	BeanSpec sourceSpec = BeneratorScriptParser.resolveBeanSpec(source, context);
@@ -204,7 +204,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         	}
         }
 
-        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
+        Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
         if (distribution != null)
             generator = distribution.applyTo(generator, uniqueness.isUnique());
         
@@ -222,7 +222,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	        String subSelector = descriptor.getSubSelector();
 	        if (!StringUtil.isEmpty(subSelector)) {
 	        	generator = new DataSourceGenerator(storage.queryEntities(descriptor.getName(), subSelector, context));
-		        generator = GeneratorFactoryUtil.createCyclicHeadGenerator(generator);
+		        generator = WrapperFactory.applyHeadCycler(generator);
 	        } else
 		        generator = new DataSourceGenerator(storage.queryEntities(descriptor.getName(), selector, context));
 	    } else if (sourceObject instanceof Generator) {
@@ -230,7 +230,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	    } else
 	        throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
 	    if (sourceSpec.isReference())
-	    	generator = GeneratorFactoryUtil.wrapNonClosing(generator);
+	    	generator = WrapperFactory.preventClosing(generator);
 	    return generator;
     }
 
@@ -242,7 +242,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		String encoding = descriptor.getEncoding();
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
-        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
+        Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
 
 		String dataset = descriptor.getDataset();
 		String nesting = descriptor.getNesting();
@@ -257,11 +257,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		} else if (sourceName.toLowerCase().endsWith(".wgt.csv") || distribution instanceof IndividualWeight) {
         	generator = new WeightedCSVSampleGenerator(sourceName, encoding, new ScriptConverter(context));
         } else {
-    		Generator<String[]> src = GeneratorFactoryUtil.createCSVLineGenerator(sourceName, separator, encoding, true);
+    		Generator<String[]> src = SourceFactory.createCSVLineGenerator(sourceName, separator, encoding, true);
     		Converter<String[], Object> converterChain = new ConverterChain<String[], Object>(
     				new ArrayElementExtractor<String>(String.class, 0), 
     				new ScriptConverter(context));
-    		generator = new ConvertingGenerator<String[], Object>(src, converterChain);
+    		generator = WrapperFactory.applyConverter(src, converterChain);
             if (distribution != null)
             	generator = distribution.applyTo(generator, uniqueness.isUnique());
         }
@@ -272,8 +272,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 			SimpleTypeDescriptor descriptor, String sourceName, Uniqueness uniqueness, BeneratorContext context) {
 		// TODO define common mechanism for file sources CSV, XLS, ... and entity, array, simple type
 		Generator<?> generator;
-        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
-		Generator<Object[]> src = GeneratorFactoryUtil.createXLSLineGenerator(sourceName);
+        Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
+		Generator<Object[]> src = SourceFactory.createXLSLineGenerator(sourceName);
 		Converter<Object[], Object> converterChain = new ConverterChain<Object[], Object>(
 				new ArrayElementExtractor<Object>(Object.class, 0),
 				new ConditionalConverter(new Condition<Object>() {
@@ -282,7 +282,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 					}
 				},
 				new ScriptConverter(context)));
-		generator = new ConvertingGenerator<Object[], Object>(src, converterChain);
+		generator = WrapperFactory.applyConverter(src, converterChain);
         if (distribution != null)
         	generator = distribution.applyTo(generator, uniqueness.isUnique());
 		return generator;
@@ -339,14 +339,14 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     private static Generator<Timestamp> createTimestampGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         Generator<Date> source = createDateGenerator(descriptor, uniqueness, context);
         Converter<Date, Timestamp> converter = (Converter) new AnyConverter<Timestamp>(Timestamp.class);
-		return new ConvertingGenerator<Date, Timestamp>(source, converter);
+		return WrapperFactory.applyConverter(source, converter);
     }
 
     private static Generator<Date> createDateGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         Date min = parseDate(descriptor, MIN, null);
         Date max = parseDate(descriptor, MAX, null);
         long granularity = parseDateGranularity(descriptor);
-        Distribution distribution = GeneratorFactoryUtil.getDistribution(
+        Distribution distribution = FactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, true, context);
 	    return context.getGeneratorFactory().createDateGenerator(min, max, granularity, distribution);
     }
@@ -393,7 +393,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         T max = DescriptorUtil.getNumberDetail(descriptor, MAX, targetType);
         Boolean maxInclusive = descriptor.isMaxInclusive();
         T granularity = DescriptorUtil.getNumberDetail(descriptor, GRANULARITY, targetType);
-        Distribution distribution = GeneratorFactoryUtil.getDistribution(
+        Distribution distribution = FactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, false, context);
         return context.getGeneratorFactory().createNumberGenerator(targetType, min, minInclusive, max, maxInclusive, 
                 granularity, distribution, uniqueness);
@@ -412,7 +412,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
         Integer minLength = descriptor.getMinLength();
         int lengthGranularity = 1;
-        Distribution lengthDistribution = GeneratorFactoryUtil.getDistribution(
+        Distribution lengthDistribution = FactoryUtil.getDistribution(
         		descriptor.getLengthDistribution(), Uniqueness.NONE, false, context);
         Locale locale = descriptor.getLocale();
         GeneratorFactory factory = context.getGeneratorFactory();

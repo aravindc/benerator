@@ -26,6 +26,7 @@ import static org.databene.model.data.TypeDescriptor.PATTERN;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.Validator;
@@ -91,7 +92,7 @@ public class VariableGeneratorFactory {
             TypeDescriptor descriptor, Generator<T> generator, BeneratorContext context) {
 		Validator<T> validator = DescriptorUtil.getValidator(descriptor, context);
         if (validator != null)
-            generator = GeneratorFactoryUtil.wrapWithValidator(validator, generator);
+            generator = WrapperFactory.applyValidator(validator, generator);
         return generator;
     }
 
@@ -101,7 +102,7 @@ public class VariableGeneratorFactory {
             return generator;
         Converter<?, ?> converter = TypeGeneratorFactory.createConverter(descriptor, generator.getGeneratedType());
         if (converter != null)
-        	return GeneratorFactoryUtil.createConvertingGenerator((Generator) generator, converter);
+        	return WrapperFactory.applyConverter((Generator) generator, converter);
         else
         	return generator;
     }
@@ -112,7 +113,7 @@ public class VariableGeneratorFactory {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
                 BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
             }
-            generator = GeneratorFactoryUtil.createConvertingGenerator(descriptor, generator, context);
+            generator = DescriptorUtil.createConvertingGenerator(descriptor, generator, context);
         }
         return generator;
     }
@@ -124,7 +125,7 @@ public class VariableGeneratorFactory {
 
 	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, boolean cyclic) {
 		if (cyclic)
-			generator = GeneratorFactoryUtil.wrapCyclic(generator);
+			generator = WrapperFactory.applyCycler(generator);
 		return generator;
     }
 

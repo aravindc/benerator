@@ -26,8 +26,8 @@ import static org.junit.Assert.*;
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.SequenceTestGenerator;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.junit.Test;
 
 /**
@@ -42,7 +42,7 @@ public class DistributingGeneratorTest extends GeneratorTest {
 	public void test() {
 		SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3);
 		Distribution distribution = new TestDistribution();
-		NonNullGenerator<Integer> generator = GeneratorFactoryUtil.asNonNullGenerator(
+		NonNullGenerator<Integer> generator = WrapperFactory.asNonNullGenerator(
 				new DistributingGenerator<Integer>(source, distribution, false));
 		generator.init(context);
 		assertEquals(new Integer(1), generator.generate());

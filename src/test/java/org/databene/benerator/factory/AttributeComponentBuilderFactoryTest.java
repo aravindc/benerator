@@ -144,20 +144,13 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 
 	// values ----------------------------------------------------------------------------------------------------------
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testMultiValuesAttribute() {
 		String componentName = "name";
 		PartDescriptor name = new PartDescriptor(componentName);
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
-		type.setValues("'A','B'");
-		ComponentBuilder builder = createComponentBuilder(name);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
-		helper.init(context);
-		for (int i = 0; i < 10; i++) {
-			String s = GeneratorUtil.generateNonNull(helper);
-			assertTrue("A".equals(s) || "B".equals(s));
-		}
+		type.setValues("'A','B',null");
+		expectSet(name, 300, "A", "B", null);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

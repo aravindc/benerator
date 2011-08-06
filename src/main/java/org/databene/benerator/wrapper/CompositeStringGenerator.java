@@ -27,7 +27,6 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 
 /**
  * Uses n String generators and appends the output of each one in each generate() call.<br/>
@@ -85,7 +84,7 @@ public class CompositeStringGenerator extends GeneratorWrapper<String[], String>
     // private helpers -------------------------------------------------------------------------------------------------
 
     protected static Generator<String[]> wrap(boolean unique, Generator<?>... sources) {
-        return new MultiSourceArrayGenerator<String>(String.class, unique, GeneratorFactoryUtil.stringGenerators(sources));
+        return new MultiSourceArrayGenerator<String>(String.class, unique, WrapperFactory.asStringGenerators(sources));
     }
 
 }

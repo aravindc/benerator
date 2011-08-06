@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,29 +19,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.platform.xls;
+package org.databene.benerator.factory;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.factory.DataSourceFactory;
-import org.databene.commons.Converter;
 import org.databene.webdecs.DataSource;
 
 /**
- * {@link DataSourceFactory} implementation which creates {@link XLSLineSource}s.<br/><br/>
- * Created: 19.07.2011 08:31:10
- * @since 0.7.0
+ * Interface for classes which provide {@link Iterable}s for iterating through data sources.<br/><br/>
+ * Created: 05.05.2010 14:51:09
+ * @since 0.6.1
  * @author Volker Bergmann
  */
-public class XLSArraySourceFactory implements DataSourceFactory<Object[]> {
-	
-	Converter<String, ?> scriptConverter;
-	
-	public XLSArraySourceFactory(Converter<String, ?> scriptConverter) {
-	    this.scriptConverter = scriptConverter;
-    }
-
-	public DataSource<Object[]> create(String uri, BeneratorContext context) {
-		return new XLSLineSource(uri, true, scriptConverter);
-	}
-
+public interface DataSourceFactory<E> {
+	DataSource<E> create(String id, BeneratorContext context);
 }

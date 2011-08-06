@@ -38,7 +38,6 @@ import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
 import org.databene.benerator.dataset.DatasetUtil;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.primitive.RegexStringGenerator;
 import org.databene.benerator.primitive.TokenCombiner;
 import org.databene.benerator.sample.ConstantGenerator;
@@ -47,6 +46,7 @@ import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.MessageGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.Encodings;
 import org.databene.commons.bean.PropertyAccessConverter;
 import org.databene.domain.address.CityGenerator;
@@ -217,7 +217,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 	        	try {
 	        		WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(
 	        				ORG + "sector_{0}.csv", datasetName, DatasetUtil.REGION_NESTING, Encodings.UTF_8);
-					sectorGenerator = GeneratorFactoryUtil.injectNulls(source, 0.7);
+					sectorGenerator = WrapperFactory.injectNulls(source, 0.7);
 	        		sectorGenerator.init(context);
 	        	} catch (Exception e) {
 	        		LOGGER.info("Cannot create sector generator: " + e.getMessage() + ". Falling back to US");
@@ -249,7 +249,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 			    Generator<String> locationBaseGen;
 		        if (location && country != null) {
 		        	try {
-			            Generator<String> city = GeneratorFactoryUtil.createConvertingGenerator(
+			            Generator<String> city = WrapperFactory.applyConverter(
 			            		new CityGenerator(country.getIsoCode()), 
 			            		new PropertyAccessConverter("name"), 
 			            		new NameNormalizer());
@@ -262,7 +262,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 		        	}
 		        } else
 		        	locationBaseGen = new ConstantGenerator<String>(null);
-		        locationGenerator = GeneratorFactoryUtil.injectNulls(locationBaseGen, nullQuota);
+		        locationGenerator = WrapperFactory.injectNulls(locationBaseGen, nullQuota);
 		        locationGenerator.init(context);
 		        locationGenerators.put(datasetName, locationGenerator);
 			}

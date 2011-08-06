@@ -30,6 +30,7 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.GeneratorChain;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.model.data.Uniqueness;
 
 /**
@@ -62,7 +63,7 @@ public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // T
 	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
             T granularity, Distribution distribution, Uniqueness uniqueness) {
-    	return GeneratorFactoryUtil.asNonNullGenerator(new GeneratorChain<T>(numberType, true, 
+    	return WrapperFactory.asNonNullGenerator(new GeneratorChain<T>(numberType, true, 
     		super.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, 
     				granularity, distribution, uniqueness),
     		serialFactory.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, 
@@ -75,7 +76,7 @@ public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // T
 	public NonNullGenerator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, 
 			Uniqueness uniqueness) {
-    	return GeneratorFactoryUtil.asNonNullGenerator(new GeneratorChain<String>(String.class, true, 
+    	return WrapperFactory.asNonNullGenerator(new GeneratorChain<String>(String.class, true, 
     		super.createStringGenerator(chars, minLength, maxLength, lengthGranularity, lengthDistribution, 
     				uniqueness),
     		serialFactory.createStringGenerator(

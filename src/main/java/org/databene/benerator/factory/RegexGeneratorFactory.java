@@ -32,6 +32,7 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.ConcatenatingGenerator;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.CharSet;
 import org.databene.commons.CollectionUtil;
 import org.databene.model.data.Uniqueness;
@@ -100,10 +101,10 @@ public class RegexGeneratorFactory {
         else if (object instanceof Choice)
             return createFromChoice((Choice) object, minCount, maxCount, minLength, maxLength, uniqueness, factory);
         else if (object instanceof String)
-        	return GeneratorFactoryUtil.asNonNullGenerator(factory.createSingleValueGenerator(
+        	return WrapperFactory.asNonNullGenerator(factory.createSingleValueGenerator(
         			(String) object, uniqueness.isUnique()));
         else if (object == null)
-        	return GeneratorFactoryUtil.asNonNullGenerator(new ConstantGenerator<String>(null, String.class));
+        	return WrapperFactory.asNonNullGenerator(new ConstantGenerator<String>(null, String.class));
         else
             throw new UnsupportedOperationException("Unsupported regex part type: " + object.getClass().getName());
     }
@@ -116,7 +117,7 @@ public class RegexGeneratorFactory {
 				factors, minLength, maxLength, uniqueness, factory);
     	Generator<String[]> partGenerator = factory.createCompositeArrayGenerator(
     			String.class, componentGenerators, uniqueness);
-    	return GeneratorFactoryUtil.asNonNullGenerator(new ConcatenatingGenerator(partGenerator));
+    	return WrapperFactory.asNonNullGenerator(new ConcatenatingGenerator(partGenerator));
     }
 
     @SuppressWarnings("rawtypes")

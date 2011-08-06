@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,8 +31,8 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.wrapper.RepeatGeneratorProxy;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
 
 /**
@@ -77,7 +77,7 @@ public class RepeatSequence extends Sequence {
     		throw new ConfigurationError("Uniqueness can't be assured for minRepetitions=" + minRepetitions
     				+ " and maxRepetitions=" + maxRepetitions);
 		Generator<T> source = stepSequence.createGenerator(numberType, min, max, granularity, unique);
-		return GeneratorFactoryUtil.asNonNullGenerator(applyTo(source, unique));
+		return WrapperFactory.asNonNullGenerator(applyTo(source, unique));
 	}
 	
     @Override

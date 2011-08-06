@@ -42,7 +42,6 @@ import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.TimedGeneratorStatement;
 import org.databene.benerator.factory.DescriptorUtil;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.CollectionUtil;
@@ -151,7 +150,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
     		BeneratorContext context, boolean infoLog, boolean nested) {
 	    InstanceDescriptor descriptor = mapDescriptorElement(element, context);
 		
-		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
+		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
 		Expression<Long> pageSize = parsePageSize(element);
 		Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
 		Expression<PageListener> pager = (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(element.getAttribute(ATT_PAGER));

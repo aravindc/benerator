@@ -22,7 +22,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.factory.GeneratorFactoryUtil;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.Mutator;
 import org.databene.commons.UpdateFailedException;
 
@@ -35,7 +35,7 @@ import org.databene.commons.UpdateFailedException;
 public class ArrayElementBuilder extends DefaultComponentBuilder<Object[]> {
 
     public ArrayElementBuilder(int index, Generator<?> source, double nullQuota) {
-		this(index, GeneratorFactoryUtil.injectNulls(source, nullQuota));
+		this(index, WrapperFactory.injectNulls(source, nullQuota));
     }
 
 	public ArrayElementBuilder(int index, Generator<?> source) {

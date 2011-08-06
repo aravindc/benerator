@@ -124,6 +124,14 @@ public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest 
 		expectUniquelyGeneratedSet(helper, products).withCeasedAvailability();
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    protected <T> void expectSet(PartDescriptor name, int n, T... products) {
+		ComponentBuilder builder = createComponentBuilder(name);
+		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
+		expectGeneratedSet(helper, n, products);
+	}
+	
 	/*
 	private <T> void expectSequence(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);

@@ -22,7 +22,7 @@
 package org.databene.platform.csv;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.factory.SourceFactory;
+import org.databene.benerator.factory.DataSourceFactory;
 import org.databene.commons.Converter;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
@@ -33,7 +33,7 @@ import org.databene.model.data.EntitySource;
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public class CSVEntitySourceFactory implements SourceFactory<Entity> {
+public class CSVEntitySourceFactory implements DataSourceFactory<Entity> {
 	
 	private String type;
 	private Converter<String, ?> converter;

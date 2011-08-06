@@ -32,6 +32,7 @@ import java.util.Date;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.ValueMapper;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
@@ -75,7 +76,7 @@ public class TypeGeneratorFactory {
     protected static Generator<?> createScriptGenerator(TypeDescriptor descriptor, Context context) {
         String scriptText = descriptor.getScript();
         if (scriptText != null)
-            return GeneratorFactoryUtil.createScriptGenerator(scriptText, context);
+            return FactoryUtil.createScriptGenerator(scriptText, context);
         return null;
     }
 
@@ -84,7 +85,7 @@ public class TypeGeneratorFactory {
             TypeDescriptor descriptor, Generator<?> generator, BeneratorContext context) {
         Validator validator = DescriptorUtil.getValidator(descriptor, context);
         if (validator != null)
-            generator = GeneratorFactoryUtil.wrapWithValidator(validator, generator);
+            generator = WrapperFactory.applyValidator(validator, generator);
         return generator;
     }
 
@@ -95,7 +96,7 @@ public class TypeGeneratorFactory {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
                 BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
             }
-            generator = GeneratorFactoryUtil.createConvertingGenerator(generator, converter);
+            generator = WrapperFactory.applyConverter(generator, converter);
         }
         return generator;
     }
@@ -118,7 +119,7 @@ public class TypeGeneratorFactory {
             return generator;
         String mappingSpec = descriptor.getMap();
         ValueMapper mapper = new ValueMapper(mappingSpec);
-        return GeneratorFactoryUtil.createConvertingGenerator(generator, mapper);
+        return WrapperFactory.applyConverter(generator, mapper);
     }
 
     static Generator<?> createTypeConvertingGenerator(
@@ -126,7 +127,7 @@ public class TypeGeneratorFactory {
         if (descriptor == null || descriptor.getPrimitiveType() == null)
             return generator;
         Converter<?, ?> converter = createConverter(descriptor, generator.getGeneratedType());
-    	return (converter != null ? GeneratorFactoryUtil.createConvertingGenerator(generator, converter) : generator);
+    	return (converter != null ? WrapperFactory.applyConverter(generator, converter) : generator);
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
