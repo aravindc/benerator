@@ -52,7 +52,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
     // constructor -----------------------------------------------------------------------------------------------------
     
     public AbstractDatasetGenerator(String nesting, String datasetName) {
-        super(new CompositeDatasetGenerator<E>(nesting, datasetName)); // TODO support atomic dataset here, too
+        super(new CompositeDatasetGenerator<E>(nesting, datasetName)); // TODO v0.7 support atomic dataset here, too
         this.nesting = nesting;
         this.datasetName = datasetName;
     }
@@ -112,7 +112,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		for (Dataset subSet : dataset.getSubSets()) {
 			DatasetBasedGenerator<E> subGenerator = createDatasetGenerator(subSet, false);
 			if (subGenerator != null)
-				generator.addSubDataset(subGenerator, 1.); // TODO support individual weights
+				generator.addSubDataset(subGenerator, 1.); // TODO v0.7 support individual weights
 		}
 		if (generator.getSource().getSources().size() > 0)
 			return generator;

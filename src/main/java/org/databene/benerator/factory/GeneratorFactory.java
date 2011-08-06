@@ -47,7 +47,7 @@ import java.util.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public abstract class GeneratorFactory { // TODO scan implementations and check generator name consistency
+public abstract class GeneratorFactory { // TODO v0.7 scan implementations and check generator name consistency
 	
 	protected DefaultsProvider defaultsProvider;
 	

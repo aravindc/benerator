@@ -293,7 +293,7 @@ public class AnnotationMapper {
 		else
 			filename = testMethod.getDeclaringClass().getName().replace('.', File.separatorChar) + ".ben.xml";
 		String testName;
-		if (descriptorAnno.name().length() > 0) // TODO test
+		if (descriptorAnno.name().length() > 0) // TODO v0.7 test
 			testName = descriptorAnno.name();
 		else
 			testName = testMethod.getName();
@@ -520,7 +520,6 @@ public class AnnotationMapper {
     	else if (annotation instanceof Digits) {
     		Digits digits = (Digits) annotation;
 			typeDescriptor.setGranularity(String.valueOf(Math.pow(10, - digits.fraction())));
-			// TODO v0.7 integer() part?
     	} else if (annotation instanceof Future)
 	        typeDescriptor.setMin(new SimpleDateFormat("yyyy-MM-dd").format(TimeUtil.tomorrow()));
         else if (annotation instanceof Max)

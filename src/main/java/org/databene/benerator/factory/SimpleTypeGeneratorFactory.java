@@ -187,7 +187,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             		generator = new DataSourceGenerator(((StorageSystem) sourceObject).query(selector, true, context));
             else if (sourceObject instanceof Generator)
                 generator = (Generator<?>) sourceObject;
-            else // TODO v0.7.0 support Iterable
+            else // TODO v0.8 support DataSource and Iterable
                 throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
         } else if (lcn.endsWith(".csv")) {
             return createSimpleTypeCSVSourceGenerator(descriptor, source, uniqueness, context);
@@ -270,7 +270,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private static Generator<?> createSimpleTypeXLSSourceGenerator(
 			SimpleTypeDescriptor descriptor, String sourceName, Uniqueness uniqueness, BeneratorContext context) {
-		// TODO define common mechanism for file sources CSV, XLS, ... and entity, array, simple type
+		// TODO v0.8 define common mechanism for file sources CSV, XLS, ... and entity, array, simple type
 		Generator<?> generator;
         Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
 		Generator<Object[]> src = SourceFactory.createXLSLineGenerator(sourceName);

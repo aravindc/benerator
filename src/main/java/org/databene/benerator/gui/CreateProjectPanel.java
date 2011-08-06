@@ -155,7 +155,7 @@ public class CreateProjectPanel extends JPanel {
 		return pane;
 	}
 
-	private Component createPropertiesPane() { // TODO v0.6.x simplify using AlignedPropertyPane
+	private Component createPropertiesPane() { // TODO v0.8 simplify using AlignedPropertyPane
 		AlignedPane pane = AlignedPane.createVerticalPane(4);
 		
 		// project name

@@ -75,7 +75,7 @@ public class FactoryUtilTest extends GeneratorTest {
 		NonNullGenerator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
 		//Long x = countGenerator.generate();
-		assertUnavailable(countGenerator); // TODO why this?
+		assertUnavailable(countGenerator); // TODO v0.7 why this?
 	}
 	*/
 	@Test
@@ -99,7 +99,7 @@ public class FactoryUtilTest extends GeneratorTest {
 		InstanceDescriptor descriptor = new InstanceDescriptor("inst").withMinCount(6);
 		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
-		assertUnavailable(countGenerator); // TODO why this?
+		assertUnavailable(countGenerator); // TODO v0.7 why this?
 	}
 	*/
 

@@ -117,7 +117,7 @@ public class ComplexTypeGeneratorFactory {
             return null;
         Object sourceObject = null;
         if (ScriptUtil.isScript(sourceSpec)) {
-        	Object tmp = ScriptUtil.evaluate(sourceSpec, context); // TODO When to resolve scripts?
+        	Object tmp = ScriptUtil.evaluate(sourceSpec, context); // TODO v0.8 When to resolve scripts?
         	if (tmp != null && tmp instanceof String) {
         		sourceSpec = (String) tmp;
         		sourceObject = context.get(sourceSpec);

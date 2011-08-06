@@ -43,8 +43,6 @@ import org.databene.domain.address.Country;
  */
 public class EMailAddressGenerator extends EMailAddressBuilder implements NonNullGenerator<String> { 
 	
-	// TODO support unique address generation
-
 	private PersonGenerator personGenerator;
 	
 	public EMailAddressGenerator() {

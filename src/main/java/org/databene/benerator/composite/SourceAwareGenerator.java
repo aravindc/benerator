@@ -70,11 +70,11 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 	
 	@Override
     public void init(GeneratorContext context) {
-		getSource().init(context); // TODO source initialized twice?
-    	fetchNextSourceInstance(context);
+		getSource().init(context); // TODO v0.7 source initialized twice?
+    	fetchNextSourceInstance(context); // TODO v0.7 is this lookahead necessary?
         this.firstGeneration = true;
         support.init(context);
-		super.init(context); // TODO source initialized twice?
+		super.init(context); // TODO v0.7 source initialized twice?
 	}
 
 	private void fetchNextSourceInstance(GeneratorContext context) {
@@ -87,7 +87,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
         currentInstance = test.unwrap();
         if (instanceName != null)
         	context.set(instanceName, currentInstance);
-        context.set("this", currentInstance); // TODO BUG: array sub generators use this too, overwriting a top-level entity generator
+        context.set("this", currentInstance); // TODO v0.7 BUG: array sub generators use this too, overwriting a top-level entity generator
     }
 	
 	@Override

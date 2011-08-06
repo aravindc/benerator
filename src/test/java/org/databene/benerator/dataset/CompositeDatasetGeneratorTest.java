@@ -118,7 +118,7 @@ public class CompositeDatasetGeneratorTest extends GeneratorTest {
 		assertTrue(anyValue == 1 || anyValue == 2 || anyValue == 10);
 	}
 
-	/* TODO support limited/unique generators
+	/* TODO v0.8 support limited/unique generators
 	@Test
 	public void testLimitedSources() {
 		AtomicDatasetGenerator<Integer> five = new AtomicDatasetGenerator<Integer>(new OneShotGenerator<Integer>(5), "num", "five"); 

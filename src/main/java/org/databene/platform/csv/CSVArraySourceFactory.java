@@ -39,7 +39,7 @@ import org.databene.webdecs.util.OffsetDataSource;
 public class CSVArraySourceFactory implements DataSourceFactory<Object[]> {
 	
 	@SuppressWarnings("unused")
-	private Converter<String, ?> preprocessor; // TODO use preprocessor
+	private Converter<String, ?> preprocessor; // TODO v0.7 use preprocessor
 	private char separator;
 	private String encoding;
 	

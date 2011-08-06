@@ -51,7 +51,7 @@ public class XLSLineSource extends AbstractDataSource<Object[]> {
 
 	public DataIterator<Object[]> iterator() {
 		try {
-			return new XLSLineIterator(uri, 0, usingHeaders); // TODO use preprocessor
+			return new XLSLineIterator(uri, 0, usingHeaders); // TODO v0.7 use preprocessor
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

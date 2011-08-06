@@ -107,7 +107,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		context.setDefaultOneToOne(true);
 		parseAndExecute(
 				"<generate type='referer' consumer='cons'>" +
-	        	"  <reference name='referee_id' nullable='false' source='db' />" + // TODO v1.0 should source='db' be optional?
+	        	"  <reference name='referee_id' nullable='false' source='db' />" + // TODO v0.8 should source='db' be optional?
 	        	"</generate>");
 		List<Entity> products = getConsumedEntities();
 		assertEquals(2, products.size());
@@ -123,7 +123,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		context.setDefaultOneToOne(false);
 		parseAndExecute(
 				"<generate type='referer' count='3' consumer='cons'>" +
-	        	"  <reference name='referee_id' nullable='false' source='db' />" + // TODO v1.0 should source='db' be optional?
+	        	"  <reference name='referee_id' nullable='false' source='db' />" + // TODO v0.8 should source='db' be optional?
 	        	"</generate>");
 		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
@@ -398,7 +398,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	
 	// selector resolution ---------------------------------------------------------------------------------------------
 	
-	// TODO test difference between null result and no result
+	// TODO v0.7 test difference between null result and no result
 	
 	@Test
 	public void testStaticEntitySelector_partial() {

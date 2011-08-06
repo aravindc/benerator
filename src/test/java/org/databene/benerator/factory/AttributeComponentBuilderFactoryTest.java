@@ -55,7 +55,7 @@ import static junit.framework.Assert.*;
  */
 public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuilderFactoryTest {
 	
-	// TODO v1.0 define tests for all syntax paths
+	// TODO v0.8 define tests for all syntax paths
 	
 	private static final String NAMES_CSV = "org/databene/benerator/factory/names.csv";
 	private static final String EMPTY_WGT_CSV = "org/databene/benerator/factory/empty.csv";

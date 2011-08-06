@@ -85,7 +85,7 @@ public class DBSanity4BeneratorStatement implements Statement {
 				String environment = envEx.evaluate(context);
 				dbSanity.setEnvironment(context.resolveRelativeUri(environment));
 			} else {
-				DBSystem db = databaseEx.evaluate(context); // TODO test db usage
+				DBSystem db = databaseEx.evaluate(context); // TODO v0.7 test db usage
 				dbSanity.setConnection(db.getConnection());
 				dbSanity.setConnectData(new JDBCConnectData(db.getDriver(), db.getUrl(), db.getUser(), db.getPassword()));
 			}

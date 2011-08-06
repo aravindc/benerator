@@ -54,7 +54,7 @@ public class DynamicCountGenerator extends DynamicLongGenerator {
 		    super.resetMembers(minValue, maxValue);
 		else {
 			Long constant = (resetToMin ? minValue : null);
-			Generator<Long> source = new ConstantGenerator(constant); // TODO is this correct?
+			Generator<Long> source = new ConstantGenerator(constant); // TODO v0.7 is this correct?
 	        source.init(context);
 	        setSource(source);
 		}

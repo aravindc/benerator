@@ -97,8 +97,9 @@ public class ArrayGeneratorFactory {
         	createSyntheticElementBuilders(arrayType, uniqueness, context);
         Generator<Object[]> baseGenerator;
         if (uniqueness.isUnique()) {
-        	// TODO we first create ComponentBuilders and then unwrap them! This can be simplified... 
-        	// TODO ...possibly with a NullableInstanceGeneratorFactory which takes over most of the ComponentBuilderFactory's functionality
+        	// TODO v0.8 we first create ComponentBuilders and then unwrap them! This can be simplified... 
+        	// ...possibly with a NullableInstanceGeneratorFactory which takes over...
+        	// ...most of the ComponentBuilderFactory's functionality
         	Generator<?>[] generators = new Generator[elementBuilders.size()];
         	for (int i = 0; i < generators.length; i++)
         		generators[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
@@ -113,22 +114,23 @@ public class ArrayGeneratorFactory {
     @SuppressWarnings("unchecked")
 	public static Generator<Object[]> createSimpleArrayGenerator(String name, 
             ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
-    	// TODO this method was written as a quick hack for the functionality required in Feed4JUnit and needs to be merged into createSyntheticArrayGenerator() in the long run
+    	// TODO v0.8 this method was written as a quick hack for the functionality required in Feed4JUnit 
+		// and needs to be merged into createSyntheticArrayGenerator() in the long run
         List<ComponentBuilder<Object[]>> elementBuilders = 
         	createSyntheticElementBuilders(arrayType, uniqueness, context);
     	@SuppressWarnings("rawtypes")
 		Generator[] generators = new Generator[elementBuilders.size()];
-    	// TODO we first create ComponentBuilders and then unwrap them! This can be simplified... 
-    	// TODO ...possibly with a NullableInstanceGeneratorFactory which takes over most of the ComponentBuilderFactory's functionality
+    	// TODO v0.8 we first create ComponentBuilders and then unwrap them! This can be simplified... 
+    	// ...possibly with a NullableInstanceGeneratorFactory which takes over most of the ComponentBuilderFactory's functionality
     	for (int i = 0; i < generators.length; i++)
     		generators[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
     	return context.getGeneratorFactory().createCompositeArrayGenerator(Object.class, generators, uniqueness);
     }
 
-    private static Generator<Object[]> createMutatingArrayGenerator(
-    		String instanceName, ArrayTypeDescriptor type, Uniqueness uniqueness, Generator<Object[]> generator, BeneratorContext context) {
+    private static Generator<Object[]> createMutatingArrayGenerator(String instanceName, ArrayTypeDescriptor type, 
+    		Uniqueness uniqueness, Generator<Object[]> generator, BeneratorContext context) {
     	Map<String, Generator<?>> variables = DescriptorUtil.parseVariables(type, context);
-    	List<ComponentBuilder<Object[]>> componentBuilders = null; // TODO v0.6.x mutate elements if configured createSyntheticElementBuilders(type, uniqueness, context);
+    	List<ComponentBuilder<Object[]>> componentBuilders = null; // TODO v0.8 mutate elements if configured createSyntheticElementBuilders(type, uniqueness, context);
 	    return new SourceAwareGenerator<Object[]>(instanceName, generator, variables, componentBuilders, context);
     }
 
