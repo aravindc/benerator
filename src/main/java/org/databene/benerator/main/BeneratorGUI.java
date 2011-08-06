@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,8 +42,9 @@ import javax.swing.KeyStroke;
 import org.databene.benerator.BeneratorError;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
+import org.databene.commons.LogCategories;
 import org.databene.commons.SystemInfo;
-import org.databene.commons.ui.ConsoleInfoPrinter;
+import org.databene.commons.log.LoggingInfoPrinter;
 import org.databene.commons.version.VersionInfo;
 import org.databene.gui.os.ApplicationUtil;
 import org.databene.gui.os.JavaApplication;
@@ -143,7 +144,7 @@ public class BeneratorGUI {
 		            file = File.createTempFile("benerator-", ".ben.xml");
 		            CharSequence builder = createXML();
 		            IOUtil.writeTextFile(file.getAbsolutePath(), builder.toString());
-		            Benerator.runFile(file.getAbsolutePath(), new ConsoleInfoPrinter());
+		            Benerator.runFile(file.getAbsolutePath(), new LoggingInfoPrinter(LogCategories.CONFIG));
 	            } catch (BeneratorError e) {
 	        		System.err.println("Error: " + e.getMessage());
 	            	LOGGER.error(e.getMessage());
