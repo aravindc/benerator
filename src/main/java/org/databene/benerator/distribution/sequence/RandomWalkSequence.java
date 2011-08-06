@@ -107,7 +107,7 @@ public class RandomWalkSequence extends Sequence {
 			base = createLongGenerator(toLong(min), toLong(max), toLong(granularity), unique);
 		else
 			base = createDoubleGenerator(toDouble(min), toDouble(max), toDouble(granularity), unique);
-		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, granularity);
+		return WrapperFactory.asNonNullNumberGenerator(numberType, base, min, granularity);
     }
     
     @Override

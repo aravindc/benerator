@@ -113,7 +113,7 @@ public class StepSequence extends Sequence {
 		} else
 			base = new StepDoubleGenerator(
 					toDouble(min), toDouble(max), toDouble(deltaToUse), toDouble(initial));
-		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, granularity);
+		return WrapperFactory.asNonNullNumberGenerator(numberType, base, min, granularity);
 	}
 
 	private <T extends Number> Number deltaToUse(T granularity) {

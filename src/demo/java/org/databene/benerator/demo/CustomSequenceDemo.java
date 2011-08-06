@@ -35,7 +35,7 @@ public class CustomSequenceDemo {
 		public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity,
                 boolean unique) {
         	OddNumberGenerator doubleGenerator = new OddNumberGenerator(min.doubleValue(), max.doubleValue());
-			return WrapperFactory.wrapNonNullNumberGenerator(numberType, doubleGenerator, min, granularity);
+			return WrapperFactory.asNonNullNumberGenerator(numberType, doubleGenerator, min, granularity);
         }
     }
 

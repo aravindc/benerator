@@ -44,7 +44,7 @@ import org.databene.benerator.factory.GeneratorFactoryUtil;
 
 public class WrapperFactory {
 
-    public static <T extends Number> NonNullGenerator<T> wrapNonNullNumberGenerator(
+    public static <T extends Number> NonNullGenerator<T> asNonNullNumberGenerator(
     		Class<T> numberType, NonNullGenerator<? extends Number> source, T min, T granularity) {
     	return GeneratorFactoryUtil.asNonNullGenerator(wrapNumberGenerator(numberType, source, min, granularity));
     }

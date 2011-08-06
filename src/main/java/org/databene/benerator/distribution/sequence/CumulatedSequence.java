@@ -59,7 +59,7 @@ public class CumulatedSequence extends Sequence {
 			double dMax = (max != null ? max.doubleValue() : Long.MAX_VALUE);
 			base = new CumulatedDoubleGenerator(toDouble(min), dMax, toDouble(granularity));
 		}
-		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, granularity);
+		return WrapperFactory.asNonNullNumberGenerator(numberType, base, min, granularity);
     }
 
 }
