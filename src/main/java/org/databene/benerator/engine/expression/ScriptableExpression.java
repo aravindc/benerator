@@ -55,7 +55,7 @@ public class ScriptableExpression extends DynamicExpression<Object> {
     	return new ScriptableExpression(scriptOrText, defaultValueExpression);
     }
 
-    public Object evaluate(Context context) { // TODO v0.7 test
+    public Object evaluate(Context context) {
     	Object result;
 		if (StringUtil.isEmpty(scriptOrText))
 			result = (defaultValueExpression != null ? defaultValueExpression.evaluate(context) : null);
