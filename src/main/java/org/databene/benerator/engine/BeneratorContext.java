@@ -34,7 +34,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.parser.String2DistributionConverter;
 import org.databene.benerator.factory.DefaultsProvider;
 import org.databene.benerator.factory.GeneratorFactory;
-import org.databene.benerator.factory.VolumeGeneratorFactory;
+import org.databene.benerator.factory.StochasticGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
@@ -96,7 +96,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	
 	public BeneratorContext(String contextUri) {
 		this.contextUri = contextUri;
-		this.generatorFactory = new VolumeGeneratorFactory();
+		this.generatorFactory = new StochasticGeneratorFactory();
 		properties = new DefaultContext();
 		push(new DefaultContext(java.lang.System.getenv()));
 		push(new DefaultContext(java.lang.System.getProperties()));

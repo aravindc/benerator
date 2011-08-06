@@ -481,7 +481,7 @@ public class ProjectBuilder implements Runnable {
     }
 	
     private static boolean istDefaultValue(Object value, String name) {
-		return false; // TODO implement correctly using VolumeGeneratorFactory
+		return false; // TODO implement correctly using DefaultsProvider
 	}
 
 	private static void appendEndElement(String nodeName, LFNormalizingStringBuilder writer) {

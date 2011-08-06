@@ -35,7 +35,7 @@ import javax.validation.constraints.Size;
 import org.databene.benerator.distribution.sequence.StepSequence;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.EquivalenceGeneratorFactory;
-import org.databene.benerator.factory.VolumeGeneratorFactory;
+import org.databene.benerator.factory.StochasticGeneratorFactory;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
@@ -52,7 +52,7 @@ import org.junit.Test;
  */
 public class AnnotationMapperTest {
 
-	private AnnotationMapper annotationMapper = new AnnotationMapper(new VolumeGeneratorFactory());
+	private AnnotationMapper annotationMapper = new AnnotationMapper(new StochasticGeneratorFactory());
 
 	@Test
 	public void testUnannotated() throws Exception {

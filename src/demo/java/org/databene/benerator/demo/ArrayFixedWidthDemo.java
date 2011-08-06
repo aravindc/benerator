@@ -31,7 +31,7 @@ import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.factory.VolumeGeneratorFactory;
+import org.databene.benerator.factory.StochasticGeneratorFactory;
 import org.databene.benerator.file.FileBuilder;
 import org.databene.benerator.wrapper.MultiSourceArrayGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
@@ -96,7 +96,7 @@ public class ArrayFixedWidthDemo {
 
         @SuppressWarnings({ "unchecked", "cast" })
         private static Generator<Object>[] createSources() {
-            VolumeGeneratorFactory generatorFactory = new VolumeGeneratorFactory();
+            StochasticGeneratorFactory generatorFactory = new StochasticGeneratorFactory();
 			Generator<Date> dateGenerator = generatorFactory.createDateGenerator( // transaction date
                     TimeUtil.date(2004, 0, 1), TimeUtil.date(2006, 11, 31), Period.DAY.getMillis(),
                     SequenceManager.RANDOM_SEQUENCE);

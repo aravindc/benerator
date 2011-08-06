@@ -61,9 +61,9 @@ import org.databene.model.data.Uniqueness;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class VolumeGeneratorFactory extends GeneratorFactory { // TODO rename to StochasticGeneratorFactory
+public class StochasticGeneratorFactory extends GeneratorFactory {
 
-	public VolumeGeneratorFactory() {
+	public StochasticGeneratorFactory() {
 		super(new GentleDefaultsProvider());
 	}
 

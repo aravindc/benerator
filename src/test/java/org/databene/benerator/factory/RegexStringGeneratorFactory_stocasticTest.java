@@ -15,15 +15,16 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link RegexStringGeneratorFactory_volumeTest}.<br/>
+ * Tests the behavior of the {@link RegexGeneratorFactory} 
+ * when using the {@link StochasticGeneratorFactory}.<br/>
  * <br/>
  * Created: 20.08.2006 09:21:19
  * @since 0.1
  * @author Volker Bergmann
  */
-public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
+public class RegexStringGeneratorFactory_stocasticTest extends GeneratorTest {
 
-    private static Logger logger = LoggerFactory.getLogger(RegexStringGeneratorFactory_volumeTest.class);
+    private static Logger logger = LoggerFactory.getLogger(RegexStringGeneratorFactory_stocasticTest.class);
 
     private static Locale realLocale;
     
@@ -209,14 +210,14 @@ public class RegexStringGeneratorFactory_volumeTest extends GeneratorTest {
     }
     
     private NonNullGenerator<String> create(String pattern) {
-    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, new VolumeGeneratorFactory());
+    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, new StochasticGeneratorFactory());
     	generator.init(context);
 		return generator;
     }
     
     private NonNullGenerator<String> create(String pattern, int maxLimit, Uniqueness uniqueness) {
     	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, 0, null, uniqueness, 
-    			new VolumeGeneratorFactory());
+    			new StochasticGeneratorFactory());
     	generator.init(context);
 		return generator;
     }

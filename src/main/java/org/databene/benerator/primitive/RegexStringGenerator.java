@@ -30,7 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.factory.GeneratorFactory;
-import org.databene.benerator.factory.VolumeGeneratorFactory;
+import org.databene.benerator.factory.StochasticGeneratorFactory;
 import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 import org.databene.model.data.Uniqueness;
 
@@ -154,7 +154,7 @@ public class RegexStringGenerator extends NonNullGeneratorProxy<String> {
     }
 
 	protected GeneratorFactory getGeneratorFactory(GeneratorContext context) {
-		return (context != null ? context.getGeneratorFactory() : new VolumeGeneratorFactory());
+		return (context != null ? context.getGeneratorFactory() : new StochasticGeneratorFactory());
 	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------

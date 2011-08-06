@@ -57,7 +57,7 @@ import org.databene.benerator.factory.GentleDefaultsProvider;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.factory.MeanDefaultsProvider;
 import org.databene.benerator.factory.SerialGeneratorFactory;
-import org.databene.benerator.factory.VolumeGeneratorFactory;
+import org.databene.benerator.factory.StochasticGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.benerator.wrapper.WrapperFactory;
@@ -201,8 +201,8 @@ public class AnnotationMapper {
 			} else if (annotation instanceof Coverage) {
 				context.setGeneratorFactory(new CoverageGeneratorFactory());
 				return true;
-			} else if (annotation instanceof Volume) {
-				context.setGeneratorFactory(new VolumeGeneratorFactory());
+			} else if (annotation instanceof Stochastic) {
+				context.setGeneratorFactory(new StochasticGeneratorFactory());
 				return true;
 			} else if (annotation instanceof Serial) {
 				context.setGeneratorFactory(new SerialGeneratorFactory());

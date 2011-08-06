@@ -27,7 +27,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation which states that the annotated class or method shall be tested with large data volumes.<br/>
+ * Annotation which states that the annotated class or method shall be tested with unlimited volumes
+ * or random and non-reproducible data.<br/>
  * <br/>
  * Created: 05.07.2011 16:20:53
  * @since 0.7.0
@@ -35,6 +36,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR } )
-public @interface Volume {
+public @interface Stochastic {
 
 }

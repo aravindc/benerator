@@ -1,7 +1,7 @@
 package org.databene.benerator.demo;
 
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.factory.VolumeGeneratorFactory;
+import org.databene.benerator.factory.StochasticGeneratorFactory;
 import static org.databene.benerator.util.GeneratorUtil.*;
 import org.databene.benerator.util.SimpleNonNullGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
@@ -22,7 +22,7 @@ public class CustomSequenceDemo {
 	/** Defines the Sequence 'odd', creates an Integer generator that acceses it and invokes the generator 10 times */
     public static void main(String[] args) {
         Sequence odd = new OddNumberSequence();
-        Generator<Integer> generator = new VolumeGeneratorFactory().createNumberGenerator(Integer.class, 3, true, Integer.MAX_VALUE, true, 2, odd, Uniqueness.NONE);
+        Generator<Integer> generator = new StochasticGeneratorFactory().createNumberGenerator(Integer.class, 3, true, Integer.MAX_VALUE, true, 2, odd, Uniqueness.NONE);
         init(generator);
         for (int i = 0; i < 10; i++)
             System.out.println(generateNonNull(generator));
