@@ -24,7 +24,6 @@ package org.databene.platform.xls;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.databene.commons.Converter;
 import org.databene.document.xls.XLSLineIterator;
 import org.databene.webdecs.DataIterator;
 import org.databene.webdecs.util.AbstractDataSource;
@@ -39,19 +38,17 @@ import org.databene.webdecs.util.AbstractDataSource;
 public class XLSLineSource extends AbstractDataSource<Object[]> {
 	
 	String uri;
-	Converter<String, ?> preprocessor;
 	boolean usingHeaders;
 
-	public XLSLineSource(String uri, boolean usingHeaders, Converter<String, ?> preprocessor) {
+	public XLSLineSource(String uri, boolean usingHeaders) {
 		super(Object[].class);
 		this.uri = uri;
 		this.usingHeaders = usingHeaders;
-		this.preprocessor = preprocessor;
 	}
 
 	public DataIterator<Object[]> iterator() {
 		try {
-			return new XLSLineIterator(uri, 0, usingHeaders); // TODO v0.7 use preprocessor
+			return new XLSLineIterator(uri, 0, usingHeaders);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

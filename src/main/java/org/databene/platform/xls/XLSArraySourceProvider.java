@@ -24,7 +24,9 @@ package org.databene.platform.xls;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.DataSourceProvider;
 import org.databene.commons.Converter;
+import org.databene.commons.converter.ArrayConverter;
 import org.databene.webdecs.DataSource;
+import org.databene.webdecs.util.ConvertingDataSource;
 
 /**
  * {@link DataSourceProvider} implementation which creates {@link XLSLineSource}s.<br/><br/>
@@ -34,14 +36,17 @@ import org.databene.webdecs.DataSource;
  */
 public class XLSArraySourceProvider implements DataSourceProvider<Object[]> {
 	
-	Converter<String, ?> scriptConverter;
+	Converter<?, ?> scriptConverter;
 	
-	public XLSArraySourceProvider(Converter<String, ?> scriptConverter) {
+	public XLSArraySourceProvider(Converter<?, ?> scriptConverter) {
 	    this.scriptConverter = scriptConverter;
     }
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public DataSource<Object[]> create(String uri, BeneratorContext context) {
-		return new XLSLineSource(uri, true, scriptConverter);
+		XLSLineSource source =  new XLSLineSource(uri, true);
+        Converter<Object[], Object[]> converter = new ArrayConverter(Object.class, Object.class, scriptConverter); 
+		return new ConvertingDataSource<Object[], Object[]>(source, converter);
 	}
 
 }
