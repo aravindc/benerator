@@ -31,7 +31,7 @@ import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
-import org.databene.script.ScriptConverter;
+import org.databene.script.ScriptConverterForStrings;
 
 /**
  * Generates values from a dataset based on a {@link Sequence}.<br/><br/>
@@ -41,24 +41,24 @@ import org.databene.script.ScriptConverter;
  */
 public class SequencedDatasetCSVGenerator<E> extends GeneratorProxy<E> {
 	
-	@SuppressWarnings("unchecked")
-    public SequencedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting,
+    @SuppressWarnings("unchecked")
+	public SequencedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting,
             Distribution distribution, String encoding, Context context) {
         this(filenamePattern, separator, datasetName, nesting, distribution, encoding, 
-        		(Converter<String, E>) new ScriptConverter(context));
+        		(Converter<String, E>) new ScriptConverterForStrings(context));
     }
 
 	@SuppressWarnings("unchecked")
     public SequencedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting,
-            Distribution distribution, String encoding, Converter<String, E> converter) {
+            Distribution distribution, String encoding, Converter<String, E> preprocessor) {
 		super((Class<E>) Object.class);
-        List<E> samples = parseFiles(datasetName, separator, nesting, filenamePattern, encoding, converter);
+        List<E> samples = parseFiles(datasetName, separator, nesting, filenamePattern, encoding, preprocessor);
 		setSource(new SampleGenerator<E>((Class<E>) samples.get(0).getClass(), distribution, false, samples));
     }
 
 	private List<E> parseFiles(String datasetName, char separator, String nesting, String filenamePattern,
-            String encoding, Converter<String, E> converter) {
-        List<WeightedSample<E>> weightedSamples = CSVGeneratorUtil.parseDatasetFiles(datasetName, separator, nesting, filenamePattern, encoding, converter);
+            String encoding, Converter<String, E> preprocessor) {
+        List<WeightedSample<E>> weightedSamples = CSVGeneratorUtil.parseDatasetFiles(datasetName, separator, nesting, filenamePattern, encoding, preprocessor);
         return SampleGeneratorUtil.extractValues(weightedSamples);
     }
 
