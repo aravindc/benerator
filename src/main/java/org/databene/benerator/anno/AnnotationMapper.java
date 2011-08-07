@@ -293,7 +293,7 @@ public class AnnotationMapper {
 		else
 			filename = testMethod.getDeclaringClass().getName().replace('.', File.separatorChar) + ".ben.xml";
 		String testName;
-		if (descriptorAnno.name().length() > 0) // TODO v0.7 test
+		if (descriptorAnno.name().length() > 0)
 			testName = descriptorAnno.name();
 		else
 			testName = testMethod.getName();
