@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolder, Resettable, Closeable {
 	
-    private static final Logger LOGGER = LoggerFactory.getLogger(SourceAwareGenerator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComponentAndVariableSupport.class);
     
 	private Map<String, Generator<?>> variables;
 	private OrderedNameMap<ProductWrapper<?>> variableResults;
