@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.databene.BeneratorConstants;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.wrapper.ProductWrapper;
@@ -34,7 +35,6 @@ import org.databene.commons.MessageHolder;
 import org.databene.commons.Resettable;
 import org.databene.commons.ThreadAware;
 import org.databene.commons.ThreadUtil;
-import org.databene.commons.collection.OrderedNameMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,14 +47,12 @@ import org.slf4j.LoggerFactory;
 public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolder, Resettable, Closeable {
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(ComponentAndVariableSupport.class);
-    private static final Logger stateLogger = LoggerFactory.getLogger("org.databene.benerator.STATE");
+    private static final Logger stateLogger = LoggerFactory.getLogger(BeneratorConstants.STATE_LOGGER);
     
     private String instanceName;
 	private Map<String, Generator<?>> variables;
-	private OrderedNameMap<ProductWrapper<?>> variableResults;
     private List<ComponentBuilder<E>> componentBuilders;
 	private GeneratorContext context;
-	private boolean firstRun;
 	private String message;
 	
 	public ComponentAndVariableSupport(String instanceName, Map<String, Generator<?>> variables, 
@@ -67,8 +65,22 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	
     public void init(GeneratorContext context) {
 		initVariables(context);
-        this.firstRun = true;
-        for (ComponentBuilder<E> compGen : componentBuilders) {
+        initComponents(context);
+	}
+
+    private void initVariables(GeneratorContext context) {
+        for (Map.Entry<String, Generator<?>> entry : variables.entrySet()) {
+        	Generator<?> varGen = entry.getValue();
+        	try {
+	        	varGen.init(context);
+        	} catch (Exception e) {
+        		throw new RuntimeException("Error initializing variable '" + entry.getKey() + "': " + varGen, e);
+        	}
+        }
+    }
+
+	protected void initComponents(GeneratorContext context) {
+		for (ComponentBuilder<E> compGen : componentBuilders) {
             try {
 	            compGen.init(context);
             } catch (RuntimeException e) {
@@ -76,22 +88,6 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
             }
         }
 	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    private void initVariables(GeneratorContext context) {
-	    this.variableResults = new OrderedNameMap<ProductWrapper<?>>();
-        for (Map.Entry<String, Generator<?>> entry : variables.entrySet()) {
-        	Generator<?> varGen = entry.getValue();
-        	try {
-	        	varGen.init(context);
-	        	ProductWrapper<?> result = varGen.generate(new ProductWrapper());
-				variableResults.put(entry.getKey(), result);
-				context.set(entry.getKey(), ProductWrapper.unwrap(result));
-        	} catch (Exception e) {
-        		throw new RuntimeException("Error initializing variable '" + entry.getKey() + "': " + varGen, e);
-        	}
-        }
-    }
 
     public boolean apply(E target) {
 		if (!calculateVariables())
@@ -128,33 +124,20 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private boolean calculateVariables() {
-		if (firstRun) { // for the first run, the variables are calculated in the initialization
-			for (Map.Entry<String, ProductWrapper<?>> entry : variableResults.entrySet())
-				if (!processVariable(entry.getKey(), entry.getValue()))
-					return false;
-			firstRun = false;
-		} else { // in subsequent runs, they are calculated on demand
-			for (Map.Entry<String, Generator<?>> entry : variables.entrySet()) {
-				Generator<?> generator = entry.getValue();
-				ProductWrapper<?> productWrapper = generator.generate(new ProductWrapper());
-				if (!processVariable(entry.getKey(), productWrapper))
-					return false;
-	        }
+		for (Map.Entry<String, Generator<?>> entry : variables.entrySet()) {
+			Generator<?> generator = entry.getValue();
+			ProductWrapper<?> productWrapper = generator.generate(new ProductWrapper());
+			String varName = entry.getKey();
+			if (productWrapper == null) {
+				this.message = "Variable no more available: " + varName;
+	    		LOGGER.debug(message);
+	            return false;
+			}
+	        context.set(varName, productWrapper.unwrap());
 		}
 		return true;
 	}
 	
-	private boolean processVariable(String varName, ProductWrapper<?> varValue) {
-		if (varValue == null) {
-			this.message = "Variable no more available: " + varName;
-        	if (LOGGER.isDebugEnabled())
-        		LOGGER.debug(message);
-            return false;
-		}
-        context.set(varName, varValue.unwrap());
-        return true;
-	}
-
 	private boolean buildComponents(E target) {
 	    for (ComponentBuilder<E> componentBuilder : componentBuilders) {
             try {
@@ -176,11 +159,11 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	// ThreadAware interface implementation ----------------------------------------------------------------------------
 	
     public boolean isParallelizable() {
-	    return ThreadUtil.allParallelizable(variables.values());
+	    return ThreadUtil.allParallelizable(variables.values()) && ThreadUtil.allParallelizable(componentBuilders);
     }
 
     public boolean isThreadSafe() {
-	    return ThreadUtil.allThreadSafe(variables.values());
+	    return ThreadUtil.allThreadSafe(variables.values()) && ThreadUtil.allThreadSafe(componentBuilders);
     }
     
     

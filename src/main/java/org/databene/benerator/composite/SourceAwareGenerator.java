@@ -24,6 +24,7 @@ package org.databene.benerator.composite;
 import java.util.List;
 import java.util.Map;
 
+import org.databene.BeneratorConstants;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.WrapperProvider;
@@ -42,12 +43,11 @@ import org.slf4j.LoggerFactory;
  */
 public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements MessageHolder {
 	
-    private static final Logger logger = LoggerFactory.getLogger(SourceAwareGenerator.class);
-    private static final Logger stateLogger = LoggerFactory.getLogger("org.databene.benerator.STATE");
+    private static final Logger LOGGER = LoggerFactory.getLogger(SourceAwareGenerator.class);
+    private static final Logger STATE_LOGGER = LoggerFactory.getLogger(BeneratorConstants.STATE_LOGGER);
     
     private String instanceName;
     private E currentInstance;
-	private boolean firstGeneration;
 	private String message;
 	private ComponentAndVariableSupport<E> support;
 	private WrapperProvider<E> eWrapperProvider = new WrapperProvider<E>();
@@ -70,47 +70,34 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 	
 	@Override
     public void init(GeneratorContext context) {
-		getSource().init(context); // TODO v0.7 source initialized twice?
-    	fetchNextSourceInstance(context); // TODO v0.7 is this lookahead necessary?
-        this.firstGeneration = true;
         support.init(context);
-		super.init(context); // TODO v0.7 source initialized twice?
+		super.init(context);
 	}
 
-	private void fetchNextSourceInstance(GeneratorContext context) {
+	@Override
+    public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	ProductWrapper<E> test = getSource().generate(eWrapperProvider.get());
         if (test == null) {
 			currentInstance = null;
-            stateLogger.debug("Source for entity '{}' is not available any more: {}", instanceName, getSource());
-            return;
+            STATE_LOGGER.debug("Source for entity '{}' is not available any more: {}", instanceName, getSource());
+            return null; // TODO v0.7 remove current instance from context?
         } 
         currentInstance = test.unwrap();
         if (instanceName != null)
         	context.set(instanceName, currentInstance);
         context.set("this", currentInstance); // TODO v0.7 BUG: array sub generators use this too, overwriting a top-level entity generator
-    }
-	
-	@Override
-    public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
-		if (!firstGeneration)
-			fetchNextSourceInstance(context);
-		firstGeneration = false;
-		if (currentInstance == null)
-			return null;
 		if (!support.apply(currentInstance)) {
 			currentInstance = null;
 			return null;
 		}
-    	logger.debug("Generated {}", currentInstance);
+    	LOGGER.debug("Generated {}", currentInstance);
         return wrapper.wrap(currentInstance);
 	}
 
 	@Override
     public void reset() {
-		super.reset();
-		firstGeneration = true;
-		fetchNextSourceInstance(context);
 		support.reset();
+		super.reset();
 	}
 
 	@Override
