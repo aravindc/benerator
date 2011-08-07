@@ -36,7 +36,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
 import org.databene.platform.xml.XMLSchemaDescriptorProvider;
-import org.databene.script.ScriptConverter;
+import org.databene.script.ScriptConverterForStrings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +85,7 @@ public class IncludeStatement implements Statement {
 
 	public static void includeProperties(String uri, BeneratorContext context) throws IOException {
         logger.debug("Including properties file: " + uri);
-        ScriptConverter preprocessor = new ScriptConverter(context);
+        ScriptConverterForStrings preprocessor = new ScriptConverterForStrings(context);
         DefaultEntryConverter converter = new DefaultEntryConverter(preprocessor, context, true);
         IOUtil.readProperties(uri, converter);
     }
