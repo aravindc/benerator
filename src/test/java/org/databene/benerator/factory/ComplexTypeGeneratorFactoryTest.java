@@ -75,6 +75,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource(PERSON_CSV);
 		Generator<Entity> generator = createGenerator(type);
+		context.set("ottos_age", 89);
 		generator.init(context);
 		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
 	}
@@ -85,6 +86,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource("{filepath}");
 		Generator<Entity> generator = createGenerator(type);
+		context.set("ottos_age", 89);
 		generator.init(context);
 		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
 	}
@@ -105,6 +107,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setSource(PERSON_CSV);
 		type.setCyclic(true);
 		Generator<Entity> generator = createGenerator(type);
+		context.set("ottos_age", 89);
 		generator.init(context);
 		expectGeneratedSequence(generator, alice, otto, alice).withContinuedAvailability();
 	}
@@ -115,6 +118,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setSource(PERSON_CSV);
 		type.setDetailValue("distribution", "weighted[age]");
 		Generator<Entity> generator = createGenerator(type);
+		context.set("ottos_age", 89);
 		generator.init(context);
 		expectGeneratedSet(generator, 20, alice, otto).withContinuedAvailability();
 		ObjectCounter<Entity> counter = new ObjectCounter<Entity>(2);
@@ -130,6 +134,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setSource(PERSON_CSV);
 		type.setDistribution("new StepSequence(-1)");
 		Generator<Entity> generator = createGenerator(type);
+		context.set("ottos_age", 89);
 		generator.init(context);
 		expectGeneratedSequence(generator, otto, alice).withCeasedAvailability();
 	}
@@ -141,6 +146,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		InstanceDescriptor instance = new InstanceDescriptor("person", type);
 		instance.setUnique(true);
 		Generator<Entity> generator = createGenerator(instance);
+		context.set("ottos_age", 89);
 		generator.init(context);
 		Entity person1 = GeneratorUtil.generateNonNull(generator);
 		Entity person2 = GeneratorUtil.generateNonNull(generator);
