@@ -90,6 +90,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		ArrayTypeDescriptor descriptor = createPersonDescriptor();
 		descriptor.setSource("org/databene/benerator/factory/person.ent.xls");
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.NONE, context);
+		context.set("otto_age", 89);
 		generator.init(context);
 		expectGeneratedSequence(generator, ALICE, OTTO).withCeasedAvailability();
 	}
@@ -113,6 +114,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		ArrayTypeDescriptor descriptor = createPersonDescriptor();
 		descriptor.setSource("org/databene/benerator/factory/person.ent.csv");
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.NONE, context);
+		context.set("ottos_age", 89);
 		generator.init(context);
 		assertEqualArrays(ALICE, GeneratorUtil.generateNonNull(generator));
 		assertEqualArrays(OTTO, GeneratorUtil.generateNonNull(generator));
