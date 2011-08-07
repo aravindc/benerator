@@ -29,7 +29,7 @@ import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.jdbacl.QueryDataIterator;
-import org.databene.script.ScriptConverter;
+import org.databene.script.ScriptConverterForStrings;
 import org.databene.webdecs.DataIterator;
 import org.databene.webdecs.DataSource;
 import org.databene.webdecs.util.AbstractDataSource;
@@ -64,7 +64,7 @@ public class QueryDataSource extends AbstractDataSource<ResultSet> {
         this.query = query;
         this.fetchSize = fetchSize;
         if (context != null)
-        	this.queryPreprocessor = new ScriptConverter(context);
+        	this.queryPreprocessor = new ScriptConverterForStrings(context);
         else
         	this.queryPreprocessor = new NoOpConverter<String>();
        	LOGGER.debug("Constructed QueryIterable: {}", query);

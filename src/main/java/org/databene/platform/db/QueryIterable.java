@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,7 +33,7 @@ import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.jdbacl.QueryIterator;
-import org.databene.script.ScriptConverter;
+import org.databene.script.ScriptConverterForStrings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +66,7 @@ public class QueryIterable implements HeavyweightIterable<ResultSet> {
         this.query = query;
         this.fetchSize = fetchSize;
         if (context != null)
-        	this.queryPreprocessor = new ScriptConverter(context);
+        	this.queryPreprocessor = new ScriptConverterForStrings(context);
         else
         	this.queryPreprocessor = new NoOpConverter<String>();
         if (logger.isDebugEnabled())
