@@ -52,8 +52,8 @@ import org.databene.model.data.EntitySource;
 import org.databene.model.data.Mode;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.array.Entity2ArrayConverter;
-import org.databene.platform.csv.CSVArraySourceFactory;
-import org.databene.platform.xls.XLSArraySourceFactory;
+import org.databene.platform.csv.CSVArraySourceProvider;
+import org.databene.platform.xls.XLSArraySourceProvider;
 import org.databene.script.ScriptConverter;
 import org.databene.script.ScriptUtil;
 import org.slf4j.Logger;
@@ -183,7 +183,7 @@ public class ArrayGeneratorFactory {
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
 		char separator = DescriptorUtil.getSeparator(arrayType, context);
-		DataSourceFactory<Object[]> factory = new CSVArraySourceFactory(arrayType.getName(), new ScriptConverter(context), separator, encoding);
+		DataSourceProvider<Object[]> factory = new CSVArraySourceProvider(arrayType.getName(), new ScriptConverter(context), separator, encoding);
 		Generator<Object[]> generator = SourceFactory.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
 		return WrapperFactory.applyConverter(generator, new ArrayElementTypeConverter(arrayType));
     }
@@ -191,7 +191,7 @@ public class ArrayGeneratorFactory {
 	private static Generator<Object[]> createXLSSourceGenerator(ArrayTypeDescriptor arrayType, BeneratorContext context,
             String sourceName) {
 		logger.debug("createXLSSourceGenerator({})", arrayType);
-		DataSourceFactory<Object[]> factory = new XLSArraySourceFactory(new ScriptConverter(context));
+		DataSourceProvider<Object[]> factory = new XLSArraySourceProvider(new ScriptConverter(context));
 		Generator<Object[]> generator = SourceFactory.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
 		generator = WrapperFactory.applyConverter(generator, new ArrayElementTypeConverter(arrayType));
 		return generator;

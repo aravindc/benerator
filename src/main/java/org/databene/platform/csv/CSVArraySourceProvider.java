@@ -22,7 +22,7 @@
 package org.databene.platform.csv;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.factory.DataSourceFactory;
+import org.databene.benerator.factory.DataSourceProvider;
 import org.databene.commons.converter.ArrayTypeConverter;
 import org.databene.commons.Converter;
 import org.databene.document.csv.CSVLineSource;
@@ -31,19 +31,19 @@ import org.databene.webdecs.util.ConvertingDataSource;
 import org.databene.webdecs.util.OffsetDataSource;
 
 /**
- * {@link DataSourceFactory} which creates array {@link Iterable}s for CSV files.<br/><br/>
+ * {@link DataSourceProvider} which creates array {@link Iterable}s for CSV files.<br/><br/>
  * Created: 19.07.2011 08:23:39
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class CSVArraySourceFactory implements DataSourceFactory<Object[]> {
+public class CSVArraySourceProvider implements DataSourceProvider<Object[]> {
 	
 	@SuppressWarnings("unused")
 	private Converter<String, ?> preprocessor; // TODO v0.7 use preprocessor
 	private char separator;
 	private String encoding;
 	
-	public CSVArraySourceFactory(String type, Converter<String, ?> preprocessor, char separator, String encoding) {
+	public CSVArraySourceProvider(String type, Converter<String, ?> preprocessor, char separator, String encoding) {
 	    this.preprocessor = preprocessor;
 	    this.separator = separator;
 	    this.encoding = encoding;
@@ -52,6 +52,7 @@ public class CSVArraySourceFactory implements DataSourceFactory<Object[]> {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DataSource<Object[]> create(String uri, BeneratorContext context) {
 		CSVLineSource source = new CSVLineSource(uri, separator, true, encoding);
+		
 		Converter<String[], Object[]> converter = new ArrayTypeConverter(Object.class);
 		DataSource<Object[]> result = new ConvertingDataSource<String[], Object[]>(source, converter);
 		result = new OffsetDataSource<Object[]>(result, 1); // offset = 1 in order to skip header row

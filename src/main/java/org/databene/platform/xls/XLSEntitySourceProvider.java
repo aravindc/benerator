@@ -19,17 +19,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.factory;
+package org.databene.platform.xls;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.webdecs.DataSource;
+import org.databene.benerator.factory.DataSourceProvider;
+import org.databene.commons.Converter;
+import org.databene.model.data.Entity;
+import org.databene.model.data.EntitySource;
 
 /**
- * Interface for classes which provide {@link Iterable}s for iterating through data sources.<br/><br/>
- * Created: 05.05.2010 14:51:09
+ * {@link DataSourceProvider} implementation which creates XLS entity sources.<br/><br/>
+ * Created: 05.05.2010 15:08:03
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public interface DataSourceFactory<E> {
-	DataSource<E> create(String id, BeneratorContext context);
+public class XLSEntitySourceProvider implements DataSourceProvider<Entity> {
+	
+	private String entityType;
+	private Converter<String, ?> scriptConverter;
+	
+	public XLSEntitySourceProvider(String entityType, Converter<String, ?> scriptConverter) {
+		this.entityType = entityType;
+	    this.scriptConverter = scriptConverter;
+    }
+
+	public EntitySource create(String uri, BeneratorContext context) {
+        XLSEntitySource source = new XLSEntitySource(uri, scriptConverter, entityType);
+        source.setContext(context);
+        return source;
+	}
+
 }

@@ -22,21 +22,21 @@
 package org.databene.platform.xls;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.factory.DataSourceFactory;
+import org.databene.benerator.factory.DataSourceProvider;
 import org.databene.commons.Converter;
 import org.databene.webdecs.DataSource;
 
 /**
- * {@link DataSourceFactory} implementation which creates {@link XLSLineSource}s.<br/><br/>
+ * {@link DataSourceProvider} implementation which creates {@link XLSLineSource}s.<br/><br/>
  * Created: 19.07.2011 08:31:10
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class XLSArraySourceFactory implements DataSourceFactory<Object[]> {
+public class XLSArraySourceProvider implements DataSourceProvider<Object[]> {
 	
 	Converter<String, ?> scriptConverter;
 	
-	public XLSArraySourceFactory(Converter<String, ?> scriptConverter) {
+	public XLSArraySourceProvider(Converter<String, ?> scriptConverter) {
 	    this.scriptConverter = scriptConverter;
     }
 

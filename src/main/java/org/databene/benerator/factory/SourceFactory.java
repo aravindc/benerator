@@ -87,7 +87,7 @@ public class SourceFactory {
 
     @SuppressWarnings("unchecked")
 	public static <T> Generator<T> createRawSourceGenerator(String nesting, String dataset,
-            String sourceName, DataSourceFactory<T> factory, Class<T> generatedType, BeneratorContext context) {
+            String sourceName, DataSourceProvider<T> factory, Class<T> generatedType, BeneratorContext context) {
 	    Generator<T> generator;
 		if (dataset != null && nesting != null) {
 		    String[] uris = DatasetUtil.getDataFiles(sourceName, dataset, nesting);

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,38 +19,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.platform.csv;
+package org.databene.benerator.factory;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.factory.DataSourceFactory;
-import org.databene.commons.Converter;
-import org.databene.model.data.Entity;
-import org.databene.model.data.EntitySource;
+import org.databene.webdecs.DataSource;
 
 /**
- * {@link EntitySource} implementation which creates {@link Iterable}s that iterate through CSV files.<br/><br/>
- * Created: 05.05.2010 14:52:01
+ * Interface for classes which provide {@link Iterable}s for iterating through data sources.<br/><br/>
+ * Created: 05.05.2010 14:51:09
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public class CSVEntitySourceFactory implements DataSourceFactory<Entity> {
-	
-	private String type;
-	private Converter<String, ?> converter;
-	private char separator;
-	private String encoding;
-	
-	public CSVEntitySourceFactory(String type, Converter<String, ?> converter, char separator, String encoding) {
-	    this.type = type;
-	    this.converter = converter;
-	    this.separator = separator;
-	    this.encoding = encoding;
-    }
-
-	public EntitySource create(String id, BeneratorContext context) {
-		CSVEntitySource iterable = new CSVEntitySource(id, type, converter, separator, encoding);
-		iterable.setContext(context);
-		return iterable;
-    }
-
+public interface DataSourceProvider<E> {
+	DataSource<E> create(String id, BeneratorContext context);
 }

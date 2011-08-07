@@ -53,8 +53,8 @@ import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
 import org.databene.document.fixedwidth.FixedWidthUtil;
 import org.databene.platform.dbunit.DbUnitEntitySource;
 import org.databene.platform.fixedwidth.FixedWidthEntitySource;
-import org.databene.platform.xls.XLSEntitySourceFactory;
-import org.databene.platform.csv.CSVEntitySourceFactory;
+import org.databene.platform.xls.XLSEntitySourceProvider;
+import org.databene.platform.csv.CSVEntitySourceProvider;
 import org.databene.script.ScriptConverter;
 import org.databene.script.ScriptUtil;
 import org.databene.webdecs.DataSource;
@@ -210,14 +210,14 @@ public class ComplexTypeGeneratorFactory {
 		    encoding = context.getDefaultEncoding();
 		Converter<String, String> scriptConverter = DescriptorUtil.createStringScriptConverter(context);
 		char separator = DescriptorUtil.getSeparator(complexType, context);
-	    DataSourceFactory<Entity> fileProvider = new CSVEntitySourceFactory(complexType.getName(), scriptConverter, 
+	    DataSourceProvider<Entity> fileProvider = new CSVEntitySourceProvider(complexType.getName(), scriptConverter, 
 	    		separator, encoding);
 	    return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
     
     private static Generator<Entity> createXLSSourceGenerator(
 			ComplexTypeDescriptor complexType, BeneratorContext context, String sourceName) {
-	    DataSourceFactory<Entity> fileProvider = new XLSEntitySourceFactory(
+	    DataSourceProvider<Entity> fileProvider = new XLSEntitySourceProvider(
 	    		complexType.getName(), new ScriptConverter(context));
 		return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
@@ -283,7 +283,7 @@ public class ComplexTypeGeneratorFactory {
     }
 	
 	private static Generator<Entity> createEntitySourceGenerator(ComplexTypeDescriptor complexType,
-            BeneratorContext context, String sourceName, DataSourceFactory<Entity> factory) {
+            BeneratorContext context, String sourceName, DataSourceProvider<Entity> factory) {
 	    Generator<Entity> generator = SourceFactory.createRawSourceGenerator(complexType.getNesting(), complexType.getDataset(), sourceName, factory, Entity.class, context);
 		generator = WrapperFactory.applyConverter(generator, new ComponentTypeConverter(complexType));
 		return generator;
