@@ -62,7 +62,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 			GeneratorContext context) {
         super(source);
         this.instanceName = instanceName;
-        this.support = new ComponentAndVariableSupport<E>(variables, componentBuilders, context);
+        this.support = new ComponentAndVariableSupport<E>(instanceName, variables, componentBuilders, context);
 		this.context = context;
 	}
 	

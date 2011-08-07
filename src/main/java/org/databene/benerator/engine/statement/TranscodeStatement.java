@@ -144,7 +144,8 @@ public class TranscodeStatement extends SequentialStatement implements CascadePa
     	List<ComponentBuilder<Entity>> componentBuilders = 
     		ComplexTypeGeneratorFactory.createMutatingComponentBuilders(type, Uniqueness.NONE, context);
         Map<String, Generator<?>> variables = DescriptorUtil.parseVariables(type, context);
-        ComponentAndVariableSupport<Entity> cavs = new ComponentAndVariableSupport<Entity>(variables, componentBuilders, context);
+        ComponentAndVariableSupport<Entity> cavs = new ComponentAndVariableSupport<Entity>(tableName, 
+        		variables, componentBuilders, context);
         cavs.init(context);
         DataIterator<Entity> iterator = iterable.iterator();
 		mapper.registerSource(source.getId(), source.getConnection());
