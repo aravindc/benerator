@@ -168,7 +168,7 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
 			DataIterator<String[]> cellIterator = new CSVLineIterator(uri, separator, true, encoding);
 			if (expectingHeader)
 				setColumns(cellIterator.next(new DataContainer<String[]>()).getData());
-	        Converter<String[], String[]> arrayConverter = new ArrayConverter(String.class, Object.class, preprocessor); 
+	        Converter<String[], Object[]> arrayConverter = new ArrayConverter(String.class, Object.class, preprocessor); 
 	        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, columns, true);
 	        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);
 	        this.source = new ConvertingDataIterator<String[], Entity>(cellIterator, converter);
