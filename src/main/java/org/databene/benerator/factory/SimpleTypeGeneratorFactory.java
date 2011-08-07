@@ -69,7 +69,7 @@ import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
-import org.databene.script.ScriptConverter;
+import org.databene.script.ScriptConverterForStrings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -249,18 +249,18 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		if (dataset != null && nesting != null) {
 			if (uniqueness.isUnique()) {
 			    generator = new SequencedDatasetCSVGenerator(sourceName, separator, dataset, nesting, 
-			    		distribution, encoding, new ScriptConverter(context));
+			    		distribution, encoding, new ScriptConverterForStrings(context));
 			} else {
 			    generator = new WeightedDatasetCSVGenerator(sourceName, separator, dataset, nesting, 
-			    		encoding, new ScriptConverter(context));
+			    		encoding, new ScriptConverterForStrings(context));
 			}
 		} else if (sourceName.toLowerCase().endsWith(".wgt.csv") || distribution instanceof IndividualWeight) {
-        	generator = new WeightedCSVSampleGenerator(sourceName, encoding, new ScriptConverter(context));
+        	generator = new WeightedCSVSampleGenerator(sourceName, encoding, new ScriptConverterForStrings(context));
         } else {
     		Generator<String[]> src = SourceFactory.createCSVLineGenerator(sourceName, separator, encoding, true);
     		Converter<String[], Object> converterChain = new ConverterChain<String[], Object>(
     				new ArrayElementExtractor<String>(String.class, 0), 
-    				new ScriptConverter(context));
+    				new ScriptConverterForStrings(context));
     		generator = WrapperFactory.applyConverter(src, converterChain);
             if (distribution != null)
             	generator = distribution.applyTo(generator, uniqueness.isUnique());
@@ -281,7 +281,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 						return (argument instanceof String);
 					}
 				},
-				new ScriptConverter(context)));
+				new ScriptConverterForStrings(context)));
 		generator = WrapperFactory.applyConverter(src, converterChain);
         if (distribution != null)
         	generator = distribution.applyTo(generator, uniqueness.isUnique());

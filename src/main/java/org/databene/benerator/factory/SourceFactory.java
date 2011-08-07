@@ -73,7 +73,7 @@ public class SourceFactory {
      * @return a generator of the desired characteristics
      */
     public static Generator<Object[]> createXLSLineGenerator(String uri) {
-        return new DataSourceGenerator<Object[]>(new XLSLineSource(uri, false, null));
+        return new DataSourceGenerator<Object[]>(new XLSLineSource(uri, false));
     }
 
     /**

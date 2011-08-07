@@ -84,7 +84,7 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableHolder;
-import org.databene.script.ScriptConverter;
+import org.databene.script.ScriptConverterForStrings;
 import org.w3c.dom.Element;
 
 /**
@@ -324,7 +324,7 @@ public class DescriptorUtil {
     
 	public static Converter<String, String> createStringScriptConverter(BeneratorContext context) {
 		Converter<String, String> scriptConverter = new ConverterChain<String, String>(
-				new ScriptConverter(context),
+				new ScriptConverterForStrings(context),
 				new ToStringConverter(null)
 			);
 		return scriptConverter;

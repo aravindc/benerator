@@ -48,7 +48,7 @@ import org.databene.commons.mutator.AnyMutator;
 public class DefaultEntryConverter extends AbstractConverter<Map.Entry, Map.Entry> {
     
     private BeneratorContext context;
-    private Converter<String, Object> preprocessor;
+    private Converter<?, ?> preprocessor;
     private LiteralParser stringParser;
     private boolean putEntriesToContext;
 
@@ -56,7 +56,7 @@ public class DefaultEntryConverter extends AbstractConverter<Map.Entry, Map.Entr
         this(new NoOpConverter(), context, false);
     }
 
-    public DefaultEntryConverter(Converter<String, Object> preprocessor, BeneratorContext context, boolean putEntriesToContext) {
+    public DefaultEntryConverter(Converter<?, ?> preprocessor, BeneratorContext context, boolean putEntriesToContext) {
     	super(Map.Entry.class, Map.Entry.class);
         this.preprocessor = preprocessor;
         this.context = context;
@@ -67,7 +67,7 @@ public class DefaultEntryConverter extends AbstractConverter<Map.Entry, Map.Entr
     public Map.Entry convert(Map.Entry entry) throws ConversionException {
         String key = String.valueOf(entry.getKey());
         String sourceValue = String.valueOf(entry.getValue());
-        sourceValue = String.valueOf(preprocessor.convert(sourceValue));
+        sourceValue = String.valueOf(((Converter) preprocessor).convert(sourceValue));
         Object result = stringParser.convert(sourceValue);
         if (putEntriesToContext) {
     		if (key.startsWith("benerator."))

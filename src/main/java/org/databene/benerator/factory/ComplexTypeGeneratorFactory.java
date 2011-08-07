@@ -55,7 +55,7 @@ import org.databene.platform.dbunit.DbUnitEntitySource;
 import org.databene.platform.fixedwidth.FixedWidthEntitySource;
 import org.databene.platform.xls.XLSEntitySourceProvider;
 import org.databene.platform.csv.CSVEntitySourceProvider;
-import org.databene.script.ScriptConverter;
+import org.databene.script.ScriptConverterForStrings;
 import org.databene.script.ScriptUtil;
 import org.databene.webdecs.DataSource;
 import org.slf4j.Logger;
@@ -218,7 +218,7 @@ public class ComplexTypeGeneratorFactory {
     private static Generator<Entity> createXLSSourceGenerator(
 			ComplexTypeDescriptor complexType, BeneratorContext context, String sourceName) {
 	    DataSourceProvider<Entity> fileProvider = new XLSEntitySourceProvider(
-	    		complexType.getName(), new ScriptConverter(context));
+	    		complexType.getName(), new ScriptConverterForStrings(context));
 		return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
 
