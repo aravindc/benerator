@@ -99,7 +99,7 @@ public class XMLNativeTypeDescriptorProvider extends DefaultDescriptorProvider {
         addDescriptor(new SimpleTypeDescriptor("NMTOKENS", "string"));
         addDescriptor(new SimpleTypeDescriptor("Name", "string"));
         addDescriptor(new SimpleTypeDescriptor("NCName", "string"));
-        addDescriptor(new SimpleTypeDescriptor("ID", "string")); // TODO v0.7 support this in XML schema generation
+        addDescriptor(new SimpleTypeDescriptor("ID", "string")); // TODO v0.8 support this in XML schema generation
         addDescriptor(new SimpleTypeDescriptor("IDREFS", "string"));
         addDescriptor(new SimpleTypeDescriptor("ENTITY", "string"));
         addDescriptor(new SimpleTypeDescriptor("ENTITIES", "string"));

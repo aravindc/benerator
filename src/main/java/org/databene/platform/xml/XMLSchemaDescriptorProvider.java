@@ -343,7 +343,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     }
 
     private void parseComplexRestriction(Element restrictionElement, ComplexTypeDescriptor owner) {
-    	// TODO v0.7 test this
+    	// TODO v0.8 test this
         Element[] children = XMLUtil.getChildElements(restrictionElement);
         for (Element child : children) {
             String nodeName = localName(child);
@@ -822,7 +822,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
 
     private void parseImport(Element importElement) {
         logger.debug("parseImport()");
-        throw unsupportedElementType(importElement, null); // TODO v0.7 implement parseImport()
+        throw unsupportedElementType(importElement, null); // TODO v0.8 implement parseImport()
     }
 
     /** parses an XML Schema inclusion and adds its types to the {@link DataModel} */
@@ -842,7 +842,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
 
     private void parseGroup(Element group) {
         logger.debug("parseGroup()");
-        throw unsupportedElementType(group, null); // TODO v0.7 implement parseGroup()
+        throw unsupportedElementType(group, null); // TODO v0.8 implement parseGroup()
     }
 
     private ComplexTypeDescriptor parseAttributeGroup(Element group) {
@@ -864,7 +864,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
             if (ATTRIBUTE.equals(elType)) 
                 parseAttribute(child, type);
             else if ("attributeGroup".equals(elType)) { 
-            	// TODO v0.7 map as parent relationship (could be several ones)
+            	// TODO v0.8 map as parent relationship (could be several ones)
                 ComplexTypeDescriptor childGroup = parseAttributeGroup(child);
                 for (ComponentDescriptor component : childGroup.getComponents())
                     type.addComponent(component);
@@ -880,7 +880,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     }
 
     private void parseSequence(Element sequence, ComplexTypeDescriptor owner) {
-        logger.debug("parseSequence()"); // TODO v0.7 evaluate minCount/maxCount for sequence
+        logger.debug("parseSequence()"); // TODO v0.8 evaluate minCount/maxCount for sequence
         parseComponentGroupChildren(sequence, owner);
     }
 
@@ -894,7 +894,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
 	}
 
     private void parseAll(Element all, ComplexTypeDescriptor owner) {
-        logger.debug("parseAll()"); // TODO v0.7 test
+        logger.debug("parseAll()"); // TODO v0.8 test
         parseComponentGroupChildren(all, owner);	
 	}
 
