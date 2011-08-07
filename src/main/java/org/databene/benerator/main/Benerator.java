@@ -54,7 +54,7 @@ import javax.script.ScriptEngineManager;
  */
 public class Benerator {
 	
-	private static final Logger logger = LoggerFactory.getLogger(Benerator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Benerator.class);
 
 	// methods ---------------------------------------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ public class Benerator {
 			runFile(filename, printer);
 	    	DBUtil.assertAllDbResourcesClosed(false);
 		} catch (BeneratorError e) {
-			logger.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			System.exit(e.getCode());
 		}
 	}
@@ -103,7 +103,7 @@ public class Benerator {
 		}
 		VersionNumber javaVersion = VersionNumber.valueOf(VMInfo.getJavaVersion());
 		if (javaVersion.compareTo(VersionNumber.valueOf("1.6")) < 0)
-			logger.warn("benerator is written for and tested under Java 6 - " +
+			LOGGER.warn("benerator is written for and tested under Java 6 - " +
 					"you managed to set up JSR 226, but may face other problems.");
 	}
 
