@@ -35,7 +35,6 @@ import java.util.StringTokenizer;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.test.GeneratorTest;
@@ -63,7 +62,6 @@ public class FactoryUtilTest extends GeneratorTest {
 	@Test
 	public void testGetDistribution_default() {
 		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType");
-		BeneratorContext context = new BeneratorContext(null);
 		assertNull(FactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, false, context));
 		assertEquals(SequenceManager.EXPAND_SEQUENCE, 
 				FactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.SIMPLE, true, context));
