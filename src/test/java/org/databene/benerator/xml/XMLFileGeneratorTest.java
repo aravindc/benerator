@@ -34,6 +34,7 @@ import java.io.IOException;
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
+import org.databene.commons.IOUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.DataModel;
 import org.junit.Before;
@@ -57,9 +58,8 @@ public class XMLFileGeneratorTest extends GeneratorTest {
 
     private static final Logger logger = LoggerFactory.getLogger(XMLFileGeneratorTest.class);
     
-    @Override
     @Before
-    public void setUp() throws Exception {
+    public void setUpDataModelAndContext() throws Exception {
     	super.setUp();
         DataModel.getDefaultInstance().clear();
     }
@@ -78,7 +78,7 @@ public class XMLFileGeneratorTest extends GeneratorTest {
         assertEquals(1, children.length);
         assertElementNameAndText(children[0], "result", "OK");
     }
-
+	
     @Test
     public void testVariables() throws IOException {
         Document document = createXMLFile(VARIABLE_TEST_XSD, "root", "target/variable_test.xml");
@@ -99,6 +99,7 @@ public class XMLFileGeneratorTest extends GeneratorTest {
     }
 
     private Document createXMLFile(String schemaUri, String root, String filename) throws IOException {
+    	context.setContextUri(IOUtil.getParentUri(schemaUri));
         XMLFileGenerator generator = new XMLFileGenerator(schemaUri, root, filename);
         generator.init(context);
         File file = GeneratorUtil.generateNonNull(generator);
