@@ -191,7 +191,7 @@ public class DescriptorUtilTest {
 
 	@Test
     public void testGetDistributionWeighted() {
-		BeneratorContext context = new BeneratorContext(null);
+		BeneratorContext context = new BeneratorContext();
 		
 		// test 'weighted'
 		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType").withDistribution("weighted");
@@ -290,7 +290,7 @@ public class DescriptorUtilTest {
 
 	@SuppressWarnings("unchecked")
 	private void checkGetConverter(String contextKey, Converter<Integer, ?> contextValue, String converterSpec, int expectedValue) {
-		BeneratorContext context = new BeneratorContext(null);
+		BeneratorContext context = new BeneratorContext();
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
@@ -302,7 +302,7 @@ public class DescriptorUtilTest {
 	
 	@SuppressWarnings("unchecked")
 	private void checkGetValidator(String contextKey, Validator<Integer> contextValue, String validatorSpec, Integer validValue) {
-		BeneratorContext context = new BeneratorContext(null);
+		BeneratorContext context = new BeneratorContext();
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
@@ -315,7 +315,7 @@ public class DescriptorUtilTest {
 	
 	private void checkGetGeneratorByName(
 			String contextKey, Generator<?> contextValue, String generatorSpec, int expectedValue) {
-		BeneratorContext context = new BeneratorContext(null);
+		BeneratorContext context = new BeneratorContext();
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
@@ -327,7 +327,7 @@ public class DescriptorUtilTest {
 
 	private void checkGetWeightFunction(
 			String contextKey, Distribution contextValue, String distributionSpec, double expectedValue) {
-		BeneratorContext context = new BeneratorContext(null);
+		BeneratorContext context = new BeneratorContext();
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
