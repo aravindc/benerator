@@ -95,6 +95,8 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	}
 	
 	public BeneratorContext(String contextUri) {
+		if (contextUri == null)
+			throw new ConfigurationError("No context URI specified");
 		this.contextUri = contextUri;
 		this.generatorFactory = new StochasticGeneratorFactory();
 		properties = new DefaultContext();
