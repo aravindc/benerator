@@ -58,8 +58,7 @@ public class ScriptGenerator extends ThreadSafeGenerator<Object> {
 
 	public ProductWrapper<Object> generate(ProductWrapper<Object> wrapper) {
         Object result = ScriptUtil.execute(script, context);
-        if (LOGGER.isDebugEnabled())
-            LOGGER.debug("Generated: " + result);
+        LOGGER.debug("Generated: {}", result);
         return wrapper.wrap(result);
     }
     
