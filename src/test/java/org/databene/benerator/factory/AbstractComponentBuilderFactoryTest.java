@@ -76,12 +76,12 @@ public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest 
         }
 
         public Class<E> getGeneratedType() {
-	        return builder.getGeneratedType();
+	        return (Class<E>) Object.class;
         }
 
         public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 			Entity entity = new Entity("Test");
-			if (!builder.buildComponentFor(entity))
+			if (!builder.buildComponentFor(entity, context))
 				return null;
 			return wrapper.wrap((E) entity.get(componentName));
 		}

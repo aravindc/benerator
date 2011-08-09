@@ -22,6 +22,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.WrapperFactory;
@@ -49,12 +50,12 @@ public class DefaultComponentBuilder<E> extends AbstractComponentBuilder<E> {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public boolean buildComponentFor(E target) {
+    public boolean buildComponentFor(E target, GeneratorContext context) {
 		ProductWrapper<?> wrapper = source.generate((ProductWrapper) productWrapper.get());
 		if (wrapper == null)
 			return false;
 		mutator.setValue(target, wrapper.unwrap());
 		return true;
 	}
-	
+
 }

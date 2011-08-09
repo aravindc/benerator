@@ -48,7 +48,7 @@ public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFact
 		IdDescriptor id = new IdDescriptor("id", "int");
 		ComponentBuilder<Entity> generator = createAndInitBuilder(id);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity);
+		generator.buildComponentFor(entity, context);
 		assertEquals(1, entity.get("id"));
 	}
     
@@ -121,7 +121,7 @@ public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFact
 	
     @SuppressWarnings("unchecked")
 	private ComponentBuilder<Entity> createAndInitBuilder(IdDescriptor id) {
-		BeneratorContext context = new BeneratorContext(null);
+		BeneratorContext context = new BeneratorContext();
 		ComponentBuilder<Entity> builder = (ComponentBuilder<Entity>) ComponentBuilderFactory.createComponentBuilder(id, Uniqueness.NONE, context);
 		builder.init(context);
 		return builder;

@@ -22,7 +22,6 @@
 package org.databene.benerator.composite;
 
 import java.util.List;
-import java.util.Map;
 
 import org.databene.BeneratorConstants;
 import org.databene.benerator.Generator;
@@ -58,11 +57,10 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
      * @param instanceName instance name for the generated entities. 
 	 */
 	public SourceAwareGenerator(String instanceName, Generator<E> source, 
-			Map<String, Generator<?>> variables, List<ComponentBuilder<E>> componentBuilders, 
-			GeneratorContext context) {
+			List<GeneratorComponent<E>> components, GeneratorContext context) {
         super(source);
         this.instanceName = instanceName;
-        this.support = new ComponentAndVariableSupport<E>(instanceName, variables, componentBuilders, context);
+        this.support = new ComponentAndVariableSupport<E>(instanceName, components, context);
 		this.context = context;
 	}
 	
@@ -86,7 +84,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
         if (instanceName != null)
         	context.set(instanceName, currentInstance);
         context.set("this", currentInstance); // TODO v0.7 BUG: array sub generators use this too, overwriting a top-level entity generator
-		if (!support.apply(currentInstance)) {
+		if (!support.apply(currentInstance, context)) {
 			currentInstance = null;
 			return null;
 		}

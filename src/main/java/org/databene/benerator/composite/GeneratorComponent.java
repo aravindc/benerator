@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,55 +21,20 @@
 
 package org.databene.benerator.composite;
 
-import org.databene.benerator.Generator;
+import java.io.Closeable;
+
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.wrapper.WrapperFactory;
+import org.databene.commons.Resettable;
+import org.databene.commons.ThreadAware;
 
 /**
- * Parent class for facilitating individual {@link ComponentBuilder} implementation.<br/><br/>
- * Created: 30.04.2010 09:34:42
- * @since 0.6.1
+ * Common parent interface for components that are used in composite data generation.<br/><br/>
+ * Created: 07.08.2011 16:26:44
+ * @since 0.7.0
  * @author Volker Bergmann
  */
-public abstract class AbstractComponentBuilder<E> implements ComponentBuilder<E> {
-
-	protected Generator<?> source;
-	
-    public AbstractComponentBuilder(Generator<?> source, double nullQuota) {
-		this(WrapperFactory.injectNulls(source, nullQuota));
-	}
-    
-    public Generator<?> getSource() {
-    	return source;
-    }
-
-    public AbstractComponentBuilder(Generator<?> source) {
-		this.source = source;
-	}
-
-	public void close() {
-    	source.close();
-	}
-
-	public void init(GeneratorContext context) {
-		source.init(context);
-	}
-
-	public void reset() {
-		source.reset();
-	}
-	
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + '{' + source + '}';
-	}
-
-	public boolean isParallelizable() {
-	    return source.isParallelizable();
-    }
-
-	public boolean isThreadSafe() {
-	    return source.isThreadSafe();
-    }
-	
+public interface GeneratorComponent<E> extends ThreadAware, Resettable, Closeable {
+	void init(GeneratorContext context);
+	boolean buildComponentFor(E target, GeneratorContext context);
+	void close();
 }

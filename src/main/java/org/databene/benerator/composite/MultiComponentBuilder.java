@@ -51,10 +51,6 @@ public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
 	
 	// Generator interface ---------------------------------------------------------------------------------------------
 
-	public Class<?> getGeneratedType() {
-	    return (builders != null && builders.length > 0 ? builders[0].getGeneratedType() : Object.class);
-	}
-	
 	public void init(GeneratorContext context) {
 		for (ComponentBuilder<E> builder : builders)
 			builder.init(context);
@@ -78,7 +74,7 @@ public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
 		boolean success;
 		do {
 			int builderIndex = RandomUtil.randomIndex(availableBuilders);
-			success = availableBuilders.get(builderIndex).buildComponentFor(target);
+			success = availableBuilders.get(builderIndex).buildComponentFor(target, null);
 			if (!success)
 				availableBuilders.remove(builderIndex);
 		} while (!success && availableBuilders.size() > 0);

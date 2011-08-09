@@ -33,6 +33,7 @@ import org.databene.benerator.StorageSystem;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -55,7 +56,7 @@ import org.databene.webdecs.util.DataSourceProxy;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class ReferenceComponentBuilderFactoryTest { 
+public class ReferenceComponentBuilderFactoryTest extends GeneratorTest { 
 	
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
@@ -65,7 +66,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		ref.getTypeDescriptor().setScript("8");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity);
+		generator.buildComponentFor(entity, context);
 		assertEquals(8, entity.get("ref"));
 	}
 
@@ -76,7 +77,7 @@ public class ReferenceComponentBuilderFactoryTest {
 			.withNullQuota(1).withCount(1);
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity);
+		generator.buildComponentFor(entity, context);
 		assertEquals(null, entity.get("ref"));
 	}
 
@@ -88,7 +89,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		ref.setNullable(true);
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity);
+		generator.buildComponentFor(entity, context);
 		assertEquals(null, entity.get("ref"));
 	}
 
@@ -100,7 +101,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		ref.getTypeDescriptor().setGenerator("new " + ConstantGenerator.class.getName() + "(42)");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity);
+		generator.buildComponentFor(entity, context);
 		assertEquals(42, entity.get("ref"));
 	}
 
@@ -112,7 +113,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		((SimpleTypeDescriptor) ref.getTypeDescriptor()).setConstant("3");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity);
+		generator.buildComponentFor(entity, context);
 		assertEquals(3, entity.get("ref"));
 	}
 
@@ -124,7 +125,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		((SimpleTypeDescriptor) ref.getTypeDescriptor()).setValues("6");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity);
+		generator.buildComponentFor(entity, context);
 		assertEquals("6", entity.get("ref"));
 	}
 
@@ -150,7 +151,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		assertTrue(generator != null);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity);
+		generator.buildComponentFor(entity, context);
 		assertTrue("Alice".equals(entity.get("ref")) || "Bob".equals(entity.get("ref")));
 	}
 
@@ -162,7 +163,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		ComponentBuilder builder = createAndInitBuilder(ref);
 		assertTrue(builder != null);
 		Entity entity = new Entity("Person");
-		builder.buildComponentFor(entity);
+		builder.buildComponentFor(entity, context);
 		String[] product = (String[]) entity.get("ref");
 		assertEquals(2, product.length);
 		for (String element : product)
@@ -180,7 +181,7 @@ public class ReferenceComponentBuilderFactoryTest {
 	}
 
     private ComponentBuilder<?> createAndInitBuilder(ReferenceDescriptor ref) {
-		BeneratorContext context = new BeneratorContext(null);
+		BeneratorContext context = new BeneratorContext();
 		StorageSystemMock storageSystem = new StorageSystemMock();
 		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);
 		context.set(storageSystem.getId(), storageSystem);

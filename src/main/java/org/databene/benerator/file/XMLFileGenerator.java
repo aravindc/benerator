@@ -35,6 +35,7 @@ import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.benerator.factory.TypeGeneratorFactory;
@@ -61,38 +62,22 @@ import org.databene.platform.xml.XMLSchemaDescriptorProvider;
  */
 public class XMLFileGenerator extends SimpleGenerator<File> {
 	
+	private String schemaUri;
     private String encoding;
     private String root;
+    private String[] propertiesFiles;
     private String filenamePattern;
     private Generator<String> fileNameGenerator;
     private Generator<?> contentGenerator;
     private DataModel dataModel;
     
-    public XMLFileGenerator(String schemaUri, String root, String filenamePattern, String... propertiesFiles) throws IOException {
+    public XMLFileGenerator(String schemaUri, String root, String filenamePattern, String... propertiesFiles) {
+    	this.schemaUri = schemaUri;
         this.encoding = SystemInfo.getFileEncoding();
+        this.filenamePattern = filenamePattern;
+        this.propertiesFiles = propertiesFiles;
         this.dataModel = DataModel.getDefaultInstance();
         this.root = root;
-        this.filenamePattern = filenamePattern;
-        
-        // create context
-        BeneratorContext context = new BeneratorContext(IOUtil.getParentUri(schemaUri));
-
-        // parse schema
-        XMLSchemaDescriptorProvider xsdProvider = new XMLSchemaDescriptorProvider(schemaUri, context);
-		dataModel.addDescriptorProvider(xsdProvider);
-        // set up file name generator
-        this.fileNameGenerator = WrapperFactory.applyConverter(
-                new IncrementGenerator(), 
-                new MessageConverter(filenamePattern, Locale.US));
-        // parse properties files
-        for (String propertiesFile : propertiesFiles)
-            IncludeStatement.includeProperties(propertiesFile, context);
-
-        // set up content generator
-        TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
-        if (rootDescriptor == null)
-            throw new ConfigurationError("Type '" + root + "' not found in schema: " + schemaUri);
-		contentGenerator = TypeGeneratorFactory.createTypeGenerator(root, rootDescriptor, Uniqueness.NONE, context);
     }
 
     public Class<File> getGeneratedType() {
@@ -101,6 +86,27 @@ public class XMLFileGenerator extends SimpleGenerator<File> {
 
     @Override
     public void init(GeneratorContext context) {
+    	BeneratorContext beneratorContext = (BeneratorContext) context; 
+        // parse schema
+        XMLSchemaDescriptorProvider xsdProvider = new XMLSchemaDescriptorProvider(schemaUri, beneratorContext);
+		dataModel.addDescriptorProvider(xsdProvider);
+        // set up file name generator
+        this.fileNameGenerator = WrapperFactory.applyConverter(
+                new IncrementGenerator(), 
+                new MessageConverter(filenamePattern, Locale.US));
+        // parse properties files
+        try {
+        for (String propertiesFile : propertiesFiles)
+            IncludeStatement.includeProperties(propertiesFile, beneratorContext);
+        } catch (IOException e) {
+        	throw new InvalidGeneratorSetupException(e);
+        }
+        // set up content generator
+        TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
+        if (rootDescriptor == null)
+            throw new ConfigurationError("Type '" + root + "' not found in schema: " + schemaUri);
+		contentGenerator = TypeGeneratorFactory.createTypeGenerator(
+				root, rootDescriptor, Uniqueness.NONE, beneratorContext);
         contentGenerator.init(context);
         super.init(context);
     }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,33 +26,11 @@
 
 package org.databene.benerator.composite;
 
-import org.databene.benerator.GeneratorContext;
-import org.databene.commons.ThreadAware;
-
 /**
  * Common interface for all component builders.<br/><br/>
  * Created at 09.05.2008 13:14:15
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public interface ComponentBuilder<E> extends ThreadAware {
-	
-	/** Initializes the instance */
-	void init(GeneratorContext context);
-	
-	/** @return the type of the generated components */
-	Class<?> getGeneratedType();
-	
-	/** 
-	 * builds the related component of <code>target</code>
-	 * @return false if no more data was available to build, otherwise true
-	 */
-	boolean buildComponentFor(E target);
-	
-	/** resets the builder */
-	void reset();
-
-	/** closes the builder */
-	void close();
-	
+public interface ComponentBuilder<E> extends GeneratorComponent<E> {
 }

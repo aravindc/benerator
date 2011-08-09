@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,10 +38,6 @@ public class ComponentBuilderProxy<E> implements ComponentBuilder<E> {
 	    this.source = source;
     }
 
-	public Class<?> getGeneratedType() {
-	    return source.getGeneratedType();
-    }
-
 	public boolean isParallelizable() {
 	    return source.isParallelizable();
     }
@@ -55,8 +51,8 @@ public class ComponentBuilderProxy<E> implements ComponentBuilder<E> {
 	    source.init(context);
     }
 
-	public boolean buildComponentFor(E target) {
-	    return source.buildComponentFor(target);
+	public boolean buildComponentFor(E target, GeneratorContext context) {
+	    return source.buildComponentFor(target, null);
     }
 
 	public void reset() {

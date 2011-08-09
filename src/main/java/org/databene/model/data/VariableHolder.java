@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -18,9 +18,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.databene.model.data;
 
-import java.util.Collection;
+package org.databene.model.data;
 
 /**
  * Common interface for descriptors that support variables.<br/><br/>
@@ -29,6 +28,5 @@ import java.util.Collection;
  * @author Volker Bergmann
  */
 public interface VariableHolder {
-    Collection<InstanceDescriptor> getVariables();
-    void addVariable(InstanceDescriptor variable);
+    void addVariable(VariableDescriptor variable);
 }

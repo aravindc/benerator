@@ -24,13 +24,9 @@ package org.databene.benerator.composite;
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.databene.BeneratorConstants;
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.MessageHolder;
 import org.databene.commons.Resettable;
 import org.databene.commons.ThreadAware;
@@ -47,71 +43,49 @@ import org.slf4j.LoggerFactory;
 public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolder, Resettable, Closeable {
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(ComponentAndVariableSupport.class);
-    private static final Logger stateLogger = LoggerFactory.getLogger(BeneratorConstants.STATE_LOGGER);
+    private static final Logger STATE_LOGGER = LoggerFactory.getLogger(BeneratorConstants.STATE_LOGGER);
     
     private String instanceName;
-	private Map<String, Generator<?>> variables;
-    private List<ComponentBuilder<E>> componentBuilders;
-	private GeneratorContext context;
+    private List<GeneratorComponent<E>> components;
 	private String message;
 	
-	public ComponentAndVariableSupport(String instanceName, Map<String, Generator<?>> variables, 
-			List<ComponentBuilder<E>> componentBuilders, GeneratorContext context) {
+	public ComponentAndVariableSupport(String instanceName, List<GeneratorComponent<E>> components, 
+			GeneratorContext context) {
 		this.instanceName = instanceName;
-		this.variables = variables;
-        this.componentBuilders = (componentBuilders != null ? componentBuilders : new ArrayList<ComponentBuilder<E>>());
-		this.context = context;
+        this.components = (components != null ? components : new ArrayList<GeneratorComponent<E>>());
 	}
 	
     public void init(GeneratorContext context) {
-		initVariables(context);
-        initComponents(context);
+    	for (GeneratorComponent<?> component : components)
+    		component.init(context);
 	}
 
-    private void initVariables(GeneratorContext context) {
-        for (Map.Entry<String, Generator<?>> entry : variables.entrySet()) {
-        	Generator<?> varGen = entry.getValue();
-        	try {
-	        	varGen.init(context);
-        	} catch (Exception e) {
-        		throw new RuntimeException("Error initializing variable '" + entry.getKey() + "': " + varGen, e);
-        	}
-        }
-    }
-
-	protected void initComponents(GeneratorContext context) {
-		for (ComponentBuilder<E> compGen : componentBuilders) {
+    public boolean apply(E target, GeneratorContext context) {
+    	for (GeneratorComponent<E> component : components) {
             try {
-	            compGen.init(context);
-            } catch (RuntimeException e) {
-	            throw new ConfigurationError("Error initializing component builder: " + compGen, e);
+                if (!component.buildComponentFor(target, context)) {
+                	message = "Component generator for '" + instanceName + 
+                		"' is not available any longer: " + component;
+                    STATE_LOGGER.debug(message);
+                    return false;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Failure in generation of '" + instanceName + "', " +
+                		"Failed component: " + component, e);
             }
-        }
-	}
-
-    public boolean apply(E target) {
-		if (!calculateVariables())
-			return false;
-        if (target != null && !buildComponents(target))
-        	return false;
+    	}
     	LOGGER.debug("Generated {}", target);
     	return true;
 	}
 
     public void reset() {
-		for (Generator<?> variable : variables.values())
-			variable.reset();
-        for (ComponentBuilder<E> compGen : componentBuilders)
-            compGen.reset();
+		for (GeneratorComponent<E> component : components)
+			component.reset();
 	}
 
     public void close() {
-		for (Generator<?> variable : variables.values())
-			variable.close();
-        for (ComponentBuilder<E> compGen : componentBuilders)
-            compGen.close();
-        for (String variableName : variables.keySet())
-            context.remove(variableName);
+		for (GeneratorComponent<E> component : components)
+			component.close();
 	}
 	
 	public String getMessage() {
@@ -120,50 +94,14 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	
 	
 	
-	// helper methods --------------------------------------------------------------------------------------------------
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private boolean calculateVariables() {
-		for (Map.Entry<String, Generator<?>> entry : variables.entrySet()) {
-			Generator<?> generator = entry.getValue();
-			ProductWrapper<?> productWrapper = generator.generate(new ProductWrapper());
-			String varName = entry.getKey();
-			if (productWrapper == null) {
-				this.message = "Variable no more available: " + varName;
-	    		LOGGER.debug(message);
-	            return false;
-			}
-	        context.set(varName, productWrapper.unwrap());
-		}
-		return true;
-	}
-	
-	private boolean buildComponents(E target) {
-	    for (ComponentBuilder<E> componentBuilder : componentBuilders) {
-            try {
-                if (!componentBuilder.buildComponentFor(target)) {
-                	message = "Component generator for '" + instanceName + 
-                		"' is not available any more: " + componentBuilder;
-                    stateLogger.debug(message);
-                    return false;
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Failure in generation of '" + instanceName + "', " +
-                		"Failed component builder: " + componentBuilder, e);
-            }
-        }
-        return true;
-    }
-	
-	
 	// ThreadAware interface implementation ----------------------------------------------------------------------------
 	
     public boolean isParallelizable() {
-	    return ThreadUtil.allParallelizable(variables.values()) && ThreadUtil.allParallelizable(componentBuilders);
+	    return ThreadUtil.allParallelizable(components);
     }
 
     public boolean isThreadSafe() {
-	    return ThreadUtil.allThreadSafe(variables.values()) && ThreadUtil.allThreadSafe(componentBuilders);
+	    return ThreadUtil.allThreadSafe(components);
     }
     
     
@@ -172,7 +110,7 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	
 	@Override
 	public String toString() {
-	    return getClass().getSimpleName() + "[" + (variables.size() > 0 ? "variables: " + variables : "") + "]";
+	    return getClass().getSimpleName() + components;
 	}
 
 }

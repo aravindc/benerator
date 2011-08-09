@@ -66,4 +66,35 @@ public class VariableTest extends BeneratorIntegrationTest {
 		assertEquals(34,      products.get(1).get("age"));
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testAttributeFromVariable() {
+		parseAndExecute(
+				"<generate type='testAttributeFromVariable' count='2' consumer='cons'>" +
+				"	<variable name='_n' type='int' distribution='increment' />" +
+				"	<attribute name='x' type='int' script='_n + 1' />" +
+				"</generate>");
+		List<Entity> products = (List<Entity>) consumer.getProducts();
+		assertEquals(2, products.size());
+		assertEquals(2, products.get(0).get("x"));
+		assertEquals(3, products.get(1).get("x"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testVariableFromAttribute() {
+		parseAndExecute(
+				"<generate type='testVariableFromAttribute' count='2' consumer='cons'>" +
+				"	<attribute name='x' type='int' distribution='increment' />" +
+				"	<variable name='_n' type='int' script='this.x + 1' />" +
+				"	<attribute name='y' type='int' script='_n + 2' />" +
+				"</generate>");
+		List<Entity> products = (List<Entity>) consumer.getProducts();
+		assertEquals(2, products.size());
+		assertEquals(1, products.get(0).get("x"));
+		assertEquals(4, products.get(0).get("y"));
+		assertEquals(2, products.get(1).get("x"));
+		assertEquals(5, products.get(1).get("y"));
+	}
+
 }

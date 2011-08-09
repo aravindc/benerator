@@ -192,16 +192,12 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		task.setConsumer(consumer);
 		
 		// handle sub elements
-		Stage stage = Stage.VARS;
+		Stage stage = Stage.VARS_AND_MEMBERS;
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childName = child.getNodeName();
-			if (EL_VARIABLE.equals(childName)) {
-				if (stage != Stage.VARS)
-					syntaxWarning("variables must be configured before members and sub elements", child);
-			} else if (PART_ELEMENTS.contains(childName)) {
-				if (stage == Stage.OTHERS)
-					syntaxWarning("members must be configured before execution of sub elements ", child);
-				stage = Stage.MEMBERS;
+			if (EL_VARIABLE.equals(childName) || PART_ELEMENTS.contains(childName)) {
+				if (stage != Stage.VARS_AND_MEMBERS)
+					syntaxWarning("variables and members must be configured before sub elements", child);
 			} else {
 				stage = Stage.OTHERS;
 				Statement[] subPath = parseContext.createSubPath(parentPath, statement);
@@ -254,7 +250,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	}
 
 	enum Stage {
-		VARS, MEMBERS, OTHERS
+		VARS_AND_MEMBERS, OTHERS
 	}
 	
 }

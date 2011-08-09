@@ -27,6 +27,9 @@ import java.util.List;
 import org.databene.jdbacl.model.DBTable;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
+import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.ReferenceDescriptor;
+import org.databene.model.data.VariableDescriptor;
 
 /**
  * Lazily initialized {@link ComplexTypeDescriptor} that reads its components from a database table.<br/><br/>
@@ -47,6 +50,12 @@ public class LazyTableComplexTypeDescriptor extends ComplexTypeDescriptor {
 		this.loaded = false;
 	}
 
+	@Override
+	public List<InstanceDescriptor> getParts() {
+    	assureLoaded();
+    	return super.getParts();
+	}
+	
     @Override
 	public void addComponent(ComponentDescriptor component) {
     	assureLoaded();
@@ -79,9 +88,9 @@ public class LazyTableComplexTypeDescriptor extends ComplexTypeDescriptor {
     }
 
     @Override
-	public Collection<ComponentDescriptor> getDeclaredComponents() {
+	public Collection<InstanceDescriptor> getDeclaredParts() {
     	assureLoaded();
-    	return super.getDeclaredComponents();
+    	return super.getDeclaredParts();
     }
 
 	@Override
@@ -94,6 +103,33 @@ public class LazyTableComplexTypeDescriptor extends ComplexTypeDescriptor {
 	public String[] getIdComponentNames() {
     	assureLoaded();
     	return super.getIdComponentNames();
+    }
+
+    @Override
+	public void addPart(InstanceDescriptor part) {
+    	assureLoaded();
+    	super.addPart(part);
+    }
+
+    @Override
+	public List<ReferenceDescriptor> getReferenceComponents() {
+    	assureLoaded();
+    	return super.getReferenceComponents();
+    }
+	
+    @Override
+	public void addVariable(VariableDescriptor variable) {
+    	assureLoaded();
+        super.addVariable(variable);
+    }
+    
+    // construction helper methods -------------------------------------------------------------------------------------
+
+    @Override
+	public ComplexTypeDescriptor withComponent(ComponentDescriptor componentDescriptor) {
+    	assureLoaded();
+        addComponent(componentDescriptor);
+        return this;
     }
 
 }

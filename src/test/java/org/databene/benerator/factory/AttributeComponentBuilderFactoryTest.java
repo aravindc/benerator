@@ -252,7 +252,7 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		ComponentBuilder<Entity> builder = createComponentBuilder(name);
 		builder.init(context);
     	Entity entity = new Entity("E");
-		assertFalse(builder.buildComponentFor(entity));
+		assertFalse(builder.buildComponentFor(entity, context));
 	}
 
 	private PartDescriptor createCSVStringAttributeDescriptor() {
@@ -303,12 +303,12 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		alternativeType.addComponent(new PartDescriptor("a", typeA));
     	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("'2'");
 		alternativeType.addComponent(new PartDescriptor("b", typeB));
-		BeneratorContext context = new BeneratorContext(null);
+		BeneratorContext context = new BeneratorContext();
 		PartDescriptor part = new PartDescriptor(null, alternativeType);
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.SIMPLE, context);
 		builder.init(context);
 		Entity entity = new Entity("Entity");
-		builder.buildComponentFor(entity);
+		builder.buildComponentFor(entity, context);
 		assertTrue("1".equals(entity.get("a")) || "2".equals(entity.get("b")));
     }
 	
@@ -321,13 +321,13 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		part.setMaxCount(new ConstantExpression<Long>(1L));
 		((SimpleTypeDescriptor) part.getLocalType(false)).setMap("1->'A',2->'B'");
 		part.getLocalType(false).setGenerator("org.databene.benerator.primitive.IncrementGenerator");
-		BeneratorContext context = new BeneratorContext(null);
+		BeneratorContext context = new BeneratorContext();
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.NONE, context);
 		builder.init(context);
 		Entity entity = new Entity("Entity");
-		builder.buildComponentFor(entity);
+		builder.buildComponentFor(entity, context);
 		assertEquals("A", entity.get("flag"));
-		builder.buildComponentFor(entity);
+		builder.buildComponentFor(entity, context);
 		assertEquals("B", entity.get("flag"));
 	}
     

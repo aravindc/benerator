@@ -34,6 +34,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ArrayUtil;
+import org.databene.commons.IOUtil;
 import org.databene.commons.ui.ConsoleInfoPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,11 +69,10 @@ public class XmlCreator {
     }
 
 	public static void createXMLFiles(String schemaUri, String root,
-			String pattern, long fileCount, String[] propertiesFiles)
-			throws IOException {
+			String pattern, long fileCount, String[] propertiesFiles) {
 		logParams(schemaUri, root, pattern, fileCount);
         long start = System.currentTimeMillis();
-        BeneratorContext context = new BeneratorContext();
+        BeneratorContext context = new BeneratorContext(IOUtil.getParentUri(schemaUri));
         XMLFileGenerator fileGenerator = new XMLFileGenerator(schemaUri, root, pattern, propertiesFiles);
         fileGenerator.init(context);
         try {
@@ -105,4 +105,5 @@ public class XmlCreator {
         	"parameters: schemaUri root fileNamePattern [count [propertiesFilenames]]"
         );
     }
+    
 }

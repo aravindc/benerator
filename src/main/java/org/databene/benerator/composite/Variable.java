@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,53 +23,56 @@ package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.wrapper.WrapperFactory;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Parent class for facilitating individual {@link ComponentBuilder} implementation.<br/><br/>
- * Created: 30.04.2010 09:34:42
- * @since 0.6.1
+ * Wraps variable name and generator functionality.<br/><br/>
+ * Created: 07.08.2011 16:24:10
+ * @since 0.7.0
  * @author Volker Bergmann
  */
-public abstract class AbstractComponentBuilder<E> implements ComponentBuilder<E> {
-
-	protected Generator<?> source;
+public class Variable<E> implements GeneratorComponent<E> {
 	
-    public AbstractComponentBuilder(Generator<?> source, double nullQuota) {
-		this(WrapperFactory.injectNulls(source, nullQuota));
-	}
-    
-    public Generator<?> getSource() {
-    	return source;
-    }
-
-    public AbstractComponentBuilder(Generator<?> source) {
-		this.source = source;
-	}
-
-	public void close() {
-    	source.close();
-	}
-
-	public void init(GeneratorContext context) {
-		source.init(context);
-	}
-
-	public void reset() {
-		source.reset();
-	}
+	private String name;
+	private Generator<?> generator;
 	
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + '{' + source + '}';
+	public Variable(String name, Generator<?> generator) {
+		this.name = name;
+		this.generator = generator;
 	}
 
 	public boolean isParallelizable() {
-	    return source.isParallelizable();
-    }
+		return generator.isParallelizable();
+	}
 
 	public boolean isThreadSafe() {
-	    return source.isThreadSafe();
-    }
+		return generator.isThreadSafe();
+	}
+
+	public void init(GeneratorContext context) {
+		generator.init(context);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public boolean buildComponentFor(Object target, GeneratorContext context) {
+		ProductWrapper<?> productWrapper = generator.generate(new ProductWrapper());
+		if (productWrapper == null)
+            return false; // TODO v0.7 remove from context if unavailable?
+        context.set(name, productWrapper.unwrap());
+        return true;
+	}
+	
+	public void reset() {
+		generator.reset();
+	}
+
+	public void close() {
+		generator.close(); // TODO v0.7 remove variable from context?
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[" + name + ":" + generator + "]";
+	}
 	
 }

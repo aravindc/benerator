@@ -34,6 +34,7 @@ import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
+import org.databene.model.data.VariableDescriptor;
 
 /**
  * Factory class that creates {@link Generator}s for &lt;variable&gt;s.<br/><br/>
@@ -44,7 +45,7 @@ import org.databene.model.data.Uniqueness;
 public class VariableGeneratorFactory {
 
 	public static Generator<?> createGenerator(
-			InstanceDescriptor descriptor, BeneratorContext context) {
+			VariableDescriptor descriptor, BeneratorContext context) {
 		Generator<?> generator = null;
 		
 		// check if nullQuota == 1

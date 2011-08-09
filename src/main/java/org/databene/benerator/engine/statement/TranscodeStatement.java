@@ -22,15 +22,12 @@
 package org.databene.benerator.engine.statement;
 
 import java.util.List;
-import java.util.Map;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.composite.ComponentAndVariableSupport;
-import org.databene.benerator.composite.ComponentBuilder;
+import org.databene.benerator.composite.GeneratorComponent;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
-import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
@@ -41,8 +38,8 @@ import org.databene.jdbacl.identity.IdentityProvider;
 import org.databene.jdbacl.identity.KeyMapper;
 import org.databene.jdbacl.identity.NoIdentity;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.db.DBSystem;
@@ -141,11 +138,10 @@ public class TranscodeStatement extends SequentialStatement implements CascadePa
 		// iterate rows
 		String selector = ExpressionUtil.evaluate(selectorEx, context);
 		DataSource<Entity> iterable = source.queryEntities(tableName, selector, context);
-    	List<ComponentBuilder<Entity>> componentBuilders = 
-    		ComplexTypeGeneratorFactory.createMutatingComponentBuilders(type, Uniqueness.NONE, context);
-        Map<String, Generator<?>> variables = DescriptorUtil.parseVariables(type, context);
-        ComponentAndVariableSupport<Entity> cavs = new ComponentAndVariableSupport<Entity>(tableName, 
-        		variables, componentBuilders, context);
+    	List<GeneratorComponent<Entity>> generatorComponents = 
+    		ComplexTypeGeneratorFactory.createMutatingGeneratorComponents(type, Uniqueness.NONE, context);
+        ComponentAndVariableSupport<Entity> cavs = new ComponentAndVariableSupport<Entity>(
+        		tableName, generatorComponents, context);
         cavs.init(context);
         DataIterator<Entity> iterator = iterable.iterator();
 		mapper.registerSource(source.getId(), source.getConnection());
@@ -159,7 +155,7 @@ public class TranscodeStatement extends SequentialStatement implements CascadePa
 	    	if (mapNk)
 	    		nk = mapper.getNaturalKey(source.getId(), identity, sourcePK);
 	    	Entity targetEntity = new Entity(sourceEntity);
-			cavs.apply(targetEntity);
+			cavs.apply(targetEntity, context);
 	    	Object targetPK = targetEntity.idComponentValues();
 			transcodeForeignKeys(targetEntity, source, context);
 			mapper.store(source.getId(), identity, nk, sourcePK, targetPK);
@@ -182,7 +178,7 @@ public class TranscodeStatement extends SequentialStatement implements CascadePa
 
 	private void transcodeForeignKeys(Entity entity, DBSystem source, Context context) {
 		ComplexTypeDescriptor tableDescriptor = entity.descriptor();
-		for (ComponentDescriptor component : tableDescriptor.getComponents()) {
+		for (InstanceDescriptor component : tableDescriptor.getParts()) {
 			if (component instanceof ReferenceDescriptor) {
 				ReferenceDescriptor fk = (ReferenceDescriptor) component;
 				String refereeTable = fk.getTargetType();

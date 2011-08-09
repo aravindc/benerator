@@ -50,6 +50,7 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.VariableDescriptor;
 import org.databene.model.data.VariableHolder;
 
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.*;
@@ -91,6 +92,7 @@ public class ModelParser {
     }
 
     public ComplexTypeDescriptor parseComplexType(Element ctElement, ComplexTypeDescriptor descriptor) {
+    	// TODO v0.8 called from XMLSchemaDescriptorProvider
         assertElementName(ctElement, "entity", "type");
         descriptor = new ComplexTypeDescriptor(descriptor.getName(), descriptor);
         mapTypeDetails(ctElement, descriptor);
@@ -147,8 +149,8 @@ public class ModelParser {
     public InstanceDescriptor parseVariable(Element varElement, VariableHolder owner) {
         assertElementName(varElement, "variable");
         String type = StringUtil.emptyToNull(varElement.getAttribute("type"));
-        InstanceDescriptor descriptor = new InstanceDescriptor(varElement.getAttribute("name"), type);
-        InstanceDescriptor variable = mapInstanceDetails(varElement, false, descriptor);
+        VariableDescriptor descriptor = new VariableDescriptor(varElement.getAttribute("name"), type);
+        VariableDescriptor variable = mapInstanceDetails(varElement, false, descriptor);
         owner.addVariable(variable);
         return variable;
     }

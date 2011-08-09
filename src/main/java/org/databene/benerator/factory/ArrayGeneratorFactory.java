@@ -23,14 +23,13 @@ package org.databene.benerator.factory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.StorageSystem;
 import org.databene.benerator.composite.AbstractComponentBuilder;
 import org.databene.benerator.composite.ArrayElementTypeConverter;
 import org.databene.benerator.composite.BlankArrayGenerator;
-import org.databene.benerator.composite.ComponentBuilder;
+import org.databene.benerator.composite.GeneratorComponent;
 import org.databene.benerator.composite.SourceAwareGenerator;
 import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
@@ -49,6 +48,7 @@ import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
+import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Mode;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.array.Entity2ArrayConverter;
@@ -81,8 +81,8 @@ public class ArrayGeneratorFactory {
             generator = createSourceGenerator(type, uniqueness, context);
         if (generator == null)
             generator = createSyntheticArrayGenerator(instanceName, type, uniqueness, context);
-        else
-            generator = createMutatingArrayGenerator(instanceName, type, uniqueness, generator, context);
+        // TODO v0.8 implement array mutation
+        
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
         generator = DescriptorUtil.wrapWithProxy(generator, type);
@@ -94,22 +94,21 @@ public class ArrayGeneratorFactory {
 
     public static Generator<Object[]> createSyntheticArrayGenerator(String name, 
             ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
-        List<ComponentBuilder<Object[]>> elementBuilders = 
-        	createSyntheticElementBuilders(arrayType, uniqueness, context);
+        List<GeneratorComponent<Object[]>> generatorComponents = 
+        	createSyntheticGeneratorComponents(arrayType, uniqueness, context);
         Generator<Object[]> baseGenerator;
         if (uniqueness.isUnique()) {
         	// TODO v0.8 we first create ComponentBuilders and then unwrap them! This can be simplified... 
         	// ...possibly with a NullableInstanceGeneratorFactory which takes over...
         	// ...most of the ComponentBuilderFactory's functionality
-        	Generator<?>[] generators = new Generator[elementBuilders.size()];
+        	Generator<?>[] generators = new Generator[generatorComponents.size()];
         	for (int i = 0; i < generators.length; i++)
-        		generators[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
+        		generators[i] = ((AbstractComponentBuilder<?>) generatorComponents.get(i)).getSource();
         	baseGenerator = new UniqueMultiSourceArrayGenerator<Object>(Object.class, generators);
-        	elementBuilders = null; // element builders are now controlled by the UniqueArrayGenerator
+        	generatorComponents = null; // element builders are now controlled by the UniqueArrayGenerator
         } else
         	baseGenerator = new BlankArrayGenerator(arrayType.getElementCount());
-        Map<String, Generator<?>> variables = DescriptorUtil.parseVariables(arrayType, context);
-		return new SourceAwareGenerator<Object[]>(name, baseGenerator, variables, elementBuilders, context);
+		return new SourceAwareGenerator<Object[]>(name, baseGenerator, generatorComponents, context);
     }
 
     @SuppressWarnings("unchecked")
@@ -117,8 +116,8 @@ public class ArrayGeneratorFactory {
             ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
     	// TODO v0.8 this method was written as a quick hack for the functionality required in Feed4JUnit 
 		// and needs to be merged into createSyntheticArrayGenerator() in the long run
-        List<ComponentBuilder<Object[]>> elementBuilders = 
-        	createSyntheticElementBuilders(arrayType, uniqueness, context);
+        List<GeneratorComponent<Object[]>> elementBuilders = 
+        	createSyntheticGeneratorComponents(arrayType, uniqueness, context);
     	@SuppressWarnings("rawtypes")
 		Generator[] generators = new Generator[elementBuilders.size()];
     	// TODO v0.8 we first create ComponentBuilders and then unwrap them! This can be simplified... 
@@ -126,13 +125,6 @@ public class ArrayGeneratorFactory {
     	for (int i = 0; i < generators.length; i++)
     		generators[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
     	return context.getGeneratorFactory().createCompositeArrayGenerator(Object.class, generators, uniqueness);
-    }
-
-    private static Generator<Object[]> createMutatingArrayGenerator(String instanceName, ArrayTypeDescriptor type, 
-    		Uniqueness uniqueness, Generator<Object[]> generator, BeneratorContext context) {
-    	Map<String, Generator<?>> variables = DescriptorUtil.parseVariables(type, context);
-    	List<ComponentBuilder<Object[]>> componentBuilders = null; // TODO v0.8 mutate elements if configured createSyntheticElementBuilders(type, uniqueness, context);
-	    return new SourceAwareGenerator<Object[]>(instanceName, generator, variables, componentBuilders, context);
     }
 
     private static Generator<Object[]> createSourceGenerator(
@@ -220,19 +212,18 @@ public class ArrayGeneratorFactory {
     }
 
 	@SuppressWarnings("unchecked")
-    private static List<ComponentBuilder<Object[]>> createSyntheticElementBuilders(ArrayTypeDescriptor arrayType,
-            Uniqueness uniqueness, BeneratorContext context) {
-	    List<ArrayElementDescriptor> elements = arrayType.getElements();
-        List<ComponentBuilder<Object[]>> elementBuilders = new ArrayList<ComponentBuilder<Object[]>>();
-		for (int i = 0; i < elements.size(); i++) {
-			ArrayElementDescriptor elementDescriptor = elements.get(i);
-            if (!arrayType.equals(elementDescriptor.getTypeDescriptor()) && elementDescriptor.getMode() != Mode.ignored) {
-            	ComponentBuilder<Object[]> builder = (ComponentBuilder<Object[]>) 
-            		ComponentBuilderFactory.createComponentBuilder(elementDescriptor, uniqueness, context);
-				elementBuilders.add(builder); 
+    private static List<GeneratorComponent<Object[]>> createSyntheticGeneratorComponents(
+    		ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
+		List<GeneratorComponent<Object[]>> result = new ArrayList<GeneratorComponent<Object[]>>();
+		for (InstanceDescriptor instance : arrayType.getParts()) {
+            if (!arrayType.equals(instance.getTypeDescriptor()) && 
+            		!(instance instanceof ArrayElementDescriptor && ((ArrayElementDescriptor) instance).getMode() == Mode.ignored)) {
+            	GeneratorComponent<Object[]> builder = (GeneratorComponent<Object[]>) 
+            		GeneratorComponentFactory.createGeneratorComponent(instance, uniqueness, context);
+				result.add(builder); 
             }
         }
-	    return elementBuilders;
+	    return result;
     }
 
 }

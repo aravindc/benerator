@@ -83,4 +83,9 @@ public class ComponentTypeConverter extends AbstractConverter<Entity, Entity> {
 	    return false;
     }
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[" + type + "]";
+	}
+	
 }

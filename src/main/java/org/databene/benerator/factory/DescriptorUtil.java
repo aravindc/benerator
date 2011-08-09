@@ -31,10 +31,7 @@ import static org.databene.model.data.TypeDescriptor.PATTERN;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.ConstraintValidator;
 
@@ -61,7 +58,6 @@ import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
-import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterChain;
@@ -312,16 +308,6 @@ public class DescriptorUtil {
 					new ConstantExpression<Long>(1L));
 	}
 
-	public static Map<String, Generator<?>> parseVariables(TypeDescriptor type, BeneratorContext context) {
-	    Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
-        OrderedNameMap<Generator<?>> varGens = new OrderedNameMap<Generator<?>>();
-        for (InstanceDescriptor variable : variables) {
-            Generator<?> generator = VariableGeneratorFactory.createGenerator(variable, context);
-            varGens.put(variable.getName(), generator);
-        }
-	    return varGens;
-    }
-    
 	public static Converter<String, String> createStringScriptConverter(BeneratorContext context) {
 		Converter<String, String> scriptConverter = new ConverterChain<String, String>(
 				new ScriptConverterForStrings(context),
@@ -396,22 +382,6 @@ public class DescriptorUtil {
 		Integer offset = descriptor.getOffset();
 		return (offset != null ? offset : 0);
 	}
-
-	private static Collection<InstanceDescriptor> variablesOfThisAndParents(TypeDescriptor type) {
-        Collection<InstanceDescriptor> variables = new ArrayList<InstanceDescriptor>();
-        while (type instanceof VariableHolder) {
-            variables.addAll(((VariableHolder) type).getVariables());
-            type = type.getParent();
-        }
-        return variables;
-    }
-    
-	
-/*
-	static Expression<Distribution> getCountDistribution(InstanceDescriptor descriptor) {
-		return (descriptor.getCountDistribution() != null ? descriptor.getCountDistribution() : null);
-	}
-*/
 
     protected static Integer getMinLength(SimpleTypeDescriptor descriptor) {
         Integer minLength = descriptor.getMinLength();

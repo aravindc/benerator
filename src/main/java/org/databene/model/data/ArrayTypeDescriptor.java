@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,11 +22,7 @@
 package org.databene.model.data;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-
-import org.databene.commons.collection.OrderedNameMap;
 
 /**
  * Describes an array.<br/><br/>
@@ -36,18 +32,23 @@ import org.databene.commons.collection.OrderedNameMap;
  */
 public class ArrayTypeDescriptor extends TypeDescriptor implements VariableHolder {
 
+	private List<InstanceDescriptor> parts;
 	private List<ArrayElementDescriptor> elements;
-    private Map<String, InstanceDescriptor> variables;
     
     public ArrayTypeDescriptor(String name) {
 	    super(name);
+        this.parts = new ArrayList<InstanceDescriptor>();
 	    this.elements = new ArrayList<ArrayElementDescriptor>();
-        this.variables = new OrderedNameMap<InstanceDescriptor>();
     }
 
     // element handling ------------------------------------------------------------------------------------------------
 
+	public List<InstanceDescriptor> getParts() {
+		return parts;
+	}
+	
     public void addElement(ArrayElementDescriptor descriptor) {
+    	parts.add(descriptor);
         elements.add(descriptor);
     }
 
@@ -65,12 +66,8 @@ public class ArrayTypeDescriptor extends TypeDescriptor implements VariableHolde
 
     // variable handling -----------------------------------------------------------------------------------------------
     
-    public Collection<InstanceDescriptor> getVariables() {
-        return variables.values();
-    }
-
-    public void addVariable(InstanceDescriptor variable) {
-        variables.put(variable.getName(), variable);
+    public void addVariable(VariableDescriptor variable) {
+        parts.add(variable);
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------

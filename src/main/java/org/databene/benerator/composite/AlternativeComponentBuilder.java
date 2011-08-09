@@ -26,6 +26,7 @@
 
 package org.databene.benerator.composite;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.commons.ThreadUtil;
 
 /**
@@ -40,7 +41,7 @@ public class AlternativeComponentBuilder<E> extends MultiComponentBuilder<E> {
 		super(alternatives);
 	}
 
-	public boolean buildComponentFor(E target) {
+	public boolean buildComponentFor(E target, GeneratorContext context) {
 		return buildRandomComponentFor(target);
 	}
 
