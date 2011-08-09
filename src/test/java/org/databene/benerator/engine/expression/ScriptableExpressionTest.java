@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * Tests the {@link ScriptableExpression}.<br/><br/>
  * Created: 06.08.2011 20:28:51
- * @since TODO version
+ * @since 0.7.0
  * @author Volker Bergmann
  */
 public class ScriptableExpressionTest {
