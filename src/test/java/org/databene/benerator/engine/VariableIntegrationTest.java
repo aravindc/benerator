@@ -37,7 +37,7 @@ import org.junit.Test;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class VariableTest extends BeneratorIntegrationTest {
+public class VariableIntegrationTest extends BeneratorIntegrationTest {
 
 	private ConsumerMock consumer;
 	
