@@ -21,19 +21,22 @@
 
 package org.databene.benerator.util;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 
 /**
- * Parent class for {@link Generator} implementations that 
- * create method parameters as {@link Object} arrays.<br/><br/>
- * Created: 08.07.2011 18:20:24
+ * {@link NonNullGenerator} implementation which declares that it is neither thread-safe nor parallelizable.<br/><br/>
+ * Created: 26.07.2011 18:38:42
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public abstract class SimpleMethodParamsGenerator extends SimpleGenerator<Object[]> {
+public abstract class UnsafeNonNullGenerator<E> extends AbstractNonNullGenerator<E> {
 
-	public Class<Object[]> getGeneratedType() {
-		return Object[].class;
+	public boolean isParallelizable() {
+		return false;
+	}
+
+	public boolean isThreadSafe() {
+		return false;
 	}
 
 }

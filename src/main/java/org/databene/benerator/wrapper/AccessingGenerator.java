@@ -26,7 +26,7 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.commons.Accessor;
 
 /**
@@ -35,7 +35,7 @@ import org.databene.commons.Accessor;
  * Created: 22.08.2007 19:05:40
  * @author Volker Bergmann
  */
-public class AccessingGenerator<S, P> extends SimpleGenerator<P> {
+public class AccessingGenerator<S, P> extends UnsafeGenerator<P> {
 
 	private Class<P> targetType;
     private Accessor<S, P> accessor;

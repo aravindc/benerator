@@ -30,7 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
@@ -70,7 +70,7 @@ public class GenerateOrIterateStatementTest {
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
-	class EntityGeneratorMock extends SimpleGenerator<Entity> {
+	class EntityGeneratorMock extends UnsafeGenerator<Entity> {
 		
 		public int invocationCount;
 		public Set<Thread> threads = new HashSet<Thread>();

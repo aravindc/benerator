@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,22 +21,22 @@
 
 package org.databene.benerator.util;
 
-import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.Generator;
 
 /**
- * {@link NonNullGenerator} implementation which declares that it is neither thread-safe nor parallelizable.<br/><br/>
- * Created: 26.07.2011 18:38:42
- * @since 0.7.0
+ * Abstract parent class for {@link Generator}s that are neither thread-safe nor parallelizable.<br/><br/>
+ * Created: 20.03.2010 10:30:34
+ * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class SimpleNonNullGenerator<E> extends AbstractNonNullGenerator<E> {
+public abstract class UnsafeGenerator<E> extends AbstractGenerator<E> {
 
 	public boolean isParallelizable() {
-		return false;
-	}
+	    return false;
+    }
 
 	public boolean isThreadSafe() {
-		return false;
-	}
+	    return false;
+    }
 
 }

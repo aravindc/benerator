@@ -26,7 +26,7 @@
 
 package org.databene.benerator.demo;
 
-import org.databene.benerator.util.SimpleNonNullGenerator;
+import org.databene.benerator.util.UnsafeNonNullGenerator;
 
 /**
  * Simple example of a generator that alternatively generators 0 and 1: 0, 1, 0, 1, 0, 1, 0, 1.<br/>
@@ -36,7 +36,7 @@ import org.databene.benerator.util.SimpleNonNullGenerator;
  * @author Volker Bergmann
  */
 
-public class AlternatingGenerator extends SimpleNonNullGenerator<Integer> {
+public class AlternatingGenerator extends UnsafeNonNullGenerator<Integer> {
 	
 	private int value = 1;
 

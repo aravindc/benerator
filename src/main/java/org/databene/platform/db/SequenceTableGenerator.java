@@ -31,7 +31,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.GeneratorState;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.util.SimpleNonNullGenerator;
+import org.databene.benerator.util.UnsafeNonNullGenerator;
 import org.databene.commons.IOUtil;
 import org.databene.jdbacl.DBUtil;
 import org.databene.script.ScriptUtil;
@@ -45,7 +45,7 @@ import org.databene.webdecs.DataSource;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class SequenceTableGenerator<E extends Number> extends SimpleNonNullGenerator<E> {
+public class SequenceTableGenerator<E extends Number> extends UnsafeNonNullGenerator<E> {
 	
 	private String table;
 	private String column;

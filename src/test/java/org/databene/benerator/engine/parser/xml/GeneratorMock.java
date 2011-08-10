@@ -21,7 +21,7 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Assert;
 import org.databene.commons.context.ContextAware;
@@ -33,7 +33,7 @@ import org.databene.model.data.Entity;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class GeneratorMock extends SimpleGenerator<Entity> {
+public class GeneratorMock extends UnsafeGenerator<Entity> {
 
 	public Class<Entity> getGeneratedType() {
 		return Entity.class;

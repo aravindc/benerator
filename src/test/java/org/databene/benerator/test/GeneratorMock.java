@@ -27,7 +27,7 @@
 package org.databene.benerator.test;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
@@ -38,7 +38,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @author Volker Bergmann
  */
 
-public class GeneratorMock extends SimpleGenerator<Integer> {
+public class GeneratorMock extends UnsafeGenerator<Integer> {
 	
 	public int value;
 

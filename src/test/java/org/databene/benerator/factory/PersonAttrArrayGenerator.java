@@ -21,7 +21,7 @@
 
 package org.databene.benerator.factory;
 
-import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
@@ -30,7 +30,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public class PersonAttrArrayGenerator extends SimpleGenerator<Object[]> {
+public class PersonAttrArrayGenerator extends UnsafeGenerator<Object[]> {
 
 	static final Object[] ALICE = new Object[] { "Alice", 23 };
 

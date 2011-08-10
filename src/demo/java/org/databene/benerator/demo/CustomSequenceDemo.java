@@ -3,7 +3,7 @@ package org.databene.benerator.demo;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.factory.StochasticGeneratorFactory;
 import static org.databene.benerator.util.GeneratorUtil.*;
-import org.databene.benerator.util.SimpleNonNullGenerator;
+import org.databene.benerator.util.UnsafeNonNullGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
@@ -39,7 +39,7 @@ public class CustomSequenceDemo {
         }
     }
 
-    public static class OddNumberGenerator extends SimpleNonNullGenerator<Double> {
+    public static class OddNumberGenerator extends UnsafeNonNullGenerator<Double> {
     	
     	private double min;
     	private double max;

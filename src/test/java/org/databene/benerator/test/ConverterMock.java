@@ -28,7 +28,7 @@ package org.databene.benerator.test;
 
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
-import org.databene.commons.converter.SimpleConverter;
+import org.databene.commons.converter.UnsafeConverter;
 
 /**
  * Mock implementation of the {@link Converter} interface.<br/>
@@ -38,7 +38,7 @@ import org.databene.commons.converter.SimpleConverter;
  * @author Volker Bergmann
  */
 
-public class ConverterMock extends SimpleConverter<Integer, Integer> {
+public class ConverterMock extends UnsafeConverter<Integer, Integer> {
 
 	public int increment;
 	

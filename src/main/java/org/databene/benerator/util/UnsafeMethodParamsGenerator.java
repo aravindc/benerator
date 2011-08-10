@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,19 +24,16 @@ package org.databene.benerator.util;
 import org.databene.benerator.Generator;
 
 /**
- * Abstract parent class for {@link Generator}s that are neither thread-safe nor parallelizable.<br/><br/>
- * Created: 20.03.2010 10:30:34
- * @since 0.6.0
+ * Parent class for {@link Generator} implementations that 
+ * create method parameters as {@link Object} arrays.<br/><br/>
+ * Created: 08.07.2011 18:20:24
+ * @since 0.7.0
  * @author Volker Bergmann
  */
-public abstract class SimpleGenerator<E> extends AbstractGenerator<E> {
+public abstract class UnsafeMethodParamsGenerator extends UnsafeGenerator<Object[]> {
 
-	public boolean isParallelizable() {
-	    return false;
-    }
-
-	public boolean isThreadSafe() {
-	    return false;
-    }
+	public Class<Object[]> getGeneratedType() {
+		return Object[].class;
+	}
 
 }

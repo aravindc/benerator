@@ -36,7 +36,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
 import org.databene.commons.context.DefaultContext;
-import org.databene.commons.converter.SimpleConverter;
+import org.databene.commons.converter.UnsafeConverter;
 import org.databene.script.Script;
 import org.databene.script.ScriptException;
 import org.databene.script.freemarker.FreeMarkerScriptFactory;
@@ -72,7 +72,7 @@ public class AddressFormat {
 	public static AddressFormat getInstance(String country) {
 		if (instances.size() == 0) {
 			try {
-				IOUtil.readProperties(CONFIG_FILE, new SimpleConverter<Map.Entry, Map.Entry>(Map.Entry.class, Map.Entry.class) {
+				IOUtil.readProperties(CONFIG_FILE, new UnsafeConverter<Map.Entry, Map.Entry>(Map.Entry.class, Map.Entry.class) {
                     public Entry convert(Entry entry) {
 						String pt = (String) entry.getValue();
 						instances.put((String) entry.getKey(), new AddressFormat(pt));

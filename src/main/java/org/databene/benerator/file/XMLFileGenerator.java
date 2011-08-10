@@ -40,7 +40,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.benerator.factory.TypeGeneratorFactory;
 import org.databene.benerator.primitive.IncrementGenerator;
-import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
@@ -60,7 +60,7 @@ import org.databene.platform.xml.XMLSchemaDescriptorProvider;
  * <br/>
  * @author Volker Bergmann
  */
-public class XMLFileGenerator extends SimpleGenerator<File> {
+public class XMLFileGenerator extends UnsafeGenerator<File> {
 	
 	private String schemaUri;
     private String encoding;

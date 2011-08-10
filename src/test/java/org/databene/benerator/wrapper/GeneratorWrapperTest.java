@@ -30,7 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
-import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -78,7 +78,7 @@ public class GeneratorWrapperTest extends GeneratorTest {
 
 	}
 	
-	public static class Source12 extends SimpleGenerator<Integer> {
+	public static class Source12 extends UnsafeGenerator<Integer> {
 		
 		private int n = 0;
 		

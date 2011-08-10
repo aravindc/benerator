@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.SimpleNonNullGenerator;
+import org.databene.benerator.util.UnsafeNonNullGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 
@@ -42,7 +42,7 @@ import org.databene.commons.CollectionUtil;
  * @author Volker Bergmann
  */
 
-public class SeedGenerator<E> extends SimpleNonNullGenerator<E[]>{
+public class SeedGenerator<E> extends UnsafeNonNullGenerator<E[]>{
 	
 	private Class<E> atomType;
 	private Class<E[]> targetType;

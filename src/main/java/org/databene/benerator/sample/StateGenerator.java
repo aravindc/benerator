@@ -35,7 +35,7 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.WeightedTransition;
-import org.databene.benerator.util.SimpleNonNullGenerator;
+import org.databene.benerator.util.UnsafeNonNullGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ParseException;
@@ -49,7 +49,7 @@ import org.databene.commons.StringUtil;
  * @author Volker Bergmann
  */
 
-public class StateGenerator<E> extends SimpleNonNullGenerator<E> {
+public class StateGenerator<E> extends UnsafeNonNullGenerator<E> {
 	
 	private Class<E> generatedType;
 	private Map<E, MappedSampleGenerator<E>> transitionsGenerators;
