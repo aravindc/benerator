@@ -26,7 +26,6 @@ import java.util.List;
 import org.databene.BeneratorConstants;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.MessageHolder;
@@ -49,7 +48,6 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
     private E currentInstance;
 	private String message;
 	private ComponentAndVariableSupport<E> support;
-	private WrapperProvider<E> eWrapperProvider = new WrapperProvider<E>();
 	
 	/**
      * @param source another Generator of entities that serves as Entity builder. 
@@ -72,24 +70,30 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 		super.init(context);
 	}
 
+	@SuppressWarnings("null")
 	@Override
     public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
-    	ProductWrapper<E> test = getSource().generate(eWrapperProvider.get());
-        if (test == null) {
+    	wrapper = getSource().generate(wrapper);
+    	boolean available = (wrapper != null);
+    	if (!available)
+            STATE_LOGGER.debug("Source for entity '{}' is not available: {}", instanceName, getSource());
+        if (available) {
+            currentInstance = wrapper.unwrap();
+            if (instanceName != null)
+            	context.set(instanceName, currentInstance);
+            context.set("this", currentInstance); // TODO v0.7 BUG: array sub generators use this too, overwriting a top-level entity generator
+    		available = support.apply(currentInstance, context);
+        }
+		if (available) {
+        	LOGGER.debug("Generated {}", currentInstance);
+            return wrapper.wrap(currentInstance);
+		} else {
 			currentInstance = null;
-            STATE_LOGGER.debug("Source for entity '{}' is not available any more: {}", instanceName, getSource());
-            return null; // TODO v0.7 remove current instance from context?
+            if (instanceName != null)
+            	context.remove(instanceName);
+            context.remove("this"); // TODO v0.7 BUG: array sub generators use this too, overwriting a top-level entity generator
+            return null;
         } 
-        currentInstance = test.unwrap();
-        if (instanceName != null)
-        	context.set(instanceName, currentInstance);
-        context.set("this", currentInstance); // TODO v0.7 BUG: array sub generators use this too, overwriting a top-level entity generator
-		if (!support.apply(currentInstance, context)) {
-			currentInstance = null;
-			return null;
-		}
-    	LOGGER.debug("Generated {}", currentInstance);
-        return wrapper.wrap(currentInstance);
 	}
 
 	@Override
