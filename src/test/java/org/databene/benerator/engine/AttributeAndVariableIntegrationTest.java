@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonIterable;
+import org.databene.commons.SyntaxError;
 import org.databene.model.data.Entity;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +38,7 @@ import org.junit.Test;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class VariableIntegrationTest extends BeneratorIntegrationTest {
+public class AttributeAndVariableIntegrationTest extends BeneratorIntegrationTest {
 
 	private ConsumerMock consumer;
 	
@@ -82,12 +83,11 @@ public class VariableIntegrationTest extends BeneratorIntegrationTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testVariableFromAttribute() {
+	public void testVariableFromAttribute_refByThis() {
 		parseAndExecute(
-				"<generate type='testVariableFromAttribute' count='2' consumer='cons'>" +
+				"<generate type='testVariableFromAttribute_refByThis' count='2' consumer='cons'>" +
 				"	<attribute name='x' type='int' distribution='increment' />" +
-				"	<variable name='_n' type='int' script='this.x + 1' />" +
-				"	<attribute name='y' type='int' script='_n + 2' />" +
+				"	<attribute name='y' type='int' script='this.x + 3' />" +
 				"</generate>");
 		List<Entity> products = (List<Entity>) consumer.getProducts();
 		assertEquals(2, products.size());
@@ -97,4 +97,64 @@ public class VariableIntegrationTest extends BeneratorIntegrationTest {
 		assertEquals(5, products.get(1).get("y"));
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testVariableFromAttribute_refByTypeName() {
+		parseAndExecute(
+				"<generate type='testVariableFromAttribute_refByTypeName' count='2' consumer='cons'>" +
+				"	<attribute name='x' type='int' distribution='increment' />" +
+				"	<attribute name='y' type='int' script='testVariableFromAttribute_refByTypeName.x + 3' />" +
+				"</generate>");
+		List<Entity> products = (List<Entity>) consumer.getProducts();
+		assertEquals(2, products.size());
+		assertEquals(1, products.get(0).get("x"));
+		assertEquals(4, products.get(0).get("y"));
+		assertEquals(2, products.get(1).get("x"));
+		assertEquals(5, products.get(1).get("y"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testVariableFromAttribute_refByInstanceName() {
+		parseAndExecute(
+				"<generate name='xyz' type='testVariableFromAttribute_refByInstanceName' count='2' consumer='cons'>" +
+				"	<attribute name='x' type='int' distribution='increment' />" +
+				"	<attribute name='y' type='int' script='xyz.x + 3' />" +
+				"</generate>");
+		List<Entity> products = (List<Entity>) consumer.getProducts();
+		assertEquals(2, products.size());
+		assertEquals(1, products.get(0).get("x"));
+		assertEquals(4, products.get(0).get("y"));
+		assertEquals(2, products.get(1).get("x"));
+		assertEquals(5, products.get(1).get("y"));
+	}
+
+	@Test(expected = SyntaxError.class)
+	public void testVarAfterSubGen() { // TODO v0.7 support variable usage after sub <generate>
+		parseAndExecute(
+				"<generate count='5'>" +
+				"	<generate count='3'/>" +
+				"	<variable name='y' type='int'/>" +
+				"</generate>");
+	}
+	
+	@Test(expected = SyntaxError.class)
+	public void testEchoBetweenAttributes() { // TODO v0.7. support <echo> between <attribute>s
+		parseAndExecute(
+				"<generate count='5'>" +
+				"	<echo>{this.id}</echo>" + 
+				"	<id name='id' />" +
+				"	<echo>{this.id}</echo>" + 
+				"</generate>");
+	}
+	
+	@Test(expected = SyntaxError.class)
+	public void testAttributeAfterSubGen() {
+		parseAndExecute(
+				"<generate count='5'>" +
+				"	<generate count='3'/>" +
+				"	<attribute name='y' type='int'/>" +
+				"</generate>");
+	}
+	
 }
