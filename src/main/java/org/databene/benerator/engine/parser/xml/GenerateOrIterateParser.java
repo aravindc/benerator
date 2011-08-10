@@ -178,7 +178,8 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		//boolean isSubCreator = AbstractBeneratorDescriptorParser.containsGeneratorStatement(parentPath);
 		
 		// create generator
-		Generator<?> generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
+		Generator<?> generator = InstanceGeneratorFactory.createSingleInstanceGenerator(
+				descriptor, true, Uniqueness.NONE, context);
 		
 		String taskName = descriptor.getName();
 		if (taskName == null)
@@ -193,11 +194,13 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		
 		// handle sub elements
 		Stage stage = Stage.VARS_AND_MEMBERS;
-		for (Element child : XMLUtil.getChildElements(element)) {
+		Element[] childElements = XMLUtil.getChildElements(element);
+		for (int i = 0; i < childElements.length; i++) {
+			Element child = childElements[i];
 			String childName = child.getNodeName();
 			if (EL_VARIABLE.equals(childName) || PART_ELEMENTS.contains(childName)) {
 				if (stage != Stage.VARS_AND_MEMBERS)
-					syntaxWarning("variables and members must be configured before sub elements", child);
+					syntaxError("variables and members must be configured before sub elements", child);
 			} else {
 				stage = Stage.OTHERS;
 				Statement[] subPath = parseContext.createSubPath(parentPath, statement);

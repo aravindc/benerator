@@ -50,33 +50,6 @@ import org.junit.Test;
 public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegrationTest {
 
 	@Test
-	public void testVarAfterAttribute() {
-		parseAndExecute(
-				"<generate count='5'>" +
-				"	<attribute name='x' type='int'/>" +
-				"	<variable name='y' type='int'/>" +
-				"</generate>");
-	}
-	
-	@Test
-	public void testVarAfterSubGen() {
-		parseAndExecute(
-				"<generate count='5'>" +
-				"	<generate count='3'/>" +
-				"	<variable name='y' type='int'/>" +
-				"</generate>");
-	}
-	
-	@Test
-	public void testAttributeAfterSubGen() {
-		parseAndExecute(
-				"<generate count='5'>" +
-				"	<generate count='3'/>" +
-				"	<attribute name='y' type='int'/>" +
-				"</generate>");
-	}
-	
-	@Test
 	public void testAttributes() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		Statement statement = parse(

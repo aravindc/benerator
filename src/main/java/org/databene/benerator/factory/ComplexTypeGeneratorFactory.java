@@ -80,7 +80,7 @@ public class ComplexTypeGeneratorFactory {
     // public utility methods ------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    public static Generator<Entity> createComplexTypeGenerator(String instanceName, 
+    public static Generator<Entity> createComplexTypeGenerator(String instanceName, boolean asThis, 
     		ComplexTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
         LOGGER.debug("createComplexTypeGenerator({})", type.getName());
         // create original generator
@@ -89,9 +89,9 @@ public class ComplexTypeGeneratorFactory {
         if (generator == null)
             generator = createSourceGenerator(type, uniqueness, context);
         if (generator == null)
-            generator = createSyntheticEntityGenerator(instanceName, type, uniqueness, context);
+            generator = createSyntheticEntityGenerator(instanceName, asThis, type, uniqueness, context);
         else
-            generator = createMutatingEntityGenerator(instanceName, type, uniqueness, context, generator);
+            generator = createMutatingEntityGenerator(instanceName, asThis, type, uniqueness, context, generator);
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
         generator = DescriptorUtil.wrapWithProxy(generator, type);
@@ -99,11 +99,11 @@ public class ComplexTypeGeneratorFactory {
         return generator;
     }
     
-    public static Generator<Entity> createMutatingEntityGenerator(String name, ComplexTypeDescriptor descriptor, 
+    public static Generator<Entity> createMutatingEntityGenerator(String name, boolean asThis, ComplexTypeDescriptor descriptor, 
     		Uniqueness ownerUniqueness, BeneratorContext context, Generator<Entity> source) {
     	List<GeneratorComponent<Entity>> generatorComponent = 
     		createMutatingGeneratorComponents(descriptor, ownerUniqueness, context);
-        return new SourceAwareGenerator<Entity>(name, source, generatorComponent, context);
+        return new SourceAwareGenerator<Entity>(name, asThis, source, generatorComponent, context);
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
@@ -220,7 +220,7 @@ public class ComplexTypeGeneratorFactory {
 		return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
 
-    private static Generator<Entity> createSyntheticEntityGenerator(String name, 
+    private static Generator<Entity> createSyntheticEntityGenerator(String name, boolean asThis, 
             ComplexTypeDescriptor complexType, Uniqueness ownerUniqueness, BeneratorContext context) {
         Generator<Entity> source;
         List<GeneratorComponent<Entity>> generatorComponents = null;
@@ -230,7 +230,7 @@ public class ComplexTypeGeneratorFactory {
         	generatorComponents = createSyntheticGeneratorComponents(complexType, ownerUniqueness, context);
     		source = new BlankEntityGenerator(complexType);
         }
-		return new SourceAwareGenerator<Entity>(name, source, generatorComponents, context);
+		return new SourceAwareGenerator<Entity>(name, asThis, source, generatorComponents, context);
     }
 
 	private static Generator<Entity> createSimpleTypeEntityGenerator(ComplexTypeDescriptor complexType,

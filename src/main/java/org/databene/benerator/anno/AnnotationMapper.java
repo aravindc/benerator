@@ -242,7 +242,7 @@ public class AnnotationMapper {
 		mapAnnotation(source, descriptor);
 		mapParamTypes(testMethod, typeDescriptor);
 		Generator<Object[]> baseGenerator = ArrayGeneratorFactory.createArrayGenerator(
-				testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
+				testMethod.getName(), false, typeDescriptor, Uniqueness.NONE, context);
 		return baseGenerator;
 	}
 
@@ -256,7 +256,8 @@ public class AnnotationMapper {
 		Offset offset = attribute.getAnnotation(Offset.class);
 		if (offset != null)
 			mapAnnotation(offset, descriptor);
-		Generator generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
+		Generator generator = InstanceGeneratorFactory.createSingleInstanceGenerator(
+				descriptor, false, Uniqueness.NONE, context);
 		generator = WrapperFactory.applyConverter(generator, new Entity2JavaConverter());
 		generator.init(context);
 		return generator;
@@ -270,7 +271,7 @@ public class AnnotationMapper {
 		mapAnnotation(annotation, descriptor);
 		mapParamTypes(testMethod, typeDescriptor);
 		return ArrayGeneratorFactory.createArrayGenerator(
-				testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
+				testMethod.getName(), false, typeDescriptor, Uniqueness.NONE, context);
 	}
 
 	private void mapParamTypes(Method testMethod, ArrayTypeDescriptor typeDescriptor) {

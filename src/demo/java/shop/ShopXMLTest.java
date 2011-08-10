@@ -119,7 +119,7 @@ public class ShopXMLTest extends GeneratorTest {
         logger.debug("Testing complex type: " + descriptor.getName());
         logger.debug("-------------------------------------");
         Generator<Entity> generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
-        		"instance", descriptor, Uniqueness.NONE, provider.getContext());
+        		"instance", true, descriptor, Uniqueness.NONE, provider.getContext());
         generator.init(new BeneratorContext());
         for (int i = 0; i < 10; i++) {
             Entity entity = GeneratorUtil.generateNonNull(generator);

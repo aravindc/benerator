@@ -68,7 +68,7 @@ public class InstanceGeneratorFactoryTest extends GeneratorTest {
 	@SuppressWarnings("unchecked")
     private Generator<Long> createInstanceGenerator(InstanceDescriptor instance) {
 		BeneratorContext context = new BeneratorContext();
-		return (Generator<Long>) InstanceGeneratorFactory.createSingleInstanceGenerator(instance, Uniqueness.NONE, context);
+		return (Generator<Long>) InstanceGeneratorFactory.createSingleInstanceGenerator(instance, true, Uniqueness.NONE, context);
 	}
 
 }

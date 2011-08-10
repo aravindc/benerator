@@ -71,7 +71,7 @@ public class ArrayGeneratorFactory {
     private static final Logger logger = LoggerFactory.getLogger(ArrayGeneratorFactory.class);
 
     @SuppressWarnings("unchecked")
-    public static Generator<Object[]> createArrayGenerator(String instanceName, 
+    public static Generator<Object[]> createArrayGenerator(String instanceName, boolean asThis, 
 			ArrayTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
         logger.debug("createArrayGenerator({})", type.getName());
         // create original generator
@@ -80,7 +80,7 @@ public class ArrayGeneratorFactory {
         if (generator == null)
             generator = createSourceGenerator(type, uniqueness, context);
         if (generator == null)
-            generator = createSyntheticArrayGenerator(instanceName, type, uniqueness, context);
+            generator = createSyntheticArrayGenerator(instanceName, asThis, type, uniqueness, context);
         // TODO v0.8 implement array mutation
         
         // create wrappers
@@ -92,7 +92,7 @@ public class ArrayGeneratorFactory {
     
     // private helpers -------------------------------------------------------------------------------------------------
 
-    public static Generator<Object[]> createSyntheticArrayGenerator(String name, 
+    public static Generator<Object[]> createSyntheticArrayGenerator(String name, boolean asThis, 
             ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
         List<GeneratorComponent<Object[]>> generatorComponents = 
         	createSyntheticGeneratorComponents(arrayType, uniqueness, context);
@@ -108,7 +108,7 @@ public class ArrayGeneratorFactory {
         	generatorComponents = null; // element builders are now controlled by the UniqueArrayGenerator
         } else
         	baseGenerator = new BlankArrayGenerator(arrayType.getElementCount());
-		return new SourceAwareGenerator<Object[]>(name, baseGenerator, generatorComponents, context);
+		return new SourceAwareGenerator<Object[]>(name, asThis, baseGenerator, generatorComponents, context);
     }
 
     @SuppressWarnings("unchecked")

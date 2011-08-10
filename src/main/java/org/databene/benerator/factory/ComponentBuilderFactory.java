@@ -191,7 +191,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     private static ComponentBuilder<?> createPartBuilder(
             ComponentDescriptor part, Uniqueness ownerUniqueness, BeneratorContext context) {
-        Generator<?> generator = createSingleInstanceGenerator(part, ownerUniqueness, context);
+        Generator<?> generator = createSingleInstanceGenerator(part, false, ownerUniqueness, context);
         generator = createMultiplicityWrapper(part, generator, context);
         LOGGER.debug("Created {}", generator);
         return builderFromGenerator(generator, part, context);
@@ -305,7 +305,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     }
 
 	static ComponentBuilder<?> createIdBuilder(IdDescriptor id, Uniqueness ownerUniqueness, BeneratorContext context) {
-        Generator<?> generator = createSingleInstanceGenerator(id, Uniqueness.ORDERED, context);
+        Generator<?> generator = createSingleInstanceGenerator(id, false, Uniqueness.ORDERED, context);
         LOGGER.debug("Created {}", generator);
         return builderFromGenerator(generator, id, context);
     }

@@ -45,6 +45,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
     private static final Logger STATE_LOGGER = LoggerFactory.getLogger(BeneratorConstants.STATE_LOGGER);
     
     private String instanceName;
+    private boolean asThis;
     private E currentInstance;
 	private String message;
 	private ComponentAndVariableSupport<E> support;
@@ -54,10 +55,11 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
      *     It may construct empty Entities or may import them (so this may overwrite imported attributes). 
      * @param instanceName instance name for the generated entities. 
 	 */
-	public SourceAwareGenerator(String instanceName, Generator<E> source, 
+	public SourceAwareGenerator(String instanceName, boolean asThis, Generator<E> source, 
 			List<GeneratorComponent<E>> components, GeneratorContext context) {
         super(source);
         this.instanceName = instanceName;
+        this.asThis = asThis;
         this.support = new ComponentAndVariableSupport<E>(instanceName, components, context);
 		this.context = context;
 	}
@@ -81,7 +83,8 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
             currentInstance = wrapper.unwrap();
             if (instanceName != null)
             	context.set(instanceName, currentInstance);
-            context.set("this", currentInstance); // TODO v0.7 BUG: array sub generators use this too, overwriting a top-level entity generator
+            if (asThis)
+            	context.set("this", currentInstance);
     		available = support.apply(currentInstance, context);
         }
 		if (available) {
@@ -91,7 +94,8 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 			currentInstance = null;
             if (instanceName != null)
             	context.remove(instanceName);
-            context.remove("this"); // TODO v0.7 BUG: array sub generators use this too, overwriting a top-level entity generator
+            if (asThis)
+            	context.remove("this");
             return null;
         } 
 	}
