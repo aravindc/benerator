@@ -33,10 +33,12 @@ changes
 - Renamed platform 'flat' to 'fixedwidth' and classes 'FlatFile...' to 'FixedColumnWidth...'
 - <import defaults="true" /> is not necessary any longer: defaults are imported automatically, 
   they are only left out when using <setup ... defaultImports="false"> in the root element
+- Renamed SimpleConverter to UnsafeConverter and SimpleGenerator to UnsafeGenerator
 
 
 enhancements
 ------------
+- Definition and execution of variables, ids, attributes and references in arbitrary order
 - supporting different types of GeneratorFactories
 - Defined VolumeGeneratorFactory, EquivalenceGeneratorFactory, CoverageGeneratorFactory and SerialGeneratorFactory 
 - new annotation @DecimalGranularity
