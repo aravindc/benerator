@@ -35,6 +35,7 @@ public class Variable<E> implements GeneratorComponent<E> {
 	
 	private String name;
 	private Generator<?> generator;
+	private GeneratorContext context;
 	
 	public Variable(String name, Generator<?> generator) {
 		this.name = name;
@@ -50,14 +51,17 @@ public class Variable<E> implements GeneratorComponent<E> {
 	}
 
 	public void init(GeneratorContext context) {
+		this.context = context;
 		generator.init(context);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public boolean buildComponentFor(Object target, GeneratorContext context) {
 		ProductWrapper<?> productWrapper = generator.generate(new ProductWrapper());
-		if (productWrapper == null)
-            return false; // TODO v0.7 remove from context if unavailable?
+		if (productWrapper == null) {
+			context.remove(name);
+            return false;
+		}
         context.set(name, productWrapper.unwrap());
         return true;
 	}
@@ -67,7 +71,8 @@ public class Variable<E> implements GeneratorComponent<E> {
 	}
 
 	public void close() {
-		generator.close(); // TODO v0.7 remove variable from context?
+		context.remove(name);
+		generator.close();
 	}
 
 	@Override
