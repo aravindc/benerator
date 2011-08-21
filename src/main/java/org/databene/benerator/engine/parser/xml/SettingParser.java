@@ -29,7 +29,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.expression.context.ContextReference;
 import org.databene.benerator.engine.statement.IfStatement;
-import org.databene.benerator.engine.statement.SetGlobalPropertyStatement;
+import org.databene.benerator.engine.statement.SetSettingStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.CollectionUtil;
@@ -64,7 +64,7 @@ public class SettingParser extends AbstractBeneratorDescriptorParser {
 			return parseDefault(propertyName, element.getAttribute(ATT_DEFAULT));
 		else {
 			Expression<?> valueEx = parseValue(element);
-			return new SetGlobalPropertyStatement(propertyName, valueEx);
+			return new SetSettingStatement(propertyName, valueEx);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class SettingParser extends AbstractBeneratorDescriptorParser {
     private static Statement parseDefault(String propertyName, String defaultValue) {
 		try {
 			ScriptableExpression valueExpression = new ScriptableExpression(defaultValue, null);
-			SetGlobalPropertyStatement setterStatement = new SetGlobalPropertyStatement(propertyName, valueExpression);
+			SetSettingStatement setterStatement = new SetSettingStatement(propertyName, valueExpression);
 			Expression<Boolean> condition = new IsNullExpression(new ContextReference(propertyName));
 			return new IfStatement(condition, setterStatement);
         } catch (ParseException e) {
