@@ -48,7 +48,7 @@ public class SequenceGenerator<E> extends ThreadSafeGenerator<E> {
 
     private Class<E> productType;
     private List<E> values;
-    private int cursor = 0;
+    private int cursor;
 
     public SequenceGenerator(Class<E> productType, E... values) {
         this(productType, (values != null ? CollectionUtil.toList(values) : null));
@@ -57,6 +57,7 @@ public class SequenceGenerator<E> extends ThreadSafeGenerator<E> {
     public SequenceGenerator(Class<E> productType, Collection<? extends E> values) {
         this.productType = productType;
         this.values = (values != null ? new ArrayList<E>(values) : new ArrayList<E>());
+        this.cursor = 0;
     }
     
     public void addValue(E value) {
