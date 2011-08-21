@@ -128,7 +128,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, 
 			Uniqueness uniqueness) {
 		Generator<Character> charGenerator = createCharacterGenerator(chars);
-		Set<Integer> counts = defaultCounts(minLength, maxLength);
+		Set<Integer> counts = defaultCounts(minLength, maxLength, lengthGranularity);
 		NonNullGenerator<Integer> lengthGenerator = WrapperFactory.asNonNullGenerator(
 				new SequenceGenerator<Integer>(Integer.class, counts));
 		return new EquivalenceStringGenerator<Character>(charGenerator, lengthGenerator);
@@ -139,7 +139,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 	public NonNullGenerator<String> createCompositeStringGenerator(
 			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, Uniqueness uniqueness) {
 		GeneratorChain<String> result = new GeneratorChain<String>(String.class, true);
-		Set<Integer> partCounts = defaultCounts(minParts, maxParts);
+		Set<Integer> partCounts = defaultCounts(minParts, maxParts, 1);
 		for (int partCount : partCounts) {
 			Generator<String>[] sources = new Generator[partCount];
 			for (int i = 0; i < partCount; i++)
@@ -160,9 +160,9 @@ public class SerialGeneratorFactory extends GeneratorFactory {
         		new SequenceGenerator<Character>(Character.class, characters));
     }
 
-	protected Set<Integer> defaultCounts(int minParts, int maxParts) {
+	protected Set<Integer> defaultCounts(int minCount, int maxCount, int countPrecision) {
 		Set<Integer> result = new TreeSet<Integer>();
-		for (int i = minParts; i < maxParts; i++)
+		for (int i = minCount; i <= maxCount; i += countPrecision)
 			result.add(i);
 		return result;
 	}

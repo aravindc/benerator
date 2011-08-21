@@ -196,7 +196,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, 
 			Uniqueness uniqueness) {
 		Generator<Character> charGenerator = createCharacterGenerator(chars);
-		Set<Integer> counts = defaultCounts(minLength, maxLength);
+		Set<Integer> counts = defaultCounts(minLength, maxLength, lengthGranularity);
 		NonNullGenerator<Integer> lengthGenerator = WrapperFactory.asNonNullGenerator(
 				new SequenceGenerator<Integer>(Integer.class, counts));
 		return new EquivalenceStringGenerator<Character>(charGenerator, lengthGenerator);
@@ -207,7 +207,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	public NonNullGenerator<String> createCompositeStringGenerator(
 			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, Uniqueness uniqueness) {
 		AlternativeGenerator<String> result = new AlternativeGenerator<String>(String.class);
-		Set<Integer> partCounts = defaultCounts(minParts, maxParts);
+		Set<Integer> partCounts = defaultCounts(minParts, maxParts, 1);
 		for (int partCount : partCounts) {
 			Generator<String>[] sources = new Generator[partCount];
 			for (int i = 0; i < partCount; i++)
@@ -229,10 +229,10 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
         		new SequenceGenerator<Character>(Character.class, defaultSubSet(characters)));
     }
 
-	protected Set<Integer> defaultCounts(int minParts, int maxParts) {
+	protected Set<Integer> defaultCounts(int minParts, int maxParts, int lengthGranularity) {
 		Set<Integer> lengths = new TreeSet<Integer>();
 		lengths.add(minParts); 
-		lengths.add((minParts + maxParts) / 2); 
+		lengths.add(((minParts + maxParts) / 2 - minParts) / lengthGranularity * lengthGranularity + minParts); 
 		lengths.add(maxParts);
 		if (maxParts > minParts) {
 			lengths.add(minParts + 1);

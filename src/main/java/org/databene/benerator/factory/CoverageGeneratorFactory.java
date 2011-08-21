@@ -47,7 +47,9 @@ public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // T
 	public CoverageGeneratorFactory() {
 		this.serialFactory = new SerialGeneratorFactory();
 	}
-
+	
+	// generator factory method ----------------------------------------------------------------------------------------
+	
     @SuppressWarnings("unchecked")
 	@Override
 	public Generator<Date> createDateGenerator(
@@ -76,13 +78,17 @@ public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // T
 	public NonNullGenerator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, int lengthGranularity, Distribution lengthDistribution, 
 			Uniqueness uniqueness) {
-    	return WrapperFactory.asNonNullGenerator(new GeneratorChain<String>(String.class, true, 
-    		super.createStringGenerator(chars, minLength, maxLength, lengthGranularity, lengthDistribution, 
-    				uniqueness),
-    		serialFactory.createStringGenerator(
-    				chars, minLength, maxLength, lengthGranularity, lengthDistribution, uniqueness)
-		));
+    	NonNullGenerator<String> eqGenerator = super.createStringGenerator(
+    			chars, minLength, maxLength, lengthGranularity, lengthDistribution, uniqueness);
+		NonNullGenerator<String> serialGenerator = serialFactory.createStringGenerator(
+				chars, minLength, maxLength, lengthGranularity, lengthDistribution, uniqueness);
+		return WrapperFactory.asNonNullGenerator(new GeneratorChain<String>(
+				String.class, true, eqGenerator, serialGenerator));
 	}
+	
+	
+	
+	// defaults --------------------------------------------------------------------------------------------------------
 	
     @Override
 	public Set<Character> defaultSubSet(Set<Character> characters) {
@@ -90,9 +96,9 @@ public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // T
     }
 
 	@Override
-	protected Set<Integer> defaultCounts(int minParts, int maxParts) {
+	protected Set<Integer> defaultCounts(int minParts, int maxParts, int partsGranularity) {
 		TreeSet<Integer> counts = new TreeSet<Integer>();
-		for (int i = minParts; i <= maxParts; i++)
+		for (int i = minParts; i <= maxParts; i += partsGranularity)
 			counts.add(i);
 		return counts;
 	}
