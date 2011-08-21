@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,12 +40,12 @@ import org.databene.commons.mutator.AnyMutator;
  * @author Volker Bergmann
  */
 
-public class SetGlobalPropertyStatement implements Statement {
+public class SetSettingStatement implements Statement {
 	
 	private String propertyName;
 	private Expression<?> valueExpression;
 
-    public SetGlobalPropertyStatement(String propertyName, Expression<?> valueExpression) {
+    public SetSettingStatement(String propertyName, Expression<?> valueExpression) {
     	this.propertyName = propertyName;
     	this.valueExpression = valueExpression;
     }
@@ -55,7 +55,7 @@ public class SetGlobalPropertyStatement implements Statement {
 		if (propertyName.startsWith("context."))
 	        AnyMutator.setValue(context, propertyName, value, true);
         else {
-			context.setProperty(propertyName, value);
+			context.setSetting(propertyName, value);
         }
 	}
 
