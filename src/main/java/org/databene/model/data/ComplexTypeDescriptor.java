@@ -33,6 +33,7 @@ import java.util.Set;
 
 import org.databene.commons.ArrayBuilder;
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.StringUtil;
 import org.databene.commons.collection.ListBasedSet;
 import org.databene.commons.collection.NamedValueList;
 
@@ -89,10 +90,12 @@ public class ComplexTypeDescriptor extends TypeDescriptor implements VariableHol
 	}
    
     public ComponentDescriptor getComponent(String name) {
-        ComponentDescriptor descriptor = (ComponentDescriptor) parts.someValueOfName(name);
-        if (descriptor == null && getParent() != null)
-            descriptor = ((ComplexTypeDescriptor)getParent()).getComponent(name);
-        return descriptor;
+    	for (InstanceDescriptor part : parts.values())
+    		if (StringUtil.equalsIgnoreCase(part.getName(), name) && part instanceof ComponentDescriptor)
+    			return (ComponentDescriptor) part;
+        if (getParent() != null)
+            return ((ComplexTypeDescriptor)getParent()).getComponent(name);
+        return null;
     }
 
     public List<InstanceDescriptor> getParts() {
