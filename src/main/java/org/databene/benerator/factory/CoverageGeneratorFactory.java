@@ -40,7 +40,7 @@ import org.databene.model.data.Uniqueness;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // TODO v0.7 test this class
+public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory {
 	
 	private SerialGeneratorFactory serialFactory;
 	
