@@ -53,7 +53,7 @@ public interface GeneratorContext extends Context {
 	// other features --------------------------------------------------------------------------------------------------
 	
     GeneratorFactory getGeneratorFactory();
-	Object getProperty(String name);
+	Object getSetting(String name);
     Class<?> forName(String className);
 	ExecutorService getExecutorService();
 	String resolveRelativeUri(String relativeUri);

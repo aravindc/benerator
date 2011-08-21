@@ -41,26 +41,26 @@ public class IfParserAndStatementTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testPlainTrue() throws Exception {
-		parseAndExecute("<if test='1==1'><property name='executed' value='OK'/></if>");
-		assertEquals("OK", context.getProperty("executed"));
+		parseAndExecute("<if test='1==1'><setting name='executed' value='OK'/></if>");
+		assertEquals("OK", context.getSetting("executed"));
 	}
 	
 	@Test
 	public void testPlainFalse() throws Exception {
-		parseAndExecute("<if test='2==3'><property name='executed' value='OK'/></if>");
-		assertEquals(null, context.getProperty("executed"));
+		parseAndExecute("<if test='2==3'><setting name='executed' value='OK'/></if>");
+		assertEquals(null, context.getSetting("executed"));
 	}
 	
 	@Test
 	public void testThenTrue() throws Exception {
-		parseAndExecute("<if test='1==1'><then><property name='executed' value='OK'/></then></if>");
-		assertEquals("OK", context.getProperty("executed"));
+		parseAndExecute("<if test='1==1'><then><setting name='executed' value='OK'/></then></if>");
+		assertEquals("OK", context.getSetting("executed"));
 	}
 	
 	@Test
 	public void testThenFalse() throws Exception {
-		parseAndExecute("<if test='2==3'><then><property name='executed' value='OK'/></then></if>");
-		assertEquals(null, context.getProperty("executed"));
+		parseAndExecute("<if test='2==3'><then><setting name='executed' value='OK'/></then></if>");
+		assertEquals(null, context.getSetting("executed"));
 	}
 	
 	@Test
@@ -68,21 +68,21 @@ public class IfParserAndStatementTest extends BeneratorIntegrationTest {
 		Statement statement = parse(
 			"<if test='x==3'>" +
 			"	<then>" + 
-			"		<property name='executed' value='OK'/>" +
+			"		<setting name='executed' value='OK'/>" +
 			"	</then>" +
 			"	<else>" + 
-			"		<property name='executed' value='NOK'/>" +
+			"		<setting name='executed' value='NOK'/>" +
 			"	</else>" +
 			"</if>"
 		);
 		// test 'then' part
 		context.set("x", 3);
 		statement.execute(context);
-		assertEquals("OK", context.getProperty("executed"));
+		assertEquals("OK", context.getSetting("executed"));
 		// test 'else' part
 		context.set("x", 2);
 		statement.execute(context);
-		assertEquals("NOK", context.getProperty("executed"));
+		assertEquals("NOK", context.getSetting("executed"));
 	}
 	
 	@Test(expected = SyntaxError.class)

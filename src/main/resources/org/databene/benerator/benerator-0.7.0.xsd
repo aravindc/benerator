@@ -65,7 +65,7 @@
 			<xs:element ref="template"          minOccurs="0" />
 			<xs:element ref="comment"           minOccurs="0" />
 			<xs:element ref="include"           minOccurs="0" />
-			<xs:element ref="property"          minOccurs="0" />
+			<xs:element ref="setting"           minOccurs="0" />
 			<xs:element ref="database"          minOccurs="0" />
 			<xs:element ref="bean"              minOccurs="0" />
 			<xs:element ref="defaultComponents" minOccurs="0" />
@@ -362,6 +362,21 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="setting"> <!-- TODO unify with property -->
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="comment"  minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="bean"  minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="idref" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="name"    type="xs:string"/>
+			<xs:attribute name="value"   type="xs:string"/>
+			<xs:attribute name="default" type="xs:string"/>
+			<xs:attribute name="ref"     type="xs:string"/>
+			<xs:attribute name="source"  type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	
 	<!-- Sets a JavaBean's property to the simple property specified as 'value' attribute
 	     or to the object stored in the context with the 'ref'. -->
 	<xs:element name="property">

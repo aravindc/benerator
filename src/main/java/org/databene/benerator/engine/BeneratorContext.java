@@ -67,7 +67,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	public static final char DEFAULT_CELL_SEPARATOR = ',';
 
 	private GeneratorFactory generatorFactory;
-    private DefaultContext properties;
+    private DefaultContext settings;
 	private ClassCache classCache;
 	
     protected String  defaultEncoding      = SystemInfo.getFileEncoding();
@@ -99,10 +99,10 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 			throw new ConfigurationError("No context URI specified");
 		this.contextUri = contextUri;
 		this.generatorFactory = new StochasticGeneratorFactory();
-		properties = new DefaultContext();
+		settings = new DefaultContext();
 		push(new DefaultContext(java.lang.System.getenv()));
 		push(new DefaultContext(java.lang.System.getProperties()));
-		push(properties);
+		push(settings);
 		push(new CaseInsensitiveContext(true));
 		set("context", this);
 		classCache = new ClassCache();
@@ -122,12 +122,12 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 		this.generatorFactory.setDefaultsProvider(defaultsProvider);
 	}
 
-	public void setProperty(String name, Object value) {
-		properties.set(name, value);
+	public void setSetting(String name, Object value) {
+		settings.set(name, value);
 	}
 	
-	public Object getProperty(String name) {
-		return properties.get(name);
+	public Object getSetting(String name) {
+		return settings.get(name);
 	}
 	
 	public void close() {
