@@ -173,7 +173,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertTrue(innerConsumer.closeCount.get() > 0);
 		assertEquals(9L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
 	}
-/*
+
     @Test
 	public void testSubGeneratePageSize2() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
@@ -258,6 +258,23 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertEquals(new Entity("inner"), consumer.products.get(6));
 		assertEquals(new Entity("inner"), consumer.products.get(7));
 		assertEquals(new Entity("inner"), consumer.products.get(8));
+	}
+
+    /** Tests a combination of variable and attribute with the same name. */
+	@Test
+	public void testVariableOfSameNameAsAttribute() throws Exception {
+		Statement statement = parse(
+				"<generate name='pName' type='outer' count='3' consumer='cons'>" +
+				"    <variable name='n' type='int' distribution='step' />" +
+				"    <attribute name='n' type='int' script='n + 1' />" +
+        		"</generate>");
+		ConsumerMock consumer = new ConsumerMock(true, 1);
+		context.set("cons", consumer);
+		statement.execute(context);
+		assertEquals(3, consumer.startConsumingCount.get());
+		assertOuter(2, consumer.products.get(0));
+		assertOuter(3, consumer.products.get(1));
+		assertOuter(4, consumer.products.get(2));
 	}
 
 	private void assertOuter(int n, Object object) {
