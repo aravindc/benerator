@@ -62,6 +62,7 @@ public interface DescriptorConstants {
     static final String EL_ELSE = "else";
     static final String EL_WHILE = "while";
     static final String EL_BEAN = "bean";
+    static final String EL_PROPERTY = "property";
 	static final String EL_GENERATE = "generate";
 	static final String EL_ITERATE = "iterate";
 	static final String EL_CONSUMER = "consumer";
@@ -75,7 +76,7 @@ public interface DescriptorConstants {
     static final String EL_ERROR = "error";
     static final String EL_IMPORT = "import";
     static final String EL_INCLUDE = "include";
-    static final String EL_PROPERTY = "property";
+    static final String EL_SETTING = "setting";
     static final String EL_RUN_TASK = "run-task";
     static final String EL_VARIABLE = "variable";
     static final String EL_VALUE = "value";

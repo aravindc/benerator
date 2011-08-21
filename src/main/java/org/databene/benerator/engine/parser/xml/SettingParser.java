@@ -50,10 +50,11 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class PropertyParser extends AbstractBeneratorDescriptorParser {
+public class SettingParser extends AbstractBeneratorDescriptorParser {
 
-	public PropertyParser() {
-	    super(DescriptorConstants.EL_PROPERTY, CollectionUtil.toSet(ATT_NAME), CollectionUtil.toSet(ATT_DEFAULT, ATT_VALUE, ATT_REF, ATT_SOURCE));
+	public SettingParser() {
+	    super(DescriptorConstants.EL_SETTING, CollectionUtil.toSet(ATT_NAME), 
+	    		CollectionUtil.toSet(ATT_DEFAULT, ATT_VALUE, ATT_REF, ATT_SOURCE));
     }
 
     @Override

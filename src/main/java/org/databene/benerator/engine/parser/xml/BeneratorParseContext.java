@@ -52,7 +52,7 @@ public class BeneratorParseContext extends ParseContext<Statement> {
 		factory.addParser(new IfParser());
 		factory.addParser(new ImportParser());
 		factory.addParser(new IncludeParser());
-		factory.addParser(new PropertyParser());
+		factory.addParser(new SettingParser());
 		factory.addParser(new RunTaskParser());
 		factory.addParser(new SetupParser());
 		factory.addParser(new MemStoreParser());
