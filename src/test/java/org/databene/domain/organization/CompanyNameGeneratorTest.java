@@ -73,7 +73,7 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
             System.out.println(name);
         }
     }
-/*
+/* TODO make this work
     @Test
     public void testWorld() {
         CompanyNameGenerator generator = new CompanyNameGenerator("world");
