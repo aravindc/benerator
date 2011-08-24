@@ -21,6 +21,9 @@
 
 package org.databene.benerator.wrapper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.databene.benerator.Generator;
 
 /**
@@ -32,14 +35,19 @@ import org.databene.benerator.Generator;
 public class ProductWrapper<E> {
 	
 	private E product;
-	private boolean wrapped = false;
+	private boolean wrapped;
+	private Map<String, String> tags;
 	
 	public ProductWrapper() {
+		this.wrapped = false;
+		this.tags = null;
 	}
 	
 	public ProductWrapper<E> wrap(E product) {
 		this.product = product;
 		this.wrapped = true;
+		if (tags != null)
+			tags.clear();
 		return this;
 	}
 	
@@ -50,6 +58,17 @@ public class ProductWrapper<E> {
 		this.product = null;
 		this.wrapped = false;
 		return result;
+	}
+	
+	public String getTag(String key) {
+		return (tags != null ? tags.get(key) : null);
+	}
+	
+	public ProductWrapper<E> setTag(String key, String value) {
+		if (tags == null)
+			tags = new HashMap<String, String>();
+		tags.put(key, value);
+		return this;
 	}
 
 	@Override
