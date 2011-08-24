@@ -26,7 +26,7 @@
 
 package org.databene.domain.organization;
 
-import static org.databene.benerator.util.GeneratorUtil.generateNullable;
+import static org.databene.benerator.util.GeneratorUtil.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -127,6 +127,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 	    @Override
 	    public synchronized void init(GeneratorContext context) {
 	        try {
+	        	super.init(context);
 				initWithDataset(datasetName, context);
 			} catch (Exception e) {
 				String fallbackDataset = DatasetUtil.fallbackRegionName();
@@ -139,19 +140,15 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 			createAndInitLocationGenerator(datasetToUse);
 			initLegalFormGenerator(datasetToUse);
 			initSectorGenerator(datasetToUse);
-			shortNameGenerator = new AlternativeGenerator<String>(String.class);
-			createInitialsNameGenerator();
-			createPersonNameGenerator(datasetToUse);
-			createArtificialNameGenerator();
-			createTechNameGenerator();
-			shortNameGenerator.init(context);
+			createAndInitShortNameGenerator(datasetToUse, context);
 			super.init(context);
 		}
 
 		@Override
 		public CompanyName generate() {
 			CompanyName name = new CompanyName();
-	        name.setShortName(generateNullable(shortNameGenerator));
+			String usedDataSet = randomDataset();
+	        name.setShortName(generateNonNull(shortNameGenerator));
 	        if (sectorGenerator != null) {
 				String sector = generateNullable(sectorGenerator);
 		        if (sector != null)
@@ -163,7 +160,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 		            name.setLocation(location);
 	        }
 	        if (legalFormGenerator != null)
-	        	name.setLegalForm(generateNullable(legalFormGenerator));
+	        	name.setLegalForm(legalFormGenerator.generateForDataset(usedDataSet));
 	        name.setDatasetName(datasetName);
 	        return name;
 		}
@@ -175,40 +172,54 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 
 	    // private helpers -------------------------------------------------------------------------------------------------
 	    
-		private void createInitialsNameGenerator() {
-			shortNameGenerator.addSource(new RegexStringGenerator("[A-Z]{3}"));
+	    private void createAndInitShortNameGenerator(String datasetToUse, GeneratorContext context) {
+			shortNameGenerator = new AlternativeGenerator<String>(String.class);
+			shortNameGenerator.addSource(createInitialsNameGenerator());
+			addSourceIfNotNull(createPersonNameGenerator(datasetToUse), shortNameGenerator);
+			addSourceIfNotNull(createArtificialNameGenerator(), shortNameGenerator);
+			addSourceIfNotNull(createTechNameGenerator(), shortNameGenerator);
+			shortNameGenerator.init(context);
+		}
+		
+		private void addSourceIfNotNull(Generator<String> source, AlternativeGenerator<String> master) {
+			if (source != null)
+				master.addSource(source);
 		}
 
-		private void createTechNameGenerator() {
+		private RegexStringGenerator createInitialsNameGenerator() {
+			return new RegexStringGenerator("[A-Z]{3}");
+		}
+
+		private MessageGenerator createTechNameGenerator() {
 		    try {
-	            Generator<String> tech = new MessageGenerator("{0}{1}", 
+	            return new MessageGenerator("{0}{1}", 
 	                    new SequencedCSVSampleGenerator<String>(ORG + "tech1.csv"),
 	                    new SequencedCSVSampleGenerator<String>(ORG + "tech2.csv")
 	                );
-		        shortNameGenerator.addSource(tech);
 	        } catch (Exception e) {
 	        	LOGGER.info("Cannot create technical company name generator: " + e.getMessage());
+	        	return null;
 	        }
 	    }
 
-		private void createArtificialNameGenerator() {
+		private TokenCombiner createArtificialNameGenerator() {
 		    try {
-		    	TokenCombiner artificial = new TokenCombiner(ORG + "artificialName.csv", false, '-', Encodings.UTF_8, false);
-		    	shortNameGenerator.addSource(artificial);
+		    	return new TokenCombiner(ORG + "artificialName.csv", false, '-', Encodings.UTF_8, false);
 	        } catch (Exception e) {
 	        	LOGGER.info("Cannot create artificial company name generator: " + e.getMessage());
+	        	return null;
 	        }
 	    }
 
-		private void createPersonNameGenerator(String datasetToUse) {
+		private MessageGenerator createPersonNameGenerator(String datasetToUse) {
 		    try {
-		        Generator<String> person = new MessageGenerator("{0} {1}", 
+		        return new MessageGenerator("{0} {1}", 
 		                new GivenNameGenerator(datasetToUse, Gender.MALE),
 		                new FamilyNameGenerator(datasetToUse)
 		            );
-		        shortNameGenerator.addSource(person);
 	        } catch (Exception e) {
 	        	LOGGER.info("Cannot create person-based company name generator: " + e.getMessage());
+	        	return null;
 	        }
 	    }
 
@@ -230,8 +241,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 		    if (legalForm) {
 		    	
 	        	try {
-	        		legalFormGenerator = new WeightedDatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", 
-	        				datasetName, DatasetUtil.REGION_NESTING, Encodings.UTF_8);
+	        		legalFormGenerator = new LegalFormGenerator(datasetName);
 	        		legalFormGenerator.init(context);
 	        	} catch (Exception e) {
 	        		LOGGER.error("Cannot create legal form generator: " + e.getMessage() + ". Falling back to US. ");
