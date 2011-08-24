@@ -23,7 +23,6 @@ package org.databene.benerator.dataset;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
@@ -82,22 +81,25 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		super.init(context);
 	}
 	
-	public ProductFromDataset<E> generateWithDatasetInfo() {
-		return getSource().generateWithDatasetInfo();
-	}
-    
 	public E generateForDataset(String requestedDataset) {
 		DatasetBasedGenerator<E> sourceGen = getSource();
 		if (sourceGen instanceof CompositeDatasetGenerator)
 			return ((CompositeDatasetGenerator<E>) sourceGen).generateForDataset(requestedDataset);
-		else if (requestedDataset.equals(sourceGen.getDataset())) {
+		else { // assume that either the dataset matches or an appropriate failover has been chosen
 			ProductWrapper<E> wrapper = sourceGen.generate(getResultWrapper());
 			return (wrapper != null ? wrapper.unwrap() : null);
-		} else
-			throw new IllegalGeneratorStateException("Wrong dataset, expected " + requestedDataset + ", " +
-					"found " + sourceGen.getDataset());
+		}
 	}
     
+	public String randomDataset() {
+		if (getSource() instanceof CompositeDatasetGenerator) {
+			Dataset dataset = DatasetUtil.getDataset(nesting, datasetName);
+			return RandomUtil.randomElement(dataset.getSubSets()).getName();
+		} else
+			return datasetName;
+	}
+	
+
 	// helper methods --------------------------------------------------------------------------------------------------
 	
     protected DatasetBasedGenerator<E> createDatasetGenerator(Dataset dataset, boolean required) {
@@ -137,14 +139,6 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 	@Override
 	public DatasetBasedGenerator<E> getSource() {
 		return (DatasetBasedGenerator<E>) super.getSource();
-	}
-	
-	protected String randomDataset() {
-		if (getSource() instanceof CompositeDatasetGenerator) {
-			Dataset dataset = DatasetUtil.getDataset(nesting, datasetName);
-			return RandomUtil.randomElement(dataset.getSubSets()).getName();
-		} else
-			return datasetName;
 	}
 	
 	
