@@ -47,13 +47,18 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
 	}
 
     @Test
-    public void testDE() {
+    public void testGermany() {
         check("DE");
     }
 
     @Test
-    public void testUS() {
+    public void testUSA() {
         check("US");
+    }
+
+    @Test
+    public void testBrazil() {
+        check("BR");
     }
 
     @Test
