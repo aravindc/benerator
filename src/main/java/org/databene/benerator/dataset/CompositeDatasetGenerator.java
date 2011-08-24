@@ -117,7 +117,7 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 			}
 		}
 		if (required)
-			throw new IllegalArgumentException("No sub generator found for dataset '" + sourceDataset + "'");
+			throw new IllegalArgumentException(getClass() + " did not find a sub generator for dataset '" + sourceDataset + "'");
 		return null;
 	}
 
