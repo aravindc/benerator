@@ -47,6 +47,7 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.MessageGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.WrapperFactory;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.Encodings;
 import org.databene.commons.bean.PropertyAccessConverter;
 import org.databene.domain.address.CityGenerator;
@@ -116,7 +117,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 	class AtomicCompanyNameGenerator extends ThreadSafeNonNullGenerator<CompanyName> {
 		
 	    private AlternativeGenerator<String> shortNameGenerator;
-	    private Generator<String> sectorGenerator;
+	    private SectorGenerator sectorGenerator;
 	    private WeightedDatasetCSVGenerator<String> legalFormGenerator;
 	    private Generator<String> locationGenerator;
 
@@ -147,8 +148,8 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 		@Override
 		public CompanyName generate() {
 			CompanyName name = new CompanyName();
-			String usedDataSet = randomDataset();
 	        name.setShortName(generateNonNull(shortNameGenerator));
+	        
 	        if (sectorGenerator != null) {
 				String sector = generateNullable(sectorGenerator);
 		        if (sector != null)
@@ -160,7 +161,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 		            name.setLocation(location);
 	        }
 	        if (legalFormGenerator != null)
-	        	name.setLegalForm(legalFormGenerator.generateForDataset(usedDataSet));
+	        	name.setLegalForm(generateNullable(legalFormGenerator));
 	        name.setDatasetName(datasetName);
 	        return name;
 		}
@@ -226,11 +227,12 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 		private void initSectorGenerator(String datasetName) {
 		    if (sector) {
 	        	try {
-	        		WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(
-	        				ORG + "sector_{0}.csv", datasetName, DatasetUtil.REGION_NESTING, Encodings.UTF_8);
-					sectorGenerator = WrapperFactory.injectNulls(source, 0.7);
+	        		Country country = Country.getInstance(datasetName);
+					sectorGenerator = new SectorGenerator(country.getDefaultLanguage());
 	        		sectorGenerator.init(context);
 	        	} catch (Exception e) {
+	        		if ("US".equals(datasetName))
+	        			throw new ConfigurationError("Failed to initialize SectorGenerator with US dataset", e);
 	        		LOGGER.info("Cannot create sector generator: " + e.getMessage() + ". Falling back to US");
 	        		initSectorGenerator("US");
 	        	}
