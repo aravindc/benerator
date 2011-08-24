@@ -259,13 +259,17 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 			    Generator<String> locationBaseGen;
 		        if (location && country != null) {
 		        	try {
-			            Generator<String> city = WrapperFactory.applyConverter(
+			            Generator<String> cityGen = WrapperFactory.applyConverter(
 			            		new CityGenerator(country.getIsoCode()), 
 			            		new PropertyAccessConverter("name"), 
 			            		new NameNormalizer());
-			            locationBaseGen = new AlternativeGenerator<String>(String.class, 
-			                    			new ConstantGenerator<String>(country.getLocalName()), 
-			                    			city);
+			            if (DatasetUtil.getDataset(DatasetUtil.REGION_NESTING, datasetName).isAtomic()) {
+				            locationBaseGen = new AlternativeGenerator<String>(String.class, 
+				                    			new ConstantGenerator<String>(country.getLocalName()), 
+				                    			cityGen);
+			            } else {
+			            	locationBaseGen = cityGen;
+			            }
 		        	} catch (Exception e) {
 		        		LOGGER.info("Cannot create location generator: " + e.getMessage());
 		                locationBaseGen = new ConstantGenerator<String>(null);
