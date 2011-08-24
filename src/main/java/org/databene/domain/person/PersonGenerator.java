@@ -29,7 +29,7 @@ package org.databene.domain.person;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.dataset.DatasetBasedGenerator;
-import org.databene.benerator.dataset.ProductFromDataset;
+import org.databene.benerator.dataset.DatasetUtil;
 import org.databene.benerator.primitive.BooleanGenerator;
 import static org.databene.benerator.util.GeneratorUtil.*;
 import org.databene.benerator.wrapper.CompositeGenerator;
@@ -170,17 +170,13 @@ public class PersonGenerator extends CompositeGenerator<Person>
     }
     
 	public ProductWrapper<Person> generate(ProductWrapper<Person> wrapper) {
-	    return wrapper.wrap(generate());
+		String usedDataset = randomDataset();
+	    Person person = generateForDataset(usedDataset);
+        return wrapper.wrap(person).setTag(REGION_NESTING, usedDataset);
     }
 
 	public Person generate() {
 		return generateForDataset(randomDataset());
-	}
-
-	public ProductFromDataset<Person> generateWithDatasetInfo() {
-	    String usedDataset = randomDataset();
-	    Person person = generateForDataset(usedDataset);
-        return new ProductFromDataset<Person>(person, REGION_NESTING, usedDataset);
 	}
 
 	public Person generateForDataset(String datasetToUse) {
@@ -213,7 +209,7 @@ public class PersonGenerator extends CompositeGenerator<Person>
 	// private helpers -------------------------------------------------------------------------------------------------
 
     private String randomDataset() {
-    	return maleGivenNameGen.generateWithDatasetInfo().dataset;
+    	return maleGivenNameGen.generate(new ProductWrapper<String>()).getTag(DatasetUtil.REGION_NESTING);
     }
 
 	private Converter<String, String> getFemaleFamilyNameConverter(String usedDataset) {
