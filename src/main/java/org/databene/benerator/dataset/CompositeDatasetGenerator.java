@@ -65,10 +65,13 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 	}
 	
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
-		Generator<E> generator = randomAtomicGenerator();
+		DatasetBasedGenerator<E> generator = randomAtomicGenerator();
 		if (generator == null)
 			return null;
-		return wrapper.wrap(generator.generate(getResultWrapper()).unwrap());
+		ProductWrapper<E> generation = generator.generate(getResultWrapper());
+		if (generation == null)
+			return null;
+		return wrapper.wrap(generation.unwrap()).setTag(nesting, generator.getDataset());
 	}
 
 	// DatasetRelatedGenerator interface implementation ----------------------------------------------------------------
@@ -81,16 +84,6 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 		return dataset;
 	}
 	
-	public ProductFromDataset<E> generateWithDatasetInfo() {
-		DatasetBasedGenerator<E> generator = randomAtomicGenerator();
-		if (generator == null)
-			return null;
-		ProductWrapper<E> generation = generator.generate(getResultWrapper());
-		if (generation == null)
-			return null;
-		return new ProductFromDataset<E>(generation.unwrap(), nesting, generator.getDataset());
-	}
-
 	public E generateForDataset(String dataset) {
 		return getGeneratorForDataset(dataset, true).generate(getResultWrapper()).unwrap();
 	}

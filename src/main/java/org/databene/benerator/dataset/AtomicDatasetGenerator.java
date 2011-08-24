@@ -50,13 +50,11 @@ public class AtomicDatasetGenerator<E> extends GeneratorProxy<E> implements Data
 		return dataset;
 	}
 
-	public ProductFromDataset<E> generateWithDatasetInfo() {
-		ProductWrapper<E> wrapper = generate(getResultWrapper());
-		if (wrapper == null)
-			return null;
-		return new ProductFromDataset<E>(wrapper.unwrap(), nesting, dataset);
+	@Override
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
+		return super.generate(wrapper).setTag(nesting, dataset);
 	}
-
+	
 	public E generateForDataset(String requestedDataset) {
 		if (!dataset.equals(requestedDataset))
 			throw new IllegalArgumentException("Requested dataset " + requestedDataset + ", but supporting only dataset " + this.dataset);
