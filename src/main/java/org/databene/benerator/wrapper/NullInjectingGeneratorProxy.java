@@ -57,11 +57,15 @@ public class NullInjectingGeneratorProxy<E> extends GeneratorProxy<E> {
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	if (closed)
     		return null;
-    	if (random.nextFloat() < nullQuota)
+    	if (shouldNullify())
     		return wrapper.wrap(null);
     	else
     		return super.generate(wrapper);
     }
+
+	protected boolean shouldNullify() {
+		return random.nextFloat() < nullQuota;
+	}
 
 	@Override
 	public String toString() {
