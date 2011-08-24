@@ -34,7 +34,6 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.dataset.DatasetBasedGenerator;
 import org.databene.benerator.dataset.DatasetUtil;
-import org.databene.benerator.dataset.ProductFromDataset;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.ConfigurationError;
@@ -80,10 +79,6 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
 
 	public String getDataset() {
 		return datasetName;
-	}
-
-	public ProductFromDataset<String> generateWithDatasetInfo() {
-		return getSource().generateWithDatasetInfo();
 	}
 
 	public String generateForDataset(String dataset) {
