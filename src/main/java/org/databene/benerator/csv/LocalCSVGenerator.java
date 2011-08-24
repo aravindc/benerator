@@ -89,7 +89,7 @@ public class LocalCSVGenerator<E> extends WeightedCSVSampleGenerator<E> {
             return null;
         String uri = LocaleUtil.availableLocaleUrl(baseName, locale, suffix);
         if (uri == null)
-            throw new ConfigurationError("No localization found for " + baseName + suffix);
+            throw new ConfigurationError("No localization found for " + baseName + suffix + " on locale " + locale);
         return uri;
     }
 
