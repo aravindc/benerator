@@ -31,8 +31,7 @@ import org.databene.benerator.Generator;
  * @author Volker Bergmann
  */
 public interface DatasetBasedGenerator<E> extends Generator<E> {
-	ProductFromDataset<E> generateWithDatasetInfo();
-	E generateForDataset(String dataset);
 	String getNesting();
 	String getDataset();
+	E generateForDataset(String dataset);
 }
