@@ -39,7 +39,7 @@ import org.databene.commons.ConfigurationError;
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public abstract class IndividualWeight<E> implements Distribution {
+public abstract class IndividualWeight<E> implements Weight {
 	
 	public abstract double weight(E object);
 	
