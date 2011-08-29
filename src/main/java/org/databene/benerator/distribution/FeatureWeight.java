@@ -40,6 +40,8 @@ import org.databene.commons.converter.AnyConverter;
  */
 public class FeatureWeight extends IndividualWeight<Object> {
 
+	private String feature;
+	
     private FeatureAccessor<Object, Double> accessor;
 	private Converter<Object, Double> converter;
 
@@ -49,8 +51,9 @@ public class FeatureWeight extends IndividualWeight<Object> {
 		this("weight");
 	}
 
-	public FeatureWeight(String weightFeature) {
-		this.accessor = new FeatureAccessor<Object, Double>(weightFeature);
+	public FeatureWeight(String feature) {
+		this.feature = feature;
+		this.accessor = new FeatureAccessor<Object, Double>(feature);
 		this.converter = new AnyConverter<Double>(Double.class);
 	}
 	
@@ -90,7 +93,7 @@ public class FeatureWeight extends IndividualWeight<Object> {
 	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + '[' + (accessor != null ? accessor.getFeatureName() : "null") + ']';
+		return getClass().getSimpleName() + '[' + feature + ']';
 	}
 
 }
