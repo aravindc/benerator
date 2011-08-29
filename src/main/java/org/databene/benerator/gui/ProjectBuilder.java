@@ -463,7 +463,7 @@ public class ProjectBuilder implements Runnable {
         Map<String, String> attributes = new OrderedMap<String, String>();
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
             Object value = detail.getValue();
-            if (value != null && !istDefaultValue(value, detail.getName())) {
+            if (value != null && !isDefaultValue(value, detail.getName())) {
             	if (value instanceof Expression)
             		value = ((Expression<?>) value).evaluate(null);
                 attributes.put(detail.getName(), toStringConverter.convert(value));
@@ -480,8 +480,11 @@ public class ProjectBuilder implements Runnable {
         writer.append("\n\n").append(TAB);
     }
 	
-    private static boolean istDefaultValue(Object value, String name) {
-		return false; // TODO v0.7 implement correctly using DefaultsProvider
+    private static boolean isDefaultValue(Object value, String name) {
+    	if ("nullable".equals(name) && (value == null || ((Boolean) value))) 
+    		return true;
+    	else
+    		return false;
 	}
 
 	private static void appendEndElement(String nodeName, LFNormalizingStringBuilder writer) {
