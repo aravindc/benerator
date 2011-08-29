@@ -54,7 +54,7 @@ public class GivenNameGenerator extends WeightedDatasetCSVGenerator<String> impl
     }
 
     public GivenNameGenerator(String datasetName, String nesting, String baseName, Gender gender) {
-        super(genderBaseName(baseName, gender) + "_{0}.csv", datasetName, nesting, Encodings.UTF_8);
+        super(String.class, genderBaseName(baseName, gender) + "_{0}.csv", datasetName, nesting, Encodings.UTF_8);
     }
 
     private static String genderBaseName(String baseName, Gender gender) {

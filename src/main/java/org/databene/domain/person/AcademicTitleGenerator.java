@@ -38,7 +38,7 @@ public class AcademicTitleGenerator extends LocalCSVGenerator<String> {
     }
 
     public AcademicTitleGenerator(Locale locale) {
-        super("/org/databene/domain/person/title", locale, ".csv", Encodings.UTF_8);
+        super(String.class, "/org/databene/domain/person/title", locale, ".csv", Encodings.UTF_8);
     }
     
 }
