@@ -93,7 +93,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
     }
 
     public CompanyNameGenerator(boolean sector, boolean location, boolean legalForm, String datasetName) {
-    	super(DatasetUtil.REGION_NESTING, datasetName);
+    	super(CompanyName.class, DatasetUtil.REGION_NESTING, datasetName);
     	LOGGER.debug("Creating instance of {} for dataset {}", getClass(), datasetName);
     	this.sector = sector;
     	this.location = location;
