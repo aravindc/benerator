@@ -251,11 +251,12 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 			    generator = new SequencedDatasetCSVGenerator(sourceName, separator, dataset, nesting, 
 			    		distribution, encoding, new ScriptConverterForStrings(context));
 			} else {
-			    generator = new WeightedDatasetCSVGenerator(sourceName, separator, dataset, nesting, 
+			    generator = new WeightedDatasetCSVGenerator(Object.class, sourceName, separator, dataset, nesting, 
 			    		encoding, new ScriptConverterForStrings(context));
 			}
 		} else if (sourceName.toLowerCase().endsWith(".wgt.csv") || distribution instanceof IndividualWeight) {
-        	generator = new WeightedCSVSampleGenerator(sourceName, encoding, new ScriptConverterForStrings(context));
+        	generator = new WeightedCSVSampleGenerator(
+        			Object.class, sourceName, encoding, new ScriptConverterForStrings(context));
         } else {
     		Generator<String[]> src = SourceFactory.createCSVLineGenerator(sourceName, separator, encoding, true);
     		Converter<String[], Object> converterChain = new ConverterChain<String[], Object>(
