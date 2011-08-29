@@ -52,8 +52,9 @@ public class DbSanity4BeneratorParser extends AbstractBeneratorDescriptorParser 
 	
 	public DbSanity4BeneratorParser() {
 	    super(EL_DBSANITY, 
-	    		CollectionUtil.toSet(ATT_ENVIRONMENT), 
-	    		CollectionUtil.toSet(ATT_IN, ATT_OUT, ATT_APPVERSION, ATT_TABLES, ATT_TAGS, ATT_SKIN, ATT_LOCALE, ATT_MODE, ATT_ON_ERROR),
+	    		null, 
+	    		CollectionUtil.toSet(ATT_ENVIRONMENT, ATT_DATABASE, ATT_IN, ATT_OUT, ATT_APPVERSION, ATT_TABLES, 
+	    				ATT_TAGS, ATT_SKIN, ATT_LOCALE, ATT_MODE, ATT_ON_ERROR),
 	    		BeneratorRootStatement.class, IfStatement.class, WhileStatement.class);
     }
 
