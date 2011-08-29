@@ -30,6 +30,7 @@ import org.databene.commons.NullSafeComparator;
 import org.databene.commons.OrderedMap;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -45,6 +46,8 @@ public class State {
     private String name;
     private Country country;
     private Map<CityId, City> cities;
+    private int population;
+	private Locale defaultLanguage;
 
     // constructors ----------------------------------------------------------------------------------------------------
     
@@ -74,7 +77,26 @@ public class State {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public Locale getDefaultLanguage() {
+		if (defaultLanguage != null)
+			return defaultLanguage;
+		else
+			return country.getDefaultLanguage();
+	}
+    
+	public void setDefaultLanguage(Locale defaultLanguage) {
+		this.defaultLanguage = defaultLanguage;
+	}
+    
+	public int getPopulation() {
+		return population;
+	}
 
+	public void setPopulation(int population) {
+		this.population = population;
+	}
+	
 	public Country getCountry() {
         return country;
     }
@@ -125,5 +147,5 @@ public class State {
 			return false;
 		return name.equals(that.name);
 	}
-    
+
 }
