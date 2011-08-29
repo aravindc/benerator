@@ -26,9 +26,9 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
- * Collects all products a source {@link Generator} is able to generate, 
- * puts them into a list and serves the list elements based on its 
- * {@link Distribution}.<br/><br/>
+ * General purpose generator proxy which is supposed to work with any distribution. 
+ * The behavior on a reset is up to the generator created by the distribution.<br/>
+ * <br/>
  * Created: 22.03.2010 10:45:48
  * @since 0.6.0
  * @author Volker Bergmann
