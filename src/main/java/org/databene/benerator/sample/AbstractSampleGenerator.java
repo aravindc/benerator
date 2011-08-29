@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -72,7 +72,7 @@ public abstract class AbstractSampleGenerator<E> extends ThreadSafeGenerator<E> 
     }
 
     /** Adds values to the sample list */
-    public <T extends E>void addValues(Collection<T> values) {
+    public <T extends E> void addValues(Collection<T> values) {
         if (values != null)
             for (T value : values)
                 addValue(value);
