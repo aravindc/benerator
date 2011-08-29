@@ -26,6 +26,7 @@
 
 package org.databene.domain.address;
 
+import org.databene.benerator.dataset.Dataset;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.benerator.primitive.RegexStringGenerator;
@@ -435,5 +436,18 @@ public class Country {
 	    	}
 	    }
     }
+
+	public static Country getInstanceForDataset(Dataset dataset) {
+		boolean done = false;
+		Country country;
+		do {
+			country = Country.getInstance(dataset.getName(), false);
+			if (country == null && dataset.getParents().size() > 0)
+				dataset = dataset.getParents().iterator().next();
+			else
+				done = true;
+		} while (!done);
+		return country;
+	}
 
 }

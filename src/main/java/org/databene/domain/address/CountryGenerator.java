@@ -50,12 +50,13 @@ public class CountryGenerator extends AbstractDatasetGenerator<Country> implemen
 	}
 	
 	public CountryGenerator(String datasetName) {
-        super(REGION, datasetName);
+        super(Country.class, REGION, datasetName);
     }
 	
+
 	@Override
-	protected Generator<Country> createGeneratorForAtomicDataset(Dataset dataset) {
-		Country country = Country.getInstance(dataset.getName(), false);
+	protected Generator<Country> createGeneratorForAtomicDataset(final Dataset dataset) {
+		Country country = Country.getInstanceForDataset(dataset);
 		return (country != null ? new ConstantGenerator<Country>(country) : null);
 	}
 
