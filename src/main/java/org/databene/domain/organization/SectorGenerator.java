@@ -23,12 +23,13 @@ package org.databene.domain.organization;
 
 import java.util.Locale;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.csv.LocalCSVGenerator;
 import org.databene.benerator.wrapper.NullInjectingGeneratorProxy;
 import org.databene.commons.Encodings;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Generator} implementation which creates names of industry sectors.<br/><br/>
  * Created: 24.08.2011 05:43:31
  * @since 0.7.0
  * @author Volker Bergmann
@@ -38,7 +39,7 @@ public class SectorGenerator extends NullInjectingGeneratorProxy<String> {
 	private static final String BASE_FILE_NAME = "/org/databene/domain/organization/sector";
 
     public SectorGenerator(Locale locale) {
-		super(new LocalCSVGenerator<String>(BASE_FILE_NAME, locale, ".csv", Encodings.UTF_8), 0.7);
+		super(new LocalCSVGenerator<String>(String.class, BASE_FILE_NAME, locale, ".csv", Encodings.UTF_8), 0.7);
 	}
 
 }
