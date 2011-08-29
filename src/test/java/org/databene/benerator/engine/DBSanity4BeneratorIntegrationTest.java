@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,16 +33,27 @@ import org.junit.Test;
 public class DBSanity4BeneratorIntegrationTest extends BeneratorIntegrationTest {
 
 	private static final String ENVIRONMENT = "DBSanityIntegrationTest";
-	private static String XML = "<dbsanity environment='" + ENVIRONMENT + "' />";
 	
 	@Test
-	public void testSuccess() {
+	public void testEnvironment() {
 		context.setContextUri("target/test-classes/org/databene/benerator/engine");
 		DBSystem db = new DBSystem("db", "jdbc:hsqldb:mem:DBSanityIntegrationTest", "org.hsqldb.jdbcDriver", "sa", null);
+		db.execute("drop table table1 if exists");
 		db.execute("create table table1 (id int)");
 		db.execute("insert into table1 (id) values (1)");
 		context.set("db", db);
-		parseAndExecute(XML);
+		parseAndExecute("<dbsanity environment='" + ENVIRONMENT + "' />");
+	}
+	
+	@Test
+	public void testExplicitDB() {
+		context.setContextUri("target/test-classes/org/databene/benerator/engine");
+		DBSystem db = new DBSystem("db", "jdbc:hsqldb:mem:DBSanityIntegrationTest", "org.hsqldb.jdbcDriver", "sa", null);
+		db.execute("drop table table1 if exists");
+		db.execute("create table table1 (id int)");
+		db.execute("insert into table1 (id) values (1)");
+		context.set("db", db);
+		parseAndExecute("<dbsanity database='db' />");
 	}
 	
 }
