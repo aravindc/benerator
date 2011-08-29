@@ -38,7 +38,6 @@ import javax.validation.ConstraintValidator;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.parser.ModelParser;
@@ -316,11 +315,11 @@ public class DescriptorUtil {
 		return scriptConverter;
 	}
 
-	public static NonNullGenerator<Long> createDynamicCountGenerator(final InstanceDescriptor descriptor, boolean resetToMin, 
+	public static Generator<Long> createDynamicCountGenerator(final InstanceDescriptor descriptor, boolean resetToMin, 
 			BeneratorContext context) {
     	Expression<Long> count = DescriptorUtil.getCount(descriptor);
     	if (count != null)
-    		return WrapperFactory.asNonNullGenerator(new ExpressionBasedGenerator<Long>(count, Long.class));
+    		return new ExpressionBasedGenerator<Long>(count, Long.class);
     	else {
 			final Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor);
 			final Expression<Long> maxCount = DescriptorUtil.getMaxCount(descriptor);
@@ -328,15 +327,13 @@ public class DescriptorUtil {
 				Long minCountValue = minCount.evaluate(context);
 				Long maxCountValue = maxCount.evaluate(context);
 				if (minCountValue.equals(maxCountValue))
-					return WrapperFactory.asNonNullGenerator(new ConstantGenerator<Long>(minCountValue));
+					return new ConstantGenerator<Long>(minCountValue);
 			}
 			final Expression<Long> countGranularity = DescriptorUtil.getCountGranularity(descriptor);
 			final Expression<Distribution> countDistribution = 
 				FactoryUtil.getDistributionExpression(descriptor.getCountDistribution(), Uniqueness.NONE, true);
-			return WrapperFactory.asNonNullGenerator(
-					new DynamicCountGenerator(minCount, maxCount, countGranularity, countDistribution, 
-					ExpressionUtil.constant(false), resetToMin)
-				);
+			return new DynamicCountGenerator(minCount, maxCount, countGranularity, countDistribution, 
+							ExpressionUtil.constant(false), resetToMin);
     	}
     }
 
