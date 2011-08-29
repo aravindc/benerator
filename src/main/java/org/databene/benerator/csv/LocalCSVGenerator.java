@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,6 @@ import org.databene.benerator.sample.WeightedCSVSampleGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.LocaleUtil;
-import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
 
 import java.util.Locale;
@@ -51,21 +50,18 @@ public class LocalCSVGenerator<E> extends WeightedCSVSampleGenerator<E> {
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public LocalCSVGenerator() {
-        this(null, null, SystemInfo.getFileEncoding());
-    }
-
-    public LocalCSVGenerator(String baseName, String suffix, String encoding) {
-        this(baseName, Locale.getDefault(), suffix, encoding);
+    public LocalCSVGenerator(Class<E> targetType, String baseName, String suffix, String encoding) {
+        this(targetType, baseName, Locale.getDefault(), suffix, encoding);
     }
 
     @SuppressWarnings("unchecked")
-    public LocalCSVGenerator(String baseName, Locale locale, String suffix, String encoding) {
-        this(baseName, locale, suffix, encoding, NoOpConverter.getInstance());
+    public LocalCSVGenerator(Class<E> targetType, String baseName, Locale locale, String suffix, String encoding) {
+        this(targetType, baseName, locale, suffix, encoding, NoOpConverter.getInstance());
     }
 
-    public LocalCSVGenerator(String baseName, Locale locale, String suffix, String encoding, Converter<String, E> converter) {
-        super(availableUri(baseName, locale, suffix), encoding, converter);
+    public LocalCSVGenerator(Class<E> targetType, String baseName, Locale locale, String suffix, String encoding, 
+    		Converter<String, E> converter) {
+        super(targetType, availableUri(baseName, locale, suffix), encoding, converter);
         this.baseName = baseName;
         this.locale = locale;
         this.suffix = suffix;
