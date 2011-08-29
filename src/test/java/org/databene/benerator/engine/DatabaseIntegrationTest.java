@@ -398,8 +398,6 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	
 	// selector resolution ---------------------------------------------------------------------------------------------
 	
-	// TODO v0.7 test difference between null result and no result
-	
 	@Test
 	public void testStaticEntitySelector_partial() {
 		parseAndExecute(
@@ -548,6 +546,32 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		assertEquals(2, products.size());
 		assertEquals(2, products.get(0).get("referee_id"));
 		assertEquals(3, products.get(1).get("referee_id"));
+		closeAndCheckCleanup();
+	}
+	
+	@Test
+	public void testStaticValueSelectorWithEmptyResultSet() {
+		parseAndExecute(
+				"<generate type='referer' maxCount='2' consumer='cons'>" +
+	        	"  <reference name='referee_id' source='db' " +
+	        	"	  subSelector='select id from referee where id=5' />" + 
+	        	"</generate>");
+		List<Entity> products = getConsumedEntities();
+		assertEquals(0, products.size());
+		closeAndCheckCleanup();
+	}
+	
+	@Test
+	public void testStaticValueSelectorWithNullResult() {
+		parseAndExecute(
+				"<generate type='referer' count='2' consumer='cons'>" +
+	        	"  <attribute name='referee_id' source='db' " +
+	        	"	  subSelector='select null from referee where id=2' />" + 
+	        	"</generate>");
+		List<Entity> products = getConsumedEntities();
+		assertEquals(2, products.size());
+		assertNull(products.get(0).get("referee_id"));
+		assertNull(products.get(1).get("referee_id"));
 		closeAndCheckCleanup();
 	}
 	
