@@ -27,7 +27,9 @@
 package org.databene.benerator.dataset;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Defines a data set that may be nested.<br/><br/>
@@ -42,6 +44,7 @@ public class Dataset {
     private String id;
     private String type;
     private String name;
+    private Set<Dataset> parents;
     private List<Dataset> subSets;
     
     // constructor -----------------------------------------------------------------------------------------------------
@@ -54,6 +57,7 @@ public class Dataset {
         this.id = type + ':' + name;
         this.type = type;
         this.name = name;
+        this.parents = new HashSet<Dataset>();
         this.subSets = new ArrayList<Dataset>();
     }
     
@@ -67,8 +71,17 @@ public class Dataset {
         return name;
     }
     
+	public void addParent(Dataset parent) {
+		this.parents.add(parent);
+	}
+    
+	public Set<Dataset> getParents() {
+		return parents;
+	}
+	
     public void addSubSet(Dataset subSet) {
         subSets.add(subSet);
+        subSet.addParent(this);
     }
     
     public List<Dataset> getSubSets() {
