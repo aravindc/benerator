@@ -98,19 +98,18 @@ public class AddressGenerator extends CompositeGenerator<Address> implements Non
     	assertInitialized();
         City city = cityGenerator.generate();
         Country country = city.getCountry();
-        Street street = new Street(city, streetNameGenerator.generateForDataset(country.getIsoCode()));
-        String[] data = street.generateHouseNumberWithZipCode(); // TODO v0.7 make street name generator fit the locale
+        Street street = new Street(city, streetNameGenerator.generateForCountryAndLocale(
+        		country.getIsoCode(), city.getLanguage()));
+        String[] data = street.generateHouseNumberWithPostalCode();
         String houseNumber = data[0];
-        String zipCode = data[1];
+        String postalCode = data[1];
         PhoneNumber privatePhone = generatePhoneNumber(city);
         PhoneNumber officePhone = generatePhoneNumber(city);
         PhoneNumber mobilePhone = country.generateMobileNumber(city);
         PhoneNumber fax = generatePhoneNumber(city);
-        return new Address(street.getName(), houseNumber, zipCode, city, city.getState().getId(), country, 
+        return new Address(street.getName(), houseNumber, postalCode, city, city.getState().getId(), country, 
         		privatePhone, officePhone, mobilePhone, fax);
     }
-
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
 	public String toString() {
