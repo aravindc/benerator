@@ -70,14 +70,20 @@ public class MemStore extends AbstractStorageSystem {
 		DataSource<Entity> result = new DataSourceProxy<Entity>(new DataSourceFromIterable<Entity>(idMap.values(), Entity.class));
 		if (!StringUtil.isEmpty(selector)) {
 			Expression<Boolean> filterEx = new ScriptExpression<Boolean>(ScriptUtil.parseScriptText(selector));
-			result = new DataSourceProxy<Entity>(new FilterExDataSource<Entity>(result, filterEx , context));
+			result = new FilterExDataSource<Entity>(result, filterEx , context);
 		}
 		return result;
 	}
 
-	public DataSource<?> queryEntityIds(String entityName, String selector, Context context) {
-		// TODO v0.7 implement this
-		throw new UnsupportedOperationException(getClass() + " does not support queryEntityIds(...)");
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public DataSource<?> queryEntityIds(String entityType, String selector, Context context) {
+		Map<?, Entity> idMap = getOrCreateIdMapForType(entityType);
+		DataSource<?> result = new DataSourceProxy(new DataSourceFromIterable(idMap.keySet(), Object.class));
+		if (!StringUtil.isEmpty(selector)) {
+			Expression<Boolean> filterEx = new ScriptExpression<Boolean>(ScriptUtil.parseScriptText(selector));
+			result = new FilterExDataSource(result, filterEx , context);
+		}
+		return result;
 	}
 
 	public DataSource<?> query(String selector, boolean simplify, Context context) {

@@ -159,6 +159,28 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testReference() {
+		MemStore.ignoreClose = false;
+		parseAndExecute(
+			"<generate type='order' consumer='cons'>" +
+			"	<id name='id' type='int' />" +
+			"	<reference name='product_id' type='int' source='src' targetType='product' selector='_candidate!=5' unique='true'/>" +
+			"</generate>"
+		);
+		Collection<Entity> orders = (List<Entity>) consumer.getProducts();
+		assertEquals(2, orders.size());
+		int index = 1;
+		for (Entity order : orders) {
+			assertNotNull(order);
+			assertEquals(index, order.get("id"));
+			int product = (Integer) order.get("product_id");
+			assertTrue(product >= 3 && product < 5);
+			index++;
+		}
+	}
+	
 	@Test
 	public void testIntegration() {
 		MemStore.ignoreClose = true;
