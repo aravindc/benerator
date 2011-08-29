@@ -31,19 +31,19 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.junit.Test;
 
 /**
- * Tests the {@link DistributingSampleGeneratorProxy}.<br/><br/>
+ * Tests the {@link IndexBasedSampleGeneratorProxy}.<br/><br/>
  * Created: 21.07.2010 07:09:23
  * @since 0.6.3
  * @author Volker Bergmann
  */
-public class DistributingSampleGeneratorProxyTest extends GeneratorTest {
+public class IndexBasedSampleGeneratorProxyTest extends GeneratorTest {
 
 	@Test
 	public void testSourceHandling() {
 		SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3);
 		Distribution distribution = new TestDistribution();
 		NonNullGenerator<Integer> generator = WrapperFactory.asNonNullGenerator(
-				new DistributingSampleGeneratorProxy<Integer>(source, distribution, false));
+				new IndexBasedSampleGeneratorProxy<Integer>(source, distribution, false));
 		
 		// on initialization, DistributingSampleGeneratorProxy scans throug all available 3 source values 
 		// plus a single call that returns null for signaling unavailability

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,19 +30,19 @@ import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
- * Uses a source {@link Generator} to collect all its available products and a Distribution
- * in order to provide them in a distributed manner.<br/><br/>
+ * Internal generator which reads all products of a source generator and provides them with an index-based strategy. 
+ * Reevaluates source on reset.<br/><br/>
  * Created: 21.07.2010 01:57:31
  * @since 0.6.3
  * @author Volker Bergmann
  */
-public class DistributingSampleGeneratorProxy<E> extends GeneratorProxy<E> {
+public class IndexBasedSampleGeneratorProxy<E> extends GeneratorProxy<E> {
 	
 	private Generator<E> dataProvider;
 	private Distribution distribution;
 	private boolean unique;
 
-	public DistributingSampleGeneratorProxy(Generator<E> dataProvider, Distribution distribution, boolean unique) {
+	public IndexBasedSampleGeneratorProxy(Generator<E> dataProvider, Distribution distribution, boolean unique) {
 		super(dataProvider.getGeneratedType());
 		this.dataProvider = dataProvider;
 		this.distribution = distribution;
@@ -71,14 +71,11 @@ public class DistributingSampleGeneratorProxy<E> extends GeneratorProxy<E> {
 	}
 
 	private void initMembers(GeneratorContext context) {
-	    if (distribution instanceof FeatureWeight)
-			setSource(distribution.applyTo(dataProvider, unique));
-		else {
-			List<E> products = GeneratorUtil.allProducts(dataProvider);
-			SampleGenerator<E> sampleGen = new SampleGenerator<E>(dataProvider.getGeneratedType(), distribution, unique, products);
-			sampleGen.init(context);
-			setSource(sampleGen);
-		}
+		List<E> products = GeneratorUtil.allProducts(dataProvider);
+		SampleGenerator<E> sampleGen = new SampleGenerator<E>(
+				dataProvider.getGeneratedType(), distribution, unique, products);
+		sampleGen.init(context);
+		setSource(sampleGen);
     }
 	
 }
