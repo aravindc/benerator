@@ -410,7 +410,6 @@ public class DBSystem extends AbstractStorageSystem {
     		script = true;
     	}
     	String sql = null;
-    	 // TODO v0.7 move the case distinction to EntityResultIterable (esp. useful for dynamic queries)
     	if (StringUtil.isEmpty(selector))
     	    sql = "select * from " + type;
     	else if (StringUtil.startsWithIgnoreCase(selector, "select") || StringUtil.startsWithIgnoreCase(selector, "'select"))
