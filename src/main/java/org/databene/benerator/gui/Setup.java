@@ -127,7 +127,7 @@ public class Setup implements ObservableBean, Serializable {
 		setDbDriver(DEFAULT_DB_DRIVER);
 		setDbUser(SystemInfo.getUserName());
 		setDbSnapshot("dbunit");
-		this.dbDependencies = new MavenDependency[0]; // TODO v0.7 handle maven dependencies
+		this.dbDependencies = new MavenDependency[0]; // TODO v0.8 handle maven dependencies
 		if (archetype == null)
 			setArchetype(ArchetypeManager.getInstance().getDefaultArchetype());
 	}
