@@ -147,9 +147,11 @@ public class DatasetUtil {
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 String name = entry.getKey();
                 Dataset dataset = getDataset(nesting, name, sets);
-                String[] subSetNames = StringUtil.tokenize(entry.getValue(), ',');
-                for (String subSetName : subSetNames)
-                    dataset.addSubSet(getDataset(nesting, subSetName, sets));
+                String[] subsetNames = StringUtil.tokenize(entry.getValue(), ',');
+                for (String subsetName : subsetNames) {
+					Dataset subset = getDataset(nesting, subsetName, sets);
+					dataset.addSubSet(subset);
+				}
             }
             types.put(nesting, sets);
             return sets;
