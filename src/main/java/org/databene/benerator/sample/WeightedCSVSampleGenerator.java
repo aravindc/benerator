@@ -29,7 +29,6 @@ package org.databene.benerator.sample;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.CSVGeneratorUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.commons.CollectionUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
@@ -52,7 +51,7 @@ import java.util.List;
  * Created: 11.06.2006 20:49:33
  * @since 0.1
  * @author Volker Bergmann
- * @see AttachedWeightSampleGenerator
+ * @see MappedWeightSampleGenerator
  */
 public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 	
@@ -78,13 +77,12 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public WeightedCSVSampleGenerator(String url, String encoding) {
-        this(url, encoding, new NoOpConverter());
+        this((Class<E>) String.class, url, encoding, new NoOpConverter());
     }
 
-    @SuppressWarnings("unchecked")
-	public WeightedCSVSampleGenerator(String uri, String encoding, Converter<String, E> converter) {
-    	super((Class<E>) Object.class);
-        setSource(new AttachedWeightSampleGenerator<E>());
+	public WeightedCSVSampleGenerator(Class<E> targetType, String uri, String encoding, Converter<String, E> converter) {
+    	super(targetType);
+        setSource(new MappedWeightSampleGenerator<E>(targetType));
         this.converter = converter;
         this.encoding = encoding;
         this.separator = ',';
@@ -124,15 +122,15 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 	
     // generator interface ---------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
 	@Override
     public void init(GeneratorContext context) {
         List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(uri, separator, encoding, converter);
-        AttachedWeightSampleGenerator<E> awSource = (AttachedWeightSampleGenerator<E>) getSource();
+        MappedWeightSampleGenerator<E> awSource = (MappedWeightSampleGenerator<E>) getSource();
         if (samples.size() > 0) {
-        	awSource.setSamples(CollectionUtil.toArray(samples));
+        	for (WeightedSample<E> sample : samples)
+        		awSource.addSample(sample.getValue(), sample.getWeight());
         } else {
-        	awSource.setSamples(new WeightedSample[0]);
+        	awSource.clear();
         	LOGGER.warn("CSV file is empty: {}", uri);
         }
     	super.init(context);

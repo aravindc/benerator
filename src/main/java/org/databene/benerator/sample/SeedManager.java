@@ -49,7 +49,7 @@ public class SeedManager<E> {
 	private int weight;
 	private int depth;
 	private boolean initialized;
-	private AttachedWeightSampleGenerator<E> helper;
+	private MappedWeightSampleGenerator<E> helper;
 	private Class<E> generatedType;
 	private WrapperProvider<E> wrapperProvider;
 	
@@ -88,7 +88,7 @@ public class SeedManager<E> {
     		throw new IllegalGeneratorStateException("Already initialized: " + this);
 	    if (getWeight() == 0)
 	    	throw new InvalidGeneratorSetupException(getClass().getSimpleName() + " is empty");
-    	helper = new AttachedWeightSampleGenerator<E>(generatedType);
+    	helper = new MappedWeightSampleGenerator<E>(generatedType);
     	for (Map.Entry<E, SeedManager<E>> entry : successors.entrySet())
     		helper.addSample(entry.getKey(), entry.getValue().getWeight());
 	    helper.init(null);

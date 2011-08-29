@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
+import org.databene.benerator.sample.MappedWeightSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 
 /**
@@ -41,7 +41,7 @@ import org.databene.benerator.util.GeneratorUtil;
 public class WeightedGeneratorGenerator<E> extends MultiGeneratorWrapper<E, Generator<E>> {
 	
 	private List<Double> weights;
-	private AttachedWeightSampleGenerator<Integer> indexGenerator;
+	private MappedWeightSampleGenerator<Integer> indexGenerator;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public WeightedGeneratorGenerator() {
@@ -62,7 +62,7 @@ public class WeightedGeneratorGenerator<E> extends MultiGeneratorWrapper<E, Gene
 	}
 	
 	private void createAndInitIndexGenerator() {
-		indexGenerator = new AttachedWeightSampleGenerator<Integer>();
+		indexGenerator = new MappedWeightSampleGenerator<Integer>(Integer.class);
 		for (int i = 0; i < weights.size(); i++)
 			indexGenerator.addSample(i, weights.get(i));
 		indexGenerator.init(context);
