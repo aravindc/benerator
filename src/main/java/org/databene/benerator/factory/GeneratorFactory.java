@@ -47,7 +47,7 @@ import java.util.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public abstract class GeneratorFactory { // TODO v0.7 scan implementations and check generator name consistency
+public abstract class GeneratorFactory {
 	
 	protected DefaultsProvider defaultsProvider;
 	
@@ -89,10 +89,10 @@ public abstract class GeneratorFactory { // TODO v0.7 scan implementations and c
     /**
      * Creates a generator for numbers.
      *
-     * @param numberType         the number type, e.g. java.lang.Integer
+     * @param numberType   the number type, e.g. java.lang.Integer
      * @param min          the minimum number to generate
      * @param max          the maximum number to generate
-     * @param granularity    the resolution to use in number generation.
+     * @param granularity  the resolution to use in number generation.
      * @param distribution The Sequence of WeightFunction to use for generation
      * @return a Number generator of the desired characteristics
      */
@@ -129,8 +129,9 @@ public abstract class GeneratorFactory { // TODO v0.7 scan implementations and c
      * @return a generator of the desired characteristics
      */
     public <T> Generator<T> createWeightedSampleGenerator(Collection<WeightedSample<T>> samples, Class<T> targetType) {
-        AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>();
-        generator.setSamples(samples);
+        MappedWeightSampleGenerator<T> generator = new MappedWeightSampleGenerator<T>(targetType);
+        for (WeightedSample<T> sample : samples)
+        	generator.addSample(sample.getValue(), sample.getWeight());
         return generator;
     }
 
@@ -139,9 +140,9 @@ public abstract class GeneratorFactory { // TODO v0.7 scan implementations and c
     /**
      * Creates a Date generator that generates random dates.
      *
-     * @param min          The earliest Date to generate
-     * @param max          The latest Date to generate
-     * @param granularity    the time resolution of dates in milliseconds
+     * @param min          the earliest Date to generate
+     * @param max          the latest Date to generate
+     * @param granularity  the time resolution of dates in milliseconds
      * @param distribution the distribution to use
      * @return a generator of the desired characteristics
      */
