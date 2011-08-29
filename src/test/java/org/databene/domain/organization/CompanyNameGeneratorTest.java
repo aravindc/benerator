@@ -78,7 +78,8 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
             System.out.println(name);
         }
     }
-/* TODO make this work
+    
+/* TODO v0.7.1 reduce memory usage and initialization time
     @Test
     public void testWorld() {
         CompanyNameGenerator generator = new CompanyNameGenerator("world");
@@ -92,6 +93,7 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
         }
     }
 */
+    
     public void check(String dataset) {
         CompanyNameGenerator generator = new CompanyNameGenerator(dataset);
         generator.init(context);
