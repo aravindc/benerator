@@ -49,10 +49,10 @@ import static org.databene.commons.NumberUtil.*;
 
 public class RandomSequence extends Sequence {
 
-    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity, boolean unique) {
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	NonNullGenerator<? extends Number> base;
     	if (unique) {
-    		return SequenceManager.EXPAND_SEQUENCE.createGenerator(numberType, min, max, granularity, unique);
+    		return SequenceManager.EXPAND_SEQUENCE.createNumberGenerator(numberType, min, max, granularity, unique);
     	} else if (BeanUtil.isIntegralNumberType(numberType)) {
         	long lMax = (max != null ? max.longValue() :
         			Math.min(RandomLongGenerator.DEFAULT_MAX, NumberUtil.maxValue(numberType).longValue()));

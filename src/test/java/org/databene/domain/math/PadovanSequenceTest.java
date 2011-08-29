@@ -43,7 +43,7 @@ public class PadovanSequenceTest extends GeneratorTest {
 	@Test
 	public void testLimitedRange() {
 		PadovanSequence padovanSequence = new PadovanSequence();
-		Generator<Integer> generator = padovanSequence.createGenerator(Integer.class, 0, 10, 1, false);
+		Generator<Integer> generator = padovanSequence.createNumberGenerator(Integer.class, 0, 10, 1, false);
 		generator.init(context);
 		expectGeneratedSequence(generator, 1, 1, 1, 2, 2, 3, 4, 5, 7, 9).withCeasedAvailability();
 	}
@@ -51,7 +51,7 @@ public class PadovanSequenceTest extends GeneratorTest {
 	@Test
 	public void testUnlimitedRange() {
 		PadovanSequence padovanSequence = new PadovanSequence();
-		Generator<Integer> generator = padovanSequence.createGenerator(Integer.class, 0, null, 1, false);
+		Generator<Integer> generator = padovanSequence.createNumberGenerator(Integer.class, 0, null, 1, false);
 		generator.init(context);
 		expectGeneratedSequence(generator, 1, 1, 1, 2, 2, 3, 4, 5, 7, 9, 12, 16).withContinuedAvailability();
 	}
@@ -59,7 +59,7 @@ public class PadovanSequenceTest extends GeneratorTest {
 	@Test
 	public void testUniqueness() {
 		PadovanSequence padovanSequence = new PadovanSequence();
-		Generator<Integer> generator = padovanSequence.createGenerator(Integer.class, 0, 10, 1, true);
+		Generator<Integer> generator = padovanSequence.createNumberGenerator(Integer.class, 0, 10, 1, true);
 		generator.init(context);
 		expectGeneratedSequence(generator, 1, 2, 2, 3, 4, 5, 7, 9).withCeasedAvailability();
 	}

@@ -43,7 +43,7 @@ public class IndividualWeightTest extends GeneratorTest {
 
 	@Test(expected=Exception.class)
 	public void testCreateGenerator() {
-		createWeight().createGenerator(Integer.class, 1, 3, 1, false);
+		createWeight().createNumberGenerator(Integer.class, 1, 3, 1, false);
 	}
 
 	@Test

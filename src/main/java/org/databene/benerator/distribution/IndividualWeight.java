@@ -43,7 +43,7 @@ public abstract class IndividualWeight<E> implements Weight {
 	
 	public abstract double weight(E object);
 	
-    public <T extends Number> NonNullGenerator<T> createGenerator(
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T granularity, boolean unique) {
 	    throw new UnsupportedOperationException("createGenerator() is not supported by " + getClass());
     }

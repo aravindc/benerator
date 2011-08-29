@@ -71,7 +71,7 @@ public class DistributingSampleGeneratorProxyTest extends GeneratorTest {
         }
 
 		@SuppressWarnings("unchecked")
-        public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity,
+        public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T granularity,
                 boolean unique) {
 	        return (NonNullGenerator<T>) WrapperFactory.asNonNullGenerator(new SequenceTestGenerator<Integer>(0, 1, 2));
         }

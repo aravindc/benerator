@@ -69,9 +69,9 @@ public class ExpandSequence extends Sequence {
 	
 	// Distribution interface implementation ---------------------------------------------------------------------------
 
-	public <T extends Number> NonNullGenerator<T> createGenerator(
+	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
 			Class<T> numberType, T min, T max, T granularity, boolean unique) {
-		NonNullGenerator<T> source = SequenceManager.STEP_SEQUENCE.createGenerator(numberType, min, max, granularity, unique);
+		NonNullGenerator<T> source = SequenceManager.STEP_SEQUENCE.createNumberGenerator(numberType, min, max, granularity, unique);
 		int cacheSize = cacheSize(min, max, granularity);
 		return WrapperFactory.asNonNullGenerator(
 				new ExpandGeneratorProxy<T>(source, duplicationQuota(unique), cacheSize, bucketSize(cacheSize)));

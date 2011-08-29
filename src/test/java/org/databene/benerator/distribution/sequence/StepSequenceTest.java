@@ -57,7 +57,7 @@ public class StepSequenceTest extends GeneratorTest {
     private Generator<Long> numberGen(long initial, long increment, long limit) {
         StepSequence sequence = new StepSequence(
         		new BigDecimal(initial), new BigDecimal(increment), new BigDecimal(limit));
-		Generator<Long> generator = sequence.createGenerator(Long.class, initial, limit, increment, false);
+		Generator<Long> generator = sequence.createNumberGenerator(Long.class, initial, limit, increment, false);
 		return initialize(generator);
     }
 

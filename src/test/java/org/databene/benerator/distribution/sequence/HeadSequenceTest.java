@@ -57,12 +57,12 @@ public class HeadSequenceTest extends GeneratorTest {
 
     private Generator<Long> longGenerator(long n) {
 		Sequence sequence = new HeadSequence(n);
-        return initialize(sequence.createGenerator(Long.class, 0L, 1000L, 1L, false));
+        return initialize(sequence.createNumberGenerator(Long.class, 0L, 1000L, 1L, false));
     }
 
     private Generator<Double> doubleGenerator(long n) {
 		Sequence sequence = new HeadSequence(n);
-        return initialize(sequence.createGenerator(Double.class, 0., 1000., 1., false));
+        return initialize(sequence.createNumberGenerator(Double.class, 0., 1000., 1., false));
     }
 
     private Generator<Character> charGenerator(long n) {

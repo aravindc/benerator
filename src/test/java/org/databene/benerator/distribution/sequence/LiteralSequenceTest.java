@@ -37,7 +37,7 @@ public class LiteralSequenceTest extends GeneratorTest {
 	@Test
 	public void testCreateGenerator_empty() {
 		LiteralSequence sequence = new LiteralSequence("");
-		Generator<Integer> generator = sequence.createGenerator(Integer.class, 1, 20, 1, false);
+		Generator<Integer> generator = sequence.createNumberGenerator(Integer.class, 1, 20, 1, false);
 		generator.init(context);
 		expectGeneratedSequence(generator);
 	}
@@ -45,7 +45,7 @@ public class LiteralSequenceTest extends GeneratorTest {
 	@Test
 	public void testCreateGenerator_int() {
 		LiteralSequence sequence = new LiteralSequence("2, 3, 5, 7, 11");
-		Generator<Integer> generator = sequence.createGenerator(Integer.class, 1, 20, 1, false);
+		Generator<Integer> generator = sequence.createNumberGenerator(Integer.class, 1, 20, 1, false);
 		generator.init(context);
 		expectGeneratedSequence(generator, 2, 3, 5, 7, 11);
 	}

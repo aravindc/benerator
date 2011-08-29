@@ -77,7 +77,7 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
     @Override
     public void init(GeneratorContext context) {
     	if (cardinalGenerator == null)
-    		cardinalGenerator = cardinalDistribution.createGenerator(Integer.class, minCardinal, maxCardinal, cardinalGranularity, false);
+    		cardinalGenerator = cardinalDistribution.createNumberGenerator(Integer.class, minCardinal, maxCardinal, cardinalGranularity, false);
         cardinalGenerator.init(context);
         super.init(context);
     }

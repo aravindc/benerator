@@ -80,7 +80,7 @@ public class DateGenerator extends NonNullGeneratorWrapper<Long, Date> {
 		this.max = (max != null ? max.getTime() : TimeUtil.date(TimeUtil.currentYear() + 10, 11, 31).getTime());
 		this.granularity = granularity;
 		this.unique = unique;
-        setSource(distribution.createGenerator(Long.class, this.min, this.max, this.granularity, this.unique));
+        setSource(distribution.createNumberGenerator(Long.class, this.min, this.max, this.granularity, this.unique));
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ public class DateGenerator extends NonNullGeneratorWrapper<Long, Date> {
     @Override
     public void init(GeneratorContext context) {
     	assertNotInitialized();
-    	setSource(distribution.createGenerator(Long.class, min, max, granularity, unique));
+    	setSource(distribution.createNumberGenerator(Long.class, min, max, granularity, unique));
 		super.init(context);
     }
 

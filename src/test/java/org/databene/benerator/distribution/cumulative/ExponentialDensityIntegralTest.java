@@ -45,12 +45,12 @@ public class ExponentialDensityIntegralTest extends GeneratorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateDoubleGenerator_unique() {
-		fcn.createGenerator(Double.class, 1., 4., 0.5, true);
+		fcn.createNumberGenerator(Double.class, 1., 4., 0.5, true);
 	}
 	
 	@Test
 	public void testCreateDoubleGenerator_notUnique() {
-		Generator<Double> generator = fcn.createGenerator(Double.class, 1., 2., 0.5, false);
+		Generator<Double> generator = fcn.createNumberGenerator(Double.class, 1., 2., 0.5, false);
 		generator.init(context);
 		int n = 2000;
 		Map<Double, AtomicInteger> counts = super.countProducts(generator, n);

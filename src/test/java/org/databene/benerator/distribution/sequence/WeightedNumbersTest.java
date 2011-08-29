@@ -39,12 +39,12 @@ public class WeightedNumbersTest extends GeneratorTest {
 
 	@Test(expected = ConfigurationError.class)
 	public void testCreateGenerator_unique() {
-		intDist.createGenerator(Integer.class, 0, 3, 1, true);
+		intDist.createNumberGenerator(Integer.class, 0, 3, 1, true);
 	}
 	
 	@Test
 	public void testCreateGenerator_nonUnique() {
-		Generator<Integer> generator = intDist.createGenerator(Integer.class, 0, 3, 1, false);
+		Generator<Integer> generator = intDist.createNumberGenerator(Integer.class, 0, 3, 1, false);
 		generator.init(context);
 		expectRelativeWeights(generator, 3000, 0, 0, 1, 3, 2, 2, 3, 1);
 	}

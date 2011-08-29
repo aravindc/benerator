@@ -112,7 +112,7 @@ public abstract class GeneratorFactory {
             else
             	distribution = defaultDistribution(uniqueness);
         }
-        return distribution.createGenerator(numberType, min, max, granularity, uniqueness.isUnique()); 
+        return distribution.createNumberGenerator(numberType, min, max, granularity, uniqueness.isUnique()); 
     }
 
     // sample source ------------------------------------------------------------------------------------------------

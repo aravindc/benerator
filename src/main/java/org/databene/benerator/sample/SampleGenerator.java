@@ -139,7 +139,7 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
         if (samples.size() == 0) 
         	throw new InvalidGeneratorSetupException("No samples defined in " + this);
         else {
-        	indexGenerator = distribution.createGenerator(Integer.class, 0, samples.size() - 1, 1, unique);
+        	indexGenerator = distribution.createNumberGenerator(Integer.class, 0, samples.size() - 1, 1, unique);
         	indexGenerator.init(context);
         }
         super.init(context);

@@ -45,7 +45,7 @@ import static org.databene.commons.NumberUtil.*;
 
 public class WedgeSequence extends Sequence {
 
-    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity, boolean unique) {
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	if (max == null)
     		max = NumberUtil.maxValue(numberType);
 		NonNullGenerator<? extends Number> base = new WedgeLongGenerator(toLong(min), toLong(max), toLong(granularity));

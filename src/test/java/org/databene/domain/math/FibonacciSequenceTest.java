@@ -44,21 +44,21 @@ public class FibonacciSequenceTest extends GeneratorTest {
 
 	@Test
 	public void testUnlimitedRange() {
-		Generator<Integer> generator = new FibonacciSequence().createGenerator(Integer.class, 0, null, 1, false);
+		Generator<Integer> generator = new FibonacciSequence().createNumberGenerator(Integer.class, 0, null, 1, false);
 		generator.init(context);
 		expectGeneratedSequence(generator, 0, 1, 1, 2, 3, 5, 8).withContinuedAvailability();
 	}
 	
 	@Test
 	public void testLimitedRange() {
-		Generator<Integer> generator = new FibonacciSequence().createGenerator(Integer.class, 0, 10, 1, false);
+		Generator<Integer> generator = new FibonacciSequence().createNumberGenerator(Integer.class, 0, 10, 1, false);
 		generator.init(context);
 		expectGeneratedSequence(generator, 0, 1, 1, 2, 3, 5, 8).withCeasedAvailability();
 	}
 	
 	@Test
 	public void testUnique() {
-		Generator<Integer> generator = new FibonacciSequence().createGenerator(Integer.class, 0, 10, 1, true);
+		Generator<Integer> generator = new FibonacciSequence().createNumberGenerator(Integer.class, 0, 10, 1, true);
 		generator.init(context);
 		expectGeneratedSequence(generator, 1, 2, 3, 5, 8).withCeasedAvailability();
 	}

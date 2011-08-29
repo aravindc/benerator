@@ -32,7 +32,7 @@ public class CustomSequenceDemo {
     /** The custom Sequence implementation */
     public static class OddNumberSequence extends Sequence {
 
-		public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity,
+		public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T granularity,
                 boolean unique) {
         	OddNumberGenerator doubleGenerator = new OddNumberGenerator(min.doubleValue(), max.doubleValue());
 			return WrapperFactory.asNonNullNumberGeneratorOfType(numberType, doubleGenerator, min, granularity);

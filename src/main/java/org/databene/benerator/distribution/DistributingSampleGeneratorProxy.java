@@ -30,9 +30,8 @@ import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
- * Uses a {@link SampleGenerator} and a Distribution's 
- * {@link Distribution#createGenerator(Class, Number, Number, Number, boolean)}
- * method for acting as a Generator proxy.<br/><br/>
+ * Uses a source {@link Generator} to collect all its available products and a Distribution
+ * in order to provide them in a distributed manner.<br/><br/>
  * Created: 21.07.2010 01:57:31
  * @since 0.6.3
  * @author Volker Bergmann
