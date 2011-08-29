@@ -33,8 +33,8 @@ import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.primitive.IncrementalStringGenerator;
 import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.benerator.primitive.UniqueScrambledStringGenerator;
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.sample.MappedWeightSampleGenerator;
 import org.databene.benerator.sample.OneShotGenerator;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
@@ -99,12 +99,13 @@ public class StochasticGeneratorFactory extends GeneratorFactory {
             Distribution distribution, boolean unique) {
 	    WeightedSample<T>[] samples = (WeightedSample<T>[]) BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
 	    if (distribution == null && !unique && weightsUsed(samples)) {
-	    	AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>(targetType);
+	    	MappedWeightSampleGenerator<T> generator = new MappedWeightSampleGenerator<T>(targetType);
 	    	for (int i = 0; i < samples.length; i++) {
 	    		WeightedSample<T> sample = samples[i];
 	    		if (sample.getValue() == null)
-	    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
-	    		generator.addSample(sample);
+	    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and " +
+	    					"use a nullQuota instead");
+	    		generator.addSample(sample.getValue(), sample.getWeight());
 	    	}
 	    	return generator;
 	    } else {
@@ -114,10 +115,12 @@ public class StochasticGeneratorFactory extends GeneratorFactory {
 				String value = ToStringConverter.convert(rawValue, null);
 	    		values[i] = value;
 	    	}
-	        IteratingGenerator<String> source = new IteratingGenerator<String>(new ArrayIterable<String>(values, String.class));
+	        IteratingGenerator<String> source = new IteratingGenerator<String>(
+	        		new ArrayIterable<String>(values, String.class));
 	        if (distribution == null)
 	        	distribution = SequenceManager.RANDOM_SEQUENCE;
-	        Generator<T> gen = WrapperFactory.applyConverter(source, ConverterManager.getInstance().createConverter(String.class, targetType));
+	        Generator<T> gen = WrapperFactory.applyConverter(source, ConverterManager.getInstance().createConverter(
+	        		String.class, targetType));
 	    	return distribution.applyTo(gen, unique);
 	    }
     }
@@ -143,7 +146,8 @@ public class StochasticGeneratorFactory extends GeneratorFactory {
         else if (uniqueness.isUnique())
             return new UniqueScrambledStringGenerator(chars, minLength, maxLength);
         else
-    		return new RandomVarLengthStringGenerator(chars, minLength, maxLength, lengthGranularity, lengthDistribution);
+    		return new RandomVarLengthStringGenerator(
+    				chars, minLength, maxLength, lengthGranularity, lengthDistribution);
 	}
 
 	@Override
@@ -163,13 +167,8 @@ public class StochasticGeneratorFactory extends GeneratorFactory {
     	else
     		return new ConstantGenerator<T>(value);
     }
-/*
+    
     @Override
-	public boolean shouldNullifyEachNullable() {
-		return true;
-	}
-*/
-	@Override
 	protected double defaultTrueQuota() {
 		return 0.5;
 	}
