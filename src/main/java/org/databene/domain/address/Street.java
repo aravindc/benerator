@@ -69,7 +69,7 @@ public class Street {
         this.maxHouseNumber = maxHouseNumber;
     }
 
-    public String[] generateHouseNumberWithZipCode() {
+    public String[] generateHouseNumberWithPostalCode() {
         return new String[] {
             String.valueOf(random(1, maxHouseNumber)),
             RandomUtil.randomElement(city.getPostalCodes())
