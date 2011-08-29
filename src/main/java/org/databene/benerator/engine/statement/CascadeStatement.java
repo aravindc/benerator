@@ -248,7 +248,7 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 			this.targetTable = (parentTable.equalsIgnoreCase(refereeTable.getName()) ? refererTable : refereeTable);
 		}
 
-		private DataIterator<Entity> resolveToManyReference( // TODO v0.7 test
+		DataIterator<Entity> resolveToManyReference(
 				Entity fromEntity, DBForeignKeyConstraint fk, DBSystem db, BeneratorContext context) {
 			StringBuilder selector = new StringBuilder();
 			String[] refererColumnNames = fk.getColumnNames();
@@ -262,7 +262,7 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 			return db.queryEntities(fk.getTable().getName(), selector.toString(), context).iterator();
 		}
 
-		private DataIterator<Entity> resolveToOneReference( // TODO v0.7 test
+		DataIterator<Entity> resolveToOneReference(
 				Entity fromEntity, DBForeignKeyConstraint fk, DBSystem db, BeneratorContext context) {
 			StringBuilder selector = new StringBuilder();
 			String[] refererColumnNames = fk.getColumnNames();
