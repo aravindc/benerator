@@ -132,7 +132,12 @@ public class City {
     }
 
     public Locale getLanguage() {
-        return language;
+    	if (language != null)
+    		return language;
+    	if (state != null)
+    		return state.getDefaultLanguage();
+    	Country country = getCountry();
+    	return (country != null ? country.getDefaultLanguage() : null);
     }
 
     public void setLanguage(Locale language) {
