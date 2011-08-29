@@ -50,7 +50,7 @@ import static junit.framework.Assert.*;
  */
 public class AddressGeneratorTest extends GeneratorClassTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(AddressGeneratorTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AddressGeneratorTest.class);
 
     public AddressGeneratorTest() {
         super(AddressGenerator.class);
@@ -71,6 +71,11 @@ public class AddressGeneratorTest extends GeneratorClassTest {
     @Test
     public void testBrazil() {
         check(Country.BRAZIL, true);
+    }
+
+    @Test
+    public void testSwitzerland() {
+        check(Country.SWITZERLAND, true);
     }
 
     @Test
@@ -106,8 +111,7 @@ public class AddressGeneratorTest extends GeneratorClassTest {
         generator.init(context);
         for (int i = 0; i < 100; i++) {
             Address address = generator.generate();
-            if (logger.isDebugEnabled())
-            	logger.debug(address.toString());
+            LOGGER.debug("{}", address);
             assertNotNull(address);
             // check generated phone numbers
             String cityAreaCode = address.getCity().getAreaCode();
