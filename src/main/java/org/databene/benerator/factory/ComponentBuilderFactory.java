@@ -238,8 +238,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	            if (isIndividualSelector(selectorToUse)) {
 	            	generator = new DataSourceGenerator(sourceSystem.query(selectorToUse, true, context));
 	            } else {
-		            generator = new DataSourceGenerator(sourceSystem.queryEntityIds(targetTypeName, selectorToUse, 
-		            		context));
+		            generator = new DataSourceGenerator(sourceSystem.queryEntityIds(
+		            		targetTypeName, selectorToUse, context));
 		            if (selectorToUse == null && distribution == null)
 		            	if (context.isDefaultOneToOne())
 		            		distribution = new ExpandSequence();
