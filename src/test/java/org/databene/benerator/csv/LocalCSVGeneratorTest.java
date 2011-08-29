@@ -49,7 +49,7 @@ public class LocalCSVGeneratorTest extends GeneratorTest {
     @Test
     public void testEnglish() {
         Set<String> enNames = CollectionUtil.toSet("Alice", "Bob", "Charly");
-        LocalCSVGenerator<String> enGen = new LocalCSVGenerator<String>(
+        LocalCSVGenerator<String> enGen = new LocalCSVGenerator<String>(String.class, 
         		CSV_LOCAL_FILENAME, Locale.ENGLISH, ".csv", Encodings.UTF_8);
         enGen.init(context);
         for (int i = 0; i < 10; i++) {
@@ -61,7 +61,7 @@ public class LocalCSVGeneratorTest extends GeneratorTest {
     @Test
     public void testGerman() {
         Set<String> deNames = CollectionUtil.toSet("Elise", "Robert", "Karl");
-        LocalCSVGenerator<String> deGen = new LocalCSVGenerator<String>(
+        LocalCSVGenerator<String> deGen = new LocalCSVGenerator<String>(String.class, 
         		CSV_LOCAL_FILENAME, Locale.GERMAN, ".csv", Encodings.UTF_8);
         deGen.init(context);
         for (int i = 0; i < 10; i++) {

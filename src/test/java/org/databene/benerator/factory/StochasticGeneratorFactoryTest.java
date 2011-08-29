@@ -30,8 +30,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
+import org.databene.benerator.sample.MappedWeightSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.distribution.Sequence;
@@ -261,10 +261,10 @@ public class StochasticGeneratorFactoryTest extends GeneratorTest {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testGetHeterogenousArrayGenerator() {
         List<String> salutations = Arrays.asList("Hello", "Hi");
-        AttachedWeightSampleGenerator<String> salutationGenerator = new AttachedWeightSampleGenerator<String>(
+        MappedWeightSampleGenerator<String> salutationGenerator = new MappedWeightSampleGenerator<String>(
         		String.class, salutations);
         List<String> names = Arrays.asList("Alice", "Bob", "Charly");
-        Generator<String> nameGenerator = new AttachedWeightSampleGenerator<String>(String.class, names);
+        Generator<String> nameGenerator = new MappedWeightSampleGenerator<String>(String.class, names);
         Generator[] sources = new Generator[] { salutationGenerator, nameGenerator };
         Generator<Object[]> generator = generatorFactory.createCompositeArrayGenerator(
         		Object.class, sources, Uniqueness.NONE);
