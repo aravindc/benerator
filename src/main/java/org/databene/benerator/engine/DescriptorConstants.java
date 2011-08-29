@@ -165,7 +165,7 @@ public interface DescriptorConstants {
     static final String ATT_IDENTITY = "identity";
 
     static final String EL_DBSANITY = "dbsanity";
-    static final String ATT_DATABASE = "environment";
+    static final String ATT_DATABASE = "database";
     static final String ATT_IN = "in";
     static final String ATT_OUT = "out";
     static final String ATT_APPVERSION = "appVersion";
