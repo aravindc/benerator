@@ -27,7 +27,6 @@
 package org.databene.benerator.sample;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.databene.benerator.GeneratorContext;
@@ -35,7 +34,6 @@ import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.WeightedLongGenerator;
 import org.databene.benerator.util.GeneratorUtil;
-import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
@@ -46,57 +44,41 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @author Volker Bergmann
  */
 
-public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
+public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> { // TODO v0.7 test
 	
     /** Keeps the Sample information */
     List<E> samples = new ArrayList<E>();
     
-    IndividualWeight<E> distribution;
+    IndividualWeight<E> individualWeight;
+    
+	double totalWeight;
 
     /** Generator for choosing a List index of the sample list */
     private WeightedLongGenerator indexGenerator;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    /** Initializes the generator to an empty sample list */
-    @SuppressWarnings("unchecked")
-    public IndividualWeightGenerator() {
-        this((Class<E>) Object.class, null);
-    }
-
     /** Initializes the generator to an unweighted sample list */
-    public IndividualWeightGenerator(Class<E> generatedType, IndividualWeight<E> distribution, E ... values) {
+    public IndividualWeightGenerator(Class<E> generatedType, IndividualWeight<E> individualWeight, E ... values) {
     	super(generatedType);
         setValues(values);
-        this.distribution = distribution;
+        this.individualWeight = individualWeight;
     }
 
     /** Initializes the generator to an unweighted sample list */
     public IndividualWeightGenerator(Class<E> generatedType, IndividualWeight<E> distribution, Iterable<E> values) {
     	super(generatedType);
         setValues(values);
-        this.distribution = distribution;
+        this.individualWeight = distribution;
     }
 
     // samples property ------------------------------------------------------------------------------------------------
-
-    /** returns the sample list */
-    public List<E> getSamples() {
-        return samples;
-    }
 
     /** Sets the sample list to the specified weighted values */
     public void setSamples(E ... samples) {
         this.samples.clear();
         for (E sample : samples)
             this.samples.add(sample);
-    }
-
-    /** Adds weighted values to the sample list */
-    public void setSamples(Collection<E> samples) {
-        this.samples.clear();
-        if (samples != null)
-            this.samples.addAll(samples);
     }
 
     // values property -------------------------------------------------------------------------------------------------
@@ -107,6 +89,14 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
         samples.add(value);
     }
 
+    /** Calculates the total weight of all samples */
+    public double totalWeight() {
+        double total = 0;
+        for (E sample : samples)
+            total += individualWeight.weight(sample);
+        return total;
+    }
+
     @Override
     public void clear() {
     	this.samples.clear();
@@ -114,16 +104,11 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
     
     // Generator implementation ----------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Class<E> getGeneratedType() {
-        return (Class<E>) samples.get(0).getClass();
-    }
-
     /** Initializes all attributes */
     @Override
     public void init(GeneratorContext context) {
     	assertNotInitialized();
+		totalWeight = totalWeight();
         indexGenerator = new WeightedLongGenerator(0, samples.size() - 1, 1, new SampleWeightFunction());
         indexGenerator.init(context);
         super.init(context);
@@ -137,42 +122,16 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
         return wrapper.wrap(samples.get(index));
     }
 
-    // static interface ------------------------------------------------------------------------------------------------
-
-    /** Convenience utility method that chooses one sample out of a list with uniform random distribution */
-    public static <T> T generate(T ... samples) {
-        return samples[RandomUtil.randomInt(0, samples.length - 1)];
-    }
-
-    /** Convenience utility method that chooses one sample out of a list with uniform random distribution */
-    public static <T> T generate(List<T> samples) {
-        return samples.get(RandomUtil.randomInt(0, samples.size() - 1));
-    }
-
     // implementation --------------------------------------------------------------------------------------------------
 
     /** Weight function that evaluates the weights that are stored in the sample list. */
-    private class SampleWeightFunction extends AbstractWeightFunction {
+    class SampleWeightFunction extends AbstractWeightFunction {
     	
-		private double totalWeight;
-
-    	public SampleWeightFunction() {
-    		totalWeight = totalWeight();
-        }
-
         /** @see org.databene.benerator.distribution.WeightFunction#value(double) */
         public double value(double param) {
-            return distribution.weight(samples.get((int) param)) / totalWeight;
+            return individualWeight.weight(samples.get((int) param));
         }
         
-        /** Calculates the total weight of all samples */
-        private double totalWeight() {
-            double total = 0;
-            for (E sample : samples)
-                total += distribution.weight(sample);
-            return total;
-        }
-
         /** creates a String representation */
         @Override
         public String toString() {
