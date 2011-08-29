@@ -26,6 +26,7 @@
 
 package org.databene.domain.address;
 
+import java.util.Locale;
 import java.util.Stack;
 
 import org.databene.benerator.Generator;
@@ -58,6 +59,8 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
     
     private String datasetName;
 
+    // construction ----------------------------------------------------------------------------------------------------
+    
     public StreetNameGenerator() {
     	this(null);
     }
@@ -67,10 +70,6 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
         this.datasetName = datasetName;
     }
     
-	public void setDataset(String datasetName) {
-		this.datasetName = datasetName;
-	}
-
 	// DatasetBasedGenerator interface implementation ------------------------------------------------------------------
 	
 	public String getNesting() {
@@ -79,6 +78,10 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
 
 	public String getDataset() {
 		return datasetName;
+	}
+
+	public void setDataset(String datasetName) {
+		this.datasetName = datasetName;
 	}
 
 	public String generateForDataset(String dataset) {
@@ -116,12 +119,23 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
 		return (WeightedDatasetCSVGenerator<String>) super.getSource();
 	}
 	
-	private static Generator<String> createSource(String datasetName) {
-	    return new WeightedDatasetCSVGenerator<String>(FILENAME_PATTERN, datasetName, REGION_NESTING, Encodings.UTF_8);
-    }
-
 	public String generate() {
 		return GeneratorUtil.generateNonNull(this);
 	}
+
+	public String generateForCountryAndLocale(String countryCode, Locale language) {
+		WeightedDatasetCSVGenerator<String> source = getSource();
+		String subset = countryCode + '_' + language.getLanguage();
+		if (source.supportsDataset(subset))
+			return source.generateForDataset(subset);
+		subset = countryCode;
+		return source.generateForDataset(countryCode);
+	}
+	
+	// helpers ---------------------------------------------------------------------------------------------------------
+	
+	private static Generator<String> createSource(String datasetName) {
+	    return new WeightedDatasetCSVGenerator<String>(String.class, FILENAME_PATTERN, datasetName, REGION_NESTING, Encodings.UTF_8);
+    }
 
 }
