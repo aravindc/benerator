@@ -33,7 +33,7 @@ import org.databene.commons.Expression;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class LazyStatement extends StatementProxy { // TODO v0.7 remove this class
+public class LazyStatement extends StatementProxy { // TODO v0.8 remove this class
 
 	private Expression<Statement> statementExpression;
 
