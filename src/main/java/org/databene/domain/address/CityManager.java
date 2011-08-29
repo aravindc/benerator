@@ -108,7 +108,7 @@ public class CityManager {
                 LOGGER.debug(instance.toString());
 
             // create/setup state
-            String stateId = instance.get("state");
+            String stateId = instance.get("state.id");
             State state = country.getState(stateId);
             if (state == null) {
                 state = new State(stateId);
