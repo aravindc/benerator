@@ -21,6 +21,9 @@
 
 package org.databene.benerator.dataset;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
@@ -47,21 +50,20 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
     
     protected String nesting;
     protected String datasetName;
+    protected Set<String> supportedDatasets;
     
     // constructor -----------------------------------------------------------------------------------------------------
     
-    public AbstractDatasetGenerator(String nesting, String datasetName) {
-        super(new CompositeDatasetGenerator<E>(nesting, datasetName)); // TODO v0.7 support atomic dataset here, too
+    public AbstractDatasetGenerator(Class<E> generatedType, String nesting, String datasetName) {
+        super(generatedType);
         this.nesting = nesting;
         this.datasetName = datasetName;
+        this.supportedDatasets = new HashSet<String>();
+        this.supportedDatasets.add(datasetName);
     }
     
-	public void setNesting(String nesting) {
-		this.nesting = nesting;
-	}
-	
-	public void setDataset(String datasetName) {
-		this.datasetName = datasetName;
+	public boolean supportsDataset(String datasetName) {
+		return supportedDatasets.contains(datasetName);
 	}
 	
     // DatasetBasedGenerator interface implementation ------------------------------------------------------------------
@@ -70,8 +72,18 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		return nesting;
 	}
 	
+	public void setNesting(String nesting) {
+		this.nesting = nesting;
+	}
+	
 	public String getDataset() {
 		return datasetName;
+	}
+	
+	public void setDataset(String datasetName) {
+		this.datasetName = datasetName;
+		this.supportedDatasets.clear();
+		this.supportedDatasets.add(datasetName);
 	}
 	
 	@Override
@@ -103,10 +115,13 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 	// helper methods --------------------------------------------------------------------------------------------------
 	
     protected DatasetBasedGenerator<E> createDatasetGenerator(Dataset dataset, boolean required) {
+    	DatasetBasedGenerator<E> result;
     	if (dataset.isAtomic())
-    		return createAtomicDatasetGenerator(dataset, required);
-    	else 
-    		return createCompositeDatasetGenerator(dataset, required);
+			result = createAtomicDatasetGenerator(dataset, required);
+		else 
+    		result = createCompositeDatasetGenerator(dataset, required);
+    	supportedDatasets.add(dataset.getName());
+		return result;
 	}
 
     protected CompositeDatasetGenerator<E> createCompositeDatasetGenerator(Dataset dataset, boolean required) {
@@ -119,7 +134,8 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		if (generator.getSource().getSources().size() > 0)
 			return generator;
 		if (required)
-			throw new ConfigurationError("No samples defined for composite dataset: " + dataset.getName());
+			throw new ConfigurationError("No samples defined for composite dataset: " + dataset.getName() + 
+					" in generator " + this);
 		else
 			return null;
 	}
