@@ -33,8 +33,8 @@ import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.AtomicDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
 import org.databene.benerator.dataset.DatasetUtil;
+import org.databene.benerator.sample.MappedWeightSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.commons.Converter;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
@@ -61,32 +61,30 @@ public class WeightedDatasetCSVGenerator<E> extends AbstractDatasetGenerator<E> 
     protected Converter<String, E> converter;
     
     
-    
     // constructors ----------------------------------------------------------------------------------------------------
     
-    public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting) {
-        this(filenamePattern, ',', datasetName, nesting, SystemInfo.getFileEncoding());
+    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, String datasetName, String nesting) {
+        this(generatedType, filenamePattern, ',', datasetName, nesting, SystemInfo.getFileEncoding());
     }
 
     @SuppressWarnings({ "unchecked", "cast", "rawtypes" })
-    public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, String encoding) {
-        this(filenamePattern, separator, datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
+    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, char separator, String datasetName, String nesting, String encoding) {
+        this(generatedType, filenamePattern, separator, datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
     @SuppressWarnings({ "cast", "unchecked", "rawtypes" })
-    public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting, String encoding) {
-        this(filenamePattern, ',', datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
+    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, String datasetName, String nesting, String encoding) {
+        this(generatedType, filenamePattern, ',', datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
-    public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, 
+    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, char separator, String datasetName, String nesting, 
     		String encoding, Converter<String, E> converter) {
-        super(nesting, datasetName);
+        super(generatedType, nesting, datasetName);
         this.filenamePattern = filenamePattern;
         this.separator = separator;
         this.encoding = encoding;
         this.converter = converter;
     }
-    
     
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -105,14 +103,14 @@ public class WeightedDatasetCSVGenerator<E> extends AbstractDatasetGenerator<E> 
 		LOGGER.debug("Creating weighted data set CSV generator for file {}", filename);
 		if (IOUtil.isURIAvailable(filename)) {
 			List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(filename, separator, encoding, converter);
-			AttachedWeightSampleGenerator<E> generator = new AttachedWeightSampleGenerator<E>();
-			generator.setSamples(samples);
+			MappedWeightSampleGenerator<E> generator = new MappedWeightSampleGenerator<E>(generatedType);
+			for (WeightedSample<E> sample : samples)
+				generator.addSample(sample.getValue(), sample.getWeight());
 			if (samples.size() > 0)
 				return new AtomicDatasetGenerator<E>(generator, filename, dataset.getName());
 		}
 		return null;
 	}
-
 	
 	
 	// java.lang.Object overrides --------------------------------------------------------------------------------------

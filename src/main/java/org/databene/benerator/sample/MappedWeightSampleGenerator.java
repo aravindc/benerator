@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,32 +35,34 @@ import org.databene.commons.math.MutableDouble;
 
 /**
  * {@link IndividualWeightGenerator} implementation that organizes 
- * sample data in a Map of value-weight associations.<br/>
+ * sample data in a Map of value-to-weight associations.<br/>
  * <br/>
  * Created at 12.07.2009 00:29:58
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class MappedSampleGenerator<E> extends IndividualWeightGenerator<E> { // TODO v0.7 find appropriate name
+public class MappedWeightSampleGenerator<E> extends IndividualWeightGenerator<E> { 
 	
 	Map<E, MutableDouble> weights;
+	double defaultWeight;
 	
 	// construction ----------------------------------------------------------------------------------------------------
 
-	public MappedSampleGenerator(Class<E> generatedType, E... values) {
+	public MappedWeightSampleGenerator(Class<E> generatedType, E... values) {
 	    super(generatedType, null, values);
 	    init();
     }
 
-	public MappedSampleGenerator(Class<E> generatedType, Iterable<E> values) {
+	public MappedWeightSampleGenerator(Class<E> generatedType, Iterable<E> values) {
 	    super(generatedType, null, values);
 	    init();
     }
 	
 	private void init() {
 	    this.weights = new HashMap<E, MutableDouble>();
-	    super.distribution = new MappedWeight();
+	    super.individualWeight = new MappedWeight();
+	    this.defaultWeight = 1;
     }
 
 	// interface -------------------------------------------------------------------------------------------------------
@@ -92,7 +94,8 @@ public class MappedSampleGenerator<E> extends IndividualWeightGenerator<E> { // 
 	class MappedWeight extends IndividualWeight<E> {
         @Override
         public double weight(E sample) {
-	        return weights.get(sample).value;
+	        MutableDouble weight = weights.get(sample);
+	        return (weight != null ? weight.value : defaultWeight);
         }
 	}
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,7 +24,7 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
+import org.databene.benerator.sample.MappedWeightSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.WrapperFactory;
@@ -60,7 +60,7 @@ public class WeightedNumbers<E> extends Sequence {
             boolean unique) {
 		if (unique)
 			throw new ConfigurationError(getClass().getSimpleName() + " is not designed to generate unique values");
-		AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>(numberType);
+		MappedWeightSampleGenerator<T> generator = new MappedWeightSampleGenerator<T>(numberType);
 		for (int i = 0; i < samples.length; i++)
 			generator.addSample(
 					NumberToNumberConverter.convert((Number) samples[i].getValue(), numberType), 
