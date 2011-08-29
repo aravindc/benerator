@@ -53,8 +53,10 @@ public class DynamicCountGenerator extends DynamicLongGenerator {
 		if (maxValue != null)
 		    super.resetMembers(minValue, maxValue);
 		else {
+			// if it is not required to reset to min (<generate> or <iterate>), make it unlimited (returning null),
+			// otherwise reset to the min value (component generation)
 			Long constant = (resetToMin ? minValue : null);
-			Generator<Long> source = new ConstantGenerator(constant); // TODO v0.7 is this correct?
+			Generator<Long> source = new ConstantGenerator(constant);
 	        source.init(context);
 	        setSource(source);
 		}
