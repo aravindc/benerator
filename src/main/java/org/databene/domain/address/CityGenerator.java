@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
+import org.databene.benerator.dataset.DatasetBasedGenerator;
 import org.databene.benerator.sample.NonNullSampleGenerator;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
@@ -45,13 +46,25 @@ public class CityGenerator extends AbstractDatasetGenerator<City> implements Non
 	private static final String REGION = "/org/databene/dataset/region";
 	
     public CityGenerator(String dataset) {
-    	super(REGION, dataset);
+    	super(City.class, REGION, dataset);
     }
+
+    @Override
+	protected DatasetBasedGenerator<City> createDatasetGenerator(Dataset dataset, boolean required) {
+    	DatasetBasedGenerator<City> result;
+    	Country country = Country.getInstance(dataset.getName(), false);
+    	if (country != null)
+			result = createAtomicDatasetGenerator(dataset, required);
+		else 
+    		result = createCompositeDatasetGenerator(dataset, required);
+    	supportedDatasets.add(dataset.getName());
+		return result;
+	}
 
 	@Override
 	protected Generator<City> createGeneratorForAtomicDataset(Dataset dataset) {
 		SampleGenerator<City> generator = new NonNullSampleGenerator<City>(City.class);
-		Country country = Country.getInstance(dataset.getName());
+		Country country = Country.getInstanceForDataset(dataset);
 		country.checkCities();
         for (State state : country.getStates())
             for (City city : state.getCities())
