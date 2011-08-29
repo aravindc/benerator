@@ -99,7 +99,7 @@ public class MultiThreadedTaskRunner implements TaskRunner {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (threadSafe) // TODO v0.7 call pageFinished only if it was actually run in shared mode
+        if (threadSafe) // TODO v1.0 call pageFinished only if it was actually run in shared mode
             target.pageFinished();
         return counter.get();
     }
