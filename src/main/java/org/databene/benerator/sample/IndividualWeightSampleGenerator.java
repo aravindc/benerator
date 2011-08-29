@@ -37,14 +37,15 @@ import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Generator for {@link IndividualWeight} distributions.<br/>
+ * Maps an {@link IndividualWeight} distribution to an {@link AbstractWeightFunction} and uses its capabilities
+ * for providing distribution features based on the {@link IndividualWeight}'s characteristics.<br/>
  * <br/>
  * Created at 01.07.2009 11:48:23
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> { // TODO v0.7 test
+public class IndividualWeightSampleGenerator<E> extends AbstractSampleGenerator<E> {
 	
     /** Keeps the Sample information */
     List<E> samples = new ArrayList<E>();
@@ -59,14 +60,14 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> { /
     // constructors ----------------------------------------------------------------------------------------------------
 
     /** Initializes the generator to an unweighted sample list */
-    public IndividualWeightGenerator(Class<E> generatedType, IndividualWeight<E> individualWeight, E ... values) {
+    public IndividualWeightSampleGenerator(Class<E> generatedType, IndividualWeight<E> individualWeight, E ... values) {
     	super(generatedType);
         setValues(values);
         this.individualWeight = individualWeight;
     }
 
     /** Initializes the generator to an unweighted sample list */
-    public IndividualWeightGenerator(Class<E> generatedType, IndividualWeight<E> distribution, Iterable<E> values) {
+    public IndividualWeightSampleGenerator(Class<E> generatedType, IndividualWeight<E> distribution, Iterable<E> values) {
     	super(generatedType);
         setValues(values);
         this.individualWeight = distribution;
