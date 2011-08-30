@@ -129,7 +129,7 @@ public abstract class GeneratorFactory {
      * @return a generator of the desired characteristics
      */
     public <T> Generator<T> createWeightedSampleGenerator(Collection<WeightedSample<T>> samples, Class<T> targetType) {
-        MappedWeightSampleGenerator<T> generator = new MappedWeightSampleGenerator<T>(targetType);
+    	AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>(targetType);
         for (WeightedSample<T> sample : samples)
         	generator.addSample(sample.getValue(), sample.getWeight());
         return generator;

@@ -33,8 +33,8 @@ import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.primitive.IncrementalStringGenerator;
 import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.benerator.primitive.UniqueScrambledStringGenerator;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.benerator.sample.MappedWeightSampleGenerator;
 import org.databene.benerator.sample.OneShotGenerator;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
@@ -99,7 +99,7 @@ public class StochasticGeneratorFactory extends GeneratorFactory {
             Distribution distribution, boolean unique) {
 	    WeightedSample<T>[] samples = (WeightedSample<T>[]) BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
 	    if (distribution == null && !unique && weightsUsed(samples)) {
-	    	MappedWeightSampleGenerator<T> generator = new MappedWeightSampleGenerator<T>(targetType);
+	    	AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>(targetType);
 	    	for (int i = 0; i < samples.length; i++) {
 	    		WeightedSample<T> sample = samples[i];
 	    		if (sample.getValue() == null)
