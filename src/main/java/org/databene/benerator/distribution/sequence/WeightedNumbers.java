@@ -24,7 +24,7 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.sample.MappedWeightSampleGenerator;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.WrapperFactory;
@@ -60,7 +60,7 @@ public class WeightedNumbers<E> extends Sequence {
             boolean unique) {
 		if (unique)
 			throw new ConfigurationError(getClass().getSimpleName() + " is not designed to generate unique values");
-		MappedWeightSampleGenerator<T> generator = new MappedWeightSampleGenerator<T>(numberType);
+		AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>(numberType);
 		for (int i = 0; i < samples.length; i++)
 			generator.addSample(
 					NumberToNumberConverter.convert((Number) samples[i].getValue(), numberType), 
