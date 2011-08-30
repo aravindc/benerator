@@ -32,6 +32,7 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.Encodings;
+import org.databene.domain.address.Country;
 
 /**
  * Generates family names.<br/>
@@ -56,6 +57,12 @@ public class FamilyNameGenerator extends WeightedDatasetCSVGenerator<String> imp
 
     public FamilyNameGenerator(String datasetName, String nesting, String fileNamePattern) {
         super(String.class, fileNamePattern, datasetName, nesting, Encodings.UTF_8);
+    }
+    
+    @Override
+    public double getWeight() {
+    	Country country = Country.getInstance(datasetName);
+    	return (country != null ? country.getPopulation() : super.getWeight());
     }
     
     // NonNullGenerator interface implementation -----------------------------------------------------------------------

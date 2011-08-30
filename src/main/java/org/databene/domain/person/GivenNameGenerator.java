@@ -32,6 +32,7 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.Encodings;
+import org.databene.domain.address.Country;
 
 /**
  * Generates a given name for a person.<br/>
@@ -70,4 +71,10 @@ public class GivenNameGenerator extends WeightedDatasetCSVGenerator<String> impl
 		return GeneratorUtil.generateNonNull(this);
 	}
 
+    @Override
+    public double getWeight() {
+    	Country country = Country.getInstance(datasetName);
+    	return (country != null ? country.getPopulation() : super.getWeight());
+    }
+    
 }
