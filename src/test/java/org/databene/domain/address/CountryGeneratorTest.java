@@ -26,7 +26,11 @@
 
 package org.databene.domain.address;
 
+import java.util.List;
+
+import org.databene.benerator.dataset.CompositeDatasetGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.wrapper.WeightedGeneratorGenerator;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -43,7 +47,7 @@ public class CountryGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
-    public void test() {
+    public void testDefaultGeneration() {
         CountryGenerator generator = new CountryGenerator();
         generator.init(context);
         for (int i = 0; i < 100; i++) {
@@ -51,6 +55,18 @@ public class CountryGeneratorTest extends GeneratorClassTest {
 			assertNotNull(country);
 			assertNotNull(Country.getInstance(country.getIsoCode()));
         }
+    }
+    
+    @Test
+    public void testWeightsForDACH() {
+        CountryGenerator generator = new CountryGenerator("dach");
+        generator.init(context);
+        CompositeDatasetGenerator<Country> compGen = (CompositeDatasetGenerator<Country>) generator.getSource();
+        WeightedGeneratorGenerator<Country> genGen = compGen.getSource();
+        List<Double> sourceWeights = genGen.getSourceWeights();
+        assertEquals(81000000., sourceWeights.get(0)); // DE
+        assertEquals(8000000., sourceWeights.get(1));  // AT
+        assertEquals(7000000., sourceWeights.get(2));  // CH
     }
     
 }
