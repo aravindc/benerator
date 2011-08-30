@@ -26,12 +26,15 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.WeightedGenerator;
 import org.databene.benerator.dataset.AbstractDatasetGenerator;
+import org.databene.benerator.dataset.AtomicDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
+import org.databene.benerator.dataset.WeightedDatasetGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.util.GeneratorUtil;
+import org.databene.benerator.wrapper.WeighingGeneratorWrapper;
 
 /**
  * Generates a random country.<br/>
@@ -54,10 +57,23 @@ public class CountryGenerator extends AbstractDatasetGenerator<Country> implemen
     }
 	
 
-	@Override
-	protected Generator<Country> createGeneratorForAtomicDataset(final Dataset dataset) {
-		Country country = Country.getInstanceForDataset(dataset);
-		return (country != null ? new ConstantGenerator<Country>(country) : null);
+    @Override
+	protected WeightedDatasetGenerator<Country> createDatasetGenerator(Dataset dataset, boolean required) {
+    	WeightedDatasetGenerator<Country> result;
+    	Country country = Country.getInstance(dataset.getName(), false);
+    	if (country != null)
+			result = createGeneratorForCountry(country);
+		else 
+    		result = createCompositeDatasetGenerator(dataset, required);
+    	supportedDatasets.add(dataset.getName());
+		return result;
+	}
+    
+	protected WeightedDatasetGenerator<Country> createGeneratorForCountry(Country country) {
+		ConstantGenerator<Country> coreGenerator = new ConstantGenerator<Country>(country);
+		WeightedGenerator<Country> generator = new WeighingGeneratorWrapper<Country>(coreGenerator, country.getPopulation());
+    	totalWeight += generator.getWeight();
+		return new AtomicDatasetGenerator<Country>(generator, nesting, country.getIsoCode());
 	}
 
 	public Country generate() {
@@ -70,5 +86,10 @@ public class CountryGenerator extends AbstractDatasetGenerator<Country> implemen
     public String toString() {
         return getClass().getSimpleName() + "[" + getDataset() + "]";
     }
+
+	@Override
+	protected WeightedGenerator<Country> createGeneratorForAtomicDataset(Dataset dataset) {
+		throw new UnsupportedOperationException("createGeneratorForAtomicDataset() is not supposed to be called");
+	}
 
 }

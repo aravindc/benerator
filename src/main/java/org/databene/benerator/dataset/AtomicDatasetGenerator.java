@@ -22,6 +22,7 @@
 package org.databene.benerator.dataset;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.WeightedGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.ProductWrapper;
 
@@ -31,15 +32,21 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @since 0.6.6
  * @author Volker Bergmann
  */
-public class AtomicDatasetGenerator<E> extends GeneratorProxy<E> implements DatasetBasedGenerator<E> {
+public class AtomicDatasetGenerator<E> extends GeneratorProxy<E> implements WeightedDatasetGenerator<E> {
 
 	private String nesting;
 	private String dataset;
+	private double weight;
 	
-	public AtomicDatasetGenerator(Generator<E> source, String nesting, String dataset) {
+	public AtomicDatasetGenerator(WeightedGenerator<E> source, String nesting, String dataset) {
+		this(source, nesting, dataset, source.getWeight());
+	}
+	
+	public AtomicDatasetGenerator(Generator<E> source, String nesting, String dataset, double weight) {
 		super(source);
 		this.nesting = nesting;
 		this.dataset = dataset;
+		this.weight = weight;
 	}
 	
 	public String getNesting() {
@@ -50,6 +57,10 @@ public class AtomicDatasetGenerator<E> extends GeneratorProxy<E> implements Data
 		return dataset;
 	}
 
+	public double getWeight() {
+		return weight;
+	}
+	
 	@Override
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 		return super.generate(wrapper).setTag(nesting, dataset);
@@ -68,5 +79,5 @@ public class AtomicDatasetGenerator<E> extends GeneratorProxy<E> implements Data
 	public String toString() {
 		return getClass().getSimpleName() + "[" + nesting + ":" + dataset + "]";
 	}
-	
+
 }

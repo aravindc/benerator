@@ -24,9 +24,9 @@ package org.databene.benerator.dataset;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.WeightedGenerator;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.ProductWrapper;
@@ -51,6 +51,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
     protected String nesting;
     protected String datasetName;
     protected Set<String> supportedDatasets;
+    protected double totalWeight;
     
     // constructor -----------------------------------------------------------------------------------------------------
     
@@ -60,6 +61,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
         this.datasetName = datasetName;
         this.supportedDatasets = new HashSet<String>();
         this.supportedDatasets.add(datasetName);
+        this.totalWeight = 0;
     }
     
 	public boolean supportsDataset(String datasetName) {
@@ -84,6 +86,10 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		this.datasetName = datasetName;
 		this.supportedDatasets.clear();
 		this.supportedDatasets.add(datasetName);
+	}
+	
+	public double getWeight() {
+		return totalWeight;
 	}
 	
 	@Override
@@ -114,22 +120,23 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 
 	// helper methods --------------------------------------------------------------------------------------------------
 	
-    protected DatasetBasedGenerator<E> createDatasetGenerator(Dataset dataset, boolean required) {
-    	DatasetBasedGenerator<E> result;
+    protected WeightedDatasetGenerator<E> createDatasetGenerator(Dataset dataset, boolean required) {
+    	WeightedDatasetGenerator<E> generator;
     	if (dataset.isAtomic())
-			result = createAtomicDatasetGenerator(dataset, required);
+			generator = createAtomicDatasetGenerator(dataset, required);
 		else 
-    		result = createCompositeDatasetGenerator(dataset, required);
-    	supportedDatasets.add(dataset.getName());
-		return result;
+    		generator = createCompositeDatasetGenerator(dataset, required);
+    	if (generator != null)
+        	supportedDatasets.add(dataset.getName());
+		return generator;
 	}
 
     protected CompositeDatasetGenerator<E> createCompositeDatasetGenerator(Dataset dataset, boolean required) {
 		CompositeDatasetGenerator<E> generator = new CompositeDatasetGenerator<E>(nesting, dataset.getName());
 		for (Dataset subSet : dataset.getSubSets()) {
-			DatasetBasedGenerator<E> subGenerator = createDatasetGenerator(subSet, false);
+			WeightedDatasetGenerator<E> subGenerator = createDatasetGenerator(subSet, false);
 			if (subGenerator != null)
-				generator.addSubDataset(subGenerator, 1.); // TODO v0.7 support individual weights
+				generator.addSubDataset(subGenerator, subGenerator.getWeight());
 		}
 		if (generator.getSource().getSources().size() > 0)
 			return generator;
@@ -141,16 +148,18 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 	}
 
 	protected AtomicDatasetGenerator<E> createAtomicDatasetGenerator(Dataset dataset, boolean required) {
-		Generator<E> generator = createGeneratorForAtomicDataset(dataset);
-		if (generator != null)
+		WeightedGenerator<E> generator = createGeneratorForAtomicDataset(dataset);
+		if (generator != null) {
+	    	totalWeight += generator.getWeight();
 			return new AtomicDatasetGenerator<E>(generator, nesting, dataset.getName());
+		}
 		if (required)
 			throw new InvalidGeneratorSetupException("Unable to create generator for atomic dataset: " + dataset.getName());
 		else
 			return null;
 	}
 
-	protected abstract Generator<E> createGeneratorForAtomicDataset(Dataset dataset);
+	protected abstract WeightedGenerator<E> createGeneratorForAtomicDataset(Dataset dataset);
 
 	@Override
 	public DatasetBasedGenerator<E> getSource() {

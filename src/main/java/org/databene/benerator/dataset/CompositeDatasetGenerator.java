@@ -32,7 +32,7 @@ import org.databene.benerator.wrapper.WeightedGeneratorGenerator;
  * @since 0.6.6
  * @author Volker Bergmann
  */
-public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>, E> implements DatasetBasedGenerator<E> {
+public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>, E> implements WeightedDatasetGenerator<E> {
 
 	private String nesting;
 	private String dataset;
@@ -84,6 +84,10 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 		return dataset;
 	}
 	
+	public double getWeight() {
+		return getSource().getWeight();
+	}
+
 	public E generateForDataset(String dataset) {
 		return getGeneratorForDataset(dataset, true).generate(getResultWrapper()).unwrap();
 	}

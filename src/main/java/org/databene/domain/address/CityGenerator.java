@@ -26,13 +26,14 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.WeightedGenerator;
 import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
-import org.databene.benerator.dataset.DatasetBasedGenerator;
-import org.databene.benerator.sample.NonNullSampleGenerator;
-import org.databene.benerator.sample.SampleGenerator;
+import org.databene.benerator.dataset.WeightedDatasetGenerator;
+import org.databene.benerator.distribution.FeatureWeight;
+import org.databene.benerator.distribution.IndividualWeight;
+import org.databene.benerator.sample.IndividualWeightSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 
 /**
@@ -50,8 +51,8 @@ public class CityGenerator extends AbstractDatasetGenerator<City> implements Non
     }
 
     @Override
-	protected DatasetBasedGenerator<City> createDatasetGenerator(Dataset dataset, boolean required) {
-    	DatasetBasedGenerator<City> result;
+	protected WeightedDatasetGenerator<City> createDatasetGenerator(Dataset dataset, boolean required) {
+    	WeightedDatasetGenerator<City> result;
     	Country country = Country.getInstance(dataset.getName(), false);
     	if (country != null)
 			result = createAtomicDatasetGenerator(dataset, required);
@@ -61,10 +62,12 @@ public class CityGenerator extends AbstractDatasetGenerator<City> implements Non
 		return result;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	protected Generator<City> createGeneratorForAtomicDataset(Dataset dataset) {
-		SampleGenerator<City> generator = new NonNullSampleGenerator<City>(City.class);
-		Country country = Country.getInstanceForDataset(dataset);
+	protected WeightedGenerator<City> createGeneratorForAtomicDataset(Dataset dataset) {
+		IndividualWeightSampleGenerator<City> generator = new IndividualWeightSampleGenerator<City>(
+				City.class, (IndividualWeight) new FeatureWeight("population"));
+		Country country = Country.getInstance(dataset.getName());
 		country.checkCities();
         for (State state : country.getStates())
             for (City city : state.getCities())

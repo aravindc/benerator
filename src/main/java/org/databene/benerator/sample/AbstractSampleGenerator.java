@@ -83,4 +83,7 @@ public abstract class AbstractSampleGenerator<E> extends ThreadSafeGenerator<E> 
 
     /** Removes all values from the sample list */
     public abstract void clear();
+    
+    public abstract long getVariety();
+    
 }

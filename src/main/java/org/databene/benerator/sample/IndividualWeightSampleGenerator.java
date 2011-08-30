@@ -30,11 +30,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.WeightedGenerator;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.WeightedLongGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.Assert;
 
 /**
  * Maps an {@link IndividualWeight} distribution to an {@link AbstractWeightFunction} and uses its capabilities
@@ -45,14 +47,14 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @author Volker Bergmann
  */
 
-public class IndividualWeightSampleGenerator<E> extends AbstractSampleGenerator<E> {
+public class IndividualWeightSampleGenerator<E> extends AbstractSampleGenerator<E> implements WeightedGenerator<E> {
 	
     /** Keeps the Sample information */
     List<E> samples = new ArrayList<E>();
     
     IndividualWeight<E> individualWeight;
     
-	double totalWeight;
+	private double totalWeight;
 
     /** Generator for choosing a List index of the sample list */
     private WeightedLongGenerator indexGenerator;
@@ -62,15 +64,17 @@ public class IndividualWeightSampleGenerator<E> extends AbstractSampleGenerator<
     /** Initializes the generator to an unweighted sample list */
     public IndividualWeightSampleGenerator(Class<E> generatedType, IndividualWeight<E> individualWeight, E ... values) {
     	super(generatedType);
-        setValues(values);
+    	Assert.notNull(individualWeight, "individualWeight");
         this.individualWeight = individualWeight;
+        setValues(values);
     }
 
     /** Initializes the generator to an unweighted sample list */
-    public IndividualWeightSampleGenerator(Class<E> generatedType, IndividualWeight<E> distribution, Iterable<E> values) {
+    public IndividualWeightSampleGenerator(Class<E> generatedType, IndividualWeight<E> individualWeight, Iterable<E> values) {
     	super(generatedType);
+    	Assert.notNull(individualWeight, "individualWeight");
+        this.individualWeight = individualWeight;
         setValues(values);
-        this.individualWeight = distribution;
     }
 
     // samples property ------------------------------------------------------------------------------------------------
@@ -79,7 +83,7 @@ public class IndividualWeightSampleGenerator<E> extends AbstractSampleGenerator<
     public void setSamples(E ... samples) {
         this.samples.clear();
         for (E sample : samples)
-            this.samples.add(sample);
+            addValue(sample);
     }
 
     // values property -------------------------------------------------------------------------------------------------
@@ -88,15 +92,17 @@ public class IndividualWeightSampleGenerator<E> extends AbstractSampleGenerator<
     @Override
     public <T extends E> void addValue(T value) {
         samples.add(value);
+        this.totalWeight += individualWeight.weight(value);
     }
 
-    /** Calculates the total weight of all samples */
-    public double totalWeight() {
-        double total = 0;
-        for (E sample : samples)
-            total += individualWeight.weight(sample);
-        return total;
-    }
+	@Override
+	public long getVariety() {
+		return samples.size();
+	}
+	
+	public double getWeight() {
+		return totalWeight;
+	}
 
     @Override
     public void clear() {
@@ -109,7 +115,6 @@ public class IndividualWeightSampleGenerator<E> extends AbstractSampleGenerator<
     @Override
     public void init(GeneratorContext context) {
     	assertNotInitialized();
-		totalWeight = totalWeight();
         indexGenerator = new WeightedLongGenerator(0, samples.size() - 1, 1, new SampleWeightFunction());
         indexGenerator.init(context);
         super.init(context);

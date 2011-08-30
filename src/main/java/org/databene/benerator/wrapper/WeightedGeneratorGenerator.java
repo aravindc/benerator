@@ -26,8 +26,9 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.sample.MappedWeightSampleGenerator;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
+import org.databene.commons.Weighted;
 
 /**
  * {@link Generator} that wraps several other 'source generators' and assigns a weight to each one. 
@@ -38,17 +39,27 @@ import org.databene.benerator.util.GeneratorUtil;
  * @since 0.6.6
  * @author Volker Bergmann
  */
-public class WeightedGeneratorGenerator<E> extends MultiGeneratorWrapper<E, Generator<E>> {
+public class WeightedGeneratorGenerator<E> extends MultiGeneratorWrapper<E, Generator<E>> implements Weighted {
 	
-	private List<Double> weights;
-	private MappedWeightSampleGenerator<Integer> indexGenerator;
+	private List<Double> sourceWeights;
+	private AttachedWeightSampleGenerator<Integer> indexGenerator;
+	private double totalWeight;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public WeightedGeneratorGenerator() {
 		super((Class) Generator.class);
-		this.weights = new ArrayList<Double>();
+		this.sourceWeights = new ArrayList<Double>();
+		this.totalWeight = 0;
 	}
 	
+	public double getWeight() {
+		return totalWeight;
+	}
+	
+	public List<Double> getSourceWeights() {
+		return sourceWeights;
+	}
+
 	@Override
 	public synchronized void addSource(Generator<? extends E> source) {
 		addSource(source, 1.);
@@ -57,14 +68,15 @@ public class WeightedGeneratorGenerator<E> extends MultiGeneratorWrapper<E, Gene
 	public synchronized void addSource(Generator<? extends E> source, Double weight) {
 		if (weight == null)
 			weight = 1.;
-		this.weights.add(weight);
+		this.sourceWeights.add(weight);
 		super.addSource(source);
+		this.totalWeight += weight;
 	}
 	
 	private void createAndInitIndexGenerator() {
-		indexGenerator = new MappedWeightSampleGenerator<Integer>(Integer.class);
-		for (int i = 0; i < weights.size(); i++)
-			indexGenerator.addSample(i, weights.get(i));
+		indexGenerator = new AttachedWeightSampleGenerator<Integer>(Integer.class);
+		for (int i = 0; i < sourceWeights.size(); i++)
+			indexGenerator.addSample(i, sourceWeights.get(i));
 		indexGenerator.init(context);
 	}
 
