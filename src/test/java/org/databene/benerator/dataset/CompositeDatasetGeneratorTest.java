@@ -60,14 +60,14 @@ public class CompositeDatasetGeneratorTest extends GeneratorTest {
 
 	@Before
 	public void prepareNumberSets() {
-		one = new AtomicDatasetGenerator<Integer>(new ConstantGenerator<Integer>(1), "num", "one"); 
-		two = new AtomicDatasetGenerator<Integer>(new ConstantGenerator<Integer>(2), "num", "two");
+		one = new AtomicDatasetGenerator<Integer>(new ConstantGenerator<Integer>(1), "num", "one", 1); 
+		two = new AtomicDatasetGenerator<Integer>(new ConstantGenerator<Integer>(2), "num", "two", 1);
 		
 		small = new CompositeDatasetGenerator<Integer>("num", "small");
 		small.addSubDataset(one, 1);
 		small.addSubDataset(two, 2);
 		
-		ten = new AtomicDatasetGenerator<Integer>(new ConstantGenerator<Integer>(10), "num", "ten");
+		ten = new AtomicDatasetGenerator<Integer>(new ConstantGenerator<Integer>(10), "num", "ten", 1);
 		
 		large = new CompositeDatasetGenerator<Integer>("num", "large");
 		large.addSubDataset(ten, 1);
