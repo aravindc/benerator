@@ -34,6 +34,7 @@ import java.util.Map;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.WeightedGenerator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
@@ -102,11 +103,18 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
         setDataset(datasetName);
     }
     
+    @Override
+	protected boolean isAtomic(Dataset dataset) {
+		Country country = Country.getInstance(dataset.getName(), false);
+		return (country != null);
+    }
+    
 	@Override
-	protected Generator<CompanyName> createGeneratorForAtomicDataset(Dataset dataset) {
-		return new AtomicCompanyNameGenerator();
+	protected WeightedGenerator<CompanyName> createGeneratorForAtomicDataset(Dataset dataset) {
+		Country country = Country.getInstance(dataset.getName(), false);
+		return new CountryCompanyNameGenerator(country);
 	}
-	
+
 	public CompanyName generate() {
 		ProductWrapper<CompanyName> wrapper = generate(getResultWrapper());
 		return (wrapper != null ? wrapper.unwrap() : null);
@@ -114,12 +122,18 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 	
 	
 	
-	class AtomicCompanyNameGenerator extends ThreadSafeNonNullGenerator<CompanyName> {
+	class CountryCompanyNameGenerator extends ThreadSafeNonNullGenerator<CompanyName> 
+				implements WeightedGenerator<CompanyName> {
 		
+		private Country country;
 	    private AlternativeGenerator<String> shortNameGenerator;
 	    private SectorGenerator sectorGenerator;
 	    private WeightedDatasetCSVGenerator<String> legalFormGenerator;
 	    private Generator<String> locationGenerator;
+
+		public CountryCompanyNameGenerator(Country country) {
+			this.country = country;
+		}
 
 		public Class<CompanyName> getGeneratedType() {
 		    return CompanyName.class;
@@ -129,7 +143,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 	    public synchronized void init(GeneratorContext context) {
 	        try {
 	        	super.init(context);
-				initWithDataset(datasetName, context);
+				initWithDataset(country.getIsoCode(), context);
 			} catch (Exception e) {
 				String fallbackDataset = DatasetUtil.fallbackRegionName();
 				LOGGER.warn("Error initializing location generator for dataset " + datasetName + ", falling back to " + fallbackDataset);
@@ -164,6 +178,10 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 	        	name.setLegalForm(generateNullable(legalFormGenerator));
 	        name.setDatasetName(datasetName);
 	        return name;
+		}
+
+		public double getWeight() {
+			return country.getPopulation();
 		}
 
 	    @Override

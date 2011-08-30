@@ -27,6 +27,7 @@
 package org.databene.domain.organization;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.commons.ConfigurationError;
 import org.databene.domain.organization.CompanyNameGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
         check("BR");
     }
 
-    @Test
+    @Test(expected = ConfigurationError.class)
     public void testXX() {
         check("XX");
     }
@@ -79,7 +80,6 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
         }
     }
     
-/* TODO v0.7.1 reduce memory usage and initialization time
     @Test
     public void testWorld() {
         CompanyNameGenerator generator = new CompanyNameGenerator("world");
@@ -92,7 +92,6 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
             System.out.println(name);
         }
     }
-*/
     
     public void check(String dataset) {
         CompanyNameGenerator generator = new CompanyNameGenerator(dataset);
