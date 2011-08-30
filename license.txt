@@ -42,6 +42,10 @@ as a component of a purchased test and consultation service.
 Under GPL the following services and products are, however, restricted: in order to offer educational services, 
 product support or educational materials for Benerator, a commercial license must be acquired.
 
+III Notes
+---------
+There is no legal claim to obtain a commercial license. 
+
 
 
 		    GNU GENERAL PUBLIC LICENSE
