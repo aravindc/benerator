@@ -702,7 +702,7 @@ public class DBSystem extends AbstractStorageSystem {
                 complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
                 logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
-                logger.warn("Can't handle composite foreign key automatically: " + constraint); // TODO v0.7 a warning should only occur when trying to generate composite keys automatically
+                // TODO v0.8 handle composite keys
             }
         }
         // process normal columns
