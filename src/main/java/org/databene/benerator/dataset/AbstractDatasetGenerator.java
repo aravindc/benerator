@@ -122,13 +122,17 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 	
     protected WeightedDatasetGenerator<E> createDatasetGenerator(Dataset dataset, boolean required) {
     	WeightedDatasetGenerator<E> generator;
-    	if (dataset.isAtomic())
+    	if (isAtomic(dataset))
 			generator = createAtomicDatasetGenerator(dataset, required);
 		else 
     		generator = createCompositeDatasetGenerator(dataset, required);
     	if (generator != null)
         	supportedDatasets.add(dataset.getName());
 		return generator;
+	}
+
+	protected boolean isAtomic(Dataset dataset) {
+		return dataset.isAtomic();
 	}
 
     protected CompositeDatasetGenerator<E> createCompositeDatasetGenerator(Dataset dataset, boolean required) {
