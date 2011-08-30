@@ -26,6 +26,8 @@
 
 package org.databene.benerator.sample;
 
+import org.databene.commons.Weighted;
+
 /**
  * Represents a single sample value for a generator.
  * The sample value may have an additional weight information.<br/>
@@ -34,7 +36,7 @@ package org.databene.benerator.sample;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class WeightedSample<E> {
+public class WeightedSample<E> implements Weighted {
 
     /** The value of the sample */
     private E value;
