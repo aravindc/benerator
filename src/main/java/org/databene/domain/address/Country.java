@@ -26,7 +26,6 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.dataset.Dataset;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.benerator.primitive.RegexStringGenerator;
@@ -68,21 +67,24 @@ public class Country {
     private Locale countryLocale;
     private Locale defaultLanguage;
     private Map<String, State> states;
+    private int population;
 
 	private CityGenerator cityGenerator;
 
 
-    private Country(String isoCode, String defaultLanguage, String phoneCode, String mobilCodePattern, String name) {
+    private Country(String isoCode, String defaultLanguage, int population, String phoneCode, String mobileCodePattern, 
+    		String name) {
         this.isoCode = isoCode;
         this.defaultLanguage = LocaleUtil.getLocale(defaultLanguage);
         this.phoneCode = phoneCode;
         this.countryLocale = new Locale(LocaleUtil.getLocale(defaultLanguage).getLanguage(), isoCode);
         this.mobilePhoneCityRelated = "BR".equals(isoCode.toUpperCase()); // TODO v1.0 make configuration generic
-        this.mobilePrefixGenerator = new RegexStringGenerator(mobilCodePattern);
+        this.mobilePrefixGenerator = new RegexStringGenerator(mobileCodePattern);
         this.mobilePrefixGenerator.init(null);
         this.localNumberGenerator = new RandomVarLengthStringGenerator("\\d", 7);
         this.localNumberGenerator.init(null);
         this.name = (name != null ? name : countryLocale.getDisplayCountry(Locale.US));
+        this.population = population;
         importStates();
         instances.put(isoCode, this);
     }
@@ -138,6 +140,10 @@ public class Country {
     	return defaultLanguage;
     }
     
+	public int getPopulation() {
+		return population;
+	}
+	
     public String getPhoneCode() {
         return phoneCode;
     }
@@ -225,7 +231,7 @@ public class Country {
     public static Country getInstance(String isoCode, boolean create) {
         Country country = instances.get(isoCode.toUpperCase());
         if (country == null && create)
-            country = new Country(isoCode, Locale.getDefault().getLanguage(), DEFAULT_PHONE_CODE, DEFAULT_MOBILE_PHONE_PATTERN, null);
+            country = new Country(isoCode, Locale.getDefault().getLanguage(), 1000000, DEFAULT_PHONE_CODE, DEFAULT_MOBILE_PHONE_PATTERN, null);
         return country;
     }
     
@@ -413,7 +419,8 @@ public class Country {
                 String phoneCode = (cells.length > 2 ? cells[2].trim() : null);
                 String mobilCodePattern = (cells.length > 3 ? cells[3].trim() : DEFAULT_MOBILE_PHONE_PATTERN);
                 String name = (cells.length > 4 ? cells[4].trim() : null);
-                Country country = new Country(isoCode, defaultLocale, phoneCode, mobilCodePattern, name);
+                int population = (cells.length > 5 ? Integer.parseInt(cells[5].trim()) : 1000000);
+                Country country = new Country(isoCode, defaultLocale, population, phoneCode, mobilCodePattern, name);
                 LOGGER.debug("Parsed country {}" + country);
             }
         } catch (IOException e) {
@@ -436,18 +443,5 @@ public class Country {
 	    	}
 	    }
     }
-
-	public static Country getInstanceForDataset(Dataset dataset) {
-		boolean done = false;
-		Country country;
-		do {
-			country = Country.getInstance(dataset.getName(), false);
-			if (country == null && dataset.getParents().size() > 0)
-				dataset = dataset.getParents().iterator().next();
-			else
-				done = true;
-		} while (!done);
-		return country;
-	}
 
 }
