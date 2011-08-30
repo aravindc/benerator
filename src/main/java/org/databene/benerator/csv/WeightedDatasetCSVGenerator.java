@@ -28,12 +28,12 @@ package org.databene.benerator.csv;
 
 import java.util.List;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.WeightedGenerator;
 import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.AtomicDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
 import org.databene.benerator.dataset.DatasetUtil;
-import org.databene.benerator.sample.MappedWeightSampleGenerator;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.commons.Converter;
 import org.databene.commons.IOUtil;
@@ -98,12 +98,12 @@ public class WeightedDatasetCSVGenerator<E> extends AbstractDatasetGenerator<E> 
 	}
 	
 	@Override
-	protected Generator<E> createGeneratorForAtomicDataset(Dataset dataset) {
+	protected WeightedGenerator<E> createGeneratorForAtomicDataset(Dataset dataset) {
 		String filename = DatasetUtil.filenameOfDataset(dataset.getName(), filenamePattern);
 		LOGGER.debug("Creating weighted data set CSV generator for file {}", filename);
 		if (IOUtil.isURIAvailable(filename)) {
 			List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(filename, separator, encoding, converter);
-			MappedWeightSampleGenerator<E> generator = new MappedWeightSampleGenerator<E>(generatedType);
+			AttachedWeightSampleGenerator<E> generator = new AttachedWeightSampleGenerator<E>(generatedType);
 			for (WeightedSample<E> sample : samples)
 				generator.addSample(sample.getValue(), sample.getWeight());
 			if (samples.size() > 0)
