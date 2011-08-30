@@ -21,8 +21,10 @@
 
 package org.databene.benerator.factory;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -51,7 +53,7 @@ import org.databene.commons.ComparableComparator;
 import org.databene.commons.Converter;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.OrderedSet;
-import org.databene.commons.TimeUtil;
+import org.databene.commons.Period;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.NumberToNumberConverter;
@@ -111,19 +113,30 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 
     @Override
 	public Generator<Date> createDateGenerator(Date min, Date max, long granularity, Distribution distribution) {
-    	// TODO v0.7 find a useful concept for date granularity
     	if (min == null)
     		min = defaultsProvider.defaultMinDate();
     	if (max == null)
     		max = defaultsProvider.defaultMaxDate();
     	TreeSet<Date> values = new TreeSet<Date>();
     	values.add(min);
-    	values.add(TimeUtil.midnightOf(new Date((min.getTime() + max.getTime()) / 2)));
+    	values.add(midDate(min, max, granularity));
     	values.add(max);
     	return new SequenceGenerator<Date>(Date.class, values);
     }
 
-    @SuppressWarnings("unchecked")
+    Date midDate(Date min, Date max, long granularity) {
+    	int segmentNo = (int) ((max.getTime() - min.getTime()) / granularity / 2);
+    	long millisOffset = segmentNo * granularity;
+    	Calendar medianDay = new GregorianCalendar();
+    	medianDay.setTime(min);
+    	long daysOffset = millisOffset / Period.DAY.getMillis();
+    	long subDayOffset = millisOffset - daysOffset * Period.DAY.getMillis();
+    	medianDay.add(Calendar.DAY_OF_YEAR, (int) daysOffset);
+    	medianDay.add(Calendar.MILLISECOND, (int) subDayOffset);
+    	return medianDay.getTime();
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
