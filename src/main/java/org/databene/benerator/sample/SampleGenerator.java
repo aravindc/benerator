@@ -126,7 +126,8 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
     	this.samples.clear();
     }
     
-    public int getVariety() {
+    @Override
+	public long getVariety() {
     	return samples.size();
     }
     

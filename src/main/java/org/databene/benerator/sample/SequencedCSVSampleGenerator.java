@@ -54,7 +54,7 @@ import java.util.ArrayList;
  *
  * <br/>
  * Created: 26.07.2007 18:10:33
- * @see org.databene.benerator.sample.MappedWeightSampleGenerator
+ * @see org.databene.benerator.sample.AttachedWeightSampleGenerator
  */
 public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 

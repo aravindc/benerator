@@ -51,7 +51,7 @@ import java.util.List;
  * Created: 11.06.2006 20:49:33
  * @since 0.1
  * @author Volker Bergmann
- * @see MappedWeightSampleGenerator
+ * @see AttachedWeightSampleGenerator
  */
 public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 	
@@ -82,7 +82,7 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
 	public WeightedCSVSampleGenerator(Class<E> targetType, String uri, String encoding, Converter<String, E> converter) {
     	super(targetType);
-        setSource(new MappedWeightSampleGenerator<E>(targetType));
+        setSource(new AttachedWeightSampleGenerator<E>(targetType));
         this.converter = converter;
         this.encoding = encoding;
         this.separator = ',';
@@ -125,7 +125,7 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 	@Override
     public void init(GeneratorContext context) {
         List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(uri, separator, encoding, converter);
-        MappedWeightSampleGenerator<E> awSource = (MappedWeightSampleGenerator<E>) getSource();
+        AttachedWeightSampleGenerator<E> awSource = (AttachedWeightSampleGenerator<E>) getSource();
         if (samples.size() > 0) {
         	for (WeightedSample<E> sample : samples)
         		awSource.addSample(sample.getValue(), sample.getWeight());

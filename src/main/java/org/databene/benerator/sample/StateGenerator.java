@@ -52,7 +52,7 @@ import org.databene.commons.StringUtil;
 public class StateGenerator<E> extends UnsafeNonNullGenerator<E> {
 	
 	private Class<E> generatedType;
-	private Map<E, MappedWeightSampleGenerator<E>> transitionsGenerators;
+	private Map<E, AttachedWeightSampleGenerator<E>> transitionsGenerators;
 	private E nextState;
 	
 	// initialization --------------------------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ public class StateGenerator<E> extends UnsafeNonNullGenerator<E> {
     
     public StateGenerator(Class<E> generatedType) {
 	    this.generatedType = generatedType;
-	    this.transitionsGenerators = new HashMap<E, MappedWeightSampleGenerator<E>>();
+	    this.transitionsGenerators = new HashMap<E, AttachedWeightSampleGenerator<E>>();
 	    this.nextState = null;
     }
     
@@ -89,9 +89,9 @@ public class StateGenerator<E> extends UnsafeNonNullGenerator<E> {
     }
 
     public void addTransition(E from, E to, double weight) {
-    	MappedWeightSampleGenerator<E> subGenerator = transitionsGenerators.get(from);
+    	AttachedWeightSampleGenerator<E> subGenerator = transitionsGenerators.get(from);
     	if (subGenerator == null) {
-    		subGenerator = new MappedWeightSampleGenerator<E>(generatedType);
+    		subGenerator = new AttachedWeightSampleGenerator<E>(generatedType);
     		transitionsGenerators.put(from, subGenerator);
     	}
     	subGenerator.addSample(to, weight);
@@ -107,7 +107,7 @@ public class StateGenerator<E> extends UnsafeNonNullGenerator<E> {
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
     	assertNotInitialized();
         boolean hasEndTransition = false;
-        for (MappedWeightSampleGenerator<E> tmp : transitionsGenerators.values())
+        for (AttachedWeightSampleGenerator<E> tmp : transitionsGenerators.values())
         	if (tmp.containsSample(null)) {
         		hasEndTransition = true;
         		break;
@@ -116,7 +116,7 @@ public class StateGenerator<E> extends UnsafeNonNullGenerator<E> {
         	throw new InvalidGeneratorSetupException("No final state defined for " + this);
     	for (Generator<E> tmp : transitionsGenerators.values())
     		tmp.init(context);
-    	MappedWeightSampleGenerator<E> gen = this.transitionsGenerators.get(null);
+    	AttachedWeightSampleGenerator<E> gen = this.transitionsGenerators.get(null);
         nextState = gen.generate(getResultWrapper()).unwrap();
         super.init(context);
     }
@@ -126,7 +126,7 @@ public class StateGenerator<E> extends UnsafeNonNullGenerator<E> {
     	if (nextState == null)
     		return null;
     	E result = nextState;
-    	MappedWeightSampleGenerator<E> transitionGenerator = transitionsGenerators.get(nextState);
+    	AttachedWeightSampleGenerator<E> transitionGenerator = transitionsGenerators.get(nextState);
 	    ProductWrapper<E> wrapper = transitionGenerator.generate(getResultWrapper());
 		nextState = (wrapper != null ? wrapper.unwrap() : null);
 		return result;
@@ -134,7 +134,7 @@ public class StateGenerator<E> extends UnsafeNonNullGenerator<E> {
 
     @Override
     public void reset() throws IllegalGeneratorStateException {
-    	MappedWeightSampleGenerator<E> transitionGenerator = this.transitionsGenerators.get(null);
+    	AttachedWeightSampleGenerator<E> transitionGenerator = this.transitionsGenerators.get(null);
 	    ProductWrapper<E> wrapper = transitionGenerator.generate(getResultWrapper());
 		nextState = (wrapper != null ? wrapper.unwrap() : null);
         super.reset();
