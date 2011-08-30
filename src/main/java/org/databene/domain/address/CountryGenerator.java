@@ -55,16 +55,18 @@ public class CountryGenerator extends AbstractDatasetGenerator<Country> implemen
 	public CountryGenerator(String datasetName) {
         super(Country.class, REGION, datasetName);
     }
-	
+
+	@Override
+	protected boolean isAtomic(Dataset dataset) {
+		Country country = Country.getInstance(dataset.getName(), false);
+		return (country != null);
+	}
 
     @Override
-	protected WeightedDatasetGenerator<Country> createDatasetGenerator(Dataset dataset, boolean required) {
+	protected WeightedGenerator<Country> createGeneratorForAtomicDataset(Dataset dataset) {
     	WeightedDatasetGenerator<Country> result;
     	Country country = Country.getInstance(dataset.getName(), false);
-    	if (country != null)
-			result = createGeneratorForCountry(country);
-		else 
-    		result = createCompositeDatasetGenerator(dataset, required);
+		result = createGeneratorForCountry(country);
     	supportedDatasets.add(dataset.getName());
 		return result;
 	}
@@ -86,10 +88,5 @@ public class CountryGenerator extends AbstractDatasetGenerator<Country> implemen
     public String toString() {
         return getClass().getSimpleName() + "[" + getDataset() + "]";
     }
-
-	@Override
-	protected WeightedGenerator<Country> createGeneratorForAtomicDataset(Dataset dataset) {
-		throw new UnsupportedOperationException("createGeneratorForAtomicDataset() is not supposed to be called");
-	}
 
 }

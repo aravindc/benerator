@@ -30,7 +30,6 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.WeightedGenerator;
 import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
-import org.databene.benerator.dataset.WeightedDatasetGenerator;
 import org.databene.benerator.distribution.FeatureWeight;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.sample.IndividualWeightSampleGenerator;
@@ -51,17 +50,11 @@ public class CityGenerator extends AbstractDatasetGenerator<City> implements Non
     }
 
     @Override
-	protected WeightedDatasetGenerator<City> createDatasetGenerator(Dataset dataset, boolean required) {
-    	WeightedDatasetGenerator<City> result;
-    	Country country = Country.getInstance(dataset.getName(), false);
-    	if (country != null)
-			result = createAtomicDatasetGenerator(dataset, required);
-		else 
-    		result = createCompositeDatasetGenerator(dataset, required);
-    	supportedDatasets.add(dataset.getName());
-		return result;
-	}
-
+	protected boolean isAtomic(Dataset dataset) {
+		Country country = Country.getInstance(dataset.getName(), false);
+		return (country != null);
+    }
+    
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected WeightedGenerator<City> createGeneratorForAtomicDataset(Dataset dataset) {
