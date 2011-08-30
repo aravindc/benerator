@@ -35,7 +35,7 @@ import java.util.StringTokenizer;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
-import org.databene.benerator.sample.MappedWeightSampleGenerator;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.wrapper.ProductWrapper;
@@ -123,9 +123,9 @@ public class FactoryUtilTest extends GeneratorTest {
     @Test
     public void testGetMessageGenerator() {
         List<String> salutations = Arrays.asList("Hello", "Hi");
-        MappedWeightSampleGenerator<String> salutationGenerator = new MappedWeightSampleGenerator<String>(String.class, salutations);
+        AttachedWeightSampleGenerator<String> salutationGenerator = new AttachedWeightSampleGenerator<String>(String.class, salutations);
         List<String> names = Arrays.asList("Alice", "Bob", "Charly");
-        MappedWeightSampleGenerator<String> nameGenerator = new MappedWeightSampleGenerator<String>(String.class, names);
+        AttachedWeightSampleGenerator<String> nameGenerator = new AttachedWeightSampleGenerator<String>(String.class, names);
         String pattern = "{0} {1}";
         Generator<String> generator = WrapperFactory.createMessageGenerator(pattern, 0, 12, salutationGenerator, nameGenerator);
         generator.init(context);
