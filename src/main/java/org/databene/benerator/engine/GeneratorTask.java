@@ -37,5 +37,4 @@ public interface GeneratorTask extends Task {
 	Generator<?> getGenerator();
 	void flushConsumer();
 	void prepare(GeneratorContext context);
-	void close();
 }
