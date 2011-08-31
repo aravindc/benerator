@@ -23,43 +23,55 @@ package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Wraps variable name and generator functionality.<br/><br/>
- * Created: 07.08.2011 16:24:10
+ * Abstract implementation of the GeneratorComponent interface which manages a source Generator
+ * and a Context reference.<br/><br/>
+ * Created: 31.08.2011 12:56:22
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class Variable<E> extends AbstractGeneratorComponent<E> {
-	
-	private String name;
-	
-	public Variable(String name, Generator<?> generator) {
-		super(generator);
-		this.name = name;
+public abstract class AbstractGeneratorComponent<E> implements GeneratorComponent<E> {
+
+	protected Generator<?> source;
+	protected GeneratorContext context;
+
+	public AbstractGeneratorComponent(Generator<?> source) {
+		this.source = source;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public boolean buildComponentFor(Object target, GeneratorContext context) {
-		ProductWrapper<?> productWrapper = source.generate(new ProductWrapper());
-		if (productWrapper == null) {
-			context.remove(name);
-            return false;
-		}
-        context.set(name, productWrapper.unwrap());
-        return true;
+    public Generator<?> getSource() {
+    	return source;
+    }
+    
+    // GeneratorComponent interface implementation ---------------------------------------------------------------------
+
+	public void init(GeneratorContext context) {
+		source.init(context);
+		this.context = context;
+	}
+
+	public void reset() {
+		source.reset();
 	}
 	
-	@Override
 	public void close() {
-		context.remove(name);
-		super.close();
+    	source.close();
 	}
+
+	public boolean isParallelizable() {
+	    return source.isParallelizable();
+    }
+
+	public boolean isThreadSafe() {
+	    return source.isThreadSafe();
+    }
+	
+	// java.lang.Object overrides --------------------------------------------------------------------------------------
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[" + name + ":" + source + "]";
+		return getClass().getSimpleName() + '{' + source + '}';
 	}
-	
+
 }

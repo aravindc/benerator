@@ -22,7 +22,6 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
@@ -31,45 +30,14 @@ import org.databene.benerator.wrapper.WrapperFactory;
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public abstract class AbstractComponentBuilder<E> implements ComponentBuilder<E> {
+public abstract class AbstractComponentBuilder<E> extends AbstractGeneratorComponent<E> implements ComponentBuilder<E> {
 
-	protected Generator<?> source;
-	
-    public AbstractComponentBuilder(Generator<?> source, double nullQuota) {
+    public AbstractComponentBuilder(Generator<?> source, double nullQuota) { // TODO this does not belong here
 		this(WrapperFactory.injectNulls(source, nullQuota));
 	}
     
-    public Generator<?> getSource() {
-    	return source;
-    }
-
     public AbstractComponentBuilder(Generator<?> source) {
-		this.source = source;
+		super(source);
 	}
 
-	public void close() {
-    	source.close();
-	}
-
-	public void init(GeneratorContext context) {
-		source.init(context);
-	}
-
-	public void reset() {
-		source.reset();
-	}
-	
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + '{' + source + '}';
-	}
-
-	public boolean isParallelizable() {
-	    return source.isParallelizable();
-    }
-
-	public boolean isThreadSafe() {
-	    return source.isThreadSafe();
-    }
-	
 }
