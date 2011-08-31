@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * {@link TaskRunner} implementation that provides for repeated, paged, 
@@ -51,23 +50,16 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created: 16.07.2007 19:25:30
  * @author Volker Bergmann
  */
-public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHandler {
+public class PagedTaskRunner extends AbstractTaskRunner implements Thread.UncaughtExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(PagedTaskRunner.class);
 
-    protected StateTrackingTaskProxy<? extends Task> target;
     private List<PageListener> pageListeners;
 
     private long pageSize;
-    private int  threadCount;
-    
-    private volatile AtomicLong queuedInvocations;
-    private volatile AtomicLong queuedPages;
-    private volatile AtomicLong actualCount;
+    private int threadCount;
     
     private Expression<ExecutorService> executor;
-    private Context context;
-    private ErrorHandler errorHandler;
     private PerformanceTracker tracker;
 
     private Throwable exception;
@@ -82,27 +74,19 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
 
     public PagedTaskRunner(Task target, List<PageListener> pageListeners, long pageSize, int threads, 
     		boolean stats, Expression<ExecutorService> executor, Context context, ErrorHandler errorHandler) {
+    	super(null, context, errorHandler); // call super constructor without target...
     	if (stats) {
        		target = new PerfTrackingTaskProxy(target);
         	this.tracker = ((PerfTrackingTaskProxy) target).getTracker();
     	}
-    	this.target = new StateTrackingTaskProxy<Task>(target);
+    	this.target = new StateTrackingTaskProxy<Task>(target); // ...but provide it afterwards
         this.pageListeners = pageListeners;
         this.pageSize = pageSize;
         this.threadCount = threads;
-        this.actualCount = new AtomicLong();
-        this.queuedInvocations = new AtomicLong();
-		this.queuedPages = new AtomicLong();
         this.executor = executor;
-        this.context = context;
-        this.errorHandler = errorHandler;
     }
 
     // Task implementation ---------------------------------------------------------------------------------------------
-
-    public long getActualCount() {
-    	return actualCount.get();
-    }
 
 	public long getPageSize() {
         return pageSize;
@@ -113,18 +97,26 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
     }
     
 	public long run(Long requestedInvocations, Long minInvocations) {
-		run(requestedInvocations);
-        return checkCount(minInvocations);
+		// first run without verification
+		long countValue = run(requestedInvocations);
+		// afterwards verify execution count
+		if (minInvocations != null && countValue < minInvocations)
+			throw new TaskUnavailableException(target, minInvocations, countValue);
+		if (tracker != null)
+			tracker.getCounter().printSummary(new PrintWriter(System.out), 90, 95);
+		return countValue;
     }
 
 	public long run(Long invocationCount) {
     	if (invocationCount != null && invocationCount == 0)
     		return 0;
-    	this.actualCount.set(0);
+        long queuedInvocations = 0;
+        long queuedPages = 0;
+        long actualCount = 0;
     	if (invocationCount != null) {
     		if (pageSize > 0)
-    			queuedPages.set((invocationCount + pageSize - 1) / pageSize);
-	    	queuedInvocations.set(invocationCount);
+    			queuedPages = (invocationCount + pageSize - 1) / pageSize;
+	    	queuedInvocations = invocationCount;
     	}
         this.exception = null;
         if (logger.isDebugEnabled())
@@ -142,14 +134,14 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         			pageStarting(currentPageNo);
 	            long currentPageSize;
 	            if (pageSize > 0)
-	            	currentPageSize = (invocationCount == null ? pageSize : Math.min(pageSize, queuedInvocations.get()));
+	            	currentPageSize = (invocationCount == null ? pageSize : Math.min(pageSize, queuedInvocations));
 	            else
-	            	currentPageSize = (invocationCount == null ? 1 : Math.min(invocationCount, queuedInvocations.get()));
-	            queuedInvocations.addAndGet(- currentPageSize);
+	            	currentPageSize = (invocationCount == null ? 1 : Math.min(invocationCount, queuedInvocations));
+	            queuedInvocations -= currentPageSize;
 	            long localCount = pageRunner.run(currentPageSize);
-	            actualCount.addAndGet(localCount);
+	            actualCount += localCount;
 	            if (invocationCount != null)
-	            	queuedPages.decrementAndGet();
+	            	queuedPages--;
         		if (pageSize > 0)
         			pageFinished(currentPageNo, context);
 	            if (exception != null)
@@ -158,10 +150,10 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         	} catch (Exception e) {
         		errorHandler.handleError("Error in execution of task " + getTaskName(), e);
         	}
-        } while (workPending(invocationCount));
+        } while (workPending(invocationCount, queuedPages));
         if (logger.isDebugEnabled())
             logger.debug("PagedTask " + getTaskName() + " finished");
-        return actualCount.get();
+        return actualCount;
 	}
 	
 	public String getTaskName() {
@@ -180,12 +172,13 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
 
     // non-public helpers ----------------------------------------------------------------------------------------------
 
-    protected boolean workPending(Long maxInvocationCount) {
-        if (!target.isAvailable())
+    @SuppressWarnings("unchecked")
+	protected boolean workPending(Long maxInvocationCount, long queuedPages) {
+        if (!((StateTrackingTaskProxy<? extends Task>) target).isAvailable())
             return false;
         if (maxInvocationCount == null)
         	return true;
-        return (queuedPages.get() > 0);
+        return (queuedPages > 0);
 	}
 
     protected void pageStarting(int currentPageNo) {
@@ -232,18 +225,9 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         this.exception = e;
     }
 
-	private long checkCount(Long minInvocations) {
-	    long countValue = actualCount.get();
-		if (minInvocations != null && countValue < minInvocations)
-        	throw new TaskUnavailableException(target, minInvocations, countValue);
-		if (tracker != null)
-			tracker.getCounter().printSummary(new PrintWriter(System.out), 90, 95);
-		return countValue;
-    }
-    
 	@Override
 	public String toString() {
-	    return getClass().getSimpleName() + '[' + target + ']';
+	    return getClass().getSimpleName();
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,42 +24,24 @@ package org.databene.task.runner;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.task.Task;
-import org.databene.task.TaskResult;
 
 /**
- * {@link TaskRunner} implementation that executes a {@link Task} with the current thread.<br/><br/>
- * Created: 27.03.2010 14:01:29
- * @since 0.6.0
+ * Abstract implementation of the {@link TaskRunner} interface which holds attributes 
+ * that are useful for all implementors.<br/><br/>
+ * Created: 31.08.2011 11:44:55
+ * @since 0.7.0
  * @author Volker Bergmann
  */
-public class SingleThreadedTaskRunner extends AbstractTaskRunner {
-	
-	private boolean finishPage;
+public abstract class AbstractTaskRunner implements TaskRunner {
 
-	public SingleThreadedTaskRunner(Task target, boolean finishPages, Context context, ErrorHandler errorHandler) {
-		super(target, context, errorHandler);
-	    this.finishPage = finishPages;
-    }
+	protected Task target;
+	protected Context context;
+	protected ErrorHandler errorHandler;
 
-	public long run(Long invocationCount) {
-		try {
-			return runWithoutPage(target, invocationCount, context, errorHandler);
-		} finally {
-			if (finishPage)
-				target.pageFinished();
-		}
-    }
-
-	public static long runWithoutPage(Task target, Long invocationCount, Context context, ErrorHandler errorHandler) {
-		long actualCount = 0;
-        for (int i = 0; invocationCount == null || i < invocationCount; i++) {
-            TaskResult stepResult = target.execute(context, errorHandler);
-			if (stepResult != TaskResult.UNAVAILABLE)
-            	actualCount++;
-			if (stepResult != TaskResult.EXECUTING)
-				break;
-        }
-        return actualCount;
+	public AbstractTaskRunner(Task target, Context context, ErrorHandler errorHandler) {
+	    this.target = target;
+	    this.context = context;
+	    this.errorHandler = errorHandler;
 	}
 	
 }

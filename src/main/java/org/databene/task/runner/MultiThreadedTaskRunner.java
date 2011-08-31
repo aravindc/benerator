@@ -41,25 +41,20 @@ import org.slf4j.LoggerFactory;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class MultiThreadedTaskRunner implements TaskRunner {
+public class MultiThreadedTaskRunner extends AbstractTaskRunner {
 	
     private static final Logger logger = LoggerFactory.getLogger(MultiThreadedTaskRunner.class);
 
-    protected Task target;
 	private int threadCount;
-	protected Context context;
 	private ExecutorService executorService;
-	protected ErrorHandler errorHandler;
 	private PerformanceTracker tracker;
 
 	
 	public MultiThreadedTaskRunner(Task target, int threadCount, Context context, ExecutorService executorService,
             ErrorHandler errorHandler, PerformanceTracker tracker) {
-	    this.target = target;
+		super(target, context, errorHandler);
 	    this.threadCount = threadCount;
-	    this.context = context;
 	    this.executorService = executorService;
-	    this.errorHandler = errorHandler;
 	    this.tracker = tracker;
     }
 
