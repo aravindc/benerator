@@ -27,9 +27,9 @@
 package org.databene.benerator.engine;
 
 import java.io.Closeable;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.databene.commons.IOUtil;
 import org.slf4j.Logger;
@@ -45,9 +45,9 @@ import org.slf4j.LoggerFactory;
 
 public class ResourceManagerSupport implements ResourceManager{
 
-	private static final Logger logger = LoggerFactory.getLogger(ResourceManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceManagerSupport.class);
 	
-	private Set<Closeable> resources = new HashSet<Closeable>();
+	private List<Closeable> resources = new ArrayList<Closeable>();
 
 	public boolean addResource(Closeable resource) {
 		if (resources.contains(resource))
@@ -60,8 +60,10 @@ public class ResourceManagerSupport implements ResourceManager{
 	}
 
     public void close() {
-		logger.debug("Closing resources: " + this);
-    	IOUtil.closeAll(resources);
+		LOGGER.debug("Closing resources: {}", this);
+		for (int i = resources.size() - 1; i >= 0; i--)
+			IOUtil.close(resources.get(i));
+    	resources.clear();
     }
 
     @Override
