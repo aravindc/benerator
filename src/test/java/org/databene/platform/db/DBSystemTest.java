@@ -32,6 +32,7 @@ import java.sql.Statement;
 
 import org.databene.benerator.Consumer;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.jdbacl.DBUtil;
 import org.databene.model.data.Entity;
 import org.databene.webdecs.DataContainer;
@@ -143,8 +144,8 @@ public class DBSystemTest {
 	public void testInserter() throws Exception {
         Consumer inserter = db.inserter();
         Entity entity = new Entity("TEST", "ID", 1, "NAME", "Alice");
-        inserter.startConsuming(entity);
-        inserter.finishConsuming(entity);
+        inserter.startConsumption(new ProductWrapper<Entity>().wrap(entity));
+        inserter.finishConsumption(new ProductWrapper<Entity>().wrap(entity));
         DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
         assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 
@@ -155,8 +156,8 @@ public class DBSystemTest {
 	public void testInserter_table() throws Exception {
         Consumer inserter = db.inserter("TEST");
         Entity entity = new Entity("Xyz", "ID", 1, "NAME", "Alice");
-        inserter.startConsuming(entity);
-        inserter.finishConsuming(entity);
+        inserter.startConsumption(new ProductWrapper<Entity>().wrap(entity));
+        inserter.finishConsumption(new ProductWrapper<Entity>().wrap(entity));
         DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
         assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 

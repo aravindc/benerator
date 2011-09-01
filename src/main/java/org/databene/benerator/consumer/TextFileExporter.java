@@ -139,7 +139,8 @@ public class TextFileExporter extends FormattingConsumer implements FileExporter
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-	public final synchronized void startConsuming(Object data) {
+	@Override
+	public final synchronized void startProductConsumption(Object data) {
         try {
             if (printer == null)
                 initPrinter(data);

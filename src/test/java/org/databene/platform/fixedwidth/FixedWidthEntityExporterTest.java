@@ -73,8 +73,8 @@ public class FixedWidthEntityExporterTest {
 
 	private void consumeEntity(FixedWidthEntityExporter exporter, Number left, Number right) {
 		Entity entity = new Entity("row", "left", left, "right", right);
-		exporter.startConsuming(entity);
-		exporter.finishConsuming(entity);
+		exporter.startProductConsumption(entity);
+		exporter.finishProductConsumption(entity);
 	}
 
 	private File tempFile() throws IOException {

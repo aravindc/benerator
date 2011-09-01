@@ -24,6 +24,7 @@ package org.databene.benerator.consumer;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.Consumer;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.junit.Test;
 
 /**
@@ -38,9 +39,9 @@ public class BadDataConsumerTest {
 	public void test() {
 		// the real consumer throws an exception on every second invocation
 		Consumer realTarget = new AbstractConsumer() {
-			int count = 0;
-			public void startConsuming(Object object) {
-				if (count++ % 2 == 1)
+			@Override
+			public void startProductConsumption(Object object) {
+				if (((Integer) object) % 2 == 1)
 					throw new RuntimeException();
 			}
 		};
@@ -51,14 +52,14 @@ public class BadDataConsumerTest {
 		BadDataConsumer consumer = new BadDataConsumer(badTarget, realTarget);
 
 		for (int i = 1; i <= 5; i++) {
-			consumer.startConsuming(i);
-			consumer.finishConsuming(i);
+			consumer.startConsumption(new ProductWrapper<Integer>().wrap(i));
+			consumer.finishConsumption(new ProductWrapper<Integer>().wrap(i));
 		}
 		consumer.close();
 		
-		assertEquals(2, badTarget.getConsumedData().size());
-		assertEquals(2, badTarget.getConsumedData().get(0));
-		assertEquals(4, badTarget.getConsumedData().get(1));
+		assertEquals(3, badTarget.getConsumedData().size());
+		assertEquals(1, badTarget.getConsumedData().get(0));
+		assertEquals(3, badTarget.getConsumedData().get(1));
 	}
 
 }

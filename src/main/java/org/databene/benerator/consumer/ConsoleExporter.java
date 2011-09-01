@@ -79,7 +79,8 @@ public class ConsoleExporter extends FormattingConsumer {
 		this.out = out;
 	}
 	
-	public void startConsuming(Object object) {
+	@Override
+	public void startProductConsumption(Object object) {
 		if (object instanceof Entity) {
 			String entityType = ((Entity) object).type();
 			AtomicLong counter = counters.get(entityType);

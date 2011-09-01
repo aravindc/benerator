@@ -27,7 +27,8 @@
 package shop;
 
 import org.databene.benerator.Consumer;
-import org.databene.benerator.consumer.AbstractConsumer;
+import org.databene.benerator.consumer.ConsumerProxy;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,41 +38,30 @@ import org.slf4j.LoggerFactory;
  * <br/>
  * Created: 26.08.2007 14:47:40
  */
-public class MyProxy extends AbstractConsumer {
+public class MyProxy extends ConsumerProxy {
 
     private static Logger logger = LoggerFactory.getLogger(MyProxy.class);
-
-    private Consumer target;
 
     public MyProxy() {
         this(null);
     }
 
     public MyProxy(Consumer target) {
-        this.target = target;
-    }
-    
-    // properties ------------------------------------------------------------------------------------------------------
-
-    public Consumer getTarget() {
-        return target;
-    }
-
-    public void setTarget(Consumer target) {
-        this.target = target;
+        super(target);
     }
     
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void startConsuming(Object object) {
-        logger.info(object.toString());
-        target.startConsuming(object);
+    @Override
+	public void startConsumption(ProductWrapper<?> wrapper) {
+        logger.info(wrapper.toString());
+        target.startConsumption(wrapper);
     }
 
     @Override
-    public void finishConsuming(Object object) {
-        logger.info(object.toString());
-        target.finishConsuming(object);
+	public void finishConsumption(ProductWrapper<?> wrapper) {
+        logger.info(wrapper.toString());
+        target.finishConsumption(wrapper);
     }
     
     @Override

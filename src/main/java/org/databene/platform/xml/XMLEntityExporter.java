@@ -108,7 +108,8 @@ public class XMLEntityExporter extends AbstractConsumer implements FileExporter 
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void startConsuming(Object object) {
+    @Override
+	public void startProductConsumption(Object object) {
         LOGGER.debug("startConsuming({})", object);
         if (out == null)
             initHandler();
@@ -117,7 +118,7 @@ public class XMLEntityExporter extends AbstractConsumer implements FileExporter 
     }
 
     @Override
-    public void finishConsuming(Object object) {
+    public void finishProductConsumption(Object object) {
         LOGGER.debug("finishConsuming({})", object);
     	Entity entity = (Entity) object;
         try {

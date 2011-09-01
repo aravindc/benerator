@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.databene.benerator.Consumer;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.IOUtil;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.RoundedNumberFormat;
@@ -162,10 +163,13 @@ public class DBSnapshotTool {
 				Thread.yield();
                 DataIterator<Entity> source = db.queryEntities(descriptor.getName(), null, null).iterator();
                 DataContainer<Entity> container = new DataContainer<Entity>();
+                ProductWrapper<Entity> wrapper = new ProductWrapper<Entity>();
 				while ((container = source.next(container)) != null) {
 					Entity entity = container.getData();
-                    exporter.startConsuming(entity);
-                    exporter.finishConsuming(entity);
+					wrapper.wrap(entity);
+                    exporter.startConsumption(wrapper);
+					wrapper.wrap(entity);
+                    exporter.finishConsumption(wrapper);
                     count++;
                 }
                 if (monitor != null)

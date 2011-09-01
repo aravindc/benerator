@@ -22,6 +22,7 @@
 package org.databene.benerator.consumer;
 
 import org.databene.benerator.Consumer;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 
 /**
@@ -40,13 +41,15 @@ public class BadDataConsumer extends ConsumerProxy {
 		this.badDataTarget = badDataTarget;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void startConsuming(Object object) {
+	public void startConsumption(ProductWrapper<?> wrapper) {
+		Object product = wrapper.unwrap();
 		try {
-			target.startConsuming(object);
+			target.startConsumption(((ProductWrapper) wrapper).wrap(product));
 		} catch (Exception e) {
-			badDataTarget.startConsuming(object);
-			badDataTarget.finishConsuming(object);
+			badDataTarget.startConsumption(((ProductWrapper) wrapper).wrap(product));
+			badDataTarget.finishConsumption(((ProductWrapper) wrapper).wrap(product));
 		}
 	}
 

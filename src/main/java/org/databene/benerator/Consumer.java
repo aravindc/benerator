@@ -28,6 +28,8 @@ package org.databene.benerator;
 
 import java.io.Closeable;
 
+import org.databene.benerator.wrapper.ProductWrapper;
+
 /**
  * Abstraction of an object that consumes (possibly larger quantities of) objects.
  * An implementation might keep consumed objects in memory, so a call to flush() 
@@ -39,8 +41,8 @@ import java.io.Closeable;
  * @author Volker Bergmann
  */
 public interface Consumer extends Closeable {
-    void startConsuming(Object object);
-    void finishConsuming(Object object);
+    void startConsumption(ProductWrapper<?> object);
+    void finishConsumption(ProductWrapper<?> object);
     void flush();
     void close();
 }

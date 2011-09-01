@@ -45,7 +45,8 @@ public class StorageSystemInserter extends StorageSystemConsumer {
         this.tableName = tableName;
     }
 
-    public void startConsuming(Object object) {
+    @Override
+	public void startProductConsumption(Object object) {
     	Entity entity = (Entity) object;
     	if (tableName == null)
     		system.store(entity);

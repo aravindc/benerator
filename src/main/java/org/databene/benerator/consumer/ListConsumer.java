@@ -49,7 +49,8 @@ public class ListConsumer extends AbstractConsumer {
 		this.consumedData = new ArrayList(capacity);
 	}
 
-	public void startConsuming(Object data) {
+	@Override
+	public void startProductConsumption(Object data) {
 		this.consumedData.add(data);
 	}
 

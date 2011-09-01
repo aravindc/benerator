@@ -50,7 +50,7 @@ public class SQLEntityExporterTest {
 		SQLEntityExporter exporter = new SQLEntityExporter(FILENAME);
 		try {
 			Entity alice = new Entity("Person", "name", "Alice", "birthDate", TimeUtil.date(1987, 11, 31), "score", 23);
-			exporter.startConsuming(alice);
+			exporter.startProductConsumption(alice);
 		} finally {
 			exporter.close();
 			FileUtil.deleteIfExists(new File(FILENAME));
@@ -64,8 +64,8 @@ public class SQLEntityExporterTest {
 			Entity bob = new Entity("Person", "name", "Bob", "birthDate", TimeUtil.date(1977, 11, 31), "score", 34);
 			SQLEntityExporter exporter = new SQLEntityExporter(FILENAME);
 			exporter.setDialect("hsql");
-			exporter.startConsuming(alice);
-			exporter.startConsuming(bob);
+			exporter.startProductConsumption(alice);
+			exporter.startProductConsumption(bob);
 			exporter.close();
 			BufferedReader reader = IOUtil.getReaderForURI(FILENAME);
 			ReaderLineIterator iterator = new ReaderLineIterator(reader);

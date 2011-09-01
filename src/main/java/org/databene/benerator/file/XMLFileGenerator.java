@@ -142,7 +142,7 @@ public class XMLFileGenerator extends UnsafeGenerator<File> {
     }
 
     private void process(Entity entity, XMLEntityExporter exporter) {
-        exporter.startConsuming(entity);
+        exporter.startProductConsumption(entity);
         for (Object component : entity.getComponents().values()) {
         	if (component == null)
         		continue;
@@ -155,7 +155,7 @@ public class XMLFileGenerator extends UnsafeGenerator<File> {
                         process((Entity) element, exporter);
             }
         }
-        exporter.finishConsuming(entity);
+        exporter.finishProductConsumption(entity);
     }
 
     private void persistRootObject(Object content, File file) {

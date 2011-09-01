@@ -29,6 +29,7 @@ package org.databene.benerator.consumer;
 import java.util.List;
 
 import org.databene.benerator.Consumer;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.IOUtil;
 
@@ -40,7 +41,7 @@ import org.databene.commons.IOUtil;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class ConsumerChain extends AbstractConsumer {
+public class ConsumerChain implements Consumer {
 
     private List<Consumer> components;
 
@@ -70,24 +71,25 @@ public class ConsumerChain extends AbstractConsumer {
 
     // Processor interface ---------------------------------------------------------------------------------------------
 
-    public void startConsuming(Object object) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void startConsumption(ProductWrapper<?> wrapper) {
+		Object product = wrapper.unwrap();
         for (Consumer processor : components)
-            processor.startConsuming(object);
+            processor.startConsumption(((ProductWrapper) wrapper).wrap(product));
     }
 
-    @Override
-	public void finishConsuming(Object object) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void finishConsumption(ProductWrapper<?> wrapper) {
+		Object product = wrapper.unwrap();
         for (Consumer processor : components)
-            processor.finishConsuming(object);
+            processor.finishConsumption(((ProductWrapper) wrapper).wrap(product));
     }
 
-    @Override
 	public void flush() {
         for (Consumer processor : components)
             processor.flush();
     }
 
-    @Override
 	public void close() {
         for (Consumer consumer : components)
             IOUtil.close(consumer);
@@ -96,4 +98,5 @@ public class ConsumerChain extends AbstractConsumer {
     public List<Consumer> getComponents() {
     	return components;
     }
+    
 }

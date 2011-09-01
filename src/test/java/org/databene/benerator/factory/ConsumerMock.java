@@ -65,7 +65,8 @@ public class ConsumerMock extends AbstractConsumer implements ContextAware {
 	    this.context = context;
 	}
 
-    public void startConsuming(Object object) {
+    @Override
+	public void startProductConsumption(Object object) {
         lastProduct = object;
         invocationCount.incrementAndGet();
     }

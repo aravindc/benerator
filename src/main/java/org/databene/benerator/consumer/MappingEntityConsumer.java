@@ -24,6 +24,7 @@ package org.databene.benerator.consumer;
 import java.util.Stack;
 
 import org.databene.benerator.Consumer;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.model.data.ComponentNameMapper;
 import org.databene.model.data.Entity;
 
@@ -52,19 +53,22 @@ public class MappingEntityConsumer extends ConsumerProxy {
 		this.mapper.setMappings(mappingSpec);
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void startConsuming(Object object) {
+	public void startConsumption(ProductWrapper<?> wrapper) {
+		Object object = wrapper.unwrap();
 		if (!(object instanceof Entity))
 			throw new IllegalArgumentException("Expected Entity");
 		Entity entity = (Entity) object;
 		Entity output = mapper.convert(entity);
 		stack.push(output);
-		target.startConsuming(output);
+		target.startConsumption(((ProductWrapper) wrapper).wrap(output));
     }
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void finishConsuming(Object object) {
-	    super.finishConsuming(stack.pop());
+	public void finishConsumption(ProductWrapper<?> wrapper) {
+		super.finishConsumption(((ProductWrapper) wrapper).wrap(stack.pop()));
 	}
 	
 }

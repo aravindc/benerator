@@ -37,7 +37,8 @@ public class StorageSystemUpdater extends StorageSystemConsumer {
 	    super(system);
     }
 
-    public void startConsuming(Object object) {
+    @Override
+	public void startProductConsumption(Object object) {
 		system.update((Entity) object);
     }
 

@@ -103,7 +103,8 @@ public class XLSEntityExporter extends FormattingConsumer implements FileExporte
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void startConsuming(Object object) {
+    @Override
+	public void startProductConsumption(Object object) {
         logger.debug("exporting {}", object);
         if (!(object instanceof Entity))
         	throw new IllegalArgumentException("Expecting Entity");

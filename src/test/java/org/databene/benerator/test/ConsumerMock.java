@@ -29,6 +29,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.benerator.Consumer;
+import org.databene.benerator.consumer.AbstractConsumer;
 
 /**
  * Mock implementation of the {@link Consumer} interface to be used for testing.<br/><br/>
@@ -36,7 +37,7 @@ import org.databene.benerator.Consumer;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ConsumerMock implements Consumer {
+public class ConsumerMock extends AbstractConsumer {
 	
 	public static final String START_CONSUMING = "sc";
 	public static final String FINISH_CONSUMING = "fc";
@@ -85,7 +86,8 @@ public class ConsumerMock implements Consumer {
     	return products;
     }
 
-	public void startConsuming(Object product) {
+	@Override
+	public void startProductConsumption(Object product) {
 		invocations.add(START_CONSUMING);
 	    startConsumingCount.incrementAndGet();
 	    if (storeProducts) {
@@ -102,16 +104,19 @@ public class ConsumerMock implements Consumer {
 	    }
     }
 
-	public void finishConsuming(Object product) {
+	@Override
+	public void finishProductConsumption(Object product) {
 		invocations.add(FINISH_CONSUMING);
 	    finishConsumingCount.incrementAndGet();
     }
 
+	@Override
 	public void flush() {
 		invocations.add(FLUSH);
 	    flushCount.incrementAndGet();
     }
 
+	@Override
 	public void close() {
 		invocations.add(CLOSE);
 	    closeCount.incrementAndGet();

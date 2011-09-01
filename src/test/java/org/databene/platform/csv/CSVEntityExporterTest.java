@@ -222,8 +222,8 @@ public class CSVEntityExporterTest {
 			exporter.setDecimalPattern("0.00");
 			exporter.setDecimalSeparator('-');
 			Entity entity = new Entity("test", "value", 1.);
-			exporter.startConsuming(entity);
-			exporter.finishConsuming(entity);
+			exporter.startProductConsumption(entity);
+			exporter.finishProductConsumption(entity);
 			exporter.close();
 			assertEquals("value\r\n1-00", getContent(DEFAULT_FILE));
 		} finally {
@@ -245,8 +245,8 @@ public class CSVEntityExporterTest {
 			Runnable runner = new Runnable() {
 				public void run() {
 					for (int i = 0; i < 500; i++)
-						exporter.startConsuming(entity);
-					exporter.finishConsuming(entity);
+						exporter.startProductConsumption(entity);
+					exporter.finishProductConsumption(entity);
 	            }
 			};
 			for (int i = 0; i < 20; i++)
@@ -270,10 +270,10 @@ public class CSVEntityExporterTest {
 	// helper methods --------------------------------------------------------------------------------------------------
 
 	private void cosumeAndClose(CSVEntityExporter exporter) {
-	    exporter.startConsuming(alice);
-        exporter.finishConsuming(alice);
-	    exporter.startConsuming(bob);
-        exporter.finishConsuming(alice);
+	    exporter.startProductConsumption(alice);
+        exporter.finishProductConsumption(alice);
+	    exporter.startProductConsumption(bob);
+        exporter.finishProductConsumption(alice);
 	    exporter.close();
     }
 

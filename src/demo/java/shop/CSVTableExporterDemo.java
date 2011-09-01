@@ -55,9 +55,9 @@ public class CSVTableExporterDemo {
 		    CSVEntityExporter exporter = new CSVEntityExporter(filename, cursor.descriptor());
 			try {
 		        logger.info("exporting data, please wait...");
-		        exporter.startConsuming(cursor);
+		        exporter.startProductConsumption(cursor);
 		        while ((container = iterator.next(container)) != null)
-		            exporter.startConsuming(container.getData());
+		            exporter.startProductConsumption(container.getData());
 			} finally {
 				exporter.close();
 			}

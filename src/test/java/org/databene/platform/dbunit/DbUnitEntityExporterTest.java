@@ -47,10 +47,10 @@ public class DbUnitEntityExporterTest {
 	@Test
 	public void test() throws Exception {
 		DbUnitEntityExporter exporter = new DbUnitEntityExporter(FILENAME);
-		exporter.startConsuming(ALICE);
-		exporter.startConsuming(BOB);
-		exporter.finishConsuming(BOB);
-		exporter.finishConsuming(ALICE);
+		exporter.startProductConsumption(ALICE);
+		exporter.startProductConsumption(BOB);
+		exporter.finishProductConsumption(BOB);
+		exporter.finishProductConsumption(ALICE);
 		exporter.close();
 		Document doc = XMLUtil.parse(FILENAME);
 		Element root = doc.getDocumentElement();
@@ -64,8 +64,8 @@ public class DbUnitEntityExporterTest {
 	@Test
 	public void testClosingTwice() throws Exception {
 		DbUnitEntityExporter exporter = new DbUnitEntityExporter(FILENAME);
-		exporter.startConsuming(ALICE);
-		exporter.finishConsuming(ALICE);
+		exporter.startProductConsumption(ALICE);
+		exporter.finishProductConsumption(ALICE);
 		exporter.close();
 		exporter.close();
 	}

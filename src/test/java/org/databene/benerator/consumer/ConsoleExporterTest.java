@@ -95,8 +95,8 @@ public class ConsoleExporterTest {
 		exporter.setOut(new PrintStream(stream));
 		try {
 			for (Object in : ins) {
-				exporter.startConsuming(in);
-				exporter.finishConsuming(in);
+				exporter.startProductConsumption(in);
+				exporter.finishProductConsumption(in);
 			}
 			exporter.flush();
 			assertEquals(expectedOut, stream.toString());

@@ -41,12 +41,13 @@ public class LoggingConsumer extends AbstractConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggingConsumer.class);
 
-    public void startConsuming(Object object) {
+    @Override
+	public void startProductConsumption(Object object) {
         LOGGER.info("startConsuming({})", object);
     }
     
     @Override
-    public void finishConsuming(Object object) {
+    public void finishProductConsumption(Object object) {
         LOGGER.info("finishConsuming({})", object);
     }
 

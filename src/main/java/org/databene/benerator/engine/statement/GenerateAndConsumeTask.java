@@ -140,11 +140,11 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 	        // consume data object
 			Consumer consumer = getConsumer();
         	if (consumer != null)
-        		consumer.startConsuming(data);
+        		consumer.startConsumption(wrapper.wrap(data));
         	// generate and consume sub data objects
         	runSubStatements(context);
         	if (consumer != null)
-        		consumer.finishConsuming(data);
+        		consumer.finishConsumption(wrapper.wrap(data));
 	        Thread.yield();
 	        return TaskResult.EXECUTING;
     	} catch (Exception e) {

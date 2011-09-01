@@ -114,7 +114,8 @@ public class DbUnitEntityExporter extends AbstractConsumer {
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void startConsuming(Object object) {
+    @Override
+	public void startProductConsumption(Object object) {
     	if (!(object instanceof Entity))
     		throw new IllegalArgumentException("Expected entity");
     	Entity entity = (Entity) object;

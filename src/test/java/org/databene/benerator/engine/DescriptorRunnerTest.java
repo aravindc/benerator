@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.databene.benerator.consumer.AbstractConsumer;
 import org.databene.benerator.consumer.FileExporter;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.model.data.Entity;
 
 import org.junit.Test;
@@ -84,8 +85,8 @@ public class DescriptorRunnerTest {
 	        return EXPORT_FILE_URI;
         }
 
-        public void startConsuming(Object object) { }
-        public void finishConsuming(Object object) { }
+        public void startConsumption(ProductWrapper<?> object) { }
+        public void finishConsumption(ProductWrapper<?> object) { }
         public void flush() { }
         public void close() { }
 	}
@@ -94,7 +95,8 @@ public class DescriptorRunnerTest {
 		
 		List<Object> products = new ArrayList<Object>();
 
-        public void startConsuming(Object object) {
+        @Override
+		public void startProductConsumption(Object object) {
 	        products.add(object);
         }
 	}

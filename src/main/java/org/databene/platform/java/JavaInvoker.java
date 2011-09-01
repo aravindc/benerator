@@ -69,7 +69,8 @@ public class JavaInvoker extends AbstractConsumer {
 
 	// Consumer interface impelementation ------------------------------------------------------------------------------
 
-	public void startConsuming(Object object) {
+	@Override
+	public void startProductConsumption(Object object) {
 	    if (object instanceof Entity)
 	    	invokeByEntity((Entity) object);
 	    else if (object.getClass().isArray())

@@ -27,6 +27,7 @@
 package org.databene.benerator.consumer;
 
 import org.databene.benerator.Consumer;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 
 /**
@@ -40,7 +41,19 @@ import org.databene.benerator.Consumer;
  * @author Volker Bergmann
  */
 public abstract class AbstractConsumer implements Consumer {
-    public void finishConsuming(Object object) { }
+	
+	public void startConsumption(ProductWrapper<?> wrapper) {
+		startProductConsumption(wrapper.unwrap());
+	}
+	
+	public void finishConsumption(ProductWrapper<?> wrapper) {
+		finishProductConsumption(wrapper.unwrap());
+	}
+
+	public abstract void startProductConsumption(Object object);
+	public void finishProductConsumption(Object object) { }
+	
     public void flush() { }
     public void close() { }
+    
 }

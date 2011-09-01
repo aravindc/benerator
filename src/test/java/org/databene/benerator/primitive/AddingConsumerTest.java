@@ -45,10 +45,10 @@ public class AddingConsumerTest {
 		AddingConsumer consumer = new AddingConsumer();
 		consumer.setFeature("age");
 		consumer.setType("int");
-		consumer.startConsuming(ALICE);
-		consumer.finishConsuming(ALICE);
-		consumer.startConsuming(METHUSALEM);
-		consumer.finishConsuming(METHUSALEM);
+		consumer.startProductConsumption(ALICE);
+		consumer.finishProductConsumption(ALICE);
+		consumer.startProductConsumption(METHUSALEM);
+		consumer.finishProductConsumption(METHUSALEM);
 		assertEquals(1047, consumer.getSum());
 	}
 	

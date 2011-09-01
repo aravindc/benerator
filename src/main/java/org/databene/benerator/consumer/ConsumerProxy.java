@@ -22,6 +22,7 @@
 package org.databene.benerator.consumer;
 
 import org.databene.benerator.Consumer;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Parent class for {@link Consumer}s that serve as proxy to other Consumers.<br/><br/>
@@ -45,12 +46,12 @@ public abstract class ConsumerProxy implements Consumer {
     	this.target = target;
     }
 
-	public void startConsuming(Object object) {
-		target.startConsuming(object);
+	public void startConsumption(ProductWrapper<?> wrapper) {
+		target.startConsumption(wrapper);
 	}
 	
-	public void finishConsuming(Object object) {
-	    target.finishConsuming(object);
+	public void finishConsumption(ProductWrapper<?> wrapper) {
+	    target.finishConsumption(wrapper);
     }
 
 	public void flush() {

@@ -22,6 +22,7 @@
 package org.databene.platform.contiperf;
 
 import org.databene.benerator.Consumer;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.contiperf.Invoker;
 
 /**
@@ -62,16 +63,16 @@ public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consume
 	
     // Consumer interface implementation -------------------------------------------------------------------------------
     
-	public void startConsuming(Object object) {
+	public void startConsumption(ProductWrapper<?> wrapper) {
 	    try {
-	        getTracker().invoke(new Object[] { object });
+	        getTracker().invoke(new Object[] { wrapper });
         } catch (Exception e) {
 	        throw new RuntimeException(e);
         }
     }
 	
-	public void finishConsuming(Object object) {
-		target.finishConsuming(object);
+	public void finishConsumption(ProductWrapper<?> wrapper) {
+		target.finishConsumption(wrapper);
     }
 
 	public void flush() {

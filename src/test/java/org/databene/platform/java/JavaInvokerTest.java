@@ -39,8 +39,8 @@ public class JavaInvokerTest {
 	public void testInstanceMethodEntity() {
 		POJO target = new POJO();
 		JavaInvoker invoker = new JavaInvoker(target, "dynP2");
-		invoker.startConsuming(new Entity("params", "name", "Alice", "age", 23));
-		invoker.startConsuming(new Entity("params", "name", "Bob", "age", 34));
+		invoker.startProductConsumption(new Entity("params", "name", "Alice", "age", 23));
+		invoker.startProductConsumption(new Entity("params", "name", "Bob", "age", 34));
 		assertEquals(2, target.dynCountP2);
 	}
 
@@ -49,8 +49,8 @@ public class JavaInvokerTest {
 		POJO.statCountP2 = 0;
 		Class<POJO> target = POJO.class;
 		JavaInvoker invoker = new JavaInvoker(target, "statP2");
-		invoker.startConsuming(new Entity("params", "name", "Alice", "age", 23));
-		invoker.startConsuming(new Entity("params", "name", "Bob", "age", 34));
+		invoker.startProductConsumption(new Entity("params", "name", "Alice", "age", 23));
+		invoker.startProductConsumption(new Entity("params", "name", "Bob", "age", 34));
 		assertEquals(2, POJO.statCountP2);
 	}
 	
@@ -58,8 +58,8 @@ public class JavaInvokerTest {
 	public void testInstanceMethodObject() {
 		POJO target = new POJO();
 		JavaInvoker invoker = new JavaInvoker(target, "dynP1");
-		invoker.startConsuming("Alice");
-		invoker.startConsuming("Bob");
+		invoker.startProductConsumption("Alice");
+		invoker.startProductConsumption("Bob");
 		assertEquals(2, target.dynCountP1);
 	}
 
@@ -68,8 +68,8 @@ public class JavaInvokerTest {
 		POJO.statCountP1 = 0;
 		Class<POJO> target = POJO.class;
 		JavaInvoker invoker = new JavaInvoker(target, "statP1");
-		invoker.startConsuming(23);
-		invoker.startConsuming(34);
+		invoker.startProductConsumption(23);
+		invoker.startProductConsumption(34);
 		assertEquals(2, POJO.statCountP1);
 	}
 	
@@ -77,8 +77,8 @@ public class JavaInvokerTest {
 	public void testInstanceMethodArray() {
 		POJO target = new POJO();
 		JavaInvoker invoker = new JavaInvoker(target, "dynP2");
-		invoker.startConsuming(new Object[] { "Alice", 23 });
-		invoker.startConsuming(new Object[] { "Bob",   34 });
+		invoker.startProductConsumption(new Object[] { "Alice", 23 });
+		invoker.startProductConsumption(new Object[] { "Bob",   34 });
 		assertEquals(2, target.dynCountP2);
 	}
 
@@ -87,8 +87,8 @@ public class JavaInvokerTest {
 		POJO.statCountP2= 0;
 		Class<POJO> target = POJO.class;
 		JavaInvoker invoker = new JavaInvoker(target, "statP2");
-		invoker.startConsuming(new Object[] { "Alice", 23 });
-		invoker.startConsuming(new Object[] { "Bob",   34 });
+		invoker.startProductConsumption(new Object[] { "Alice", 23 });
+		invoker.startProductConsumption(new Object[] { "Bob",   34 });
 		assertEquals(2, POJO.statCountP2);
 	}
 	

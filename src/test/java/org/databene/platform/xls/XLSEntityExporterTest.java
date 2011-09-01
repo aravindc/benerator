@@ -101,15 +101,15 @@ public class XLSEntityExporterTest extends XLSTest {
 	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void consumeProducts(XLSEntityExporter exporter) {
-	    exporter.startConsuming(PROD1);
-		exporter.finishConsuming(PROD1);
-		exporter.startConsuming(PROD2);
-		exporter.finishConsuming(PROD2);
+	    exporter.startProductConsumption(PROD1);
+		exporter.finishProductConsumption(PROD1);
+		exporter.startProductConsumption(PROD2);
+		exporter.finishProductConsumption(PROD2);
     }
 	
 	private void consumePersons(XLSEntityExporter exporter) {
-	    exporter.startConsuming(PERSON1);
-		exporter.finishConsuming(PERSON1);
+	    exporter.startProductConsumption(PERSON1);
+		exporter.finishProductConsumption(PERSON1);
     }
 	
 	private void assertFullContent(File file) throws IOException {

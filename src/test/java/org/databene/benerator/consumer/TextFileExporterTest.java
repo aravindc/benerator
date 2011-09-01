@@ -50,7 +50,7 @@ public class TextFileExporterTest {
 	public void test() throws IOException {
 		String uri = "target" + File.separator + getClass().getSimpleName() + ".txt";
 		TextFileExporter exporter = new TextFileExporter(uri);
-		exporter.startConsuming("test");
+		exporter.startProductConsumption("test");
 		exporter.close();
 		assertEquals(uri, exporter.getUri());
 		String content = IOUtil.getContentOfURI(uri);

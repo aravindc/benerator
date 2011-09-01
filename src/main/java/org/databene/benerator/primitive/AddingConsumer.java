@@ -74,7 +74,8 @@ public class AddingConsumer extends AbstractConsumer {
 		return this.sum;
 	}
 	
-	public void startConsuming(Object object) {
+	@Override
+	public void startProductConsumption(Object object) {
 	    Number addend = converter.convert(accessor.getValue(object));
 	    this.sum = (Number) ArithmeticEngine.defaultInstance().add(sum, addend);
     }

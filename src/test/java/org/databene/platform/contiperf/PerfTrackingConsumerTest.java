@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import java.io.PrintWriter;
 
 import org.databene.benerator.test.ConsumerMock;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.stat.LatencyCounter;
 import org.junit.Test;
 
@@ -46,8 +47,8 @@ public class PerfTrackingConsumerTest {
 		PerfTrackingConsumer tracker = new PerfTrackingConsumer();
 		tracker.setTarget(mock);
 		for (int i = 0; i < 10; i++) {
-			tracker.startConsuming(null);
-			tracker.finishConsuming(null);
+			tracker.startConsumption(new ProductWrapper<Object>().wrap(null));
+			tracker.finishConsumption(new ProductWrapper<Object>().wrap(null));
 		}
 		LatencyCounter counter = tracker.getTracker().getCounter();
 		counter.printSummary(new PrintWriter(System.out), 90, 95);
