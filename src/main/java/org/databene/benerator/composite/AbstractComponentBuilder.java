@@ -22,7 +22,6 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
  * Parent class for facilitating individual {@link ComponentBuilder} implementation.<br/><br/>
@@ -32,10 +31,6 @@ import org.databene.benerator.wrapper.WrapperFactory;
  */
 public abstract class AbstractComponentBuilder<E> extends AbstractGeneratorComponent<E> implements ComponentBuilder<E> {
 
-    public AbstractComponentBuilder(Generator<?> source, double nullQuota) { // TODO this does not belong here
-		this(WrapperFactory.injectNulls(source, nullQuota));
-	}
-    
     public AbstractComponentBuilder(Generator<?> source) {
 		super(source);
 	}

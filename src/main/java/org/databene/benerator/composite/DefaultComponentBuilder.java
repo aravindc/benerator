@@ -25,7 +25,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.Mutator;
 
 /**
@@ -40,10 +39,6 @@ public class DefaultComponentBuilder<E> extends AbstractComponentBuilder<E> {
 	protected Mutator mutator;
 	private WrapperProvider<Object> productWrapper = new WrapperProvider<Object>();
 	
-    public DefaultComponentBuilder(Generator<?> source, Mutator mutator, double nullQuota) {
-		this(WrapperFactory.injectNulls(source, nullQuota), mutator);
-	}
-
     public DefaultComponentBuilder(Generator<?> source, Mutator mutator) {
 		super(source);
 		this.mutator = mutator;

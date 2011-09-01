@@ -22,7 +22,6 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.Mutator;
 import org.databene.commons.UpdateFailedException;
 
@@ -33,10 +32,6 @@ import org.databene.commons.UpdateFailedException;
  * @author Volker Bergmann
  */
 public class ArrayElementBuilder extends DefaultComponentBuilder<Object[]> {
-
-    public ArrayElementBuilder(int index, Generator<?> source, double nullQuota) {
-		this(index, WrapperFactory.injectNulls(source, nullQuota));
-    }
 
 	public ArrayElementBuilder(int index, Generator<?> source) {
 	    super(source, new Mutator_(index));
