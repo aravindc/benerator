@@ -85,7 +85,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
-    public void execute(BeneratorContext context) {
+    public boolean execute(BeneratorContext context) {
     	Task taskToUse = this.task;
     	int threadCount = threads.evaluate(context);
 		if (threadCount > 1 && !taskToUse.isParallelizable() && !task.isThreadSafe())
@@ -102,6 +102,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    		infoLog);
 	    if (!isSubCreator)
 	    	close();
+    	return true;
     }
 
 	public void prepare(GeneratorContext context) {
@@ -140,7 +141,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	}
 
 	public void pageFinished() {
-		getTarget().flushConsumer();
+		getTarget().pageFinished();
 	}
 
 	// private helper --------------------------------------------------------------------------------------------------
