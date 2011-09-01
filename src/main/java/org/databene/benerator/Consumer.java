@@ -27,6 +27,7 @@
 package org.databene.benerator;
 
 import java.io.Closeable;
+import java.io.Flushable;
 
 import org.databene.benerator.wrapper.ProductWrapper;
 
@@ -40,7 +41,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public interface Consumer extends Closeable {
+public interface Consumer extends Flushable, Closeable {
     void startConsumption(ProductWrapper<?> object);
     void finishConsumption(ProductWrapper<?> object);
     void flush();
