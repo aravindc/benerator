@@ -97,7 +97,7 @@ public class DefineDatabaseStatement implements Statement {
     }
 
 	@SuppressWarnings("deprecation")
-    public void execute(BeneratorContext context) {
+    public boolean execute(BeneratorContext context) {
 	    logger.debug("Instantiating database with id '" + id + "'");
 	    String idValue = id.evaluate(context);
 	    
@@ -140,6 +140,7 @@ public class DefineDatabaseStatement implements Statement {
 	    context.set(idValue, db);
 	    DataModel.getDefaultInstance().addDescriptorProvider(db, context.isValidate() && !isLazy);
 	    resourceManager.addResource(db);
+    	return true;
     }
 
 }

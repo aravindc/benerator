@@ -86,12 +86,13 @@ public class TranscodeStatement extends SequentialStatement implements CascadePa
     }
 
 	@Override
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 		DBSystem target = targetEx.evaluate(context);
 		Long pageSize = ExpressionUtil.evaluate(pageSizeEx, context);
 		if (pageSize == null)
 			pageSize = 1L;
 		transcodeTable(getSource(context), target, pageSize, context);
+    	return true;
     }
     
 	public KeyMapper getKeyMapper() {

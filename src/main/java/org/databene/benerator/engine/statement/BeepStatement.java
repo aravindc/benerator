@@ -34,8 +34,9 @@ import org.databene.benerator.engine.Statement;
  */
 public class BeepStatement implements Statement {
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 	    Toolkit.getDefaultToolkit().beep();
+    	return true;
     }
 	
 }

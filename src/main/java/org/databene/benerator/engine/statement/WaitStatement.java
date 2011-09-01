@@ -40,9 +40,10 @@ public class WaitStatement implements Statement {
 	    this.durationGenerator = durationGenerator;
     }
 	
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 		try {
 	        Thread.sleep(generateDuration(context));
+	    	return true;
         } catch (InterruptedException e) {
 	        throw new RuntimeException(e);
         }

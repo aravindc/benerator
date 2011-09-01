@@ -28,5 +28,5 @@ package org.databene.benerator.engine;
  * @author Volker Bergmann
  */
 public interface Statement {
-	void execute(BeneratorContext context);
+	boolean execute(BeneratorContext context);
 }

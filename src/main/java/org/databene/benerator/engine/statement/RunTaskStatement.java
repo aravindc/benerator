@@ -83,7 +83,7 @@ public class RunTaskStatement extends AbstractStatement implements Closeable {
     	return pageListener;
     }
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 	    Long invocations = count.evaluate(context);
 		PagedTaskRunner.execute(
 	    		getTask(context), context, 
@@ -96,6 +96,7 @@ public class RunTaskStatement extends AbstractStatement implements Closeable {
 	    		context.getExecutorService(),
 	    		getErrorHandler(context),
 	    		infoLog);
+    	return true;
 	}
 
 	public synchronized Task getTask(BeneratorContext context) {

@@ -52,9 +52,11 @@ public class WhileStatement extends ConditionStatement {
 	    this.statements = new SequentialStatement(statements);
 	}
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 	    while (condition.evaluate(context))
-	    	statements.execute(context);
+	    	if (!statements.execute(context))
+	    		return false;
+	    return true;
 	}
 
 	public void close() throws IOException {

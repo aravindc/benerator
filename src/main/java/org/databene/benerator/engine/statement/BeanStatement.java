@@ -63,7 +63,7 @@ public class BeanStatement extends SequentialStatement {
 
 	@SuppressWarnings({ "rawtypes" })
     @Override
-    public void execute(BeneratorContext context) {
+    public boolean execute(BeneratorContext context) {
 		// invoke constructor
         Object bean = constructionExpression.evaluate(context);
         // post construction steps
@@ -82,6 +82,7 @@ public class BeanStatement extends SequentialStatement {
 		if (bean instanceof Generator && constructionExpression instanceof BeanConstruction)
 			((Generator) bean).init(context);
 		context.set(id, bean);
+    	return true;
     }
 
 }

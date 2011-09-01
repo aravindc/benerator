@@ -60,10 +60,10 @@ public class TimedGeneratorStatement extends StatementProxy {
     }
 
     @Override
-    public void execute(BeneratorContext context) {
+    public boolean execute(BeneratorContext context) {
     	long c0 = BeneratorMonitor.INSTANCE.getTotalGenerationCount();
 	    long t0 = System.currentTimeMillis();
-		super.execute(context);
+		boolean result = super.execute(context);
 		long dc = BeneratorMonitor.INSTANCE.getTotalGenerationCount() - c0;
 		long dt = System.currentTimeMillis() - t0;
 		if (logging) {
@@ -78,6 +78,7 @@ public class TimedGeneratorStatement extends StatementProxy {
 		}
 		if (Profiling.isEnabled())
 			Profiler.defaultInstance().addSample(profilerPath, dt);
+    	return result;
     }
 
 }

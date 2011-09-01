@@ -63,7 +63,7 @@ public class DefaultComponentParser extends AbstractBeneratorDescriptorParser {
 	    	this.element = element;
 	    }
 
-		public void execute(BeneratorContext context) {
+		public boolean execute(BeneratorContext context) {
 			for (Element child : XMLUtil.getChildElements(element)) {
 				String childType = XMLUtil.localName(child);
 				if (COMPONENT_TYPES.contains(childType)) {
@@ -73,6 +73,7 @@ public class DefaultComponentParser extends AbstractBeneratorDescriptorParser {
 				} else
 					throw new ConfigurationError("Unexpected element: " + childType);
 			}
+	    	return true;
 		}
 
 	}

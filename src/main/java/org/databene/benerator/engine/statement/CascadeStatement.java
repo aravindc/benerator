@@ -83,7 +83,7 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 	}
 
 	@Override
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 		DBSystem source = getSource(context);
 		getType(source, context);
 		IdentityModel identity = parent.getIdentityProvider().getIdentity(type.getName(), false);
@@ -102,6 +102,7 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 		while ((container = iterator.next(container)) != null)
 			mutateAndTranscodeEntity(container.getData(), identity, cavs, context);
 		IOUtil.close(iterator);
+    	return true;
 	}
 
 	public DBSystem getSource(BeneratorContext context) {

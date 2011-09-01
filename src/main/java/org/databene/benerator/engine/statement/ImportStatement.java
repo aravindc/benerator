@@ -52,7 +52,7 @@ public class ImportStatement implements Statement {
 	    this.platformImports = platformImports;
     }
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
     	if (defaultImports)
     		context.importDefaults();
     	
@@ -67,6 +67,7 @@ public class ImportStatement implements Statement {
     	if (platformImports != null)
     		for (String platformImport : platformImports)
     			importPlatform(platformImport, context);
+    	return true;
     }
 
 	public void importDomain(String domain, BeneratorContext context) {

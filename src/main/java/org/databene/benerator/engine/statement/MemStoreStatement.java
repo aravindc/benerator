@@ -51,13 +51,14 @@ public class MemStoreStatement implements Statement {
 		this.resourceManager = resourceManager;
     }
 
-    public void execute(BeneratorContext context) {
+    public boolean execute(BeneratorContext context) {
 	    logger.debug("Instantiating store with id '" + id + "'");
 		MemStore store = new MemStore(id);
 	    // register this object on all relevant managers and in the context
 	    context.set(id, store);
 	    DataModel.getDefaultInstance().addDescriptorProvider(store);
 	    resourceManager.addResource(store);
+    	return true;
     }
 
 }

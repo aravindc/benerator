@@ -76,7 +76,7 @@ public class DBSanity4BeneratorStatement implements Statement {
 		this.errHandlerEx = errHandlerEx;
 	}
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 		try {
 			// initialize DB Sanity
 			DbSanity dbSanity = new DbSanity();
@@ -131,6 +131,7 @@ public class DBSanity4BeneratorStatement implements Statement {
 		} catch (Exception e) {
 			getErrorHandler(context).handleError("DB Sanity check failed with an exception", e);
 		}
+    	return true;
 	}
 
 	public ErrorHandler getErrorHandler(BeneratorContext context) {

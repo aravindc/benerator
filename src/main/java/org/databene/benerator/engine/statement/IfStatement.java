@@ -54,11 +54,12 @@ public class IfStatement extends ConditionStatement {
 	    setElseStatement(elseStatement);
     }
 
-    public void execute(BeneratorContext context) {
+    public boolean execute(BeneratorContext context) {
 	    if (condition.evaluate(context))
-	    	thenStatement.execute(context);
+	    	return thenStatement.execute(context);
 	    else if (elseStatement != null)
-	    	elseStatement.execute(context);
+	    	return elseStatement.execute(context);
+	    return true;
     }
 
 	public void setThenStatement(Statement thenStatement) {

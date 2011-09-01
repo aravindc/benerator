@@ -54,8 +54,8 @@ public class LazyStatement extends StatementProxy { // TODO v0.8 remove this cla
 	}
 	
 	@Override
-	public void execute(BeneratorContext context) {
-		getRealStatement(context).execute(context);
+	public boolean execute(BeneratorContext context) {
+		return getRealStatement(context).execute(context);
     }
 
 	@Override

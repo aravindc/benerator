@@ -29,7 +29,8 @@ package org.databene.benerator.engine;
  */
 public class EmptyStatement implements Statement {
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
+    	return true;
 	}
 
 }

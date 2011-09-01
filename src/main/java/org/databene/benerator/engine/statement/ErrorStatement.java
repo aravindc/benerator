@@ -44,7 +44,7 @@ public class ErrorStatement implements Statement {
 	    this.codeEx = codeEx;
     }
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 		String message = ExpressionUtil.evaluate(messageEx, context);
 		Integer code = ExpressionUtil.evaluate(codeEx, context);
 		if (code == null)

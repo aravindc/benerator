@@ -54,13 +54,14 @@ public class EchoStatement implements Statement {
     	return messageEx;
     }
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 		String message = ExpressionUtil.evaluate(messageEx, context);
 		String type = ExpressionUtil.evaluate(typeEx, context);
 		if ("speech".equals(type) && SpeechUtil.speechSupported())
 			SpeechUtil.say(message);
 		else
 			System.out.println(message);
+    	return true;
     }
 
 }

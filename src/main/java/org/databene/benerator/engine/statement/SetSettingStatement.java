@@ -50,13 +50,14 @@ public class SetSettingStatement implements Statement {
     	this.valueExpression = valueExpression;
     }
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
         Object value = ExpressionUtil.evaluate(valueExpression, context);
 		if (propertyName.startsWith("context."))
 	        AnyMutator.setValue(context, propertyName, value, true);
         else {
 			context.setSetting(propertyName, value);
         }
+    	return true;
 	}
 
 }

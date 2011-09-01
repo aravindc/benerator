@@ -99,11 +99,12 @@ public class TranscodingTaskStatement extends SequentialStatement {
 	}
 	
 	@Override
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 		DBSystem target = getTarget(context);
 		mapper = new MemKeyMapper(null, null, target.getConnection(), target.getId(), identityProvider);
 		checkPrecoditions(context);
 		super.execute(context);
+    	return true;
 	}
 	
 	private void checkPrecoditions(BeneratorContext context) {

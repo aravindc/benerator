@@ -121,7 +121,7 @@ public class EvaluateStatement implements Statement {
     	return textEx;
     }
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 		try {
 			String onErrorValue = ExpressionUtil.evaluate(onErrorEx, context);
 			if (onErrorValue == null)
@@ -189,6 +189,7 @@ public class EvaluateStatement implements Statement {
 			String idValue = ExpressionUtil.evaluate(idEx, context);
 			if (idValue != null)
 				context.set(idValue, result);
+	    	return true;
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		} catch (IOException e) {

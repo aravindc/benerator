@@ -42,13 +42,15 @@ public class SequentialStatement extends CompositeStatement {
 	    super(subStatements);
     }
 
-	public void execute(BeneratorContext context) {
-	    executeSubStatements(context);
+	public boolean execute(BeneratorContext context) {
+		return executeSubStatements(context);
     }
 
-	protected void executeSubStatements(BeneratorContext context) {
+	protected boolean executeSubStatements(BeneratorContext context) {
 		for (Statement subStatement : subStatements)
-	    	subStatement.execute(context);
+	    	if (!subStatement.execute(context))
+	    		return false;
+		return true;
 	}
 
 }

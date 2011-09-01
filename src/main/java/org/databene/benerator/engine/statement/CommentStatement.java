@@ -54,8 +54,9 @@ public class CommentStatement implements Statement {
     	return comment;
     }
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 		commentLogger.debug(comment);
+    	return true;
 	}
 
 }

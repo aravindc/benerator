@@ -66,7 +66,7 @@ public class IncludeStatement implements Statement {
     	this.uriEx = uri;
     }
 
-	public void execute(BeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 		String uri = context.resolveRelativeUri(uriEx.evaluate(context));
 		String lcUri = uri.toLowerCase();
         try {
@@ -78,6 +78,7 @@ public class IncludeStatement implements Statement {
 				includeXmlSchema(uri, context);
 			else
 				throw new ConfigurationError("Not a supported import file type: " + uri);
+	    	return true;
         } catch (IOException e) {
             throw new ConfigurationError("Error processing " + uri, e);
         }
