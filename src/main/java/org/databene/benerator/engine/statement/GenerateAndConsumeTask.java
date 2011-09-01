@@ -60,7 +60,6 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 
 	private String taskName;
     private Generator<?> generator;
-    //private boolean isSubCreator;
     private Expression<Consumer> consumerExpr;
     private List<Statement> subStatements;
     private ResourceManager resourceManager;
@@ -71,14 +70,13 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     private Consumer consumer;
     
     public GenerateAndConsumeTask(String taskName, Generator<?> generator, 
-    		/*boolean isSubCreator,*/ BeneratorContext context) {
+    		BeneratorContext context) {
         this.resourceManager = new ResourceManagerSupport();
     	this.subStatements = new ArrayList<Statement>();
         this.generatorInitialized = new AtomicBoolean(false);
     	this.taskName = taskName;
     	Assert.notNull(generator, "generator");
         this.generator = generator;
-        //this.isSubCreator = isSubCreator;
         this.context = context;
     }
 
@@ -144,7 +142,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
         	if (consumer != null)
         		consumer.startConsuming(data);
         	// generate and consume sub data objects
-        	runSubTasks(context);
+        	runSubStatements(context);
         	if (consumer != null)
         		consumer.finishConsuming(data);
 	        Thread.yield();
@@ -163,7 +161,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     }
 
     public void pageFinished() {
-        if (/*!isSubCreator &&*/ consumer != null)
+        if (consumer != null)
             consumer.flush();
     }
     
@@ -203,12 +201,12 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 	    }
     }
     
-    private void runSubTasks(BeneratorContext context) {
+    private void runSubStatements(BeneratorContext context) {
 	    for (Statement subStatement : subStatements)
-	    	runSubTask(subStatement, context);
+	    	runSubStatement(subStatement, context);
     }
     
-    protected void runSubTask(Statement subStatement, BeneratorContext context) {
+    protected void runSubStatement(Statement subStatement, BeneratorContext context) {
     	while (subStatement instanceof StatementProxy) 
     		subStatement = ((StatementProxy) subStatement).getRealStatement(context);
         if (subStatement instanceof GeneratorStatement) {
