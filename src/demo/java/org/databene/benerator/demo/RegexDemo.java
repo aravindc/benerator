@@ -4,6 +4,7 @@ import static org.databene.benerator.util.GeneratorUtil.*;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.model.data.Uniqueness;
 
@@ -20,7 +21,7 @@ public class RegexDemo {
     private static final String EMAIL_PATTERN = "[a-z][a-z0-9\\.]{3,12}[a-z0-9]@[a-z0-9]{3,12}\\.com";
 
     public static void main(String[] args) {
-    	BeneratorContext context = new BeneratorContext();
+    	BeneratorContext context = new DefaultBeneratorContext();
     	GeneratorFactory generatorFactory = context.getGeneratorFactory();
     	
         Generator<String> phoneGenerator = generatorFactory.createRegexStringGenerator(PHONE_PATTERN, 1, 16, Uniqueness.NONE);

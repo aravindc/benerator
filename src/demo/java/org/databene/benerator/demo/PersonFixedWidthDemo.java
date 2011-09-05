@@ -28,7 +28,7 @@ package org.databene.benerator.demo;
 
 import org.databene.domain.person.PersonGenerator;
 import org.databene.domain.person.Person;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.file.FileBuilder;
 import org.databene.commons.DocumentWriter;
 import org.databene.commons.IOUtil;
@@ -64,7 +64,7 @@ public class PersonFixedWidthDemo {
             System.out.println("Running...");
             long startMillis = System.currentTimeMillis();
             PersonGenerator generator = new PersonGenerator();
-            generator.init(new BeneratorContext());
+            generator.init(new DefaultBeneratorContext());
 			FileBuilder.build(generator, LENGTH, writer);
             long elapsedTime = System.currentTimeMillis() - startMillis;
             System.out.println("Created file " + FILE_NAME + " with " + LENGTH + " entries " +

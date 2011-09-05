@@ -4,6 +4,7 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.model.data.Uniqueness;
 
@@ -24,7 +25,7 @@ public class ScatterplotDemo extends Component {
 
 	@Override
     public void paint(Graphics g) {
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		GeneratorFactory generatorFactory = context.getGeneratorFactory();
         NonNullGenerator<Integer> xGen = generatorFactory.createNumberGenerator(Integer.class, 0, true, getWidth(), true, 1, new XFunction(), Uniqueness.NONE);
         xGen.init(context);

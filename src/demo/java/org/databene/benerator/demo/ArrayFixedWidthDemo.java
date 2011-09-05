@@ -30,7 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.factory.StochasticGeneratorFactory;
 import org.databene.benerator.file.FileBuilder;
 import org.databene.benerator.wrapper.MultiSourceArrayGenerator;
@@ -113,7 +113,7 @@ public class ArrayFixedWidthDemo {
                             new BigDecimal("0.50"), true, new BigDecimal("99.99"), true, new BigDecimal("0.01"),
                             SequenceManager.CUMULATED_SEQUENCE, Uniqueness.NONE)
             };
-			GeneratorUtil.initAll(sources, new BeneratorContext());
+			GeneratorUtil.initAll(sources, new DefaultBeneratorContext());
 			return sources;
         }
     }

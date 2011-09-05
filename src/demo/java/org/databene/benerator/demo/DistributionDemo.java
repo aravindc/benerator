@@ -8,7 +8,7 @@ import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.sequence.RandomWalkSequence;
 import org.databene.benerator.distribution.sequence.ShuffleSequence;
 import org.databene.benerator.distribution.sequence.StepSequence;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.factory.StochasticGeneratorFactory;
 import org.databene.model.data.Uniqueness;
 
@@ -20,6 +20,7 @@ import java.math.BigDecimal;
  * Demonstrates the built-in Sequences of 'databene generator'.<br/>
  * <br/>
  * Created: 07.09.2006 21:13:33
+ * @author Volker Bergmann
  */
 public class DistributionDemo {
 
@@ -50,7 +51,7 @@ public class DistributionDemo {
 
     private static DistributionPane createDistributionPane(String label, Sequence sequence) {
     	Generator<Integer> generator = new StochasticGeneratorFactory().createNumberGenerator(Integer.class, 0, true, N - 1, true, 1, sequence, Uniqueness.NONE);
-    	generator.init(new BeneratorContext());
+    	generator.init(new DefaultBeneratorContext());
 		return new DistributionPane(label, generator);
     }
     

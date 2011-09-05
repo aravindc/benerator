@@ -5,6 +5,7 @@ import java.util.List;
 import static org.databene.benerator.util.GeneratorUtil.*;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.Generator;
 import org.databene.commons.CollectionUtil;
@@ -17,7 +18,7 @@ public class HelloWorldDemo {
 
     public static void main(String[] args) {
     	// first create a context
-    	BeneratorContext context = new BeneratorContext();
+    	BeneratorContext context = new DefaultBeneratorContext();
     	
         // create and initialize the salutation generator
     	GeneratorFactory generatorFactory = context.getGeneratorFactory();
