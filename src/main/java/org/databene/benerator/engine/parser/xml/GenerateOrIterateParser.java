@@ -190,7 +190,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		List<Statement> statements = new ArrayList<Statement>();
 		
 		// create base generator
-    	Generator<?> base = InstanceGeneratorFactory.createBaseGenerator(descriptor, Uniqueness.NONE, context);
+    	Generator<?> base = InstanceGeneratorFactory.createRootGenerator(descriptor, Uniqueness.NONE, context);
     	String instanceName = descriptor.getName();
     	if (instanceName == null)
     		instanceName = descriptor.getType();
