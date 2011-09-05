@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 
 /**
@@ -58,4 +59,7 @@ public interface GeneratorContext extends Context {
 	ExecutorService getExecutorService();
 	String resolveRelativeUri(String relativeUri);
 
+	ProductWrapper<?> getCurrentProduct();
+	void setCurrentProduct(ProductWrapper<?> currentProduct);
+	
 }
