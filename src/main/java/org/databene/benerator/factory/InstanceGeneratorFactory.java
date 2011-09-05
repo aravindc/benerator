@@ -50,8 +50,26 @@ public class InstanceGeneratorFactory {
     
     protected InstanceGeneratorFactory() {}
 
+    public static Generator<?> createBaseGenerator(
+    		InstanceDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
+        Generator<?> generator = null;
+        TypeDescriptor type = descriptor.getTypeDescriptor();
+		if (type instanceof SimpleTypeDescriptor)
+			generator = SimpleTypeGeneratorFactory.createBaseGenerator(
+					(SimpleTypeDescriptor) type, descriptor.getName(), uniqueness, context);
+        else if (type instanceof ComplexTypeDescriptor)
+    		generator = ComplexTypeGeneratorFactory.createBaseGenerator(
+    				(ComplexTypeDescriptor) type, uniqueness, context);
+        else if (type instanceof ArrayTypeDescriptor)
+    		generator = ArrayGeneratorFactory.createBaseGenerator(
+    				(ArrayTypeDescriptor) type, uniqueness, context);
+        else
+        	throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
+        return generator;
+    }
+    
     public static Generator<?> createSingleInstanceGenerator(
-            InstanceDescriptor descriptor, boolean asThis, Uniqueness ownerUniqueness, BeneratorContext context) {
+            InstanceDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
         Generator<?> generator = null;
         Uniqueness uniqueness = DescriptorUtil.getUniqueness(descriptor, context);
         if (!uniqueness.isUnique())
@@ -59,17 +77,17 @@ public class InstanceGeneratorFactory {
         TypeDescriptor type = descriptor.getTypeDescriptor();
         if (type instanceof SimpleTypeDescriptor)
 			generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-					(SimpleTypeDescriptor) type, false, uniqueness, context);
+					(SimpleTypeDescriptor) type, descriptor.getName(), false, uniqueness, context);
         else if (type instanceof ComplexTypeDescriptor)
-    		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(descriptor.getName(), asThis, 
+    		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(descriptor.getName(), 
     				(ComplexTypeDescriptor) type, uniqueness, context);
         else if (type instanceof ArrayTypeDescriptor)
-    		generator = ArrayGeneratorFactory.createArrayGenerator(descriptor.getName(), asThis, 
+    		generator = ArrayGeneratorFactory.createArrayGenerator(descriptor.getName(), 
     				(ArrayTypeDescriptor) type, uniqueness, context);
         else if (type == null) {
         	ComponentDescriptor defaultConfig = context.getDefaultComponentConfig(descriptor.getName());
         	if (defaultConfig != null)
-        		return createSingleInstanceGenerator(defaultConfig, asThis, ownerUniqueness, context);
+        		return createSingleInstanceGenerator(defaultConfig, ownerUniqueness, context);
         	else if (descriptor instanceof IdDescriptor)
 				generator = new IncrementGenerator(1);
         	else
@@ -79,4 +97,10 @@ public class InstanceGeneratorFactory {
         return generator;
     }
     
+    public static Generator<?> createConfiguredDefaultGenerator(String componentName, Uniqueness ownerUniqueness, BeneratorContext context) {
+    	ComponentDescriptor defaultConfig = context.getDefaultComponentConfig(componentName);
+    	if (defaultConfig != null)
+    		return createSingleInstanceGenerator(defaultConfig, ownerUniqueness, context);
+    	return null;
+    }
 }

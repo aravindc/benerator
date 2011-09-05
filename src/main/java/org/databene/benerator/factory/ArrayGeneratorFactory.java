@@ -70,17 +70,13 @@ public class ArrayGeneratorFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(ArrayGeneratorFactory.class);
 
-    @SuppressWarnings("unchecked")
-    public static Generator<Object[]> createArrayGenerator(String instanceName, boolean asThis, 
+    public static Generator<Object[]> createArrayGenerator(String instanceName, 
 			ArrayTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
         logger.debug("createArrayGenerator({})", type.getName());
         // create original generator
-        Generator<Object[]> generator = null;
-        generator = (Generator<Object[]>) DescriptorUtil.getGeneratorByName(type, context);
+        Generator<Object[]> generator = createExplicitGenerator(type, uniqueness, context);
         if (generator == null)
-            generator = createSourceGenerator(type, uniqueness, context);
-        if (generator == null)
-            generator = createSyntheticArrayGenerator(instanceName, asThis, type, uniqueness, context);
+            generator = createSyntheticArrayGenerator(instanceName, type, uniqueness, context);
         // TODO v0.8 implement array mutation
         
         // create wrappers
@@ -90,9 +86,27 @@ public class ArrayGeneratorFactory {
         return generator;
     }
     
+	public static Generator<?> createBaseGenerator(
+			ArrayTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
+        Generator<Object[]> generator = createExplicitGenerator(type, uniqueness, context);
+        if (generator == null)
+        	generator = new BlankArrayGenerator(type.getElementCount());
+        return generator;
+	}
+
     // private helpers -------------------------------------------------------------------------------------------------
 
-    public static Generator<Object[]> createSyntheticArrayGenerator(String name, boolean asThis, 
+	@SuppressWarnings("unchecked")
+	protected static Generator<Object[]> createExplicitGenerator(
+			ArrayTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
+        Generator<Object[]> generator = null;
+        generator = (Generator<Object[]>) DescriptorUtil.getGeneratorByName(type, context);
+        if (generator == null)
+            generator = createSourceGenerator(type, uniqueness, context);
+        return generator;
+	}
+
+    public static Generator<Object[]> createSyntheticArrayGenerator(String name, 
             ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
         List<GeneratorComponent<Object[]>> generatorComponents = 
         	createSyntheticGeneratorComponents(arrayType, uniqueness, context);
@@ -108,7 +122,7 @@ public class ArrayGeneratorFactory {
         	generatorComponents = null; // element builders are now controlled by the UniqueArrayGenerator
         } else
         	baseGenerator = new BlankArrayGenerator(arrayType.getElementCount());
-		return new SourceAwareGenerator<Object[]>(name, asThis, baseGenerator, generatorComponents, context);
+		return new SourceAwareGenerator<Object[]>(name, baseGenerator, generatorComponents, context);
     }
 
     @SuppressWarnings("unchecked")

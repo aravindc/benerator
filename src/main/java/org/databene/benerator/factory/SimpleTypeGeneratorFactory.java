@@ -85,9 +85,14 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     //@SuppressWarnings("unchecked")
     //private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
 
+	public static Generator<?> createBaseGenerator(
+			SimpleTypeDescriptor type, String instanceName, Uniqueness uniqueness, BeneratorContext context) {
+		return createSimpleTypeGenerator(type, instanceName, false, uniqueness, context);
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public static Generator<?> createSimpleTypeGenerator(
-			SimpleTypeDescriptor descriptor, boolean nullable, Uniqueness uniqueness,
+			SimpleTypeDescriptor descriptor, String instanceName, boolean nullable, Uniqueness uniqueness,
 			BeneratorContext context) {
         logger.debug("createSimpleTypeGenerator({})", descriptor.getName());
         Generator<?> generator = null;
@@ -102,7 +107,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		}
 		// fall back to default setup
         if (generator == null)
-        	generator = createDefaultGenerator(descriptor, uniqueness, context);
+        	generator = createDefaultGenerator(descriptor, instanceName, uniqueness, context);
         // by now, we must have created a generator
         if (generator == null)
             throw new ConfigurationError("Can't handle descriptor " + descriptor);
@@ -160,8 +165,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     }
 
 	private static Generator<?> createDefaultGenerator(
-			SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
-		Generator<?> generator = createTypeGenerator(descriptor, uniqueness, context);
+			SimpleTypeDescriptor descriptor, String instanceName, Uniqueness uniqueness, BeneratorContext context) {
+		Generator<?> generator = InstanceGeneratorFactory.createConfiguredDefaultGenerator(
+				instanceName, uniqueness, context);
+		if (generator == null)
+			generator = createTypeGenerator(descriptor, uniqueness, context);
         if (generator == null)
             generator = createStringGenerator(descriptor, uniqueness, context);
 		return generator;
@@ -324,7 +332,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Generator<?>[] sources = new Generator[n];
         for (int i = 0; i < n; i++) {
             SimpleTypeDescriptor alternative = descriptor.getAlternatives().get(i);
-            sources[i] = createSimpleTypeGenerator(alternative, false, Uniqueness.NONE, context);
+            sources[i] = createSimpleTypeGenerator(alternative, null, false, Uniqueness.NONE, context);
         }
         Class<?> javaType = descriptor.getPrimitiveType().getJavaType();
         return new AlternativeGenerator(javaType, sources);

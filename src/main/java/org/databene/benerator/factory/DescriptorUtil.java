@@ -363,6 +363,37 @@ public class DescriptorUtil {
 		}
 	}
 
+	public static boolean isNullable(InstanceDescriptor descriptor, BeneratorContext context) {
+		Boolean nullable = descriptor.isNullable();
+		if (nullable != null)
+			return nullable;
+		Double nullQuota = descriptor.getNullQuota();
+		if (nullQuota != null && nullQuota > 0)
+			return true;
+		TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
+		if (descriptor.getNullQuota() == null && typeDescriptor != null) {
+			// if nullability is not specified, but a source or generator, then do not generate nulls
+			if (typeDescriptor.getSource() != null || typeDescriptor.getGenerator() != null)
+				return false;
+		}
+		return context.getDefaultsProvider().defaultNullable();
+	}
+
+	public static boolean shouldNullifyEachNullable(
+			InstanceDescriptor descriptor, BeneratorContext context) {
+		// nullQuota == 1?
+        Double nullQuota = descriptor.getNullQuota();
+		if (nullQuota != null && nullQuota.doubleValue() == 1.)
+			return true;
+		// nullable?
+		Boolean nullable = descriptor.isNullable();
+		if (nullable != null && nullable == false) // nullable defaults to true
+			return false;
+		if (context.getDefaultsProvider().defaultNullQuota() < 1) 
+			return false; // if the factory requires nullification, it overrides the context setting
+		return (!descriptor.overwritesParent() && context.isDefaultNull());
+	}
+
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
 	protected static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor) {

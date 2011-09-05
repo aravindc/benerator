@@ -62,7 +62,7 @@ public class VariableGeneratorFactory {
 		}
 
 		if (generator == null)
-			generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, false, Uniqueness.NONE, context);
+			generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
 		
 		return context.getGeneratorFactory().applyNullSettings(generator, descriptor.isNullable(), descriptor.getNullQuota());
 	}
