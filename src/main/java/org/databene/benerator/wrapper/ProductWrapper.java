@@ -35,28 +35,26 @@ import org.databene.benerator.Generator;
 public class ProductWrapper<E> {
 	
 	private E product;
-	private boolean wrapped;
 	private Map<String, String> tags;
 	
+	public ProductWrapper(E product) {
+		this();
+		wrap(product);
+	}
+	
 	public ProductWrapper() {
-		this.wrapped = false;
 		this.tags = null;
 	}
 	
 	public ProductWrapper<E> wrap(E product) {
 		this.product = product;
-		this.wrapped = true;
 		if (tags != null)
 			tags.clear();
 		return this;
 	}
 	
 	public E unwrap() {
-		if (!wrapped)
-			throw new IllegalStateException("Tried to unwrap a product twice");
 		E result = this.product;
-		this.product = null;
-		this.wrapped = false;
 		return result;
 	}
 	
