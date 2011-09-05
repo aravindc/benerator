@@ -46,5 +46,10 @@ public class CurrentDateTimeGenerator extends ThreadSafeNonNullGenerator<Date> {
 	public Date generate() {
         return new Date();
     }
-
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
+	
 }
