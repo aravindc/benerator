@@ -410,7 +410,8 @@
 			<xs:complexContent>
 				<xs:extension base="bean-type">
 				    <xs:attributeGroup ref="execution-attrs" />
-					<!-- TODO v0.7 support min/maxCount? -->
+					<xs:attribute name="threads" type="xs:string"/>
+					<!-- TODO v0.8 support min/maxCount? -->
 					<xs:attribute name="pager" type="xs:string"/> <!--  TODO v0.7 move 'pager' to 'executor-attrs'? -->
 				</xs:extension>
 			</xs:complexContent>
@@ -425,16 +426,10 @@
 				<xs:element ref="attribute"       minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="reference"       minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
-			<xs:attribute name="name"     type="xs:string"/>
-			<xs:attribute name="count"    type="xs:string"/>
-			<xs:attribute name="pageSize" type="xs:string"/>
-			<xs:attribute name="threads"  type="xs:string"/>
-			<xs:attribute name="source"   type="xs:string"/>
-			<xs:attribute name="encoding" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 
-    <xs:element name="template">
+    <xs:element name="template"> <!-- TODO v0.8 keep this? -->
         <xs:complexType>
             <xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="comment"         minOccurs="0" />
@@ -503,7 +498,6 @@
 	<xs:attributeGroup name="execution-attrs">
 		<xs:attribute name="count"     type="xs:string"/>
 		<xs:attribute name="pageSize"  type="xs:string"/>
-		<xs:attribute name="threads"   type="xs:string"/>
 		<xs:attribute name="stats"     type="xs:string"/>
 		<xs:attribute name="onError"   type="errorhandler-type"/>
 	</xs:attributeGroup>
