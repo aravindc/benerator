@@ -27,8 +27,11 @@
 package org.databene.benerator.main;
 
 import org.databene.benerator.BeneratorError;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.commons.ArrayUtil;
+import org.databene.commons.IOUtil;
 import org.databene.commons.LogCategories;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.VMInfo;
@@ -81,7 +84,8 @@ public class Benerator {
 	public static void runFile(String filename, InfoPrinter printer) throws IOException {
 		printer.printLines("Running file " + filename);
 		checkSystem(printer);
-		new DescriptorRunner(filename).run();
+		BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(filename));
+		new DescriptorRunner(filename, context).run();
 	}
 
 	private static void printVersionInfoAndExit() {

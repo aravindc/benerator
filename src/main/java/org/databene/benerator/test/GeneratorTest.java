@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ArrayFormat;
@@ -68,7 +69,7 @@ public abstract class GeneratorTest {
 
     @Before
     public void setUp() throws Exception {
-        context = new BeneratorContext();
+        context = new DefaultBeneratorContext();
         context.importDefaults();
     }
 
@@ -81,6 +82,10 @@ public abstract class GeneratorTest {
     
     public void close(Generator<?> generator) {
     	IOUtil.close(generator);
+    }
+    
+    public void setCurrentProduct(Object product) {
+    	context.setCurrentProduct(new ProductWrapper<Object>(product));
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })

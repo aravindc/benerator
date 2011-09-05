@@ -26,7 +26,7 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.benerator.primitive.RegexStringGenerator;
 import org.databene.benerator.util.RandomUtil;
@@ -97,7 +97,7 @@ public class Country {
         	return;
         }
 		CSVEntitySource source = new CSVEntitySource(filename, "State", ',', Encodings.UTF_8);
-		source.setContext(new BeneratorContext());
+		source.setContext(new DefaultBeneratorContext());
         DataIterator<Entity> iterator = source.iterator();
         DataContainer<Entity> container = new DataContainer<Entity>();
         while ((container = iterator.next(container)) != null) {
