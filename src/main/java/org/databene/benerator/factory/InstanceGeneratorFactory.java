@@ -50,18 +50,18 @@ public class InstanceGeneratorFactory {
     
     protected InstanceGeneratorFactory() {}
 
-    public static Generator<?> createBaseGenerator(
+    public static Generator<?> createRootGenerator(
     		InstanceDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         Generator<?> generator = null;
         TypeDescriptor type = descriptor.getTypeDescriptor();
 		if (type instanceof SimpleTypeDescriptor)
-			generator = SimpleTypeGeneratorFactory.createBaseGenerator(
+			generator = SimpleTypeGeneratorFactory.createRootGenerator(
 					(SimpleTypeDescriptor) type, descriptor.getName(), uniqueness, context);
         else if (type instanceof ComplexTypeDescriptor)
-    		generator = ComplexTypeGeneratorFactory.createBaseGenerator(
+    		generator = ComplexTypeGeneratorFactory.createRootGenerator(
     				(ComplexTypeDescriptor) type, uniqueness, context);
         else if (type instanceof ArrayTypeDescriptor)
-    		generator = ArrayGeneratorFactory.createBaseGenerator(
+    		generator = ArrayGeneratorFactory.createRootGenerator(
     				(ArrayTypeDescriptor) type, uniqueness, context);
         else
         	throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());

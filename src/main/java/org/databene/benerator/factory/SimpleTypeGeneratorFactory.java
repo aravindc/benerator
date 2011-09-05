@@ -85,7 +85,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     //@SuppressWarnings("unchecked")
     //private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
 
-	public static Generator<?> createBaseGenerator(
+	public static Generator<?> createRootGenerator(
 			SimpleTypeDescriptor type, String instanceName, Uniqueness uniqueness, BeneratorContext context) {
 		return createSimpleTypeGenerator(type, instanceName, false, uniqueness, context);
 	}

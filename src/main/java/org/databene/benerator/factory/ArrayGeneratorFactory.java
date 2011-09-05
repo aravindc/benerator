@@ -86,7 +86,7 @@ public class ArrayGeneratorFactory {
         return generator;
     }
     
-	public static Generator<?> createBaseGenerator(
+	public static Generator<?> createRootGenerator(
 			ArrayTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
         Generator<Object[]> generator = createExplicitGenerator(type, uniqueness, context);
         if (generator == null)

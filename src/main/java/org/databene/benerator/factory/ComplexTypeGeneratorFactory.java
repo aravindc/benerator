@@ -98,7 +98,7 @@ public class ComplexTypeGeneratorFactory {
         return generator;
     }
     
-	public static Generator<?> createBaseGenerator(
+	public static Generator<?> createRootGenerator(
 			ComplexTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
 		Generator<?> generator = createExplicitGenerator(type, uniqueness, context);
 		if (generator != null)
