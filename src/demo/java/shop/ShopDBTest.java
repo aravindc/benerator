@@ -26,9 +26,9 @@
 
 package shop;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.main.Benerator;
 import org.databene.benerator.parser.DefaultEntryConverter;
 import org.databene.commons.IOUtil;
@@ -37,6 +37,7 @@ import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
 import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,7 @@ import java.util.Map;
  * <br/>
  * Created: 20.11.2007 13:24:13
  */
-public class ShopDBTest extends TestCase {
+public class ShopDBTest {
     
     private static final String BENERATOR_FILE = "demo/shop/shop.ben.xml";
 
@@ -62,10 +63,16 @@ public class ShopDBTest extends TestCase {
         checkGeneration("derby");
     }
 */
+    @Test
     public void testHSQLInMem() throws IOException, InterruptedException {
         checkGeneration("hsqlmem");
     }
-/*
+
+    @Test
+    public void testFirebird() throws IOException, InterruptedException {
+        checkGeneration("firebird");
+    }
+    /*
     public void testHSQL() throws IOException, InterruptedException {
         checkGeneration("hsql");
     }
@@ -102,7 +109,7 @@ public class ShopDBTest extends TestCase {
         DBSystem db = new DBSystem("db", dbCfg.get("dbUri"), dbCfg.get("dbDriver"), dbCfg.get("dbUser"), dbCfg.get("dbPassword"));
         // check generation results
         Map<String, Object> genCfg = IOUtil.readProperties("demo/shop/shop." + stage + ".properties", 
-        		new DefaultEntryConverter(new BeneratorContext(null)));
+        		new DefaultEntryConverter(new DefaultBeneratorContext(null)));
         int expectedProductCount = 6 + (Integer) genCfg.get("product_count");
         int expectedCustomerCount = 1 + (Integer) genCfg.get("customer_count");
         int expectedUserCount = 3 + expectedCustomerCount;
