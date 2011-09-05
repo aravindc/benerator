@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<setup 	xmlns="http://databene.org/benerator/0.6.4"
+<setup 	xmlns="http://databene.org/benerator/0.7.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://databene.org/benerator/0.6.4 http://databene.org/benerator-0.6.4.xsd">
+		xsi:schemaLocation="http://databene.org/benerator/0.7.0 http://databene.org/benerator-0.7.0.xsd">
 
-    <property name="lsparams" value="-l"/>
+    <setting name="lsparams" value="-l"/>
     <execute type="shell">{ls ${lsparams}}</execute> 
 
     <execute type="js"> 

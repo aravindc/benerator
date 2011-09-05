@@ -41,10 +41,10 @@
 	</if>
 
 	<comment>setting default values</comment>
-	<property name="dbCatalog"  default="" />
-	<property name="dbSchema"   default="" />
-	<property name="dbPassword" default="" />
-	<property name="dbBatch"    default="false" />
+	<setting name="dbCatalog"  default="" />
+	<setting name="dbSchema"   default="" />
+	<setting name="dbPassword" default="" />
+	<setting name="dbBatch"    default="false" />
 	
 	<comment>import stage and database specific properties</comment>
 	<include uri="{ftl:${database}/shop.${database}.properties}" /> <!-- ftl: is the prefix used for scripting with FreeMarker Template Language -->
