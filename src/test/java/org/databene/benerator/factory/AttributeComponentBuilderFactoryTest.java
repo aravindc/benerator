@@ -31,6 +31,7 @@ import java.util.Date;
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.factory.ComponentBuilderFactory;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.TimeUtil;
@@ -116,7 +117,7 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		PartDescriptor part = new PartDescriptor("name");
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) part.getLocalType(false);
 		type.setScript("myEnum.name()");
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		context.set("myEnum", TestEnum.firstInstance);
 		ComponentBuilder builder = createComponentBuilder(part, context);
 		Generator<String> helper = new ComponentBuilderGenerator(builder, part.getName());
@@ -161,8 +162,8 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setValues("'A'");
 		ComponentBuilder builder = createComponentBuilder(name);
-		builder.init(context);
 		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
 		for (int i = 0; i < 10; i++)
 			assertEquals("A", GeneratorUtil.generateNonNull(helper));
 	}
@@ -250,9 +251,9 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 	public void testCSVStringAttributeEmptyWeighted() {
 		PartDescriptor name = createCSVStringAttributeDescriptor(EMPTY_WGT_CSV, ",");
 		ComponentBuilder<Entity> builder = createComponentBuilder(name);
-		builder.init(context);
-    	Entity entity = new Entity("E");
-		assertFalse(builder.buildComponentFor(entity, context));
+		builder.prepare(context);
+    	setCurrentProduct(new Entity("E"));
+		assertFalse(builder.execute(context));
 	}
 
 	private PartDescriptor createCSVStringAttributeDescriptor() {
@@ -296,23 +297,23 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 	// Id Descriptor tests ---------------------------------------------------------------------------------------------
 	
 	@Test
-    @SuppressWarnings({ "cast", "unchecked", "rawtypes" })
+    @SuppressWarnings({ "cast", "rawtypes" })
     public void testAlternative() {
     	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
     	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("'1'");
 		alternativeType.addComponent(new PartDescriptor("a", typeA));
     	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("'2'");
 		alternativeType.addComponent(new PartDescriptor("b", typeB));
-		BeneratorContext context = new BeneratorContext();
 		PartDescriptor part = new PartDescriptor(null, alternativeType);
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.SIMPLE, context);
-		builder.init(context);
+		builder.prepare(context);
 		Entity entity = new Entity("Entity");
-		builder.buildComponentFor(entity, context);
+		setCurrentProduct(entity);
+		builder.execute(context);
 		assertTrue("1".equals(entity.get("a")) || "2".equals(entity.get("b")));
     }
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("rawtypes")
     @Test
 	public void testMap() {
 		String componentName = "flag";
@@ -321,13 +322,13 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		part.setMaxCount(new ConstantExpression<Long>(1L));
 		((SimpleTypeDescriptor) part.getLocalType(false)).setMap("1->'A',2->'B'");
 		part.getLocalType(false).setGenerator("org.databene.benerator.primitive.IncrementGenerator");
-		BeneratorContext context = new BeneratorContext();
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.NONE, context);
-		builder.init(context);
+		builder.prepare(context);
 		Entity entity = new Entity("Entity");
-		builder.buildComponentFor(entity, context);
+		setCurrentProduct(entity);
+		builder.execute(context);
 		assertEquals("A", entity.get("flag"));
-		builder.buildComponentFor(entity, context);
+		builder.execute(context);
 		assertEquals("B", entity.get("flag"));
 	}
     

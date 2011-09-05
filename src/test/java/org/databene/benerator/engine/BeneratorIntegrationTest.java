@@ -41,24 +41,28 @@ import org.w3c.dom.Element;
  */
 public abstract class BeneratorIntegrationTest extends GeneratorTest {
 	
-	protected BeneratorContext context;
-
 	@Before
 	public void setUpEnvironment() throws Exception {
 		DataModel.getDefaultInstance().clear();
-		System.setProperty(BeneratorContext.CELL_SEPARATOR_SYSPROP, ",");
-		context = new BeneratorContext();
+		System.setProperty(DefaultBeneratorContext.CELL_SEPARATOR_SYSPROP, ",");
 	}
 
 	@After
 	public void tearDown() {
 		DataModel.getDefaultInstance().clear();
-		System.setProperty(BeneratorContext.CELL_SEPARATOR_SYSPROP, ",");
+		System.setProperty(DefaultBeneratorContext.CELL_SEPARATOR_SYSPROP, ",");
 	}
 
 	protected BeneratorContext parseAndExecuteFile(String filename) throws IOException {
 		String xml = IOUtil.getContentOfURI(filename);
 		return parseAndExecute(xml);
+    }
+
+	protected BeneratorContext parseAndExecuteRoot(String xml) {
+		context = new DefaultBeneratorContext();
+	    Statement statement = parse(xml);
+		statement.execute(context);
+		return context;
     }
 
 	protected BeneratorContext parseAndExecute(String xml) {
@@ -71,8 +75,7 @@ public abstract class BeneratorIntegrationTest extends GeneratorTest {
 		Element element = XMLUtil.parseStringAsElement(xml);
 		ResourceManagerSupport resourceManager = new ResourceManagerSupport();
 		BeneratorParseContext parsingContext = BeneratorFactory.getInstance().createParsingContext(resourceManager);
-		Statement statement = parsingContext.parseElement(element, null);
-		return statement;
+		return parsingContext.parseElement(element, null);
 	}
 	
 }

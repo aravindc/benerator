@@ -28,9 +28,10 @@ import java.util.Set;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
@@ -51,40 +52,43 @@ public class GenerateOrIterateStatementTest {
 
 	@Test
 	public void testThreadCount() {
-		EntityGeneratorMock entityGenerator = new EntityGeneratorMock();
+		EntityGenerationStatement entityGenerationStatement = new EntityGenerationStatement();
 		
-		GeneratorTask task = new GenerateAndConsumeTask("myTask", entityGenerator, new BeneratorContext());
+		DefaultBeneratorContext context = new DefaultBeneratorContext();
+		GeneratorTask task = new GenerateAndConsumeTask("myTask", context);
+		task.addStatement(entityGenerationStatement);
 		
 		Generator<Long> countGenerator = new ConstantGenerator<Long>(INVOCATION_COUNT);
 		Expression<Long> pageSize = new ConstantExpression<Long>(300L);
 		Expression<Integer> threads = new ConstantExpression<Integer>(THREAD_COUNT);
 		Expression<Long> minCount = new ConstantExpression<Long>(INVOCATION_COUNT);
 		ConstantExpression<ErrorHandler> errorHandler = new ConstantExpression<ErrorHandler>(ErrorHandler.getDefault());
-		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(task, countGenerator, minCount, pageSize, null, threads, errorHandler, true, false);
-		statement.execute(new BeneratorContext());
+		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(
+				countGenerator, minCount, pageSize, null, threads, errorHandler, true, false);
+		statement.setTask(task);
 		
-		assertEquals(INVOCATION_COUNT, entityGenerator.invocationCount);
-		int found = entityGenerator.threads.size();
+		statement.execute(context);
+		
+		assertEquals(INVOCATION_COUNT, entityGenerationStatement.invocationCount);
+		int found = entityGenerationStatement.threads.size();
 		assertTrue("Exprected at least " + THREAD_COUNT + " threads, but had only " + found, found >= THREAD_COUNT);
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
-	class EntityGeneratorMock extends UnsafeGenerator<Entity> {
+	class EntityGenerationStatement implements Statement {
 		
 		public int invocationCount;
 		public Set<Thread> threads = new HashSet<Thread>();
 
-		public Class<Entity> getGeneratedType() {
-	        return Entity.class;
-        }
-		
-		public ProductWrapper<Entity> generate(ProductWrapper<Entity> wrapper) {
+		public boolean execute(BeneratorContext context) {
 			int tmp = invocationCount;
 			threads.add(Thread.currentThread());
             invocationCount = tmp + 1; 	// update is slightly delayed in order to provoke update errors...
-	        return wrapper.wrap(new Entity("Person", "name", "Alice"));   // ...in case of concurrency issues
-        }
+            ProductWrapper<Entity> wrapper = new ProductWrapper<Entity>().wrap(new Entity("Person", "name", "Alice"));
+			context.setCurrentProduct(wrapper); // ...in case of concurrency issues
+			return true;
+		}
 	}
 	
 }

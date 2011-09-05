@@ -23,7 +23,6 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.task.PageListenerMock;
@@ -55,7 +54,7 @@ public class RunTaskParserAndStatementTest extends BeneratorIntegrationTest {
 		assertEquals(5L, statement.getCount().evaluate(context).longValue());
 		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
 		assertEquals(new PageListenerMock(1), statement.getPager().evaluate(context));
-		statement.execute(new BeneratorContext());
+		statement.execute(context);
 		assertEquals(5, TaskMock.count.get());
 	}
 	
@@ -70,7 +69,7 @@ public class RunTaskParserAndStatementTest extends BeneratorIntegrationTest {
 		assertEquals(5L, statement.getCount().evaluate(context).longValue());
 		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
 		assertEquals(new PageListenerMock(1), statement.getPager().evaluate(context));
-		statement.execute(new BeneratorContext());
+		statement.execute(context);
 		assertEquals(5, TaskMock.count.get());
 	}
 	

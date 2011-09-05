@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,30 +19,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.parser.xml;
+package org.databene.benerator.engine.statement;
 
-import static org.junit.Assert.*;
-
-import org.databene.benerator.engine.BeneratorIntegrationTest;
-import org.databene.benerator.engine.statement.CommentStatement;
-import org.databene.commons.xml.XMLUtil;
-import org.junit.Test;
-import org.w3c.dom.Element;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
+import org.databene.benerator.engine.Statement;
+import org.junit.Before;
 
 /**
- * Tests the {@link CommentParser} and the {@link CommentStatement}.<br/><br/>
- * Created: 19.02.2010 12:54:43
- * @since 0.6.0
+ * Parent class for {@link Statement} tests.<br/><br/>
+ * Created: 02.09.2011 16:44:08
+ * @since 0.7.0
  * @author Volker Bergmann
  */
-public class CommentParserAndStatementTest extends BeneratorIntegrationTest {
-
-	@Test
-	public void testValue() throws Exception {
-		Element element = XMLUtil.parseStringAsElement("<comment>Hello</comment>");
-		CommentStatement statement = (CommentStatement) new CommentParser().parse(element, null, null);
-		statement.execute(context);
-		assertEquals("Hello", statement.getComment());
-	}
+public abstract class AbstractStatementTest {
 	
+	protected BeneratorContext context;
+	
+	@Before
+	public void setUpContext() {
+		this.context = new DefaultBeneratorContext();
+	}
+
 }

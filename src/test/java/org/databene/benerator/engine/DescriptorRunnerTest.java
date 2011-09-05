@@ -57,7 +57,7 @@ public class DescriptorRunnerTest {
 				"	<generate type='Person' count='1' consumer='myConsumer'>" +
 				"		<attribute name='name' constant='Alice'/>" +
 				"	</generate>" +
-				"</setup>");
+				"</setup>", new DefaultBeneratorContext());
 		BeneratorContext context = runner.getContext();
 		context.importDefaults();
 		context.setValidate(false);
@@ -70,7 +70,7 @@ public class DescriptorRunnerTest {
 	
     @Test
 	public void testGetGeneratedFiles() {
-		DescriptorRunner runner = new DescriptorRunner("string://<setup/>");
+		DescriptorRunner runner = new DescriptorRunner("string://<setup/>", new DefaultBeneratorContext());
 		runner.addResource(new TestExporter());
 		List<String> generatedFiles = runner.getGeneratedFiles();
 		assertEquals(1, generatedFiles.size());

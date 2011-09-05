@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,9 +27,9 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorOpts;
 import org.databene.benerator.primitive.IncrementGenerator;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.SysUtil;
 import org.junit.Test;
 
@@ -39,12 +39,12 @@ import org.junit.Test;
  * @since 0.6.3
  * @author Volker Bergmann
  */
-public class GeneratorUtilTest {
+public class GeneratorUtilTest extends GeneratorTest {
 
 	@Test
 	public void testAllProducts_defaultCacheSize() {
 		Generator<Long> source = new IncrementGenerator(1, 1, 120000);
-		source.init(new BeneratorContext());
+		source.init(context);
 		List<Long> products = GeneratorUtil.allProducts(source);
 		assertEquals(100000, products.size());
 		assertEquals(1L, products.get(0).longValue());
@@ -56,7 +56,7 @@ public class GeneratorUtilTest {
 		SysUtil.runWithSystemProperty(BeneratorOpts.OPTS_CACHE_SIZE, "2", new Runnable() {
 			public void run() {
 				SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3, 4);
-				source.init(new BeneratorContext());
+				source.init(context);
 				List<Integer> products = GeneratorUtil.allProducts(source);
 				assertEquals(2, products.size());
 				assertEquals(1, products.get(0).intValue());

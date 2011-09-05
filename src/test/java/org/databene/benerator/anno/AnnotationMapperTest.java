@@ -34,6 +34,7 @@ import javax.validation.constraints.Size;
 
 import org.databene.benerator.distribution.sequence.StepSequence;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.factory.EquivalenceGeneratorFactory;
 import org.databene.benerator.factory.StochasticGeneratorFactory;
 import org.databene.benerator.sample.ConstantGenerator;
@@ -327,7 +328,7 @@ public class AnnotationMapperTest {
 	// helper methods --------------------------------------------------------------------------------------------------
 	
 	protected BeneratorContext createContext() {
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		context.setGeneratorFactory(new EquivalenceGeneratorFactory());
 		return context;
 	}

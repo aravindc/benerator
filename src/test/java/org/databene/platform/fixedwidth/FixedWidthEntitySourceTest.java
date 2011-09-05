@@ -36,7 +36,7 @@ import org.databene.platform.AbstractEntityIteratorTest;
 import org.databene.platform.fixedwidth.FixedWidthEntitySource;
 import org.databene.webdecs.DataIterator;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.format.Alignment;
 
@@ -64,7 +64,7 @@ public class FixedWidthEntitySourceTest extends AbstractEntityIteratorTest {
     @Test
     public void testUnfiltered() {
         FixedWidthEntitySource source = new FixedWidthEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), null, descriptors);
-        source.setContext(new BeneratorContext());
+        source.setContext(new DefaultBeneratorContext());
         DataIterator<Entity> iterator = source.iterator();
         assertEquals(ALICE, nextOf(iterator));
         assertEquals(BOB, nextOf(iterator));
@@ -80,7 +80,7 @@ public class FixedWidthEntitySourceTest extends AbstractEntityIteratorTest {
     @Test
     public void testFiltered() {
         FixedWidthEntitySource source = new FixedWidthEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), "Bob.*", descriptors);
-        source.setContext(new BeneratorContext());
+        source.setContext(new DefaultBeneratorContext());
         DataIterator<Entity> iterator = source.iterator();
         assertEquals(BOB, nextOf(iterator));
         assertUnavailable(iterator);
@@ -92,7 +92,7 @@ public class FixedWidthEntitySourceTest extends AbstractEntityIteratorTest {
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testMissingColumnSpec() {
         FixedWidthEntitySource source = new FixedWidthEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), null);
-        source.setContext(new BeneratorContext());
+        source.setContext(new DefaultBeneratorContext());
         DataIterator<Entity> iterator = source.iterator();
         assertEquals(BOB, nextOf(iterator));
     }

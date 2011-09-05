@@ -31,7 +31,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.databene.benerator.Consumer;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.jdbacl.DBUtil;
 import org.databene.model.data.Entity;
@@ -134,7 +134,7 @@ public class DBSystemTest {
 	@Test
 	public void testUpdater() throws Exception {
 		db.execute("insert into TEST (ID, NAME) values (1, 'Alice')");
-		DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+		DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
         assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 
         		iterator.next(new DataContainer<Entity>()).getData());
@@ -146,7 +146,7 @@ public class DBSystemTest {
         Entity entity = new Entity("TEST", "ID", 1, "NAME", "Alice");
         inserter.startConsumption(new ProductWrapper<Entity>().wrap(entity));
         inserter.finishConsumption(new ProductWrapper<Entity>().wrap(entity));
-        DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+        DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
         assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 
         		iterator.next(new DataContainer<Entity>()).getData());
@@ -158,7 +158,7 @@ public class DBSystemTest {
         Entity entity = new Entity("Xyz", "ID", 1, "NAME", "Alice");
         inserter.startConsumption(new ProductWrapper<Entity>().wrap(entity));
         inserter.finishConsumption(new ProductWrapper<Entity>().wrap(entity));
-        DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+        DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
         assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 
         		iterator.next(new DataContainer<Entity>()).getData());

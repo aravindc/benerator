@@ -24,7 +24,6 @@ package org.databene.benerator.csv;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.Encodings;
 import org.junit.Test;
@@ -69,7 +68,7 @@ public class SequencedDatasetCSVGeneratorTest extends GeneratorTest {
 
 	private Generator<String> createDatasetGenerator(String datasetName) {
 	    SequencedDatasetCSVGenerator<String> generator = new SequencedDatasetCSVGenerator<String>(
-				FILENAME_PATTERN, SEPARATOR, datasetName, NESTING, DISTRIBUTION, ENCODING, new BeneratorContext());
+				FILENAME_PATTERN, SEPARATOR, datasetName, NESTING, DISTRIBUTION, ENCODING, context);
 	    generator.init(context);
 		return generator;
     }

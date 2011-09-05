@@ -23,7 +23,6 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.sample.ConstantGenerator;
@@ -59,7 +58,6 @@ public class SettingParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testDefault_predefined() throws Exception {
 		Statement statement = parse("<setting name='globalProp' default='XYZ' />");
-		BeneratorContext context = new BeneratorContext();
 		context.set("globalProp", "ZZZ");
 		statement.execute(context);
 		assertEquals("ZZZ", context.get("globalProp"));

@@ -24,6 +24,7 @@ package org.databene.benerator.engine.parser.xml;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.statement.WaitStatement;
 import org.databene.commons.xml.XMLUtil;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class WaitParserAndStatementTest {
 	@Test
 	public void testConstantDuration() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<wait duration='12'/>");
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		WaitStatement statement = (WaitStatement) new WaitParser().parse(element, null, null);
 		assertEquals(12, statement.generateDuration(context));
 		statement.execute(context);
@@ -50,7 +51,7 @@ public class WaitParserAndStatementTest {
 	public void testDistributedDuration() throws Exception {
 		Element element = XMLUtil.parseStringAsElement(
 				"<wait min='11' max='25' granularity='2' distribution='step'/>");
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		WaitStatement statement = (WaitStatement) new WaitParser().parse(element, null, null);
 		for (int i = 0; i < 5; i++)
 			assertEquals(11 + i * 2, statement.generateDuration(context));

@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonIterable;
-import org.databene.commons.SyntaxError;
 import org.databene.model.data.Entity;
 import org.junit.Before;
 import org.junit.Test;
@@ -129,7 +128,7 @@ public class AttributeAndVariableIntegrationTest extends BeneratorIntegrationTes
 		assertEquals(5, products.get(1).get("y"));
 	}
 
-	@Test(expected = SyntaxError.class)
+	@Test
 	public void testVarAfterSubGen() { // TODO v0.7 support variable usage after sub <generate>
 		parseAndExecute(
 				"<generate count='5'>" +
@@ -138,7 +137,7 @@ public class AttributeAndVariableIntegrationTest extends BeneratorIntegrationTes
 				"</generate>");
 	}
 	
-	@Test(expected = SyntaxError.class)
+	@Test
 	public void testEchoBetweenAttributes() { // TODO v0.7. support <echo> between <attribute>s
 		parseAndExecute(
 				"<generate count='5'>" +
@@ -148,7 +147,7 @@ public class AttributeAndVariableIntegrationTest extends BeneratorIntegrationTes
 				"</generate>");
 	}
 	
-	@Test(expected = SyntaxError.class)
+	@Test
 	public void testAttributeAfterSubGen() {
 		parseAndExecute(
 				"<generate count='5'>" +

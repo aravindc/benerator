@@ -50,7 +50,7 @@ public class DescriptorBasedGeneratorTest extends GeneratorTest {
 				"</setup>";
 		context.setValidate(false);
 		Generator<?> generator = new DescriptorBasedGenerator(uri, "perGen", context);
-		assertEquals(Entity.class, generator.getGeneratedType());
+		assertEquals(Object.class, generator.getGeneratedType());
 		assertNotNull(generator);
 		generator.init(context);
 		for (int i = 0; i < 3; i++)

@@ -24,6 +24,7 @@ package org.databene.benerator.script;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.Context;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,8 +40,8 @@ public class QNExpressionTest {
 	BeneratorContext context;
 	
 	@Before
-	public void test() {
-		context = new BeneratorContext();
+	public void stUpContext() {
+		context = new DefaultBeneratorContext();
 	}
 
 	@Test
@@ -50,7 +51,6 @@ public class QNExpressionTest {
 
 	@Test
 	public void testImportedClass() {
-		BeneratorContext context = new BeneratorContext();
 		context.importClass("org.databene.benerator.script.*");
 		check(ScriptTestUtil.class, context, "ScriptTestUtil");
 	}
@@ -62,7 +62,7 @@ public class QNExpressionTest {
 
 	@Test
 	public void testStaticFieldOfImportedClass() {
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		context.importClass("org.databene.benerator.script.*");
 		check("pubVarContent", context, "ScriptTestUtil", "pubvar");
 	}
@@ -70,7 +70,7 @@ public class QNExpressionTest {
 	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void check(Object expected, String... parts) {
-		check(expected, new BeneratorContext(), parts);
+		check(expected, context, parts);
 	}
 	
 	private void check(Object expected, Context context, String... parts) {

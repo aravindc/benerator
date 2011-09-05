@@ -23,6 +23,7 @@ package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorIntegrationTest;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.ImportStatement;
 import org.databene.commons.ConfigurationError;
@@ -39,13 +40,14 @@ public class ImportParserAndStatementTest extends BeneratorIntegrationTest {
 	
 	@Test(expected = ConfigurationError.class)
 	public void testNoImport() {
+		BeneratorContext context = new DefaultBeneratorContext();
 		context.forName("IncrementGenerator");
 	}
 	
 	@Test
 	public void testDefaults() {
 		Statement statement = parse("<import defaults='true' />");
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		statement.execute(context);
 		context.forName("IncrementGenerator");
 	}
@@ -53,7 +55,7 @@ public class ImportParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testPlatforms() {
 		Statement statement = parse("<import platforms='db, xml' />");
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		statement.execute(context);
 		context.forName("DBSystem");
 		context.forName("XMLEntityExporter");
@@ -62,7 +64,7 @@ public class ImportParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testDomains() {
 		Statement statement = parse("<import domains='person, address' />");
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		statement.execute(context);
 		context.forName("PersonGenerator");
 		context.forName("AddressGenerator");

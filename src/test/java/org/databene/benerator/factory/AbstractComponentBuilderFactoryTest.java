@@ -29,6 +29,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
@@ -48,7 +49,7 @@ public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest 
 	// private helpers -------------------------------------------------------------------------------------------------
 	
 	protected ComponentBuilder<Entity> createComponentBuilder(ComponentDescriptor component) {
-		return createComponentBuilder(component, new BeneratorContext());
+		return createComponentBuilder(component, new DefaultBeneratorContext());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -71,7 +72,7 @@ public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest 
 
 		@Override
         public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
-	        builder.init(context);
+	        builder.prepare((BeneratorContext) context);
 	        super.init(context);
         }
 
@@ -81,7 +82,8 @@ public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest 
 
         public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 			Entity entity = new Entity("Test");
-			if (!builder.buildComponentFor(entity, context))
+			context.setCurrentProduct(new ProductWrapper<Entity>(entity));
+			if (!builder.execute((BeneratorContext) context))
 				return null;
 			return wrapper.wrap((E) entity.get(componentName));
 		}

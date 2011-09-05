@@ -28,6 +28,7 @@ import java.io.IOException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.factory.ConsumerMock;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.SysUtil;
 import org.databene.model.data.Entity;
 import org.junit.Test;
@@ -38,7 +39,19 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class InitialContextTest {
+public class InitialContextTest extends GeneratorTest {
+
+	private static final String DESCRIPTOR_XML = "string://<setup>" +
+		                    		"<bean id='ctx' class='org.databene.platform.jndi.InitialContext'>" +
+		                    		"  <property name='factory' value='org.databene.platform.jndi.InitialContextFactoryMock' />" +
+		                    		"  <property name='url' value='lru' />" +
+		                    		"  <property name='user' value='resu' />" +
+		                    		"  <property name='password' value='drowssap' />" +
+		                    		"</bean>" +
+		                    		"<generate name='Person' count='1' consumer=\"ctx.lookup('cons')\">" +
+		                    		"  <attribute name='name' constant='Alice'/>" +
+		                    		"</generate>" +
+		                    		"</setup>";
 
 	@Test
 	public void test() {
@@ -47,17 +60,7 @@ public class InitialContextTest {
 				public void run() {
 					try {
 						ConsumerMock.lastInstance = null;
-	                    DescriptorRunner runner = new DescriptorRunner("string://<setup>" +
-	                    		"<bean id='ctx' class='org.databene.platform.jndi.InitialContext'>" +
-	                    		"  <property name='factory' value='org.databene.platform.jndi.InitialContextFactoryMock' />" +
-	                    		"  <property name='url' value='lru' />" +
-	                    		"  <property name='user' value='resu' />" +
-	                    		"  <property name='password' value='drowssap' />" +
-	                    		"</bean>" +
-	                    		"<generate name='Person' count='1' consumer=\"ctx.lookup('cons')\">" +
-	                    		"  <attribute name='name' constant='Alice'/>" +
-	                    		"</generate>" +
-	                    		"</setup>");
+	                    DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR_XML, context);
 	                    
 	                    BeneratorContext context = runner.getContext();
 	                    context.setValidate(false);

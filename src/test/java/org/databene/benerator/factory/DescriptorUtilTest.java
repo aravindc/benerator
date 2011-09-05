@@ -37,6 +37,7 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.FeatureWeight;
 import org.databene.benerator.distribution.WeightFunction;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.test.ConverterMock;
 import org.databene.benerator.test.GeneratorMock;
 import org.databene.benerator.test.JSR303ConstraintValidatorMock;
@@ -55,6 +56,7 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -66,6 +68,13 @@ import static junit.framework.Assert.*;
  * @author Volker Bergmann
  */
 public class DescriptorUtilTest {
+	
+	private BeneratorContext context;
+	
+	@Before
+	public void setUpContext() {
+		context = new DefaultBeneratorContext();
+	}
 	
 	@After
 	public void tearDown() throws Exception {
@@ -190,15 +199,14 @@ public class DescriptorUtilTest {
 	}
 
 	@Test
-    public void testGetDistributionWeighted() {
-		BeneratorContext context = new BeneratorContext();
-		
-		// test 'weighted'
+    public void testGetDistributionWeighted_simple() { // testing 'weighted'
 		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType").withDistribution("weighted");
 		Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, true, context);
 		assertTrue(distribution instanceof AttachedWeight);
-		
-		// test 'weighted[population]'
+	}
+
+	@Test
+    public void testGetDistributionWeighted_property() { // testing 'weighted[population]'
 		SimpleTypeDescriptor descriptor2 = new SimpleTypeDescriptor("myType").withDistribution("weighted[population]");
 		Distribution distribution2 = FactoryUtil.getDistribution(descriptor2.getDistribution(), Uniqueness.NONE, true, context);
 		assertTrue(distribution2 instanceof FeatureWeight);
@@ -234,7 +242,6 @@ public class DescriptorUtilTest {
 
 	@Test
 	public void testIsUnique() {
-		BeneratorContext context = new BeneratorContext();
 		assertEquals(false, DescriptorUtil.isUnique(new InstanceDescriptor("test"), context));
 		assertEquals(false, DescriptorUtil.isUnique(new InstanceDescriptor("test").withUnique(false), context));
 		assertEquals(true, DescriptorUtil.isUnique(new InstanceDescriptor("test").withUnique(true), context));
@@ -242,7 +249,6 @@ public class DescriptorUtilTest {
 
 	@Test
 	public void testGetSeparator() {
-		BeneratorContext context = new BeneratorContext();
 		try {
 			assertEquals(',', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x"), context));
 			context.setDefaultSeparator('|');
@@ -255,7 +261,6 @@ public class DescriptorUtilTest {
 	
 	@Test
 	public void testGetMinCount() {
-		BeneratorContext context = new BeneratorContext(".");
 		// default
 		assertEquals(1, DescriptorUtil.getMinCount(new InstanceDescriptor("x")).evaluate(context).intValue());
 		// set explicitly
@@ -273,7 +278,6 @@ public class DescriptorUtilTest {
 	
 	@Test
 	public void testGetMaxCount() {
-		BeneratorContext context = new BeneratorContext(".");
 		// default
 		assertNull(DescriptorUtil.getMaxCount(new InstanceDescriptor("x")).evaluate(context));
 		// explicit setting
@@ -290,7 +294,6 @@ public class DescriptorUtilTest {
 
 	@SuppressWarnings("unchecked")
 	private void checkGetConverter(String contextKey, Converter<Integer, ?> contextValue, String converterSpec, int expectedValue) {
-		BeneratorContext context = new BeneratorContext();
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
@@ -302,7 +305,6 @@ public class DescriptorUtilTest {
 	
 	@SuppressWarnings("unchecked")
 	private void checkGetValidator(String contextKey, Validator<Integer> contextValue, String validatorSpec, Integer validValue) {
-		BeneratorContext context = new BeneratorContext();
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
@@ -315,7 +317,6 @@ public class DescriptorUtilTest {
 	
 	private void checkGetGeneratorByName(
 			String contextKey, Generator<?> contextValue, String generatorSpec, int expectedValue) {
-		BeneratorContext context = new BeneratorContext();
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
@@ -327,7 +328,6 @@ public class DescriptorUtilTest {
 
 	private void checkGetWeightFunction(
 			String contextKey, Distribution contextValue, String distributionSpec, double expectedValue) {
-		BeneratorContext context = new BeneratorContext();
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");

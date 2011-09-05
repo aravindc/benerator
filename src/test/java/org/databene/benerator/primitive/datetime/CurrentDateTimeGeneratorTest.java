@@ -27,7 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
@@ -36,13 +36,13 @@ import org.junit.Test;
  * @since 0.6.6
  * @author Volker Bergmann
  */
-public class CurrentDateTimeGeneratorTest {
+public class CurrentDateTimeGeneratorTest extends GeneratorTest {
 	
 	@Test
 	public void test() {
 		Date startDate = new Date();
 		CurrentDateTimeGenerator generator = new CurrentDateTimeGenerator();
-		generator.init(new BeneratorContext());
+		generator.init(context);
 		Date generatedDate = generator.generate();
 		assertFalse(startDate.after(generatedDate));
 		Calendar toleratedLimit = new GregorianCalendar();

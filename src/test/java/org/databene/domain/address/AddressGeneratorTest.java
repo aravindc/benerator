@@ -27,7 +27,6 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.test.GeneratorClassTest;
@@ -136,12 +135,11 @@ public class AddressGeneratorTest extends GeneratorClassTest {
     		xml += "dataset='" + country.getIsoCode() + "'";
     	xml += "/>";
 		Element element = XMLUtil.parseStringAsElement(xml);
-    	BeneratorContext context = new BeneratorContext(".");
 		ModelParser parser = new ModelParser(context);
     	ComplexTypeDescriptor parent = new ComplexTypeDescriptor("y");
 		InstanceDescriptor descriptor = parser.parseVariable(element, parent);
 		Generator<Address> generator = (Generator<Address>) InstanceGeneratorFactory.createSingleInstanceGenerator(
-				descriptor, true, Uniqueness.NONE, context);
+				descriptor, Uniqueness.NONE, context);
 		generator.init(context);
         Country generatedCountry = GeneratorUtil.generateNonNull(generator).getCountry();
 		if (country == null) {

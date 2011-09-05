@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
@@ -67,8 +66,8 @@ public class InstanceGeneratorFactoryTest extends GeneratorTest {
 	
 	@SuppressWarnings("unchecked")
     private Generator<Long> createInstanceGenerator(InstanceDescriptor instance) {
-		BeneratorContext context = new BeneratorContext();
-		return (Generator<Long>) InstanceGeneratorFactory.createSingleInstanceGenerator(instance, true, Uniqueness.NONE, context);
+		return (Generator<Long>) InstanceGeneratorFactory.createSingleInstanceGenerator(
+				instance, Uniqueness.NONE, context);
 	}
 
 }

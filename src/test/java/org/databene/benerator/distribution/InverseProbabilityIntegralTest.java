@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
@@ -41,7 +40,6 @@ import org.junit.Test;
 public class InverseProbabilityIntegralTest extends GeneratorTest {
 
 	private Fcn fcn = new Fcn();
-	private BeneratorContext context = new BeneratorContext();
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateDoubleGenerator_unique() {
@@ -62,14 +60,14 @@ public class InverseProbabilityIntegralTest extends GeneratorTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testApply_unique() {
 		Generator<String> source = new SequenceTestGenerator<String>("A", "B");
-		source.init(new BeneratorContext());
+		source.init(context);
 		fcn.applyTo(source, true);
 	}
 	
 	@Test
 	public void testApply_notUnique() {
 		Generator<String> source = new SequenceTestGenerator<String>("A", "B");
-		source.init(new BeneratorContext());
+		source.init(context);
 		Generator<String> generator = fcn.applyTo(source, false);
 		generator.init(context);
 		int n = 1000;

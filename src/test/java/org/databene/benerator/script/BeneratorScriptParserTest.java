@@ -29,6 +29,7 @@ package org.databene.benerator.script;
 import java.util.Map;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.test.Person;
 import org.databene.commons.BeanUtil;
@@ -55,6 +56,13 @@ import static junit.framework.Assert.*;
  */
 
 public class BeneratorScriptParserTest {
+	
+	private BeneratorContext context;
+
+	@Before
+	public void setUpContext() {
+		this.context = new DefaultBeneratorContext();
+	}
 
 	@Before
 	public void setup() {
@@ -500,14 +508,12 @@ public class BeneratorScriptParserTest {
 	@Test
 	public void testVariableDefinition() throws Exception {
 	    Expression<?> expression = BeneratorScriptParser.parseExpression("x = 3");
-	    BeneratorContext context = new BeneratorContext();
 	    assertEquals(3, expression.evaluate(context));
 	    assertEquals(3, context.get("x"));
 	}
 	
 	@Test
 	public void testVariableAssignment() throws Exception {
-	    BeneratorContext context = new BeneratorContext();
 	    context.set("x", 3);
 		Expression<?> expression = BeneratorScriptParser.parseExpression("x = x + 2");
 	    assertEquals(5, expression.evaluate(context));
@@ -517,7 +523,6 @@ public class BeneratorScriptParserTest {
 	@SuppressWarnings("unchecked")
     @Test
 	public void testMemberAssignment() throws Exception {
-	    BeneratorContext context = new BeneratorContext();
 	    context.set("x", CollectionUtil.buildMap("y", 3));
 		Expression<?> expression = BeneratorScriptParser.parseExpression("x.y = x.y + 2");
 	    assertEquals(5, expression.evaluate(context));
@@ -527,7 +532,6 @@ public class BeneratorScriptParserTest {
 	@Test(expected = UnsupportedOperationException.class)
 	public void testUndefinedVariableReference() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("x = x + 3");
-	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 	
@@ -538,49 +542,42 @@ public class BeneratorScriptParserTest {
 	@Test
 	public void testTrailingWhiteSpace() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("   3   ");
-	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
 	@Test(expected = SyntaxError.class)
 	public void testMissingRHS() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("3 + ");
-	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
 	@Test(expected = SyntaxError.class)
 	public void testMissingLHS() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("/ 2");
-	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
 	@Test(expected = SyntaxError.class)
 	public void testMissingOperator() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("'A' 'B'");
-	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
 	@Test(expected = SyntaxError.class)
 	public void testInvalidChoiceCondition() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("1 = 3 ? 'A' : 'B'");
-	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
 	@Test(expected = SyntaxError.class)
 	public void testChoiceWithMissingFalseAlternative() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("1 == 3 ? 'A'");
-	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
 	@Test(expected = SyntaxError.class)
 	public void testChoiceWithMissingTrueAlternative() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("1 == 1 ? : 'B'");
-	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
@@ -616,7 +613,7 @@ public class BeneratorScriptParserTest {
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private void checkExpression(Object expected, String script) throws Exception {
-    	checkExpression(expected, script, new BeneratorContext());
+    	checkExpression(expected, script, context);
     }
     
     private void checkExpression(Object expected, String script, Context context) throws Exception {

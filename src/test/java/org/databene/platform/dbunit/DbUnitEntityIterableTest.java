@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,7 @@ import static junit.framework.Assert.*;
 
 import java.io.IOException;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.AbstractEntityIteratorTest;
@@ -58,7 +58,7 @@ public class DbUnitEntityIterableTest extends AbstractEntityIteratorTest {
     // helpers ---------------------------------------------------------------------------------------------------------
 
     private void check(String uri) throws IOException {
-        DbUnitEntityIterator iterator = new DbUnitEntityIterator(uri, new BeneratorContext());
+        DbUnitEntityIterator iterator = new DbUnitEntityIterator(uri, new DefaultBeneratorContext());
         assertEquals(createPerson("Alice", "23"), DataUtil.nextNotNullData(iterator));
         assertEquals(createPerson("Bob", "34"), DataUtil.nextNotNullData(iterator));
         assertEquals(createPerson("Charly", "45"), DataUtil.nextNotNullData(iterator));

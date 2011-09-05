@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
@@ -54,7 +55,7 @@ public class PagedTaskRunnerTest {
 
     @Before	
 	public void setUp() {
-	    context = new BeneratorContext();
+	    context = new DefaultBeneratorContext();
 	    executors = ExpressionUtil.constant(Executors.newSingleThreadExecutor());
     }
 

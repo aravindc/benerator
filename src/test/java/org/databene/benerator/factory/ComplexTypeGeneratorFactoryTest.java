@@ -174,11 +174,11 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	private Generator<Entity> createGenerator(InstanceDescriptor instance) {
 		ComplexTypeDescriptor type = (ComplexTypeDescriptor) instance.getTypeDescriptor();
-		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type.getName(), true, type, instance.getUniqueness(), context);
+		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type.getName(), type, instance.getUniqueness(), context);
 	}
 	
 	private Generator<Entity> createGenerator(ComplexTypeDescriptor type) {
-		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type.getName(), true, type, Uniqueness.NONE, context);
+		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type.getName(), type, Uniqueness.NONE, context);
 	}
 	
 }

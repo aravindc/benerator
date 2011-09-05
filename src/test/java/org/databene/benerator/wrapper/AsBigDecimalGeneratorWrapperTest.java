@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.util.GeneratorUtil;
 import org.junit.Test;
 
@@ -44,7 +44,7 @@ public class AsBigDecimalGeneratorWrapperTest {
 		Generator<Double> source = new SequenceTestGenerator<Double>(0.1234, 1.234, 12.34, 123.4, 1234.56);
 		AsBigDecimalGeneratorWrapper<Double> wrapper 
 			= new AsBigDecimalGeneratorWrapper<Double>(source, BigDecimal.ZERO, new BigDecimal("0.01"));
-		wrapper.init(new BeneratorContext());
+		wrapper.init(new DefaultBeneratorContext());
 		assertEquals(new BigDecimal("0.12"), GeneratorUtil.generateNonNull(wrapper));
 		assertEquals(new BigDecimal("1.23"), GeneratorUtil.generateNonNull(wrapper));
 		assertEquals(new BigDecimal("12.34"), GeneratorUtil.generateNonNull(wrapper));

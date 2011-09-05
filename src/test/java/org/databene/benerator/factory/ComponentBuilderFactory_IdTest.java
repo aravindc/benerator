@@ -25,7 +25,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 import org.databene.benerator.composite.ComponentBuilder;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.HibUUIDGenerator;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
@@ -48,7 +47,8 @@ public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFact
 		IdDescriptor id = new IdDescriptor("id", "int");
 		ComponentBuilder<Entity> generator = createAndInitBuilder(id);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity, context);
+		setCurrentProduct(entity);
+		generator.execute(context);
 		assertEquals(1, entity.get("id"));
 	}
     
@@ -121,9 +121,9 @@ public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFact
 	
     @SuppressWarnings("unchecked")
 	private ComponentBuilder<Entity> createAndInitBuilder(IdDescriptor id) {
-		BeneratorContext context = new BeneratorContext();
-		ComponentBuilder<Entity> builder = (ComponentBuilder<Entity>) ComponentBuilderFactory.createComponentBuilder(id, Uniqueness.NONE, context);
-		builder.init(context);
+		ComponentBuilder<Entity> builder = (ComponentBuilder<Entity>) ComponentBuilderFactory.createComponentBuilder(
+				id, Uniqueness.NONE, context);
+		builder.prepare(context);
 		return builder;
 	}
 

@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
@@ -98,7 +99,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testCreateSampleGeneratorUnweighted() {
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a','b'"), Uniqueness.NONE, context);
 		generator.init(context);
 		expectRelativeWeights(generator, 1000, "a", 1, "b", 1);
@@ -110,7 +111,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testCreateSampleGeneratorWeighted() {
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a'^2,'b'"), Uniqueness.NONE, context);
 		generator.init(context);
 		expectRelativeWeights(generator, 3000, "a", 2, "b", 1);
@@ -148,7 +149,6 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	public void testScriptedCSVImport() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
 		type.setSource(SCRIPTED_NAMES_CSV);
-		BeneratorContext context = new BeneratorContext(".");
 		context.set("some_user", "the_user");
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE, context);
 		expectGeneratedSequence(generator, "Alice", "the_user", "Otto").withCeasedAvailability();
@@ -158,7 +158,6 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	public void testScriptedWgtCSVImport() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
 		type.setSource(SCRIPTED_NAMES_WGT_CSV); // contains an entry with {some_user},1 - all others have weight 0
-		BeneratorContext context = new BeneratorContext(".");
 		context.set("some_user", "the_user"); // {some_user} is assigned the value 'the_user'
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE, context);
 		expectGeneratedSet(generator, 100, "the_user").withContinuedAvailability(); // {some_user} has been replaced with 'the_user', all other weight are 0
@@ -221,7 +220,8 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	@SuppressWarnings("unchecked")
     private Generator<String> createAndInitGenerator(
     		SimpleTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
-		Generator<String> generator = (Generator<String>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(type, false, uniqueness, context);
+		Generator<String> generator = (Generator<String>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
+				type, null, false, uniqueness, context);
 		generator.init(context);
 		return generator;
 	}

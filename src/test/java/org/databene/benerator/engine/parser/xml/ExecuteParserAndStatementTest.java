@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorIntegrationTest;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.ConfigurationError;
 import org.databene.jdbacl.hsql.HSQLUtil;
@@ -75,7 +76,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 	public void testEmptyResultSet() throws Exception {
 		String url = HSQLUtil.getInMemoryURL("benerator");
 		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null);
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		context.set("db", db);
 		try {
 			db.execute("create table epast_test (id int)");
@@ -91,7 +92,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 	public void testDbInvalidationDefault() throws Exception {
 		String url = HSQLUtil.getInMemoryURL("benerator");
 		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null);
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		context.set("db", db);
 		assertEquals(0, db.invalidationCount());
 		try {
@@ -112,7 +113,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 	public void testDbInvalidationOverride() throws Exception {
 		String url = HSQLUtil.getInMemoryURL("benerator");
 		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null);
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		context.set("db", db);
 		assertEquals(0, db.invalidationCount());
 		try {

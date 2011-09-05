@@ -24,6 +24,7 @@ package org.databene.benerator.script;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class QNInvocationExpressionTest {
 	
 	@Before
 	public void setup() {
-		context = new BeneratorContext();
+		context = new DefaultBeneratorContext();
 	}
 
 	@Test

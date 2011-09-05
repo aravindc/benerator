@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,7 +32,7 @@ import static junit.framework.Assert.*;
 import java.io.File;
 import java.io.IOException;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.FileUtil;
@@ -74,7 +74,7 @@ public class FileJoinerTest extends FileTest {
 	    File sourceFile1 = null;
 		File sourceFile2 = null;
 		File destFile = null;
-		Context context = new BeneratorContext();
+		Context context = new DefaultBeneratorContext();
 		try {
 			sourceFile1 = createSource1();
 			sourceFile2 = createSource2();

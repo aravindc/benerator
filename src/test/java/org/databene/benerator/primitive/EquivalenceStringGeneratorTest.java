@@ -22,7 +22,6 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.SequenceTestGenerator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.junit.Test;
@@ -40,7 +39,7 @@ public class EquivalenceStringGeneratorTest extends GeneratorTest {
 		EquivalenceStringGenerator<Character> generator = new EquivalenceStringGenerator<Character>(
 				new SequenceTestGenerator<Character>('a', 'b'),
 				WrapperFactory.asNonNullGenerator(new SequenceTestGenerator<Integer>(1, 3)));
-		generator.init(new BeneratorContext());
+		generator.init(context);
 		expectGeneratedSequence(generator, "a", "b", "aaa", "bbb");
 	}
 	

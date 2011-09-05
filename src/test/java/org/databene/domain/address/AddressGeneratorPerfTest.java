@@ -21,7 +21,7 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.Required;
 import org.databene.contiperf.junit.ContiPerfRule;
@@ -45,7 +45,7 @@ public class AddressGeneratorPerfTest {
 	@Before
 	public void setUp() {
 		generatorDE = new AddressGenerator(Country.GERMANY.getIsoCode());
-		generatorDE.init(new BeneratorContext());
+		generatorDE.init(new DefaultBeneratorContext());
 	}
 	
 	@After

@@ -23,7 +23,6 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.SyntaxError;
@@ -92,14 +91,12 @@ public class IfParserAndStatementTest extends BeneratorIntegrationTest {
 	
 	@Test(expected = SyntaxError.class)
 	public void testTwoThens() throws Exception {
-		new BeneratorContext(); // this first for setting the default script engine to benerator script
 		Element element = XMLUtil.parseStringAsElement("<if test='2==3'><then/><then/></if>");
 		new IfParser().parse(element, null, null);
 	}
 	
 	@Test(expected = SyntaxError.class)
 	public void testTwoElses() throws Exception {
-		new BeneratorContext(); // this first for setting the default script engine to benerator script
 		Element element = XMLUtil.parseStringAsElement("<if test='2==3'><then/><else/><else/></if>");
 		new IfParser().parse(element, null, null);
 	}

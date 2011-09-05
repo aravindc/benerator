@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
@@ -41,7 +42,7 @@ import org.junit.Test;
 public class ExponentialDensityIntegralTest extends GeneratorTest {
 
 	private ExponentialDensityIntegral fcn = new ExponentialDensityIntegral(0.5);
-	private BeneratorContext context = new BeneratorContext();
+	private BeneratorContext context = new DefaultBeneratorContext();
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateDoubleGenerator_unique() {
@@ -66,14 +67,14 @@ public class ExponentialDensityIntegralTest extends GeneratorTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testApply_unique() {
 		Generator<String> source = new SequenceTestGenerator<String>("A", "B");
-		source.init(new BeneratorContext());
+		source.init(new DefaultBeneratorContext());
 		fcn.applyTo(source, true);
 	}
 	
 	@Test
 	public void testApply_notUnique() {
 		Generator<String> source = new SequenceTestGenerator<String>("A", "B");
-		source.init(new BeneratorContext());
+		source.init(new DefaultBeneratorContext());
 		Generator<String> generator = fcn.applyTo(source, false);
 		generator.init(context);
 		int n = 1000;

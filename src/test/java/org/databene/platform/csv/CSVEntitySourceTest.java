@@ -29,7 +29,7 @@ package org.databene.platform.csv;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.AbstractEntityIteratorTest;
@@ -50,14 +50,14 @@ public class CSVEntitySourceTest extends AbstractEntityIteratorTest {
     @Test
     public void testSingleRun() {
     	CSVEntitySource source = new CSVEntitySource(PERSON_URI, "Person");
-    	source.setContext(new BeneratorContext());
+    	source.setContext(new DefaultBeneratorContext());
         checkIteration(source.iterator(), "name", "age", false);
     }
 
     @Test
     public void testReset() {
     	CSVEntitySource source = new CSVEntitySource(PERSON_URI, "Person");
-    	source.setContext(new BeneratorContext());
+    	source.setContext(new DefaultBeneratorContext());
         checkIteration(source.iterator(), "name", "age", false);
         checkIteration(source.iterator(), "name", "age", false);
     }
@@ -66,7 +66,7 @@ public class CSVEntitySourceTest extends AbstractEntityIteratorTest {
     public void testWithoutHeaders() {
     	CSVEntitySource source = new CSVEntitySource(PERSON_URI_WO_HEADERS, "Person");
     	source.setColumns(new String[] { "c1", "c2" });
-    	source.setContext(new BeneratorContext());
+    	source.setContext(new DefaultBeneratorContext());
         checkIteration(source.iterator(), "c1", "c2", false);
         checkIteration(source.iterator(), "c1", "c2", false);
     }

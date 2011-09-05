@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.platform.file;
 
 import java.io.File;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.FileUtil;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class FileDeleterTest extends FileTest {
 				"target" + File.separator + sourceFile1.getName(), 
 				"target" + File.separator + sourceFile2.getName() 
 			});
-			deleter.execute(new BeneratorContext(), ErrorHandler.getDefault());
+			deleter.execute(new DefaultBeneratorContext(), ErrorHandler.getDefault());
 			assertFalse(sourceFile1.exists());
 			assertFalse(sourceFile2.exists());
 		} finally {

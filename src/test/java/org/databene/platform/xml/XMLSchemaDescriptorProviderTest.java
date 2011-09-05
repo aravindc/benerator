@@ -29,6 +29,7 @@ package org.databene.platform.xml;
 import java.util.List;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.IOUtil;
@@ -58,7 +59,7 @@ public class XMLSchemaDescriptorProviderTest {
 
     @Test
     public void testSimpleTypeElement() {
-        BeneratorContext context = new BeneratorContext(IOUtil.getParentUri(SIMPLE_ELEMENT_TEST_FILE));
+        BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(SIMPLE_ELEMENT_TEST_FILE));
 		XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(SIMPLE_ELEMENT_TEST_FILE, context);
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
@@ -72,7 +73,7 @@ public class XMLSchemaDescriptorProviderTest {
 
     @Test
     public void testNesting() {
-        BeneratorContext context = new BeneratorContext(IOUtil.getParentUri(NESTING_TEST_FILE));
+        BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(NESTING_TEST_FILE));
 		XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(NESTING_TEST_FILE, context);
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
@@ -95,7 +96,7 @@ public class XMLSchemaDescriptorProviderTest {
 
     @Test
     public void testAnnotations() {
-        BeneratorContext context = new BeneratorContext(IOUtil.getParentUri(ANNOTATION_TEST_FILE));
+        BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(ANNOTATION_TEST_FILE));
 		XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(ANNOTATION_TEST_FILE, context);
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
@@ -128,7 +129,7 @@ public class XMLSchemaDescriptorProviderTest {
 
     @Test
     public void testChoice() {
-        BeneratorContext context = new BeneratorContext(IOUtil.getParentUri(CHOICE_TEST_FILE));
+        BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(CHOICE_TEST_FILE));
 		XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(CHOICE_TEST_FILE, context);
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root

@@ -33,6 +33,8 @@ import org.databene.benerator.Consumer;
 import org.databene.benerator.Generator;
 import org.databene.benerator.consumer.ListConsumer;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.CurrentProductGeneration;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.CollectionUtil;
@@ -63,11 +65,12 @@ public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
 
     @Test
     public void testFlat() throws Exception {
-		Generator<Entity> generator = new IteratingGenerator<Entity>(new AB());
 		final ListConsumer consumer = new ListConsumer();
 		Expression<Consumer> consumerExpr = new ConstantExpression<Consumer>(consumer);
-		BeneratorContext context = new BeneratorContext();
-		GenerateAndConsumeTask task = new GenerateAndConsumeTask("tn", generator, context);
+		BeneratorContext context = new DefaultBeneratorContext();
+		GenerateAndConsumeTask task = new GenerateAndConsumeTask("tn", context);
+		Generator<Entity> source = new IteratingGenerator<Entity>(new AB());
+		task.addStatement(new CurrentProductGeneration("in", source));
 		task.setConsumer(consumerExpr);
 		checkIteration(task, consumer);
 		consumer.clear();
@@ -80,7 +83,7 @@ public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
     // test helpers ----------------------------------------------------------------------------------------------------
 
 	private void checkIteration(Task task, final ListConsumer consumer) {
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		// check life cycle
 	    executeStepAndAssertAvailability(task, context);
 	    executeStepAndAssertAvailability(task, context);

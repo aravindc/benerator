@@ -23,7 +23,7 @@ package org.databene.benerator.engine.expression;
 
 import static org.junit.Assert.*;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.Context;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class ScriptableExpressionTest {
 
 	@Before
 	public void setUpContext() {
-		this.context = new BeneratorContext();
+		this.context = new DefaultBeneratorContext();
 		this.context.set("user", "myself");
 	}
 	

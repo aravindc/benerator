@@ -31,7 +31,6 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
@@ -54,7 +53,7 @@ public class IteratingGeneratorTest extends GeneratorTest {
         HeavyweightIterableAdapter<Integer> iterable = new HeavyweightIterableAdapter<Integer>(Arrays.asList(1, 2));
 		TypedIterableProxy<Integer> hwIterable = new TypedIterableProxy<Integer>(Integer.class, iterable);
 		Generator<Integer> gen = new IteratingGenerator<Integer>(hwIterable);
-		gen.init(new BeneratorContext());
+		gen.init(context);
 		expectGeneratedSequence(gen, 1, 2).withCeasedAvailability();
 	}
     
@@ -62,7 +61,7 @@ public class IteratingGeneratorTest extends GeneratorTest {
     public void testEmptyIterator() {
     	EmptyIterable emptySource = new EmptyIterable();
     	Generator<Integer> generator = new IteratingGenerator<Integer>(emptySource);
-    	generator.init(new BeneratorContext());
+    	generator.init(context);
     	assertUnavailable(generator);
     	assertTrue(emptySource.latestInstance.closed);
     	IOUtil.close(generator);

@@ -71,7 +71,7 @@ public class BeneratorRootStatementTest extends BeneratorIntegrationTest {
 		// given the default settings
 		String xml = "<setup/>";
 		// when executing the RootStatement
-		BeneratorContext context = parseAndExecute(xml);
+		BeneratorContext context = parseAndExecuteRoot(xml);
 		// then the default imports should have been applied, 
 		// thus org.databene.benerator.consumer.ConsoleExporter can be found
 	    context.forName("ConsoleExporter");
@@ -82,7 +82,7 @@ public class BeneratorRootStatementTest extends BeneratorIntegrationTest {
 		// given that defaults import is requested explicitly
 		String xml = "<setup defaultImports='true'/>";
 		// when executing the RootStatement
-		BeneratorContext context = parseAndExecute(xml);
+		BeneratorContext context = parseAndExecuteRoot(xml);
 		// then org.databene.benerator.consumer.ConsoleExporter can be found
 	    context.forName("ConsoleExporter");
 	}
@@ -92,7 +92,7 @@ public class BeneratorRootStatementTest extends BeneratorIntegrationTest {
 		// given that defaults import is disabled
 		String xml = "<setup defaultImports='false'/>";
 		// when executing the RootStatement
-		BeneratorContext context = parseAndExecute(xml);
+		BeneratorContext context = parseAndExecuteRoot(xml);
 		// then the default imports have not been applied, 
 		// and org.databene.benerator.consumer.ConsoleExporter cannot be found
 	    context.forName("ConsoleExporter");
@@ -101,10 +101,10 @@ public class BeneratorRootStatementTest extends BeneratorIntegrationTest {
 	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void check(String uri) throws IOException {
-		DescriptorRunner runner = new DescriptorRunner(uri);
+		DescriptorRunner runner = new DescriptorRunner(uri, context);
 	    BeneratorRootStatement statement = runner.parseDescriptorFile();
         Generator<?> generator = statement.getGenerator("Person", runner.getContext());
-		assertEquals(Entity.class, generator.getGeneratedType());
+		assertEquals(Object.class, generator.getGeneratedType());
         assertNotNull(generator);
         generator.init(context);
         for (int i = 0; i < 3; i++)

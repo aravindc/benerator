@@ -40,7 +40,7 @@ public class BeneratorContextTest {
 
 	@Test
 	public void testDefaults() {
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		assertEquals(".", context.getContextUri());
 		assertEquals(Country.getDefault().getIsoCode(), context.getDefaultDataset());
 		assertEquals("fatal", context.getDefaultErrorHandler());
@@ -55,7 +55,7 @@ public class BeneratorContextTest {
 	
 	@Test
 	public void testSysPropAccess() {
-		BeneratorContext context = new BeneratorContext();
+		BeneratorContext context = new DefaultBeneratorContext();
 		assertEquals(System.getProperty("user.name"), context.get("user.name"));
 	}
 	

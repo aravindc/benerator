@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
 import org.junit.Test;
@@ -65,7 +64,7 @@ public class DayGeneratorTest extends GeneratorClassTest {
 		Date min = TimeUtil.date(2009, 2, 5);
 		Date max = TimeUtil.date(2009, 4, 8);
 		DayGenerator generator = new DayGenerator(min, max, SequenceManager.RANDOM_SEQUENCE, false);
-		generator.init(new BeneratorContext());
+		generator.init(context);
 		for (int i = 0; i < 1000; i++) {
 			Date day = generator.generate();
 			assertNotNull(day);
@@ -85,7 +84,7 @@ public class DayGeneratorTest extends GeneratorClassTest {
 		Date min = TimeUtil.date(2009, 2, 5);
 		Date max = TimeUtil.date(2009, 2, 5);
 		DayGenerator generator = new DayGenerator(min, max, SequenceManager.RANDOM_SEQUENCE, false);
-		generator.init(new BeneratorContext());
+		generator.init(context);
 		for (int i = 0; i < 1000; i++) {
 			Date day = generator.generate();
 			assertNotNull(day);

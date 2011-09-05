@@ -20,8 +20,6 @@
  */
 
 package org.databene.benerator.engine.statement;
-
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.storage.AbstractStorageSystem;
 import org.databene.commons.Context;
 import org.databene.commons.Encodings;
@@ -42,7 +40,7 @@ import static org.junit.Assert.*;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class EvaluateStatementTest {
+public class EvaluateStatementTest extends AbstractStatementTest {
 
 	@Test
 	public void testInlineJavaScript() {
@@ -59,7 +57,6 @@ public class EvaluateStatementTest {
 			constant(false),
 			null,
 			null);
-		BeneratorContext context = new BeneratorContext();
 		stmt.execute(context);
 		assertEquals("Hello World", context.get("message"));
 	}
@@ -79,7 +76,6 @@ public class EvaluateStatementTest {
 			constant(false),
 			null,
 			null);
-		BeneratorContext context = new BeneratorContext();
 		stmt.execute(context);
 		assertEquals("Hello World", context.get("message"));
 	}
@@ -102,7 +98,6 @@ public class EvaluateStatementTest {
 				constant(false),
 				null,
 				null);
-			BeneratorContext context = new BeneratorContext();
 			stmt.execute(context);
 			assertEquals(42, context.get("result"));
 	}
@@ -124,7 +119,6 @@ public class EvaluateStatementTest {
 				constant(false),
 				null,
 				null);
-			BeneratorContext context = new BeneratorContext();
 			stmt.execute(context);
 			assertEquals("HelloHi", stSys.execInfo);
 	}

@@ -31,7 +31,6 @@ import static junit.framework.Assert.*;
 
 import org.databene.benerator.StorageSystem;
 import org.databene.benerator.composite.ComponentBuilder;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.CollectionUtil;
@@ -58,7 +57,7 @@ import org.databene.webdecs.util.DataSourceProxy;
  */
 public class ReferenceComponentBuilderFactoryTest extends GeneratorTest { 
 	
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("rawtypes")
     @Test
 	public void testScript() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
@@ -66,22 +65,24 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		ref.getTypeDescriptor().setScript("8");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity, context);
+		setCurrentProduct(entity);
+		generator.execute(context);
 		assertEquals(8, entity.get("ref"));
 	}
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("rawtypes")
     @Test
 	public void testNullQuotaOne() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
 			.withNullQuota(1).withCount(1);
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity, context);
+		setCurrentProduct(entity);
+		generator.execute(context);
 		assertEquals(null, entity.get("ref"));
 	}
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("rawtypes")
     @Test
 	public void testNullable() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
@@ -89,11 +90,12 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		ref.setNullable(true);
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity, context);
+		setCurrentProduct(entity);
+		generator.execute(context);
 		assertEquals(null, entity.get("ref"));
 	}
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("rawtypes")
     @Test
 	public void testGenerator() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
@@ -101,11 +103,12 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		ref.getTypeDescriptor().setGenerator("new " + ConstantGenerator.class.getName() + "(42)");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity, context);
+		setCurrentProduct(entity);
+		generator.execute(context);
 		assertEquals(42, entity.get("ref"));
 	}
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("rawtypes")
     @Test
 	public void testConstant() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
@@ -113,11 +116,12 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		((SimpleTypeDescriptor) ref.getTypeDescriptor()).setConstant("3");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity, context);
+		setCurrentProduct(entity);
+		generator.execute(context);
 		assertEquals(3, entity.get("ref"));
 	}
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("rawtypes")
     @Test
 	public void testSample() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
@@ -125,7 +129,8 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		((SimpleTypeDescriptor) ref.getTypeDescriptor()).setValues("6");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity, context);
+		setCurrentProduct(entity);
+		generator.execute(context);
 		assertEquals("6", entity.get("ref"));
 	}
 
@@ -144,26 +149,28 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 	}
 
 	@Test
-	@SuppressWarnings({ "null", "unchecked", "rawtypes" })
+	@SuppressWarnings({ "null", "rawtypes" })
     public void testSingleRef() {
 		ReferenceDescriptor ref = createTargetTypeDescriptor("ref", "Person", "Storage");
 		ref.setCount(new ConstantExpression<Long>(1L));
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		assertTrue(generator != null);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity, context);
+		setCurrentProduct(entity);
+		generator.execute(context);
 		assertTrue("Alice".equals(entity.get("ref")) || "Bob".equals(entity.get("ref")));
 	}
 
 	@Test
-	@SuppressWarnings({ "null", "unchecked", "rawtypes" })
+	@SuppressWarnings({ "null", "rawtypes" })
     public void testMultiRef() {
 		ReferenceDescriptor ref = createTargetTypeDescriptor("ref", "Person", "Storage");
 		ref.setCount(new ConstantExpression<Long>(2L));
 		ComponentBuilder builder = createAndInitBuilder(ref);
 		assertTrue(builder != null);
 		Entity entity = new Entity("Person");
-		builder.buildComponentFor(entity, context);
+		setCurrentProduct(entity);
+		builder.execute(context);
 		String[] product = (String[]) entity.get("ref");
 		assertEquals(2, product.length);
 		for (String element : product)
@@ -181,12 +188,11 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 	}
 
     private ComponentBuilder<?> createAndInitBuilder(ReferenceDescriptor ref) {
-		BeneratorContext context = new BeneratorContext();
 		StorageSystemMock storageSystem = new StorageSystemMock();
 		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);
 		context.set(storageSystem.getId(), storageSystem);
 		ComponentBuilder<?> builder = ComponentBuilderFactory.createComponentBuilder(ref, Uniqueness.NONE, context);
-		builder.init(context);
+		builder.prepare(context);
 		return builder;
 	}
 	
