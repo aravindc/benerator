@@ -36,7 +36,6 @@ import org.databene.benerator.consumer.FileExporter;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.commons.IOUtil;
 import org.databene.commons.RoundedNumberFormat;
-import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.DataModel;
@@ -77,10 +76,11 @@ public class DescriptorRunner implements ResourceManager {
 	
 	// constructor -----------------------------------------------------------------------------------------------------
 	
+	/* This constructor easily causes conflicts between two accidentally different contexts 
 	public DescriptorRunner(String uri) {
 		this(uri, new BeneratorContext(SystemInfo.getCurrentDir()));
 	}
-	
+	*/
 	public DescriptorRunner(String uri, BeneratorContext context) {
 		this.uri = uri;
 		this.context = context;

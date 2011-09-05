@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,32 +19,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.composite;
-
-import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.Expression;
+package org.databene.benerator.engine;
 
 /**
- * {@link ComponentBuilder} which executes only if a condition expression evaluates to 'true'.<br/><br/>
- * Created: 11.10.2010 11:15:14
- * @since 0.6.4
+ * Common inerface of classes with a prepare method.<br/><br/>
+ * Created: 02.09.2011 10:27:09
+ * @since 0.7.0
  * @author Volker Bergmann
  */
-public class ConditionalComponentBuilder<E> extends ComponentBuilderProxy<E> {
-
-	Expression<Boolean> condition;
-	
-	public ConditionalComponentBuilder(ComponentBuilder<E> source, Expression<Boolean> condition) {
-	    super(source);
-	    this.condition = condition;
-    }
-
-	@Override
-    public boolean execute(BeneratorContext context) {
-		if (condition.evaluate(context))
-			return source.execute(context);
-		else
-			return true;
-	}
-	
+public interface Preparable {
+	void prepare(BeneratorContext context);
 }

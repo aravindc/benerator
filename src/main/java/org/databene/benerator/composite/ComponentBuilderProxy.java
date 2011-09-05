@@ -22,6 +22,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * Proxy class for a {@link ComponentBuilder}.<br/><br/>
@@ -46,13 +47,13 @@ public class ComponentBuilderProxy<E> implements ComponentBuilder<E> {
 	    return source.isThreadSafe();
     }
 
-	public void init(GeneratorContext context) {
+	public void prepare(BeneratorContext context) {
 		this.context = context;
-	    source.init(context);
+	    source.prepare(context);
     }
 
-	public boolean buildComponentFor(E target, GeneratorContext context) {
-	    return source.buildComponentFor(target, null);
+	public boolean execute(BeneratorContext context) {
+	    return source.execute(context);
     }
 
 	public void reset() {

@@ -23,7 +23,8 @@ package org.databene.benerator.composite;
 
 import java.io.Closeable;
 
-import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.Preparable;
+import org.databene.benerator.engine.Statement;
 import org.databene.commons.Resettable;
 import org.databene.commons.ThreadAware;
 
@@ -33,8 +34,6 @@ import org.databene.commons.ThreadAware;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public interface GeneratorComponent<E> extends ThreadAware, Resettable, Closeable {
-	void init(GeneratorContext context);
-	boolean buildComponentFor(E target, GeneratorContext context);
+public interface GeneratorComponent<E> extends Statement, Preparable, ThreadAware, Resettable, Closeable {
 	void close();
 }

@@ -55,17 +55,18 @@ public class BeneratorRootStatement extends SequentialStatement {
 	}
 
     @Override
-    public void execute(BeneratorContext context) {
+    public boolean execute(BeneratorContext context) {
     	mapAttributesTo(context);
     	if (context.isDefaultImports())
     		context.importDefaults();
     	super.execute(context);
+    	return true;
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public Generator<?> getGenerator(String name, BeneratorContext context) {
     	GeneratorStatement statement = getGeneratorStatement(name, context);
-    	Generator<?> generator = statement.getTarget().getGenerator();
+    	Generator<?> generator = new TaskBasedGenerator(statement.getTarget());
 		return new NShotGeneratorProxy(generator, statement.generateCount(context));
 	}
 
@@ -124,7 +125,7 @@ public class BeneratorRootStatement extends SequentialStatement {
             } else if (statement instanceof IncludeStatement) {
                 String uri = ((IncludeStatement) statement).getUri().evaluate(context);
                 if (uri != null && uri.toLowerCase().endsWith(".xml")) {
-	                DescriptorRunner descriptorRunner = new DescriptorRunner(context.resolveRelativeUri(uri));
+	                DescriptorRunner descriptorRunner = new DescriptorRunner(context.resolveRelativeUri(uri), context);
 	            	try {
 		                BeneratorRootStatement rootStatement = descriptorRunner.parseDescriptorFile();
 		                result = rootStatement.getGeneratorStatement(name, context);

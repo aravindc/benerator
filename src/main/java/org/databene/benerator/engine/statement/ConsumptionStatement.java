@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,32 +19,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.composite;
+package org.databene.benerator.engine.statement;
 
+import org.databene.benerator.Consumer;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.Expression;
+import org.databene.benerator.engine.Statement;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * {@link ComponentBuilder} which executes only if a condition expression evaluates to 'true'.<br/><br/>
- * Created: 11.10.2010 11:15:14
- * @since 0.6.4
+ * {@link Statement} that consumes the current entity of a {@link GeneratorContext} using a {@link Consumer}.<br/><br/>
+ * Created: 01.09.2011 15:51:27
+ * @since 0.7.0
  * @author Volker Bergmann
  */
-public class ConditionalComponentBuilder<E> extends ComponentBuilderProxy<E> {
-
-	Expression<Boolean> condition;
+public class ConsumptionStatement implements Statement {
 	
-	public ConditionalComponentBuilder(ComponentBuilder<E> source, Expression<Boolean> condition) {
-	    super(source);
-	    this.condition = condition;
-    }
-
-	@Override
-    public boolean execute(BeneratorContext context) {
-		if (condition.evaluate(context))
-			return source.execute(context);
-		else
-			return true;
+	private Consumer consumer;
+	private boolean start;
+	private boolean finish;
+	
+	public ConsumptionStatement(Consumer consumer, boolean start, boolean finish) {
+		this.consumer = consumer;
+		this.start = start;
+		this.finish = finish;
 	}
-	
+
+	public boolean execute(BeneratorContext context) {
+		if (consumer != null) {
+			ProductWrapper<?> product = context.getCurrentProduct();
+			if (start)
+				consumer.startConsumption(product);
+			if (finish)
+				consumer.finishConsumption(product);
+		}
+		return true;
+	}
+
 }

@@ -19,67 +19,72 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.composite;
+package org.databene.benerator.engine;
+
+import java.io.Closeable;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.util.WrapperProvider;
+import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.Resettable;
 
 /**
- * Abstract implementation of the GeneratorComponent interface which manages a source Generator
- * and a Context reference.<br/><br/>
- * Created: 31.08.2011 12:56:22
+ * Uses a {@link Generator} to create the currently processed object.<br/><br/>
+ * Created: 01.09.2011 19:03:38
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public abstract class AbstractGeneratorComponent<E> implements GeneratorComponent<E> {
+public class CurrentProductGeneration implements Statement, Preparable, Resettable, Closeable {
+	
+	private String instanceName;
+	private Generator<Object> source;
+	private WrapperProvider<Object> provider;
+	private boolean initialized;
 
-	protected Generator<?> source;
-	protected GeneratorContext context;
-
-	public AbstractGeneratorComponent(Generator<?> source) {
-		this.source = source;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public CurrentProductGeneration(String instanceName, Generator<?> source) {
+		this.instanceName = instanceName;
+		this.source = (Generator) source;
+		this.provider = new WrapperProvider<Object>();
+		this.initialized = false;
 	}
-
-    public Generator<?> getSource() {
-    	return source;
-    }
-    
-    // GeneratorComponent interface implementation ---------------------------------------------------------------------
 
 	public void prepare(BeneratorContext context) {
-		if (source.wasInitialized())
+		if (initialized)
 			reset();
-		else
+		else {
 			init(context);
+			initialized = true; 
+		}
 	}
 	
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
 		source.init(context);
-		this.context = context;
+	}
+
+	public boolean execute(BeneratorContext context) {
+		ProductWrapper<Object> wrapper = source.generate(provider.get());
+		context.setCurrentProduct(wrapper);
+		if (instanceName != null)
+			if (wrapper != null)
+				context.set(instanceName, wrapper.unwrap());
+			else
+				context.remove(instanceName);
+		return (wrapper != null);
 	}
 
 	public void reset() {
 		source.reset();
 	}
-	
+
 	public void close() {
-    	source.close();
+		source.close();
 	}
-
-	public boolean isParallelizable() {
-	    return source.isParallelizable();
-    }
-
-	public boolean isThreadSafe() {
-	    return source.isThreadSafe();
-    }
-	
-	// java.lang.Object overrides --------------------------------------------------------------------------------------
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + '{' + source + '}';
+		return instanceName + ':' + source;
 	}
 
 }

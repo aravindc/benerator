@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.composite;
 
-import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ThreadUtil;
 
 /**
@@ -41,8 +41,8 @@ public class AlternativeComponentBuilder<E> extends MultiComponentBuilder<E> {
 		super(alternatives);
 	}
 
-	public boolean buildComponentFor(E target, GeneratorContext context) {
-		return buildRandomComponentFor(target);
+	public boolean execute(BeneratorContext context) {
+		return buildRandomComponent(context);
 	}
 
 	public boolean isParallelizable() {

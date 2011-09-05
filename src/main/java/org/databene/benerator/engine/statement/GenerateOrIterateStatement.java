@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.wrapper.ProductWrapper;
@@ -65,10 +64,10 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	protected boolean isSubCreator;
 	protected boolean initialized;
 	
-	public GenerateOrIterateStatement(GeneratorTask task, Generator<Long> countGenerator, Expression<Long> minCount, 
+	public GenerateOrIterateStatement(Generator<Long> countGenerator, Expression<Long> minCount, 
 			Expression<Long> pageSize, Expression<PageListener> pageListenerEx, Expression<Integer> threads, 
 			Expression<ErrorHandler> errorHandler, boolean infoLog, boolean isSubCreator) {
-	    this.task = task;
+	    this.task = null;
 	    this.countGenerator = countGenerator;
 	    this.minCount = minCount;
 	    this.pageSize = pageSize;
@@ -105,7 +104,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
     	return true;
     }
 
-	public void prepare(GeneratorContext context) {
+	public void prepare(BeneratorContext context) {
 	    task.prepare(context);
 	    if (!countGenerator.wasInitialized()) {
 	    	countGenerator.init(context);
@@ -121,7 +120,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    	IOUtil.close((Closeable) pageListener);
     }
 
-	public Long generateCount(GeneratorContext context) {
+	public Long generateCount(BeneratorContext context) {
     	if (!initialized) {
     		countGenerator.init(context);
     		initialized = true;
@@ -153,7 +152,6 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	        if (pageListener != null)
 	        	listeners.add(pageListener);
         }
-		//listeners.add(this);
 	    return listeners;
     }
 

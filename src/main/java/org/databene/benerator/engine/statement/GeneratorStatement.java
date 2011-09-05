@@ -23,8 +23,9 @@ package org.databene.benerator.engine.statement;
 
 import java.io.Closeable;
 
-import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
+import org.databene.benerator.engine.Preparable;
 import org.databene.benerator.engine.Statement;
 
 /**
@@ -33,9 +34,8 @@ import org.databene.benerator.engine.Statement;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public interface GeneratorStatement extends Statement, Closeable {
+public interface GeneratorStatement extends Statement, Preparable, Closeable {
 	GeneratorTask getTarget();
-	Long generateCount(GeneratorContext context);
-	void prepare(GeneratorContext context);
+	Long generateCount(BeneratorContext context);
 	void close();
 }

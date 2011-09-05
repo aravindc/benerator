@@ -39,7 +39,7 @@ public class DescriptorBasedGenerator extends GeneratorProxy<Object> {
     public DescriptorBasedGenerator(String uri, String generatorName, BeneratorContext context) throws IOException {
 		super(Object.class);
 		ConverterManager.getInstance().setContext(context);
-		DescriptorRunner descriptorRunner = new DescriptorRunner(uri);
+		DescriptorRunner descriptorRunner = new DescriptorRunner(uri, context);
 		BeneratorRootStatement rootStatement = descriptorRunner.parseDescriptorFile();
 		super.setSource((Generator) rootStatement.getGenerator(generatorName, context));
 	}

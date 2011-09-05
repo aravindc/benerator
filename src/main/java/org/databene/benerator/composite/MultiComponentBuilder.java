@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.composite;
 
 import java.util.List;
 
-import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.CollectionUtil;
@@ -51,9 +51,9 @@ public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
 	
 	// Generator interface ---------------------------------------------------------------------------------------------
 
-	public void init(GeneratorContext context) {
+	public void prepare(BeneratorContext context) {
 		for (ComponentBuilder<E> builder : builders)
-			builder.init(context);
+			builder.prepare(context);
 	}
 
 	public void reset() {
@@ -68,13 +68,13 @@ public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
 		this.availableBuilders.clear();
 	}
 	
-	public boolean buildRandomComponentFor(E target) {
+	public boolean buildRandomComponent(BeneratorContext context) {
 		if (availableBuilders.size() == 0)
 			return false;
 		boolean success;
 		do {
 			int builderIndex = RandomUtil.randomIndex(availableBuilders);
-			success = availableBuilders.get(builderIndex).buildComponentFor(target, null);
+			success = availableBuilders.get(builderIndex).execute(context);
 			if (!success)
 				availableBuilders.remove(builderIndex);
 		} while (!success && availableBuilders.size() > 0);

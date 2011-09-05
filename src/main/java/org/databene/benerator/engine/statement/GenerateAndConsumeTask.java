@@ -32,23 +32,24 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.databene.benerator.Consumer;
-import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorMonitor;
+import org.databene.benerator.engine.CurrentProductGeneration;
 import org.databene.benerator.engine.GeneratorTask;
+import org.databene.benerator.engine.Preparable;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.Statement;
-import org.databene.benerator.util.WrapperProvider;
-import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.commons.Assert;
+import org.databene.benerator.engine.StatementUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
 import org.databene.commons.MessageHolder;
+import org.databene.commons.Resettable;
 import org.databene.commons.expression.ExpressionUtil;
+import org.databene.task.PageListener;
 import org.databene.task.TaskResult;
 
 /**
@@ -56,32 +57,37 @@ import org.databene.task.TaskResult;
  * Created: 01.02.2008 14:39:11
  * @author Volker Bergmann
  */
-public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, MessageHolder {
+public class GenerateAndConsumeTask implements GeneratorTask, PageListener, ResourceManager, MessageHolder {
 
 	private String taskName;
-    private Generator<?> generator;
-    private Expression<Consumer> consumerExpr;
-    private List<Statement> subStatements;
-    private ResourceManager resourceManager;
-    private volatile AtomicBoolean generatorInitialized;
     private BeneratorContext context;
-    private WrapperProvider<?> productWrapperProvider = new WrapperProvider<Object>();
+    private ResourceManager resourceManager;
+    
+    private List<Statement> statements = new ArrayList<Statement>();
+    private Expression<Consumer> consumerExpr;
 
+    private volatile AtomicBoolean initialized;
     private Consumer consumer;
     
-    public GenerateAndConsumeTask(String taskName, Generator<?> generator, 
-    		BeneratorContext context) {
-        this.resourceManager = new ResourceManagerSupport();
-    	this.subStatements = new ArrayList<Statement>();
-        this.generatorInitialized = new AtomicBoolean(false);
+    public GenerateAndConsumeTask(String taskName, BeneratorContext context) {
     	this.taskName = taskName;
-    	Assert.notNull(generator, "generator");
-        this.generator = generator;
         this.context = context;
+        this.resourceManager = new ResourceManagerSupport();
+        this.initialized = new AtomicBoolean(false);
+    	this.statements = new ArrayList<Statement>();
     }
 
     // interface -------------------------------------------------------------------------------------------------------
 
+    public void addStatement(Statement statement) {
+    	this.statements.add(statement);
+    }
+    
+    public void setStatements(List<Statement> statements) {
+    	this.statements.clear();
+    	this.statements.addAll(statements);
+    }
+    
     public ResourceManager getResourceManager() {
 		return resourceManager;
 	}
@@ -90,23 +96,60 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
         this.consumerExpr = consumerExpr;
 	}
     
-    public void addSubStatement(Statement statement) {
-    	this.subStatements.add(statement);
-    }
-    
-    public Generator<?> getGenerator() {
-    	return generator;
-    }
-
-	public void flushConsumer() {
-		if (consumer != null)
-			consumer.flush();
-    }
-
     public Consumer getConsumer() {
     	if (consumer == null)
     		consumer = ExpressionUtil.evaluate(consumerExpr, context);
     	return consumer;
+    }
+
+	public void init(BeneratorContext context) {
+	    synchronized (initialized) {
+	    	if (!initialized.get()) {
+	    		configureConsumptionStart();
+	    		configureConsumptionEnd();
+	    		initialized.set(true);
+	        	prepareStatements(context);
+	    	}
+	    }
+    }
+
+    private void configureConsumptionStart() {
+    	// TODO use converter
+    	
+		// find last sub member generation...
+		int lastMemberIndex = - 1;
+		for (int i = statements.size() - 1; i >= 0; i--) {
+			Statement statement = statements.get(i);
+			if (statement instanceof ComponentBuilder || statement instanceof CurrentProductGeneration) {
+				lastMemberIndex = i;
+				break;
+			}
+		}
+		// ...and insert consumption start statement immediately after that one
+		ConsumptionStatement consumption = new ConsumptionStatement(getConsumer(), true, false);
+		statements.add(lastMemberIndex + 1, consumption);
+	}
+
+	protected void configureConsumptionEnd() {
+		// find last sub generation statement...
+		int lastSubGenIndex = statements.size() - 1;
+		for (int i = statements.size() - 1; i >= 0; i--) {
+			Statement statement = statements.get(i);
+			if (statement instanceof GenerateOrIterateStatement) {
+				lastSubGenIndex = i;
+				break;
+			}
+		}
+		// ...and insert consumption finish statement immediately after that one
+		ConsumptionStatement consumption = new ConsumptionStatement(getConsumer(), false, true);
+		statements.add(lastSubGenIndex + 1, consumption);
+	}
+
+	public void prepare(BeneratorContext context) {
+    	if (!initialized.get())
+    		init(context);
+    	else
+    		reset();
     }
 
     // Task interface implementation -----------------------------------------------------------------------------------
@@ -123,53 +166,61 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
         return false;
     }
     
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
-    	if (!generatorInitialized.get())
-    		initGenerator(context);
+    	if (!initialized.get())
+    		init(context);
     	try {
-    		// generate data object
-    		ProductWrapper wrapper = productWrapperProvider.get();
-	        wrapper = generator.generate(wrapper);
-	        if (wrapper == null) {
-		        Thread.yield();
-	        	return TaskResult.UNAVAILABLE;
-	        }
-	        Object data = wrapper.unwrap();
-	        BeneratorMonitor.INSTANCE.countGenerations(1);
-	        // consume data object
-			Consumer consumer = getConsumer();
-        	if (consumer != null)
-        		consumer.startConsumption(wrapper.wrap(data));
-        	// generate and consume sub data objects
-        	runSubStatements(context);
-        	if (consumer != null)
-        		consumer.finishConsumption(wrapper.wrap(data));
+    		boolean success = true;
+        	for (Statement statement : statements) {
+        		// get root statement
+        		Statement rootStatement = StatementUtil.getRootStatement(statement, context);
+        		if (rootStatement instanceof GenerateOrIterateStatement)
+        			((GenerateOrIterateStatement) rootStatement).prepare(context);
+				success &= statement.execute(context);
+				// TODO use validator
+				if (!success)
+					break;
+			}
+        	if (success)
+        		BeneratorMonitor.INSTANCE.countGenerations(1);
 	        Thread.yield();
-	        return TaskResult.EXECUTING;
+	        return (success ? TaskResult.EXECUTING : TaskResult.UNAVAILABLE);
     	} catch (Exception e) {
 			errorHandler.handleError("Error in execution of task " + getTaskName(), e);
     		return TaskResult.EXECUTING; // stay available if the ErrorHandler has not canceled execution
     	}
     }
-
-    public void prepare(GeneratorContext context) {
-    	if (!generator.wasInitialized())
-    		initGenerator(context);
-    	else
-    		generator.reset();
+    
+    public void reset() {
+        for (Statement statement : statements) {
+			statement = StatementUtil.getRootStatement(statement, context);
+		    if (statement instanceof Resettable)
+		    	((Resettable) statement).reset();
+		}
     }
 
-    public void pageFinished() {
-        if (consumer != null)
-            consumer.flush();
+    public void close() {
+        // close sub statements
+        for (Statement statement : statements) {
+			statement = StatementUtil.getRootStatement(statement, context);
+		    if (statement instanceof Closeable)
+		    	IOUtil.close((Closeable) statement);
+		}
+        // close resource manager
+        resourceManager.close();
     }
     
-    public void close() {
-    	generator.close();
-        resourceManager.close();
-        closeSubStatements();
+    
+    // PageListener interface ------------------------------------------------------------------------------------------
+    
+	public void pageStarting() {
+		// nothing special to do on page start
+	}
+    
+    public void pageFinished() {
+    	IOUtil.flush(consumer);
     }
+    
 
     // ResourceManager interface ---------------------------------------------------------------------------------------
     
@@ -180,7 +231,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 	// MessageHolder interface -----------------------------------------------------------------------------------------
 	
 	public String getMessage() {
-	    return (generator instanceof MessageHolder ? ((MessageHolder) generator).getMessage() : null);
+	    return null; // TODO message?
     }
 	
 	// java.lang.Object overrides --------------------------------------------------------------------------------------
@@ -192,41 +243,13 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-	private void initGenerator(GeneratorContext context) {
-	    synchronized (generatorInitialized) {
-	    	if (!generatorInitialized.get()) {
-	    		generator.init(context);
-	    		generatorInitialized.set(true);
-	    	}
-	    }
-    }
-    
-    private void runSubStatements(BeneratorContext context) {
-	    for (Statement subStatement : subStatements)
-	    	runSubStatement(subStatement, context);
-    }
-    
-    protected void runSubStatement(Statement subStatement, BeneratorContext context) {
-    	while (subStatement instanceof StatementProxy) 
-    		subStatement = ((StatementProxy) subStatement).getRealStatement(context);
-        if (subStatement instanceof GeneratorStatement) {
-            GeneratorStatement generatorStatement = (GeneratorStatement) subStatement;
-			generatorStatement.prepare(context);
-			generatorStatement.execute(context);
-        } else
-        	subStatement.execute(context);
-    }
-    
-    private void closeSubStatements() {
-	    for (Statement subStatement : subStatements)
-	    	closeSubStatement(subStatement);
-    }
-    
-    protected void closeSubStatement(Statement subStatement) {
-    	while (subStatement instanceof StatementProxy)
-    		subStatement = ((StatementProxy) subStatement).getRealStatement(context);
-        if (subStatement instanceof Closeable)
-        	IOUtil.close((Closeable) subStatement);
-    }
+	private void prepareStatements(BeneratorContext context2) {
+    	for (Statement statement : statements) {
+    		// initialize statements
+			statement = StatementUtil.getRootStatement(statement, context);
+			if (statement instanceof Preparable)
+			    ((Preparable) statement).prepare(context);
+		}
+	}
 
 }

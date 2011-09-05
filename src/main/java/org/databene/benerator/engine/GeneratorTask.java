@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,9 +21,10 @@
 
 package org.databene.benerator.engine;
 
+import java.util.List;
+
 import org.databene.benerator.Consumer;
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
 import org.databene.task.Task;
 
 /**
@@ -34,7 +35,7 @@ import org.databene.task.Task;
  * @author Volker Bergmann
  */
 public interface GeneratorTask extends Task {
-	Generator<?> getGenerator();
-	void flushConsumer();
-	void prepare(GeneratorContext context);
+	void addStatement(Statement statement);
+	void setStatements(List<Statement> statements);
+	void prepare(BeneratorContext context);
 }

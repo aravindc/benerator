@@ -27,6 +27,8 @@ import java.util.List;
 
 import org.databene.BeneratorConstants;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.MessageHolder;
 import org.databene.commons.Resettable;
 import org.databene.commons.ThreadAware;
@@ -55,15 +57,17 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
         this.components = (components != null ? components : new ArrayList<GeneratorComponent<E>>());
 	}
 	
-    public void init(GeneratorContext context) {
+    public void init(BeneratorContext context) {
     	for (GeneratorComponent<?> component : components)
-    		component.init(context);
+    		component.prepare(context);
 	}
 
-    public boolean apply(E target, GeneratorContext context) {
+    public boolean apply(E target, BeneratorContext context) {
+    	BeneratorContext subContext = context.createSubContext();
+    	subContext.setCurrentProduct(new ProductWrapper<E>(target));
     	for (GeneratorComponent<E> component : components) {
             try {
-                if (!component.buildComponentFor(target, context)) {
+                if (!component.execute(subContext)) {
                 	message = "Component generator for '" + instanceName + 
                 		"' is not available any longer: " + component;
                     STATE_LOGGER.debug(message);
@@ -75,6 +79,7 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
             }
     	}
     	LOGGER.debug("Generated {}", target);
+    	subContext.close();
     	return true;
 	}
 

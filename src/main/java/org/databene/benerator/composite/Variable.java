@@ -22,7 +22,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
@@ -35,13 +35,13 @@ public class Variable<E> extends AbstractGeneratorComponent<E> {
 	
 	private String name;
 	
-	public Variable(String name, Generator<?> generator) {
-		super(generator);
+	public Variable(String name, Generator<?> source) {
+		super(source);
 		this.name = name;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public boolean buildComponentFor(Object target, GeneratorContext context) {
+	public boolean execute(BeneratorContext context) {
 		ProductWrapper<?> productWrapper = source.generate(new ProductWrapper());
 		if (productWrapper == null) {
 			context.remove(name);
@@ -61,5 +61,5 @@ public class Variable<E> extends AbstractGeneratorComponent<E> {
 	public String toString() {
 		return getClass().getSimpleName() + "[" + name + ":" + source + "]";
 	}
-	
+
 }

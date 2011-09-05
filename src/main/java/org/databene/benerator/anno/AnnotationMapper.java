@@ -47,6 +47,7 @@ import javax.validation.constraints.Size;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.DescriptorBasedGenerator;
 import org.databene.benerator.factory.ArrayGeneratorFactory;
 import org.databene.benerator.factory.CoverageGeneratorFactory;
@@ -242,7 +243,7 @@ public class AnnotationMapper {
 		mapAnnotation(source, descriptor);
 		mapParamTypes(testMethod, typeDescriptor);
 		Generator<Object[]> baseGenerator = ArrayGeneratorFactory.createArrayGenerator(
-				testMethod.getName(), false, typeDescriptor, Uniqueness.NONE, context);
+				testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
 		return baseGenerator;
 	}
 
@@ -257,7 +258,7 @@ public class AnnotationMapper {
 		if (offset != null)
 			mapAnnotation(offset, descriptor);
 		Generator generator = InstanceGeneratorFactory.createSingleInstanceGenerator(
-				descriptor, false, Uniqueness.NONE, context);
+				descriptor, Uniqueness.NONE, context);
 		generator = WrapperFactory.applyConverter(generator, new Entity2JavaConverter());
 		generator.init(context);
 		return generator;
@@ -271,7 +272,7 @@ public class AnnotationMapper {
 		mapAnnotation(annotation, descriptor);
 		mapParamTypes(testMethod, typeDescriptor);
 		return ArrayGeneratorFactory.createArrayGenerator(
-				testMethod.getName(), false, typeDescriptor, Uniqueness.NONE, context);
+				testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
 	}
 
 	private void mapParamTypes(Method testMethod, ArrayTypeDescriptor typeDescriptor) {
@@ -298,7 +299,7 @@ public class AnnotationMapper {
 			testName = descriptorAnno.name();
 		else
 			testName = testMethod.getName();
-		BeneratorContext beneratorContext = new BeneratorContext();
+		BeneratorContext beneratorContext = new DefaultBeneratorContext();
 		generator = (Generator) new DescriptorBasedGenerator(filename, testName, beneratorContext);
 		return generator;
 	}

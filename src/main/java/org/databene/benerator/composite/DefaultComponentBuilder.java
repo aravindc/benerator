@@ -22,7 +22,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Mutator;
@@ -45,7 +45,8 @@ public class DefaultComponentBuilder<E> extends AbstractComponentBuilder<E> {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public boolean buildComponentFor(E target, GeneratorContext context) {
+    public boolean execute(BeneratorContext context) {
+		Object target = context.getCurrentProduct().unwrap();
 		ProductWrapper<?> wrapper = source.generate((ProductWrapper) productWrapper.get());
 		if (wrapper == null)
 			return false;

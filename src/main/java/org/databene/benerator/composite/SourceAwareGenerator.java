@@ -26,6 +26,7 @@ import java.util.List;
 import org.databene.BeneratorConstants;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.MessageHolder;
@@ -45,7 +46,6 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
     private static final Logger STATE_LOGGER = LoggerFactory.getLogger(BeneratorConstants.STATE_LOGGER);
     
     private String instanceName;
-    private boolean asThis;
     private E currentInstance;
 	private String message;
 	private ComponentAndVariableSupport<E> support;
@@ -55,11 +55,10 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
      *     It may construct empty Entities or may import them (so this may overwrite imported attributes). 
      * @param instanceName instance name for the generated entities. 
 	 */
-	public SourceAwareGenerator(String instanceName, boolean asThis, Generator<E> source, 
-			List<GeneratorComponent<E>> components, GeneratorContext context) {
+	public SourceAwareGenerator(String instanceName, Generator<E> source, 
+			List<GeneratorComponent<E>> components, BeneratorContext context) {
         super(source);
         this.instanceName = instanceName;
-        this.asThis = asThis;
         this.support = new ComponentAndVariableSupport<E>(instanceName, components, context);
 		this.context = context;
 	}
@@ -68,7 +67,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 	
 	@Override
     public void init(GeneratorContext context) {
-        support.init(context);
+        support.init((BeneratorContext) context);
 		super.init(context);
 	}
 
@@ -83,9 +82,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
             currentInstance = wrapper.unwrap();
             if (instanceName != null)
             	context.set(instanceName, currentInstance);
-            if (asThis)
-            	context.set("this", currentInstance);
-    		available = support.apply(currentInstance, context);
+    		available = support.apply(currentInstance, (BeneratorContext) context);
         }
 		if (available) {
         	LOGGER.debug("Generated {}", currentInstance);
@@ -94,10 +91,8 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 			currentInstance = null;
             if (instanceName != null)
             	context.remove(instanceName);
-            if (asThis)
-            	context.remove("this");
             return null;
-        } 
+        }
 	}
 
 	@Override
