@@ -37,7 +37,6 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.IdDescriptor;
-import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
@@ -89,30 +88,21 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     		ComponentDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
         LOGGER.debug("createComponentBuilder({})", descriptor.getName());
         
-        // do I only need to generate nulls?
-        if (DescriptorUtil.isNullable(descriptor, context) && DescriptorUtil.shouldNullifyEachNullable(descriptor, context))
-            return builderFromGenerator(createNullGenerator(descriptor, context), descriptor, context);
-        
         ComponentBuilder<?> result = null;
-        result = createScriptBuilder(descriptor, context);
-        
-        // ...
-        if (result == null) {
-	        if (descriptor instanceof ArrayElementDescriptor)
-	        	result = createPartBuilder(descriptor, ownerUniqueness, context);
-	        else if (descriptor instanceof PartDescriptor) {
-	        	TypeDescriptor type = descriptor.getTypeDescriptor();
-	        	if (type instanceof AlternativeGroupDescriptor)
-	        		result = createAlternativeGroupBuilder((AlternativeGroupDescriptor) type, ownerUniqueness, context);
-				else
-					result = createPartBuilder(descriptor, ownerUniqueness, context);
-	        } else if (descriptor instanceof ReferenceDescriptor)
-	        	result = createReferenceBuilder((ReferenceDescriptor) descriptor, context);
-	        else if (descriptor instanceof IdDescriptor)
-	        	result = createIdBuilder((IdDescriptor)descriptor, ownerUniqueness, context);
-	        else 
-	            throw new ConfigurationError("Not a supported element: " + descriptor.getClass());
-        }
+        if (descriptor instanceof ArrayElementDescriptor)
+        	result = createPartBuilder(descriptor, ownerUniqueness, context);
+        else if (descriptor instanceof PartDescriptor) {
+        	TypeDescriptor type = descriptor.getTypeDescriptor();
+        	if (type instanceof AlternativeGroupDescriptor)
+        		result = createAlternativeGroupBuilder((AlternativeGroupDescriptor) type, ownerUniqueness, context);
+			else
+				result = createPartBuilder(descriptor, ownerUniqueness, context);
+        } else if (descriptor instanceof ReferenceDescriptor)
+        	result = createReferenceBuilder((ReferenceDescriptor) descriptor, context);
+        else if (descriptor instanceof IdDescriptor)
+        	result = createIdBuilder((IdDescriptor)descriptor, ownerUniqueness, context);
+        else 
+            throw new ConfigurationError("Not a supported element: " + descriptor.getClass());
         result = wrapWithCondition(descriptor, result);
         return result;
     }
@@ -129,16 +119,6 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         generator = DescriptorUtil.createConvertingGenerator(component.getTypeDescriptor(), generator, context);
 		return builderFromGenerator(generator, component, context);
 
-    }
-
-	private static Generator<?> createNullGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
-		Class<?> generatedType;
-		TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
-		if (typeDescriptor instanceof SimpleTypeDescriptor)
-			generatedType = ((SimpleTypeDescriptor) typeDescriptor).getPrimitiveType().getJavaType();
-		else
-			generatedType = String.class;
-		return context.getGeneratorFactory().createNullGenerator(generatedType); 
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -167,6 +147,10 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         Uniqueness uniqueness = (unique ? Uniqueness.SIMPLE : Uniqueness.NONE);
         SimpleTypeDescriptor typeDescriptor = (SimpleTypeDescriptor) descriptor.getTypeDescriptor();
 
+        // do I only need to generate nulls?
+        if (DescriptorUtil.isNullable(descriptor, context) && DescriptorUtil.shouldNullifyEachNullable(descriptor, context))
+            return builderFromGenerator(createNullGenerator(descriptor, context), descriptor, context);
+        
         Generator<?> generator = null;
 		generator = DescriptorUtil.getGeneratorByName(typeDescriptor, context);
         if (generator == null)
@@ -278,12 +262,13 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     		Generator<?> source, ComponentDescriptor descriptor, BeneratorContext context) {
 		boolean nullability = DescriptorUtil.isNullable(descriptor, context);
 		Double nullQuota = descriptor.getNullQuota();
-    	Generator<?> generator = context.getGeneratorFactory().applyNullSettings(source, nullability, nullQuota);
+		if (nullQuota != null && nullQuota != 0)
+			source = context.getGeneratorFactory().applyNullSettings(source, nullability, nullQuota);
     	if (descriptor instanceof ArrayElementDescriptor) {
     		int index = ((ArrayElementDescriptor) descriptor).getIndex();
-    		return new ArrayElementBuilder(index, generator);
+    		return new ArrayElementBuilder(index, source);
     	} else
-    		return new PlainEntityComponentBuilder(descriptor.getName(), generator);
+    		return new PlainEntityComponentBuilder(descriptor.getName(), source);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

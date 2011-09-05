@@ -74,11 +74,12 @@ public class InstanceGeneratorFactory {
         Uniqueness uniqueness = DescriptorUtil.getUniqueness(descriptor, context);
         if (!uniqueness.isUnique())
         	uniqueness = ownerUniqueness;
+		boolean nullifyIfUnconfigured = DescriptorUtil.isNullable(descriptor, context) && DescriptorUtil.shouldNullifyEachNullable(descriptor, context);
         TypeDescriptor type = descriptor.getTypeDescriptor();
         if (type instanceof SimpleTypeDescriptor)
 			generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-					(SimpleTypeDescriptor) type, descriptor.getName(), false, uniqueness, context);
-        else if (type instanceof ComplexTypeDescriptor)
+					(SimpleTypeDescriptor) type, descriptor.getName(), nullifyIfUnconfigured, uniqueness, context);
+		else if (type instanceof ComplexTypeDescriptor)
     		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(descriptor.getName(), 
     				(ComplexTypeDescriptor) type, uniqueness, context);
         else if (type instanceof ArrayTypeDescriptor)
@@ -88,7 +89,9 @@ public class InstanceGeneratorFactory {
         	ComponentDescriptor defaultConfig = context.getDefaultComponentConfig(descriptor.getName());
         	if (defaultConfig != null)
         		return createSingleInstanceGenerator(defaultConfig, ownerUniqueness, context);
-        	else if (descriptor instanceof IdDescriptor)
+        	if (nullifyIfUnconfigured)
+        		return createNullGenerator(descriptor, context);
+        	if (descriptor instanceof IdDescriptor)
 				generator = new IncrementGenerator(1);
         	else
         		throw new UnsupportedOperationException("Type of " + descriptor.getName() + " is not defined");
@@ -103,4 +106,15 @@ public class InstanceGeneratorFactory {
     		return createSingleInstanceGenerator(defaultConfig, ownerUniqueness, context);
     	return null;
     }
+
+	protected static Generator<?> createNullGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
+		Class<?> generatedType;
+		TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
+		if (typeDescriptor instanceof SimpleTypeDescriptor)
+			generatedType = ((SimpleTypeDescriptor) typeDescriptor).getPrimitiveType().getJavaType();
+		else
+			generatedType = String.class;
+		return context.getGeneratorFactory().createNullGenerator(generatedType); 
+    }
+
 }

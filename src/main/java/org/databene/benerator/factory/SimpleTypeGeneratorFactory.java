@@ -92,7 +92,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public static Generator<?> createSimpleTypeGenerator(
-			SimpleTypeDescriptor descriptor, String instanceName, boolean nullable, Uniqueness uniqueness,
+			SimpleTypeDescriptor descriptor, String instanceName, boolean nullifyIfNullable, Uniqueness uniqueness,
 			BeneratorContext context) {
         logger.debug("createSimpleTypeGenerator({})", descriptor.getName());
         Generator<?> generator = null;
@@ -101,7 +101,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         	generator = createSampleGenerator(descriptor, uniqueness, context);
         if (generator == null)
         	generator = createConstructiveGenerator(descriptor, uniqueness, context);
-		if (generator == null && nullable) {
+		if (generator == null && nullifyIfNullable) {
 	        Class<?> javaType = descriptor.getPrimitiveType().getJavaType();
 			generator = new ConstantGenerator(null, javaType);
 		}
