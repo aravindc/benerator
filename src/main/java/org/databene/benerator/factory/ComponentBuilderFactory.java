@@ -91,10 +91,10 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         
         // do I only need to generate nulls?
         if (DescriptorUtil.isNullable(descriptor, context) && DescriptorUtil.shouldNullifyEachNullable(descriptor, context))
-            return builderFromNullableGenerator(createNullGenerator(descriptor, context), descriptor);
+            return builderFromGenerator(createNullGenerator(descriptor, context), descriptor, context);
         
         ComponentBuilder<?> result = null;
-        result = createNullableScriptBuilder(descriptor, context);
+        result = createScriptBuilder(descriptor, context);
         
         // ...
         if (result == null) {
@@ -117,8 +117,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         return result;
     }
 
-    protected static ComponentBuilder<?> createNullableScriptBuilder(
-			ComponentDescriptor component, BeneratorContext context) {
+    protected static ComponentBuilder<?> createScriptBuilder(ComponentDescriptor component, BeneratorContext context) {
     	TypeDescriptor type = component.getTypeDescriptor();
         if (type == null)
         	return null;
@@ -128,10 +127,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         Script script = ScriptUtil.parseScriptText(scriptText);
         Generator<?> generator = new ScriptGenerator(script, context);
         generator = DescriptorUtil.createConvertingGenerator(component.getTypeDescriptor(), generator, context);
-        boolean nullability = DescriptorUtil.isNullable(component, context);
-		Double nullQuota = component.getNullQuota();
-		generator = context.getGeneratorFactory().applyNullSettings(generator, nullability, nullQuota);
-		return builderFromNullableGenerator(generator, component);
+		return builderFromGenerator(generator, component, context);
 
     }
 
@@ -283,11 +279,6 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 		boolean nullability = DescriptorUtil.isNullable(descriptor, context);
 		Double nullQuota = descriptor.getNullQuota();
     	Generator<?> generator = context.getGeneratorFactory().applyNullSettings(source, nullability, nullQuota);
-        return builderFromNullableGenerator(generator, descriptor);
-    }
-
-	private static ComponentBuilder<?> builderFromNullableGenerator(
-			Generator<?> generator, ComponentDescriptor descriptor) {
     	if (descriptor instanceof ArrayElementDescriptor) {
     		int index = ((ArrayElementDescriptor) descriptor).getIndex();
     		return new ArrayElementBuilder(index, generator);
