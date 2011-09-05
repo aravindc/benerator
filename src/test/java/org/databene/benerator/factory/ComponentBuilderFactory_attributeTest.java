@@ -54,7 +54,7 @@ import static junit.framework.Assert.*;
  * Created: 10.08.2007 12:40:41
  * @author Volker Bergmann
  */
-public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuilderFactoryTest {
+public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuilderFactoryTest {
 	
 	// TODO v0.8 define tests for all syntax paths
 	
@@ -140,6 +140,23 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		for (int i = 0; i < 10; i++) {
 			String actual = GeneratorUtil.generateNonNull(helper);
 			assertEquals("Invalid product: ", "", actual);
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+	public void testConstantOnNullableAttribute() {
+		PartDescriptor name = new PartDescriptor("name");
+		name.setNullable(true);
+		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
+		type.setParentName("string");
+		type.setConstant("Alice");
+		ComponentBuilder builder = createComponentBuilder(name);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
+		for (int i = 0; i < 10; i++) {
+			String actual = GeneratorUtil.generateNonNull(helper);
+			assertEquals("Invalid product: ", "Alice", actual);
 		}
 	}
 
