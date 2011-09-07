@@ -213,7 +213,7 @@ public class PagedTaskRunner extends AbstractTaskRunner implements Thread.Uncaug
 	private static String executionInfo(Task task, Long minInvocations, Long maxInvocations, long pageSize, int threadCount) {
 	    String invocationInfo = (maxInvocations == null ? "as long as available" :
 	         (maxInvocations > 1 ? maxInvocations + " times" : ""));
-	    if (minInvocations != null && minInvocations > 0)
+	    if (minInvocations != null && minInvocations > 0 && (maxInvocations == null || maxInvocations > minInvocations))
 	    	invocationInfo += " requiring at least " + minInvocations + " generations";
 	    if (invocationInfo.length() > 0)
 	    	invocationInfo += " with page size " + pageSize + " in " 
