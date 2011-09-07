@@ -30,8 +30,7 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.DefaultBeneratorContext;
-import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
-import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
+import org.databene.benerator.factory.MetaGeneratorFactory;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.IOUtil;
@@ -101,8 +100,8 @@ public class ShopXMLTest extends GeneratorTest {
         logger.debug("");
         logger.debug("Testing simple type: " + descriptor.getName());
         logger.debug("-------------------------------------");
-        Generator<T> generator = (Generator<T>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-            descriptor, descriptor.getName(), false, Uniqueness.NONE, provider.getContext());
+        Generator<T> generator = (Generator<T>) MetaGeneratorFactory.createTypeGenerator(
+            descriptor, descriptor.getName(), null, false, Uniqueness.NONE, provider.getContext());
         generator.init(new DefaultBeneratorContext());
         for (int i = 0; i < 10; i++) {
             T object = GeneratorUtil.generateNonNull(generator);
@@ -111,13 +110,16 @@ public class ShopXMLTest extends GeneratorTest {
         }
     }
 
-    private void checkComplexType(String name, XMLSchemaDescriptorProvider provider, Validator<Entity> validator) {
+    @SuppressWarnings({ "unchecked", "cast" })
+	private void checkComplexType(String name, XMLSchemaDescriptorProvider provider, Validator<Entity> validator) {
         ComplexTypeDescriptor descriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor(name);
         logger.debug("");
         logger.debug("Testing complex type: " + descriptor.getName());
         logger.debug("-------------------------------------");
-        Generator<Entity> generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
-        		"instance", descriptor, Uniqueness.NONE, provider.getContext());
+        Generator<?> tmp = (Generator<Entity>) MetaGeneratorFactory.createTypeGenerator(
+        		descriptor, "instance", null, false, Uniqueness.NONE, provider.getContext());
+        assertEquals(Entity.class, tmp.getGeneratedType());
+        Generator<Entity> generator = (Generator<Entity>) tmp;
         generator.init(new DefaultBeneratorContext());
         for (int i = 0; i < 10; i++) {
             Entity entity = GeneratorUtil.generateNonNull(generator);
