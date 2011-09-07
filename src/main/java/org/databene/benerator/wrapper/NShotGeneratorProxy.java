@@ -61,5 +61,10 @@ public class NShotGeneratorProxy<E> extends GeneratorProxy<E> {
         remainingShots = 0;
     }
     
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + '[' + (shots - remainingShots) + '/' + shots + ", " + getSource() + ']';
+    }
+    
 }
 
