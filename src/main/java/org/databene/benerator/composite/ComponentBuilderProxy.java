@@ -64,4 +64,8 @@ public class ComponentBuilderProxy<E> implements ComponentBuilder<E> {
 	    source.close();
     }
 
+	public String getMessage() {
+		return source.getMessage();
+	}
+
 }

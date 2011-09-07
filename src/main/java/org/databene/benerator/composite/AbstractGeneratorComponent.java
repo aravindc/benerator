@@ -36,6 +36,7 @@ public abstract class AbstractGeneratorComponent<E> implements GeneratorComponen
 
 	protected Generator<?> source;
 	protected GeneratorContext context;
+	protected String message;
 
 	public AbstractGeneratorComponent(Generator<?> source) {
 		this.source = source;
@@ -45,6 +46,10 @@ public abstract class AbstractGeneratorComponent<E> implements GeneratorComponen
     	return source;
     }
     
+	public String getMessage() {
+		return message;
+	}
+	
     // GeneratorComponent interface implementation ---------------------------------------------------------------------
 
 	public void prepare(BeneratorContext context) {

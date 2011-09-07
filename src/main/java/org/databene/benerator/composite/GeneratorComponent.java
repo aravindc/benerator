@@ -25,6 +25,7 @@ import java.io.Closeable;
 
 import org.databene.benerator.engine.Preparable;
 import org.databene.benerator.engine.Statement;
+import org.databene.commons.MessageHolder;
 import org.databene.commons.Resettable;
 import org.databene.commons.ThreadAware;
 
@@ -34,6 +35,7 @@ import org.databene.commons.ThreadAware;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public interface GeneratorComponent<E> extends Statement, Preparable, ThreadAware, Resettable, Closeable {
+public interface GeneratorComponent<E> 
+		extends Statement, MessageHolder, Preparable, ThreadAware, Resettable, Closeable {
 	void close();
 }

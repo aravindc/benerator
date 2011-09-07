@@ -43,10 +43,15 @@ public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
 	
 	protected ComponentBuilder<E>[] builders;
 	private List<ComponentBuilder<E>> availableBuilders;
+	protected String message;
 
 	public MultiComponentBuilder(ComponentBuilder<E>[] builders) {
 		this.builders = builders;
 		this.availableBuilders = CollectionUtil.toList(builders);
+	}
+	
+	public String getMessage() {
+		return message;
 	}
 	
 	// Generator interface ---------------------------------------------------------------------------------------------
@@ -69,8 +74,11 @@ public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
 	}
 	
 	public boolean buildRandomComponent(BeneratorContext context) {
-		if (availableBuilders.size() == 0)
+		message = null;
+		if (availableBuilders.size() == 0) {
+			message = "No component available: " + this;
 			return false;
+		}
 		boolean success;
 		do {
 			int builderIndex = RandomUtil.randomIndex(availableBuilders);
@@ -78,6 +86,8 @@ public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
 			if (!success)
 				availableBuilders.remove(builderIndex);
 		} while (!success && availableBuilders.size() > 0);
+		if (!success)
+			message = "No component available: " + this;
 	    return success;
 	}
 	
