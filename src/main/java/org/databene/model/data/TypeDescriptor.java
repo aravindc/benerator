@@ -28,7 +28,6 @@ package org.databene.model.data;
 
 import java.util.Locale;
 
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.operation.FirstNonNullSelector;
 
@@ -78,7 +77,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     }
 
     public TypeDescriptor(String name, TypeDescriptor parent) {
-    	this(name, parent.getName());
+    	this(name, (parent != null ? parent.getName() : null));
     	this.parent = parent;
     }
 
@@ -287,28 +286,16 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     // generic functionality -------------------------------------------------------------------------------------------
 
-    @Override
-    public Object getDetailValue(String name) {
-        Object value = super.getDetailValue(name);
-        if (value == null && getParent() != null && PrimitiveType.getInstance(parentName) == null) {
-            TypeDescriptor parentDescriptor = getParent();
-            if (parentDescriptor == null)
-                throw new ConfigurationError("Unknown type: " + parentName);
-            if (parentDescriptor.supportsDetail(name)) {
-                FeatureDetail<?> detail = parentDescriptor.getConfiguredDetail(name);
-                if (detail.isConstraint())
-                    value = detail.getValue();
-            }
-        }
-        return value;
-    }
-
     public TypeDescriptor getParent() {
         if (parent != null)
             return parent;
         if (parentName == null)
             return null;
-        return DataModel.getDefaultInstance().getTypeDescriptor(parentName);
+        // TODO v0.8 the following is a workaround for name conflicts with types of same name in different name spaces, e.g. xs:string <-> ben.string
+        TypeDescriptor candidate = DataModel.getDefaultInstance().getTypeDescriptor(parentName);
+        if (candidate != this)
+        	parent = candidate;
+		return parent;
     }
     
     public void setParent(TypeDescriptor parent) {
