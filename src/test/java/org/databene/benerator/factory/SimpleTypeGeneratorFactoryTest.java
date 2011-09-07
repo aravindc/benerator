@@ -93,18 +93,18 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testCreateSampleGeneratorWithoutValues() {
-		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test"), Uniqueness.NONE, null);
+		Generator<?> generator = SimpleTypeGeneratorFactory.createValuesGenerator(new SimpleTypeDescriptor("test"), Uniqueness.NONE, null);
 		assertNull(generator);
 	}
 	
 	@Test
 	public void testCreateSampleGeneratorUnweighted() {
 		BeneratorContext context = new DefaultBeneratorContext();
-		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a','b'"), Uniqueness.NONE, context);
+		Generator<?> generator = SimpleTypeGeneratorFactory.createValuesGenerator(new SimpleTypeDescriptor("test").withValues("'a','b'"), Uniqueness.NONE, context);
 		generator.init(context);
 		expectRelativeWeights(generator, 1000, "a", 1, "b", 1);
 		SimpleTypeDescriptor descriptor = (SimpleTypeDescriptor) new SimpleTypeDescriptor("test").withValues("'a','b,c'").withSeparator("|");
-		generator = SimpleTypeGeneratorFactory.createSampleGenerator(descriptor, Uniqueness.NONE, context);
+		generator = SimpleTypeGeneratorFactory.createValuesGenerator(descriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		expectRelativeWeights(generator, 1000, "a", 1, "b,c", 1);
 	}
@@ -112,7 +112,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testCreateSampleGeneratorWeighted() {
 		BeneratorContext context = new DefaultBeneratorContext();
-		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a'^2,'b'"), Uniqueness.NONE, context);
+		Generator<?> generator = SimpleTypeGeneratorFactory.createValuesGenerator(new SimpleTypeDescriptor("test").withValues("'a'^2,'b'"), Uniqueness.NONE, context);
 		generator.init(context);
 		expectRelativeWeights(generator, 3000, "a", 2, "b", 1);
 	}
@@ -220,8 +220,8 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	@SuppressWarnings("unchecked")
     private Generator<String> createAndInitGenerator(
     		SimpleTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
-		Generator<String> generator = (Generator<String>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-				type, null, false, uniqueness, context);
+		Generator<String> generator = (Generator<String>) new SimpleTypeGeneratorFactory().createGenerator(
+				type, null, null, false, uniqueness, context);
 		generator.init(context);
 		return generator;
 	}

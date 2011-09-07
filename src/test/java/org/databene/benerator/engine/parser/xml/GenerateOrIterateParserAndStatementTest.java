@@ -32,7 +32,10 @@ import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonIterable;
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.converter.UnsafeConverter;
+import org.databene.commons.validator.AbstractValidator;
 import org.databene.jdbacl.hsql.HSQLUtil;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.platform.db.DBSystem;
@@ -50,7 +53,7 @@ import org.junit.Test;
 public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegrationTest {
 
 	@Test
-	public void testAttributes() throws Exception {
+	public void testPaging() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		Statement statement = parse(
 				"<generate type='dummy' count='{c}' threads='{tc}' pageSize='{ps}' consumer='cons'/>");
@@ -63,6 +66,50 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertEquals(100, consumer.startConsumingCount.get());
 		assertEquals(100, consumer.finishConsumingCount.get());
 		assertEquals(100L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
+	}
+
+	@Test
+	public void testConverter() throws Exception {
+		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
+		Statement statement = parse("<generate type='dummy' count='3' converter='conv' consumer='cons'/>");
+		ConsumerMock consumer = new ConsumerMock(true);
+		context.set("cons", consumer);
+		context.set("conv", new UnsafeConverter<Entity,Entity>(Entity.class, Entity.class) {
+			public Entity convert(Entity sourceValue) {
+				ComplexTypeDescriptor descriptor = sourceValue.descriptor();
+				descriptor.setName("CONV_DUMMY");
+				Entity result = new Entity(descriptor);
+				return result;
+			}
+		});
+		statement.execute(context);
+		List<?> products = consumer.getProducts();
+		assertEquals(3, products.size());
+		for (int i = 0; i < 3; i++)
+			assertEquals("CONV_DUMMY", ((Entity) products.get(i)).type());
+		assertEquals(3L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
+	}
+
+	@Test
+	public void testValidator() throws Exception {
+		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
+		Statement statement = parse(
+				"<generate type='dummy' count='3' validator='vali' consumer='cons'>" +
+				"	<id name='id' type='int' />" +
+				"</generate>");
+		ConsumerMock consumer = new ConsumerMock(true);
+		context.set("cons", consumer);
+		context.set("vali", new AbstractValidator<Entity>() {
+			public boolean valid(Entity entity) {
+				return ((Integer) entity.get("id")) % 2 == 0;
+			}
+		});
+		statement.execute(context);
+		List<?> products = consumer.getProducts();
+		assertEquals(3, products.size());
+		for (int i = 0; i < 3; i++)
+			assertEquals(2 + 2 * i, ((Entity) products.get(i)).get("id"));
+		assertEquals(3L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

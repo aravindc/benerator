@@ -298,7 +298,7 @@ public class DescriptorUtilTest {
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
 		descriptor.setConverter(converterSpec);
-		Converter<Integer, ?> converter = DescriptorUtil.getConverter(descriptor, context);
+		Converter<Integer, ?> converter = DescriptorUtil.getConverter(descriptor.getConverter(), context);
 		assertNotNull(converter);
 		assertEquals(expectedValue, converter.convert(1));
 	}
@@ -309,7 +309,7 @@ public class DescriptorUtilTest {
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
 		descriptor.setValidator(validatorSpec);
-		Validator<Integer> validator = DescriptorUtil.getValidator(descriptor, context);
+		Validator<Integer> validator = DescriptorUtil.getValidator(descriptor.getValidator(), context);
 		assertNotNull(validator);
 		if (validValue != null)
 			assertEquals(true, validator.valid(validValue));
@@ -323,6 +323,7 @@ public class DescriptorUtilTest {
 		descriptor.setGenerator(generatorSpec);
 		Generator<?> generator = DescriptorUtil.getGeneratorByName(descriptor, context);
 		assertNotNull(generator);
+		generator.init(context);
 		assertEquals(expectedValue, GeneratorUtil.generateNonNull(generator));
 	}
 

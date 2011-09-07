@@ -129,22 +129,28 @@ public class AttributeAndVariableIntegrationTest extends BeneratorIntegrationTes
 	}
 
 	@Test
-	public void testVarAfterSubGen() { // TODO v0.7 support variable usage after sub <generate>
+	public void testVarAfterSubGen() {
 		parseAndExecute(
-				"<generate count='5'>" +
-				"	<generate count='3'/>" +
-				"	<variable name='y' type='int'/>" +
+				"<generate count='1'>" +
+				"	<generate name='sub' count='3'>" +
+				"		<attribute name='x' type='int' generator='IncrementGenerator' />" +
+				"	</generate>" +
+				"	<variable name='y' type='int' script='sub.x'/>" +
+				"	<evaluate id='res' assert='result==3'>{y}</evaluate>" +
 				"</generate>");
+		assertEquals(3, context.get("res"));
 	}
 	
 	@Test
-	public void testEchoBetweenAttributes() { // TODO v0.7. support <echo> between <attribute>s
+	public void testEvaluateBetweenAttributes() {
 		parseAndExecute(
-				"<generate count='5'>" +
-				"	<echo>{this.id}</echo>" + 
-				"	<id name='id' />" +
-				"	<echo>{this.id}</echo>" + 
+				"<generate count='1'>" +
+				"	<evaluate id='val1' assert='result==null'>this.id</evaluate>" + 
+				"	<id name='id' type='int'/>" +
+				"	<evaluate id='val2' assert='result==1'>this.id</evaluate>" + 
 				"</generate>");
+		assertEquals(null, context.get("val1"));
+		assertEquals(1, context.get("val2"));
 	}
 	
 	@Test
