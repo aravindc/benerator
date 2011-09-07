@@ -42,7 +42,7 @@ changes
 - renamed 'source' property to 'database' in DBSequenceGenerator and DBSeqHiLoGenerator
 - cleaned up generator hierarchies for arrays
 - changed Statement interface
-- removed multithreading support for <generate> and <iterate> - anyway it never worked satisfactory
+- removed multithreading support for <generate> and <iterate> - it never worked satisfactory
 
 
 enhancements
@@ -64,6 +64,8 @@ enhancements
 - New Generator class 'StringGenerator'
 - MemStore supports queries for ids, e.g. as issued by <reference>
 - Generating multinational data weighted by country population
+- Executing elements in the order in which they are specified
+- Defined empty consumer class NoConsumer
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
