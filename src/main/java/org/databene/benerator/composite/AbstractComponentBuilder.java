@@ -22,17 +22,38 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.util.WrapperProvider;
+import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.Mutator;
 
 /**
- * Parent class for facilitating individual {@link ComponentBuilder} implementation.<br/><br/>
+ * Helper class for simple definition of custom {@link ComponentBuilder}s which uses a {@link Mutator}
  * Created: 30.04.2010 09:34:42
  * @since 0.6.1
  * @author Volker Bergmann
  */
 public abstract class AbstractComponentBuilder<E> extends AbstractGeneratorComponent<E> implements ComponentBuilder<E> {
 
-    public AbstractComponentBuilder(Generator<?> source) {
+	protected Mutator mutator;
+	private WrapperProvider<Object> productWrapper = new WrapperProvider<Object>();
+	
+    public AbstractComponentBuilder(Generator<?> source, Mutator mutator) {
 		super(source);
+		this.mutator = mutator;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    public boolean execute(BeneratorContext context) {
+		message = null;
+		Object target = context.getCurrentProduct().unwrap();
+		ProductWrapper<?> wrapper = source.generate((ProductWrapper) productWrapper.get());
+		if (wrapper == null) {
+			message = "Generator unavailable: " + source;
+			return false;
+		}
+		mutator.setValue(target, wrapper.unwrap());
+		return true;
 	}
 
 }
