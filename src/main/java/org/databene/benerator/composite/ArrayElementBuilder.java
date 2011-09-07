@@ -31,7 +31,7 @@ import org.databene.commons.UpdateFailedException;
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public class ArrayElementBuilder extends DefaultComponentBuilder<Object[]> {
+public class ArrayElementBuilder extends AbstractComponentBuilder<Object[]> {
 
 	public ArrayElementBuilder(int index, Generator<?> source) {
 	    super(source, new Mutator_(index));
