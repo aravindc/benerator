@@ -49,7 +49,7 @@ public class ArrayElementTypeConverter extends AbstractConverter<Object[], Objec
 		if (array == null)
 			return null;
 		for (int i = 0; i < array.length; i++) {
-			ArrayElementDescriptor elementDescriptor = type.getElement(i);
+			ArrayElementDescriptor elementDescriptor = type.getElement(i, true);
 			if (elementDescriptor != null) {
 				TypeDescriptor elementType = elementDescriptor.getTypeDescriptor();
 				Object elementValue = array[i];
