@@ -101,7 +101,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
 			boolean nullable, Uniqueness uniqueness, BeneratorContext context) {
         Generator<?> generator = InstanceGeneratorFactory.createConfiguredDefaultGenerator(
         		instanceName, uniqueness, context);
-		if (generator == null && nullable && shouldNullifyEachNullable(context)) // TODO this causes problems
+		if (generator == null && nullable && shouldNullifyEachNullable(context))
 			generator = new ConstantGenerator(null, getGeneratedType(descriptor));
 		return generator;
 	}
