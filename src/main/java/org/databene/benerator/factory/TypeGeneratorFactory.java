@@ -32,8 +32,10 @@ import java.util.Date;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.ValueMapper;
+import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
@@ -42,13 +44,12 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.converter.String2DateConverter;
-import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import static org.databene.model.data.TypeDescriptor.*;
 
@@ -58,21 +59,86 @@ import static org.databene.model.data.TypeDescriptor.*;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class TypeGeneratorFactory {
+public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
+	
+	protected Logger logger = LoggerFactory.getLogger(getClass());
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(TypeGeneratorFactory.class);
-    
-    public static Generator<?> createTypeGenerator(String name, boolean asThis, 
-    		TypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
-		LOGGER.debug(descriptor + ", " + uniqueness);
-        if (descriptor instanceof SimpleTypeDescriptor)
-            return SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) descriptor, null, false, uniqueness, context);
-        else if (descriptor instanceof ComplexTypeDescriptor)
-            return ComplexTypeGeneratorFactory.createComplexTypeGenerator(name, (ComplexTypeDescriptor) descriptor, uniqueness, context);
-        else
-            throw new UnsupportedOperationException("Descriptor type not supported: " + descriptor.getClass());
+	public Generator<?> createGenerator(E descriptor, String instanceName, 
+			Double nullQuota, boolean nullifyIfUnconfigured, Uniqueness uniqueness, BeneratorContext context) {
+    	logger.debug("createGenerator({})", descriptor.getName());
+        Generator<?> generator = createRootGenerator(descriptor, instanceName, nullQuota, nullifyIfUnconfigured, 
+        		uniqueness, context);
+        generator = applyWrappers(generator, descriptor, instanceName, uniqueness, context);
+        logger.debug("Created {}", generator);
+        return generator;
     }
+    
+	public Generator<?> createRootGenerator(E descriptor, String instanceName, 
+			Double nullQuota, boolean nullifyIfNullable, Uniqueness uniqueness, BeneratorContext context) {
+		Generator<?> generator = createExplicitGenerator(descriptor, nullQuota, uniqueness, context);
+		if (generator == null)
+			generator = createSpecificGenerator(descriptor, instanceName, nullifyIfNullable, uniqueness, context);
+		if (generator == null)
+			generator = createInheritedGenerator(descriptor, nullQuota, uniqueness, context);
+        if (generator == null)
+        	generator = createHeuristicGenerator(descriptor, instanceName, uniqueness, context);
+        if (generator == null) // by now, we must have created a generator
+        	throw new ConfigurationError("Failed to create root generator for descriptor: " + descriptor);
+        return generator;
+	}
+	
+	protected Generator<?> createExplicitGenerator(
+			E type, Double nullQuota, Uniqueness uniqueness, BeneratorContext context) {
+		Generator<?> generator = DescriptorUtil.getGeneratorByName(type, context);
+        if (generator == null)
+        	generator = createSourceGenerator(type, uniqueness, context);
+        if (generator == null)
+        	generator = createScriptGenerator(type, context);
+        if (generator == null)
+        	generator = createNullQuotaOneGenerator(type, nullQuota);
+    	return generator;
+	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private Generator<?> createNullQuotaOneGenerator(
+			E descriptor, Double nullQuota) {
+		// check if nullQuota is 1
+        if (nullQuota != null && nullQuota.doubleValue() == 1.)
+            return new ConstantGenerator(null, getGeneratedType(descriptor));
+        else
+        	return null;
+	}
+
+	protected abstract Class<?> getGeneratedType(E descriptor);
+
+	protected abstract Generator<?> createSourceGenerator(
+    		E descriptor, Uniqueness uniqueness, BeneratorContext context);
+    
+	protected abstract Generator<?> createSpecificGenerator(E descriptor, String instanceName, 
+			boolean nullifyIfNullable, Uniqueness uniqueness, BeneratorContext context);
+	
+	@SuppressWarnings("unchecked")
+	protected Generator<?> createInheritedGenerator(
+			E type, Double nullQuota, Uniqueness uniqueness, BeneratorContext context) {
+		while (type.getParent() != null) {
+			type = (E) type.getParent();
+			Generator<?> generator = createExplicitGenerator(type, nullQuota, uniqueness, context);
+			if (generator != null)
+				return generator;
+		}
+    	return null;
+	}
+
+	protected abstract Generator<?> createHeuristicGenerator(E descriptor, String instanceName, 
+			Uniqueness uniqueness, BeneratorContext context);
+	
+	protected Generator<?> applyWrappers(Generator<?> generator, E descriptor, String instanceName,
+			Uniqueness uniqueness, BeneratorContext context) {
+		generator = wrapWithPostprocessors(generator, descriptor, context);
+        generator = DescriptorUtil.wrapWithProxy(generator, descriptor);
+		return generator;
+	}
+	
     protected static Generator<?> createScriptGenerator(TypeDescriptor descriptor, Context context) {
         String scriptText = descriptor.getScript();
         if (scriptText != null)
@@ -83,7 +149,7 @@ public class TypeGeneratorFactory {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected static Generator<?> createValidatingGenerator(
             TypeDescriptor descriptor, Generator<?> generator, BeneratorContext context) {
-        Validator validator = DescriptorUtil.getValidator(descriptor, context);
+        Validator validator = DescriptorUtil.getValidator(descriptor.getValidator(), context);
         if (validator != null)
             generator = WrapperFactory.applyValidator(validator, generator);
         return generator;
@@ -91,7 +157,7 @@ public class TypeGeneratorFactory {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Generator<?> createConvertingGenerator(TypeDescriptor descriptor, Generator generator, BeneratorContext context) {
-        Converter<?,?> converter = DescriptorUtil.getConverter(descriptor, context);
+        Converter<?,?> converter = DescriptorUtil.getConverter(descriptor.getConverter(), context);
         if (converter != null) {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
                 BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);

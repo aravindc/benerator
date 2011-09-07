@@ -25,12 +25,10 @@ import static org.databene.model.data.TypeDescriptor.PATTERN;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.Validator;
-import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
@@ -49,7 +47,7 @@ public class VariableGeneratorFactory {
 		Generator<?> generator = null;
 		
 		// check if nullQuota == 1
-		generator = createNullQuotaOneGenerator(descriptor);
+		generator = DescriptorUtil.createNullQuotaOneGenerator(descriptor);
 		if (generator != null)
 			return null;
 		
@@ -67,16 +65,6 @@ public class VariableGeneratorFactory {
 		return context.getGeneratorFactory().applyNullSettings(generator, descriptor.isNullable(), descriptor.getNullQuota());
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static Generator<?> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
-		// check if nullQuota is 1
-        Double nullQuota = descriptor.getNullQuota();
-        if (nullQuota != null && nullQuota.doubleValue() == 1.)
-            return new ConstantGenerator(null);
-        else
-        	return null;
-	}
-	
     static Generator<?> wrapWithPostprocessors(Generator<?> generator, TypeDescriptor descriptor, BeneratorContext context) {
 		generator = createConvertingGenerator(descriptor, generator, context);
 		if (descriptor instanceof SimpleTypeDescriptor) {
@@ -91,7 +79,7 @@ public class VariableGeneratorFactory {
     @SuppressWarnings("unchecked")
     protected static <T> Generator<T> createValidatingGenerator(
             TypeDescriptor descriptor, Generator<T> generator, BeneratorContext context) {
-		Validator<T> validator = DescriptorUtil.getValidator(descriptor, context);
+		Validator<T> validator = DescriptorUtil.getValidator(descriptor.getValidator(), context);
         if (validator != null)
             generator = WrapperFactory.applyValidator(validator, generator);
         return generator;
@@ -109,7 +97,7 @@ public class VariableGeneratorFactory {
     }
 
     public static Generator<?> createConvertingGenerator(TypeDescriptor descriptor, Generator<?> generator, BeneratorContext context) {
-        Converter<?,?> converter = DescriptorUtil.getConverter(descriptor, context);
+        Converter<?,?> converter = DescriptorUtil.getConverter(descriptor.getConverter(), context);
         if (converter != null) {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
                 BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);

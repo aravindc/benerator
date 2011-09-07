@@ -38,7 +38,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.statement.IncludeStatement;
-import org.databene.benerator.factory.TypeGeneratorFactory;
+import org.databene.benerator.factory.MetaGeneratorFactory;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
@@ -105,8 +105,8 @@ public class XMLFileGenerator extends UnsafeGenerator<File> {
         TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
         if (rootDescriptor == null)
             throw new ConfigurationError("Type '" + root + "' not found in schema: " + schemaUri);
-		contentGenerator = TypeGeneratorFactory.createTypeGenerator(
-				root, true, rootDescriptor, Uniqueness.NONE, beneratorContext);
+		contentGenerator = MetaGeneratorFactory.createTypeGenerator(
+				rootDescriptor, root, null, false, Uniqueness.NONE, beneratorContext);
         contentGenerator.init(context);
         super.init(context);
     }

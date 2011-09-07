@@ -113,7 +113,7 @@ public class DescriptorUtil {
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Generator<?> createConvertingGenerator(TypeDescriptor descriptor,
             Generator<?> generator, BeneratorContext context) {
-        Converter<?, ?> converter = DescriptorUtil.getConverter(descriptor, context);
+        Converter<?, ?> converter = DescriptorUtil.getConverter(descriptor.getConverter(), context);
         if (converter != null) {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN))
                 BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
@@ -132,10 +132,8 @@ public class DescriptorUtil {
 	        	BeanSpec generatorBeanSpec = BeneratorScriptParser.resolveBeanSpec(generatorSpec, context);
 	        	generator = (Generator<?>) generatorBeanSpec.getBean();
 	            FactoryUtil.mapDetailsToBeanProperties(descriptor, generator, context);
-	            if (generatorBeanSpec.isReference()) {
+	            if (generatorBeanSpec.isReference())
 	            	generator = WrapperFactory.preventClosing(generator);
-	            	generator.init(context);
-	            }
 	        }
 	        return generator;
     	} catch (ParseException e) {
@@ -144,9 +142,8 @@ public class DescriptorUtil {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Validator getValidator(TypeDescriptor descriptor, BeneratorContext context) {
+	public static Validator getValidator(String validatorSpec, BeneratorContext context) {
 		try {
-	        String validatorSpec = descriptor.getValidator();
 	        if (StringUtil.isEmpty(validatorSpec))
 	            return null;
 	        
@@ -178,8 +175,7 @@ public class DescriptorUtil {
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Converter getConverter(TypeDescriptor descriptor, BeneratorContext context) {
-        String converterSpec = descriptor.getConverter();
+	public static Converter getConverter(String converterSpec, BeneratorContext context) {
         try {
 	        if (StringUtil.isEmpty(converterSpec))
 	            return null;
@@ -438,6 +434,16 @@ public class DescriptorUtil {
 		public Long evaluate(Context context) {
             return ((BeneratorContext) context).getMaxCount();
         }
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Generator<?> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
+		// check if nullQuota is 1
+        Double nullQuota = descriptor.getNullQuota();
+        if (nullQuota != null && nullQuota.doubleValue() == 1.)
+            return new ConstantGenerator(null);
+        else
+        	return null;
 	}
 
 }

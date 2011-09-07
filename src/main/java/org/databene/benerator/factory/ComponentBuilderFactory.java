@@ -158,7 +158,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         if (generator == null)
         	generator = SimpleTypeGeneratorFactory.createConstantGenerator(typeDescriptor, context);
         if (generator == null)
-        	generator = SimpleTypeGeneratorFactory.createSampleGenerator(typeDescriptor, uniqueness, context);
+        	generator = SimpleTypeGeneratorFactory.createValuesGenerator(typeDescriptor, uniqueness, context);
         
         // get distribution
     	Distribution distribution = FactoryUtil.getDistribution(

@@ -49,7 +49,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.DescriptorBasedGenerator;
-import org.databene.benerator.factory.ArrayGeneratorFactory;
+import org.databene.benerator.factory.ArrayTypeGeneratorFactory;
 import org.databene.benerator.factory.CoverageGeneratorFactory;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.EquivalenceGeneratorFactory;
@@ -108,12 +108,15 @@ public class AnnotationMapper {
 	private DataModel dataModel;
 
 	private GeneratorFactory defaultFactory;
+
+	private ArrayTypeGeneratorFactory arrayTypeGeneratorFactory;
 	
 	public AnnotationMapper(GeneratorFactory defaultFactory) {
 		this.defaultFactory = defaultFactory;
 		this.dataModel = new DataModel();
 		this.dataModel.addDescriptorProvider(PrimitiveDescriptorProvider.INSTANCE);
 		this.dataModel.addDescriptorProvider(BeanDescriptorProvider.defaultInstance());
+		this.arrayTypeGeneratorFactory = new ArrayTypeGeneratorFactory();
 	}
 	
 	// interface -------------------------------------------------------------------------------------------------------
@@ -235,6 +238,7 @@ public class AnnotationMapper {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Generator<Object[]> createMethodSourceGenerator(
 			org.databene.benerator.anno.Source source, Method testMethod, BeneratorContext context) {
 		String methodName = testMethod.getName();
@@ -242,8 +246,8 @@ public class AnnotationMapper {
 		InstanceDescriptor descriptor = new InstanceDescriptor(methodName, typeDescriptor);
 		mapAnnotation(source, descriptor);
 		mapParamTypes(testMethod, typeDescriptor);
-		Generator<Object[]> baseGenerator = ArrayGeneratorFactory.createArrayGenerator(
-				testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
+		Generator<Object[]> baseGenerator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
+				typeDescriptor, testMethod.getName(), null, false, Uniqueness.NONE, context);
 		return baseGenerator;
 	}
 
@@ -264,6 +268,7 @@ public class AnnotationMapper {
 		return generator;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Generator<Object[]> createGeneratorGenerator(
 			org.databene.benerator.anno.Generator annotation, Method testMethod, BeneratorContext context) {
 		String methodName = testMethod.getName();
@@ -271,8 +276,8 @@ public class AnnotationMapper {
 		InstanceDescriptor descriptor = new InstanceDescriptor(methodName, typeDescriptor);
 		mapAnnotation(annotation, descriptor);
 		mapParamTypes(testMethod, typeDescriptor);
-		return ArrayGeneratorFactory.createArrayGenerator(
-				testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
+		return (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
+				typeDescriptor, testMethod.getName(), null, false, Uniqueness.NONE, context);
 	}
 
 	private void mapParamTypes(Method testMethod, ArrayTypeDescriptor typeDescriptor) {
@@ -368,7 +373,7 @@ public class AnnotationMapper {
     private Generator<Object[]> createParamsGenerator(Method testMethod, BeneratorContext context) {
 	    InstanceDescriptor array = mapMethodParamsAnnotations(testMethod);
         Uniqueness uniqueness = DescriptorUtil.getUniqueness(array, context);
-        Generator<Object[]> generator = ArrayGeneratorFactory.createSimpleArrayGenerator(array.getName(),
+        Generator<Object[]> generator = arrayTypeGeneratorFactory.createSimpleArrayGenerator(array.getName(),
 				(ArrayTypeDescriptor) array.getTypeDescriptor(), uniqueness, context);
 		return generator;
     }

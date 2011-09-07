@@ -26,8 +26,6 @@
 
 package org.databene.benerator.factory;
 
-import org.databene.model.data.ArrayTypeDescriptor;
-import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
@@ -50,24 +48,6 @@ public class InstanceGeneratorFactory {
     
     protected InstanceGeneratorFactory() {}
 
-    public static Generator<?> createRootGenerator(
-    		InstanceDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
-        Generator<?> generator = null;
-        TypeDescriptor type = descriptor.getTypeDescriptor();
-		if (type instanceof SimpleTypeDescriptor)
-			generator = SimpleTypeGeneratorFactory.createRootGenerator(
-					(SimpleTypeDescriptor) type, descriptor.getName(), uniqueness, context);
-        else if (type instanceof ComplexTypeDescriptor)
-    		generator = ComplexTypeGeneratorFactory.createRootGenerator(
-    				(ComplexTypeDescriptor) type, uniqueness, context);
-        else if (type instanceof ArrayTypeDescriptor)
-    		generator = ArrayGeneratorFactory.createRootGenerator(
-    				(ArrayTypeDescriptor) type, uniqueness, context);
-        else
-        	throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
-        return generator;
-    }
-    
     public static Generator<?> createSingleInstanceGenerator(
             InstanceDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
         Generator<?> generator = null;
@@ -75,18 +55,12 @@ public class InstanceGeneratorFactory {
         if (!uniqueness.isUnique())
         	uniqueness = ownerUniqueness;
 		boolean nullifyIfUnconfigured = DescriptorUtil.isNullable(descriptor, context) && DescriptorUtil.shouldNullifyEachNullable(descriptor, context);
-        TypeDescriptor type = descriptor.getTypeDescriptor();
-        if (type instanceof SimpleTypeDescriptor)
-			generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-					(SimpleTypeDescriptor) type, descriptor.getName(), nullifyIfUnconfigured, uniqueness, context);
-		else if (type instanceof ComplexTypeDescriptor)
-    		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(descriptor.getName(), 
-    				(ComplexTypeDescriptor) type, uniqueness, context);
-        else if (type instanceof ArrayTypeDescriptor)
-    		generator = ArrayGeneratorFactory.createArrayGenerator(descriptor.getName(), 
-    				(ArrayTypeDescriptor) type, uniqueness, context);
-        else if (type == null) {
-        	ComponentDescriptor defaultConfig = context.getDefaultComponentConfig(descriptor.getName());
+		TypeDescriptor type = descriptor.getTypeDescriptor();
+		String instanceName = descriptor.getName();
+		if (type != null) {
+			generator = MetaGeneratorFactory.createTypeGenerator(type, instanceName, descriptor.getNullQuota(), nullifyIfUnconfigured, uniqueness, context);
+		} else {
+        	ComponentDescriptor defaultConfig = context.getDefaultComponentConfig(instanceName);
         	if (defaultConfig != null)
         		return createSingleInstanceGenerator(defaultConfig, ownerUniqueness, context);
         	if (nullifyIfUnconfigured)
@@ -94,10 +68,9 @@ public class InstanceGeneratorFactory {
         	if (descriptor instanceof IdDescriptor)
 				generator = new IncrementGenerator(1);
         	else
-        		throw new UnsupportedOperationException("Type of " + descriptor.getName() + " is not defined");
-        } else
-        	throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
-        return generator;
+        		throw new UnsupportedOperationException("Type of " + instanceName + " is not defined");
+        }
+		return generator;
     }
     
     public static Generator<?> createConfiguredDefaultGenerator(String componentName, Uniqueness ownerUniqueness, BeneratorContext context) {
