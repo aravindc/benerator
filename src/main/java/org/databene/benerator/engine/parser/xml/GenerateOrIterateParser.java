@@ -40,21 +40,26 @@ import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.CachedExpression;
 import org.databene.benerator.engine.expression.xml.XMLConsumerExpression;
+import org.databene.benerator.engine.statement.ConversionStatement;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.GeneratorStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.TimedGeneratorStatement;
+import org.databene.benerator.engine.statement.ValidationStatement;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.GeneratorComponentFactory;
-import org.databene.benerator.factory.InstanceGeneratorFactory;
+import org.databene.benerator.factory.MetaGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
+import org.databene.commons.Converter;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
+import org.databene.commons.Validator;
+import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ArrayTypeDescriptor;
@@ -83,7 +88,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 
 	private static final Set<String> OPTIONAL_ATTRIBUTES = CollectionUtil.toSet(
 			ATT_COUNT, ATT_MIN_COUNT, ATT_MAX_COUNT, ATT_COUNT_DISTRIBUTION, 
-			ATT_PAGESIZE, ATT_THREADS, ATT_STATS, ATT_ON_ERROR,
+			ATT_PAGESIZE, /*ATT_THREADS,*/ ATT_STATS, ATT_ON_ERROR,
 			ATT_TEMPLATE, ATT_CONSUMER, 
 			ATT_NAME, ATT_TYPE, ATT_GENERATOR, ATT_VALIDATOR, 
 			ATT_CONVERTER, ATT_NULL_QUOTA, ATT_UNIQUE, ATT_DISTRIBUTION, ATT_CYCLIC,
@@ -158,13 +163,14 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		// parse statement
 		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
 		Expression<Long> pageSize = parsePageSize(element);
-		Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
+		//Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
 		Expression<PageListener> pager = (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(
 				element.getAttribute(ATT_PAGER));
 		Expression<ErrorHandler> errorHandler = parseOnErrorAttribute(element, element.getAttribute(ATT_NAME));
 		Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor, 0);
 		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(
-				countGenerator, minCount, pageSize, pager, threads, errorHandler, infoLog, nested);
+				countGenerator, minCount, pageSize, pager, /*threads*/ new ConstantExpression<Integer>(1), 
+				errorHandler, infoLog, nested);
 		
 		// parse task and sub statements
 		GeneratorTask task = parseTask(element, parentPath, statement, parsingContext, descriptor, context, infoLog);
@@ -178,8 +184,6 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
     		boolean infoLog) {
 		descriptor.setNullable(false);
 		if (infoLog)
-			logger.info("{}", descriptor);
-		else
 			logger.debug("{}", descriptor);
 		
 		String taskName = descriptor.getName();
@@ -190,7 +194,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		List<Statement> statements = new ArrayList<Statement>();
 		
 		// create base generator
-    	Generator<?> base = InstanceGeneratorFactory.createRootGenerator(descriptor, Uniqueness.NONE, context);
+    	Generator<?> base = MetaGeneratorFactory.createRootGenerator(descriptor, Uniqueness.NONE, context);
     	String instanceName = descriptor.getName();
     	if (instanceName == null)
     		instanceName = descriptor.getType();
@@ -209,7 +213,6 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			InstanceDescriptor componentDescriptor = null;
 			if (EL_VARIABLE.equals(childName)) {
 				componentDescriptor = parser.parseVariable(child, (VariableHolder) type);
-				handledMembers.add(componentDescriptor.getName().toLowerCase());
 			} else if (COMPONENT_TYPES.contains(childName)) {
 				componentDescriptor = parser.parseSimpleTypeComponent(child, (ComplexTypeDescriptor) type);
 				((ComplexTypeDescriptor) type).addComponent((ComponentDescriptor) componentDescriptor);
@@ -254,6 +257,16 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		// create task
 		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, context);
 		task.setStatements(statements);
+
+		// parse converter
+		Converter converter = DescriptorUtil.getConverter(element.getAttribute(ATT_CONVERTER), context);
+		if (converter != null)
+			task.addStatement(new ConversionStatement(converter));
+
+		// parse validator
+		Validator validator = DescriptorUtil.getValidator(element.getAttribute(ATT_VALIDATOR), context);
+		if (validator != null)
+			task.addStatement(new ValidationStatement(validator));
 
 		// parse consumers
 		boolean consumerExpected = CONSUMER_EXPECTING_ELEMENTS.contains(element.getNodeName());
