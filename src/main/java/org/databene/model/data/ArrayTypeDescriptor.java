@@ -22,7 +22,10 @@
 package org.databene.model.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Describes an array.<br/><br/>
@@ -33,31 +36,54 @@ import java.util.List;
 public class ArrayTypeDescriptor extends TypeDescriptor implements VariableHolder {
 
 	private List<InstanceDescriptor> parts;
-	private List<ArrayElementDescriptor> elements;
+	private Map<Integer, ArrayElementDescriptor> elements;
     
-    public ArrayTypeDescriptor(String name) {
-	    super(name);
+	public ArrayTypeDescriptor(String name) {
+		this(name, null);
+	}
+	
+    public ArrayTypeDescriptor(String name, ArrayTypeDescriptor parent) {
+	    super(name, parent);
         this.parts = new ArrayList<InstanceDescriptor>();
-	    this.elements = new ArrayList<ArrayElementDescriptor>();
+	    this.elements = new TreeMap<Integer, ArrayElementDescriptor>();
     }
 
     // element handling ------------------------------------------------------------------------------------------------
 
+    @Override
+	public ArrayTypeDescriptor getParent() {
+    	return (ArrayTypeDescriptor) super.getParent();
+    }
+    
 	public List<InstanceDescriptor> getParts() {
 		return parts;
 	}
 	
     public void addElement(ArrayElementDescriptor descriptor) {
     	parts.add(descriptor);
-        elements.add(descriptor);
+        elements.put(descriptor.getIndex(), descriptor);
     }
 
     public ArrayElementDescriptor getElement(int index) {
     	return elements.get(index);
     }
 
-    public List<ArrayElementDescriptor> getElements() {
-        return elements;
+    public ArrayElementDescriptor getElement(int index, boolean inherit) {
+		ArrayElementDescriptor element = getElement(index);
+		if (element != null)
+			return element;
+    	ArrayTypeDescriptor tmp = getParent();
+    	while (tmp != null && inherit) {
+    		ArrayElementDescriptor candidate = tmp.getElement(index);
+    		if (candidate != null)
+    			return candidate;
+    		tmp = tmp.getParent();
+    	}
+    	return null;
+    }
+
+    public Collection<ArrayElementDescriptor> getElements() {
+        return elements.values();
     }
 
 	public int getElementCount() {
