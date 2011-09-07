@@ -56,11 +56,10 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	public void testPaging() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		Statement statement = parse(
-				"<generate type='dummy' count='{c}' threads='{tc}' pageSize='{ps}' consumer='cons'/>");
+				"<generate type='dummy' count='{c}' pageSize='{ps}' consumer='cons'/>");
 		ConsumerMock consumer = new ConsumerMock(false);
 		context.set("cons", consumer);
 		context.set("c", 100);
-		context.set("tc", 10);
 		context.set("ps", 20);
 		statement.execute(context);
 		assertEquals(100, consumer.startConsumingCount.get());
