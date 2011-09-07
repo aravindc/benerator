@@ -242,12 +242,13 @@ public class AnnotationMapper {
 	private Generator<Object[]> createMethodSourceGenerator(
 			org.databene.benerator.anno.Source source, Method testMethod, BeneratorContext context) {
 		String methodName = testMethod.getName();
-		ArrayTypeDescriptor typeDescriptor = new ArrayTypeDescriptor(methodName);
-		InstanceDescriptor descriptor = new InstanceDescriptor(methodName, typeDescriptor);
+		ArrayTypeDescriptor nativeDescriptor = new ArrayTypeDescriptor(methodName + "_native");
+		mapParamTypes(testMethod, nativeDescriptor);
+		ArrayTypeDescriptor configuredDescriptor = new ArrayTypeDescriptor(methodName + "_conf", nativeDescriptor);
+		InstanceDescriptor descriptor = new InstanceDescriptor(methodName, configuredDescriptor);
 		mapAnnotation(source, descriptor);
-		mapParamTypes(testMethod, typeDescriptor);
 		Generator<Object[]> baseGenerator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				typeDescriptor, testMethod.getName(), null, false, Uniqueness.NONE, context);
+				configuredDescriptor, testMethod.getName(), false, Uniqueness.NONE, context);
 		return baseGenerator;
 	}
 
@@ -272,12 +273,13 @@ public class AnnotationMapper {
 	private Generator<Object[]> createGeneratorGenerator(
 			org.databene.benerator.anno.Generator annotation, Method testMethod, BeneratorContext context) {
 		String methodName = testMethod.getName();
-		ArrayTypeDescriptor typeDescriptor = new ArrayTypeDescriptor(methodName);
+		ArrayTypeDescriptor nativeDescriptor = new ArrayTypeDescriptor(methodName + "_native");
+		mapParamTypes(testMethod, nativeDescriptor);
+		ArrayTypeDescriptor typeDescriptor = new ArrayTypeDescriptor(methodName + "_conf", nativeDescriptor);
 		InstanceDescriptor descriptor = new InstanceDescriptor(methodName, typeDescriptor);
 		mapAnnotation(annotation, descriptor);
-		mapParamTypes(testMethod, typeDescriptor);
 		return (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				typeDescriptor, testMethod.getName(), null, false, Uniqueness.NONE, context);
+				typeDescriptor, testMethod.getName(), false, Uniqueness.NONE, context);
 	}
 
 	private void mapParamTypes(Method testMethod, ArrayTypeDescriptor typeDescriptor) {
