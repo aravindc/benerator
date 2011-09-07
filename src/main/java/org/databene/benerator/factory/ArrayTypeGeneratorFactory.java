@@ -26,10 +26,9 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.StorageSystem;
-import org.databene.benerator.composite.AbstractComponentBuilder;
+import org.databene.benerator.composite.ArrayElementBuilder;
 import org.databene.benerator.composite.ArrayElementTypeConverter;
 import org.databene.benerator.composite.BlankArrayGenerator;
-import org.databene.benerator.composite.GeneratorComponent;
 import org.databene.benerator.composite.SourceAwareGenerator;
 import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
@@ -41,6 +40,7 @@ import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.UniqueMultiSourceArrayGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
+import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
@@ -57,8 +57,6 @@ import org.databene.platform.xls.XLSArraySourceProvider;
 import org.databene.script.ScriptConverterForObjects;
 import org.databene.script.ScriptConverterForStrings;
 import org.databene.script.ScriptUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Creates array {@link Generator}s.<br/><br/>
@@ -66,82 +64,10 @@ import org.slf4j.LoggerFactory;
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public class ArrayGeneratorFactory {
+public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDescriptor> {
 
-    private static final Logger logger = LoggerFactory.getLogger(ArrayGeneratorFactory.class);
-
-    public static Generator<Object[]> createArrayGenerator(String instanceName, 
-			ArrayTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
-        logger.debug("createArrayGenerator({})", type.getName());
-        // create original generator
-        Generator<Object[]> generator = createExplicitGenerator(type, uniqueness, context);
-        if (generator == null)
-            generator = createSyntheticArrayGenerator(instanceName, type, uniqueness, context);
-        // TODO v0.8 implement array mutation
-        
-        // create wrappers
-        generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
-        generator = DescriptorUtil.wrapWithProxy(generator, type);
-        logger.debug("Created {}", generator);
-        return generator;
-    }
-    
-	public static Generator<?> createRootGenerator(
-			ArrayTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
-        Generator<Object[]> generator = createExplicitGenerator(type, uniqueness, context);
-        if (generator == null)
-        	generator = new BlankArrayGenerator(type.getElementCount());
-        return generator;
-	}
-
-    // private helpers -------------------------------------------------------------------------------------------------
-
-	@SuppressWarnings("unchecked")
-	protected static Generator<Object[]> createExplicitGenerator(
-			ArrayTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
-        Generator<Object[]> generator = null;
-        generator = (Generator<Object[]>) DescriptorUtil.getGeneratorByName(type, context);
-        if (generator == null)
-            generator = createSourceGenerator(type, uniqueness, context);
-        return generator;
-	}
-
-    public static Generator<Object[]> createSyntheticArrayGenerator(String name, 
-            ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
-        List<GeneratorComponent<Object[]>> generatorComponents = 
-        	createSyntheticGeneratorComponents(arrayType, uniqueness, context);
-        Generator<Object[]> baseGenerator;
-        if (uniqueness.isUnique()) {
-        	// TODO v0.8 we first create ComponentBuilders and then unwrap them! This can be simplified... 
-        	// ...possibly with a NullableInstanceGeneratorFactory which takes over...
-        	// ...most of the ComponentBuilderFactory's functionality
-        	Generator<?>[] generators = new Generator[generatorComponents.size()];
-        	for (int i = 0; i < generators.length; i++)
-        		generators[i] = ((AbstractComponentBuilder<?>) generatorComponents.get(i)).getSource();
-        	baseGenerator = new UniqueMultiSourceArrayGenerator<Object>(Object.class, generators);
-        	generatorComponents = null; // element builders are now controlled by the UniqueArrayGenerator
-        } else
-        	baseGenerator = new BlankArrayGenerator(arrayType.getElementCount());
-		return new SourceAwareGenerator<Object[]>(name, baseGenerator, generatorComponents, context);
-    }
-
-    @SuppressWarnings("unchecked")
-	public static Generator<Object[]> createSimpleArrayGenerator(String name, 
-            ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
-    	// TODO v0.8 this method was written as a quick hack for the functionality required in Feed4JUnit 
-		// and needs to be merged into createSyntheticArrayGenerator() in the long run
-        List<GeneratorComponent<Object[]>> elementBuilders = 
-        	createSyntheticGeneratorComponents(arrayType, uniqueness, context);
-    	@SuppressWarnings("rawtypes")
-		Generator[] generators = new Generator[elementBuilders.size()];
-    	// TODO v0.8 we first create ComponentBuilders and then unwrap them! This can be simplified... 
-    	// ...possibly with a NullableInstanceGeneratorFactory which takes over most of the ComponentBuilderFactory's functionality
-    	for (int i = 0; i < generators.length; i++)
-    		generators[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
-    	return context.getGeneratorFactory().createCompositeArrayGenerator(Object.class, generators, uniqueness);
-    }
-
-    private static Generator<Object[]> createSourceGenerator(
+    @Override
+	protected Generator<Object[]> createSourceGenerator(
     		ArrayTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         // if no sourceObject is specified, there's nothing to do
         String sourceName = descriptor.getSource();
@@ -183,7 +109,48 @@ public class ArrayGeneratorFactory {
     	return generator;
     }
 
-    private static Generator<Object[]> createCSVSourceGenerator(ArrayTypeDescriptor arrayType, BeneratorContext context,
+	@Override
+	protected Generator<?> createSpecificGenerator(ArrayTypeDescriptor descriptor, String instanceName,
+			boolean nullifyIfNullable, Uniqueness uniqueness, BeneratorContext context) {
+		return null;
+	}
+
+	@Override
+	protected Generator<?> createHeuristicGenerator(
+			ArrayTypeDescriptor descriptor, String instanceName,
+			Uniqueness uniqueness, BeneratorContext context) {
+    	return new BlankArrayGenerator(descriptor.getElementCount());
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	protected Generator<?> applyWrappers(Generator<?> generator, ArrayTypeDescriptor descriptor, String instanceName,
+			Uniqueness uniqueness, BeneratorContext context) {
+        Generator<?>[] generators = createSyntheticElementGenerators(descriptor, uniqueness, context);
+        if (uniqueness.isUnique() && generators.length > 1) {
+        	generator = new UniqueMultiSourceArrayGenerator<Object>(Object.class, generators);
+        	generators = null; // element builders are now controlled by the UniqueArrayGenerator
+        }
+		generator = new SourceAwareGenerator(
+				instanceName, generator, createElementBuilders(generators), context);
+		return super.applyWrappers(generator, descriptor, instanceName, uniqueness, context);
+	}
+
+	@Override
+	protected Class<?> getGeneratedType(ArrayTypeDescriptor descriptor) {
+		return Object[].class;
+	}
+
+    // private helpers -------------------------------------------------------------------------------------------------
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Generator<Object[]> createSimpleArrayGenerator(String name, 
+            ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
+        Generator[] elementGenerators = createSyntheticElementGenerators(arrayType, uniqueness, context);
+    	return context.getGeneratorFactory().createCompositeArrayGenerator(Object.class, elementGenerators, uniqueness);
+    }
+
+    private Generator<Object[]> createCSVSourceGenerator(ArrayTypeDescriptor arrayType, BeneratorContext context,
             String sourceName) {
     	logger.debug("createCSVSourceGenerator({})", arrayType);
 		String encoding = arrayType.getEncoding();
@@ -195,7 +162,7 @@ public class ArrayGeneratorFactory {
 		return WrapperFactory.applyConverter(generator, new ArrayElementTypeConverter(arrayType));
     }
 
-	private static Generator<Object[]> createXLSSourceGenerator(ArrayTypeDescriptor arrayType, BeneratorContext context,
+	private Generator<Object[]> createXLSSourceGenerator(ArrayTypeDescriptor arrayType, BeneratorContext context,
             String sourceName) {
 		logger.debug("createXLSSourceGenerator({})", arrayType);
 		DataSourceProvider<Object[]> factory = new XLSArraySourceProvider(new ScriptConverterForObjects(context));
@@ -225,19 +192,30 @@ public class ArrayGeneratorFactory {
 	    return generator;
     }
 
-	@SuppressWarnings("unchecked")
-    private static List<GeneratorComponent<Object[]>> createSyntheticGeneratorComponents(
+    @SuppressWarnings("rawtypes")
+	private Generator<?>[] createSyntheticElementGenerators(
     		ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
-		List<GeneratorComponent<Object[]>> result = new ArrayList<GeneratorComponent<Object[]>>();
+		ArrayBuilder<Generator> result = new ArrayBuilder<Generator>(Generator.class);
 		for (InstanceDescriptor instance : arrayType.getParts()) {
             if (!arrayType.equals(instance.getTypeDescriptor()) && 
-            		!(instance instanceof ArrayElementDescriptor && ((ArrayElementDescriptor) instance).getMode() == Mode.ignored)) {
-            	GeneratorComponent<Object[]> builder = (GeneratorComponent<Object[]>) 
-            		GeneratorComponentFactory.createGeneratorComponent(instance, uniqueness, context);
-				result.add(builder); 
-            }
+            		!(instance instanceof ArrayElementDescriptor && 
+            				((ArrayElementDescriptor) instance).getMode() == Mode.ignored)) {
+            	Generator<?> generator = 
+            		InstanceGeneratorFactory.createSingleInstanceGenerator(instance, uniqueness, context);
+				result.add(generator); 
+            } else
+            	result.add(null);
         }
-	    return result;
+	    return result.toArray();
     }
+
+	private List<ArrayElementBuilder> createElementBuilders(Generator<?>[] generators) {
+		if (generators == null)
+			return new ArrayList<ArrayElementBuilder>();
+		ArrayList<ArrayElementBuilder> result = new ArrayList<ArrayElementBuilder>(generators.length);
+		for (int i = 0; i < generators.length; i++)
+			result.add(new ArrayElementBuilder(i, generators[i]));
+		return result;
+	}
 
 }
