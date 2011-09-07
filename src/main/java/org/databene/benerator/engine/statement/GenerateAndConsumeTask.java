@@ -68,6 +68,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
 
     private volatile AtomicBoolean initialized;
     private Consumer consumer;
+    private String message;
     
     public GenerateAndConsumeTask(String taskName, BeneratorContext context) {
     	this.taskName = taskName;
@@ -114,13 +115,12 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
     }
 
     private void configureConsumptionStart() {
-    	// TODO use converter
-    	
 		// find last sub member generation...
 		int lastMemberIndex = - 1;
 		for (int i = statements.size() - 1; i >= 0; i--) {
 			Statement statement = statements.get(i);
-			if (statement instanceof ComponentBuilder || statement instanceof CurrentProductGeneration) {
+			if (statement instanceof ComponentBuilder || statement instanceof CurrentProductGeneration 
+					|| statement instanceof ValidationStatement || statement instanceof ConversionStatement) {
 				lastMemberIndex = i;
 				break;
 			}
@@ -167,19 +167,28 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
     }
     
     public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
+    	message = null;
     	if (!initialized.get())
     		init(context);
     	try {
     		boolean success = true;
-        	for (Statement statement : statements) {
+        	for (int i = 0; i < statements.size(); i++) {
+        		Statement statement = statements.get(i);
         		// get root statement
         		Statement rootStatement = StatementUtil.getRootStatement(statement, context);
         		if (rootStatement instanceof GenerateOrIterateStatement)
         			((GenerateOrIterateStatement) rootStatement).prepare(context);
 				success &= statement.execute(context);
-				// TODO use validator
-				if (!success)
+				if (!success && (statement instanceof ValidationStatement)) {
+					i = -1; // if the product is not valid, restart with the first statement
+					success = true;
+					continue;
+				}
+				if (!success) {
+					if (statement instanceof MessageHolder)
+						this.message = ((MessageHolder) statement).getMessage();
 					break;
+				}
 			}
         	if (success)
         		BeneratorMonitor.INSTANCE.countGenerations(1);
@@ -231,7 +240,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
 	// MessageHolder interface -----------------------------------------------------------------------------------------
 	
 	public String getMessage() {
-	    return null; // TODO message?
+	    return message;
     }
 	
 	// java.lang.Object overrides --------------------------------------------------------------------------------------
