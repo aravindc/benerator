@@ -43,6 +43,7 @@ changes
 - cleaned up generator hierarchies for arrays
 - changed Statement interface
 - removed multithreading support for <generate> and <iterate> - it never worked satisfactory
+- drooped variable support in XML Schema-based file generation
 
 
 enhancements
