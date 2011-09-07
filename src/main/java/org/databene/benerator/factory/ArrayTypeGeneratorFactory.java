@@ -111,7 +111,7 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
 
 	@Override
 	protected Generator<?> createSpecificGenerator(ArrayTypeDescriptor descriptor, String instanceName,
-			boolean nullifyIfNullable, Uniqueness uniqueness, BeneratorContext context) {
+			boolean nullable, Uniqueness uniqueness, BeneratorContext context) {
 		return null;
 	}
 

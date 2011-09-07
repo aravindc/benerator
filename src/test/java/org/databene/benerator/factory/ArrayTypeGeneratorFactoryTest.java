@@ -83,7 +83,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testGenerator");
 		descriptor.setGenerator(PersonAttrArrayGenerator.class.getName());
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				descriptor, "testGenerator", null, false, Uniqueness.NONE, context);
+				descriptor, "testGenerator", false, Uniqueness.NONE, context);
 		generator.init(context);
 		for (int i = 0; i < 10; i++)
 			assertEqualArrays(PersonAttrArrayGenerator.ALICE, GeneratorUtil.generateNonNull(generator));
@@ -95,7 +95,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testXlsSource", parent);
 		descriptor.setSource("org/databene/benerator/factory/person.ent.xls");
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				descriptor, "testXlsSource", null, false, Uniqueness.NONE, context);
+				descriptor, "testXlsSource", false, Uniqueness.NONE, context);
 		context.set("otto_age", 89);
 		generator.init(context);
 		expectGeneratedSequence(generator, ALICE, OTTO).withCeasedAvailability();
@@ -109,7 +109,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		descriptor.setNesting("org/databene/benerator/factory/testnesting");
 		descriptor.setDataset("DACH");
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				descriptor, "testXlsDataset", null, false, Uniqueness.SIMPLE, context);
+				descriptor, "testXlsDataset", false, Uniqueness.SIMPLE, context);
 		Generator<String> g = WrapperFactory.applyConverter(generator, 
 				new ArrayElementExtractor<String>(String.class, 0));
 		generator.init(context);
@@ -123,7 +123,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testCsvSource", parent);
 		descriptor.setSource("org/databene/benerator/factory/person.ent.csv");
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				descriptor, "testCsvSource", null, false, Uniqueness.NONE, context);
+				descriptor, "testCsvSource", false, Uniqueness.NONE, context);
 		context.set("ottos_age", 89);
 		generator.init(context);
 		assertEqualArrays(ALICE, GeneratorUtil.generateNonNull(generator));
@@ -139,7 +139,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		descriptor.setNesting("org/databene/benerator/factory/testnesting");
 		descriptor.setDataset("DACH");
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				descriptor, "testCsvDataset", null, false, Uniqueness.SIMPLE, context);
+				descriptor, "testCsvDataset", false, Uniqueness.SIMPLE, context);
 		Generator<String> g = WrapperFactory.applyConverter(generator, new ArrayElementExtractor<String>(
 				String.class, 0));
 		generator.init(context);
@@ -168,7 +168,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 			descriptor.setSource("db");
 			descriptor.setSelector("select name, age from agft_person");
 			Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-					descriptor, "testDatabaseSource", null, false, Uniqueness.NONE, context);
+					descriptor, "testDatabaseSource", false, Uniqueness.NONE, context);
 			generator.init(context);
 			
 			// verify results
@@ -188,7 +188,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testEntitySourceType");
 		descriptor.setSource(PersonIterable.class.getName());
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				descriptor, "testEntitySource", null, false, Uniqueness.NONE, context);
+				descriptor, "testEntitySource", false, Uniqueness.NONE, context);
 		generator.init(context);
 		for (int i = 0; i < 2; i++) {
 	        Object[] product = GeneratorUtil.generateNonNull(generator);
@@ -205,7 +205,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testGeneratorSource", parent);
 		descriptor.setSource("myGen");
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				descriptor, "testGeneratorSource", null, false, Uniqueness.NONE, context);
+				descriptor, "testGeneratorSource", false, Uniqueness.NONE, context);
 		generator.init(context);
 		for (int i = 0; i < 10; i++)
 			assertEqualArrays(ALICE, GeneratorUtil.generateNonNull(generator));
@@ -217,7 +217,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		descriptor.setSource("illegalSource");
 		context.set("illegalSource", new File("txt.txt"));
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				descriptor, "testIllegalSourceType", null, false, Uniqueness.NONE, context);
+				descriptor, "testIllegalSourceType", false, Uniqueness.NONE, context);
 		generator.init(context);
 	}
 	
@@ -233,7 +233,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		arrayDescriptor.addElement(e2);
 		// when creating a generator for the descriptor
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				arrayDescriptor, "testSyntheticGeneration", null, false, Uniqueness.NONE, context);
+				arrayDescriptor, "testSyntheticGeneration", false, Uniqueness.NONE, context);
 		// it is expected to generate as specified
 		generator.init(context);
 		for (int i = 0; i < 10; i++) {

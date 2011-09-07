@@ -138,7 +138,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 
 	@Override
 	protected Generator<?> createSpecificGenerator(ComplexTypeDescriptor descriptor, String instanceName,
-			boolean nullifyIfNullable, Uniqueness uniqueness, BeneratorContext context) {
+			boolean nullable, Uniqueness uniqueness, BeneratorContext context) {
 		return null;
 	}
 
@@ -228,7 +228,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
             Uniqueness ownerUniqueness, BeneratorContext context) {
 	    TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getTypeDescriptor();
 	    Generator<?> generator = MetaGeneratorFactory.createTypeGenerator(
-	    		contentType, complexType.getName(), null, false, ownerUniqueness, context);
+	    		contentType, complexType.getName(), false, ownerUniqueness, context);
 	    return new SimpleTypeEntityGenerator(generator, complexType);
     }
 	

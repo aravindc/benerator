@@ -83,9 +83,9 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
     public SimpleTypeGeneratorFactory() { }
     
 	@Override
-	protected Generator<?> createExplicitGenerator(SimpleTypeDescriptor descriptor, Double nullQuota, Uniqueness uniqueness,
+	protected Generator<?> createExplicitGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness,
 			BeneratorContext context) {
-		Generator<?> generator = super.createExplicitGenerator(descriptor, nullQuota, uniqueness, context);
+		Generator<?> generator = super.createExplicitGenerator(descriptor, uniqueness, context);
         if (generator == null)
         	generator = createConstantGenerator(descriptor, context);
         if (generator == null)
@@ -98,17 +98,15 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected Generator<?> createSpecificGenerator(SimpleTypeDescriptor descriptor, String instanceName, 
-			boolean nullifyIfNullable, Uniqueness uniqueness, BeneratorContext context) {
+			boolean nullable, Uniqueness uniqueness, BeneratorContext context) {
         Generator<?> generator = InstanceGeneratorFactory.createConfiguredDefaultGenerator(
         		instanceName, uniqueness, context);
-		if (generator == null && nullifyIfNullable) {
-	        Class<?> javaType = descriptor.getPrimitiveType().getJavaType();
-			generator = new ConstantGenerator(null, javaType);
-		}
+		if (generator == null && nullable && shouldNullifyEachNullable(context)) // TODO this causes problems
+			generator = new ConstantGenerator(null, getGeneratedType(descriptor));
 		return generator;
 	}
 
-    protected static Generator<?> createValuesGenerator(
+	protected static Generator<?> createValuesGenerator(
     		SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
     	PrimitiveType primitiveType = descriptor.getPrimitiveType();
 		Class<?> targetType = (primitiveType != null ? primitiveType.getJavaType() : String.class);
@@ -321,7 +319,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
         Generator<?>[] sources = new Generator[n];
         for (int i = 0; i < n; i++) {
             SimpleTypeDescriptor alternative = descriptor.getAlternatives().get(i);
-            sources[i] = createGenerator(alternative, null, null, false, Uniqueness.NONE, context);
+            sources[i] = createGenerator(alternative, null, false, Uniqueness.NONE, context);
         }
         Class<?> javaType = descriptor.getPrimitiveType().getJavaType();
         return new AlternativeGenerator(javaType, sources);

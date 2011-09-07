@@ -32,7 +32,6 @@ import java.util.Date;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.ValueMapper;
-import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
@@ -64,22 +63,21 @@ public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
     
 	public Generator<?> createGenerator(E descriptor, String instanceName, 
-			Double nullQuota, boolean nullifyIfUnconfigured, Uniqueness uniqueness, BeneratorContext context) {
+			boolean nullable, Uniqueness uniqueness, BeneratorContext context) {
     	logger.debug("createGenerator({})", descriptor.getName());
-        Generator<?> generator = createRootGenerator(descriptor, instanceName, nullQuota, nullifyIfUnconfigured, 
-        		uniqueness, context);
+        Generator<?> generator = createRootGenerator(descriptor, instanceName, nullable, uniqueness, context);
         generator = applyWrappers(generator, descriptor, instanceName, uniqueness, context);
         logger.debug("Created {}", generator);
         return generator;
     }
     
 	public Generator<?> createRootGenerator(E descriptor, String instanceName, 
-			Double nullQuota, boolean nullifyIfNullable, Uniqueness uniqueness, BeneratorContext context) {
-		Generator<?> generator = createExplicitGenerator(descriptor, nullQuota, uniqueness, context);
+			boolean nullable, Uniqueness uniqueness, BeneratorContext context) {
+		Generator<?> generator = createExplicitGenerator(descriptor, uniqueness, context);
 		if (generator == null)
-			generator = createSpecificGenerator(descriptor, instanceName, nullifyIfNullable, uniqueness, context);
+			generator = createSpecificGenerator(descriptor, instanceName, nullable, uniqueness, context);
 		if (generator == null)
-			generator = createInheritedGenerator(descriptor, nullQuota, uniqueness, context);
+			generator = createInheritedGenerator(descriptor, uniqueness, context);
         if (generator == null)
         	generator = createHeuristicGenerator(descriptor, instanceName, uniqueness, context);
         if (generator == null) // by now, we must have created a generator
@@ -88,25 +86,13 @@ public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
 	}
 	
 	protected Generator<?> createExplicitGenerator(
-			E type, Double nullQuota, Uniqueness uniqueness, BeneratorContext context) {
+			E type, Uniqueness uniqueness, BeneratorContext context) {
 		Generator<?> generator = DescriptorUtil.getGeneratorByName(type, context);
         if (generator == null)
         	generator = createSourceGenerator(type, uniqueness, context);
         if (generator == null)
         	generator = createScriptGenerator(type, context);
-        if (generator == null)
-        	generator = createNullQuotaOneGenerator(type, nullQuota);
     	return generator;
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private Generator<?> createNullQuotaOneGenerator(
-			E descriptor, Double nullQuota) {
-		// check if nullQuota is 1
-        if (nullQuota != null && nullQuota.doubleValue() == 1.)
-            return new ConstantGenerator(null, getGeneratedType(descriptor));
-        else
-        	return null;
 	}
 
 	protected abstract Class<?> getGeneratedType(E descriptor);
@@ -115,14 +101,14 @@ public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
     		E descriptor, Uniqueness uniqueness, BeneratorContext context);
     
 	protected abstract Generator<?> createSpecificGenerator(E descriptor, String instanceName, 
-			boolean nullifyIfNullable, Uniqueness uniqueness, BeneratorContext context);
+			boolean nullable, Uniqueness uniqueness, BeneratorContext context);
 	
 	@SuppressWarnings("unchecked")
 	protected Generator<?> createInheritedGenerator(
-			E type, Double nullQuota, Uniqueness uniqueness, BeneratorContext context) {
+			E type, Uniqueness uniqueness, BeneratorContext context) {
 		while (type.getParent() != null) {
 			type = (E) type.getParent();
-			Generator<?> generator = createExplicitGenerator(type, nullQuota, uniqueness, context);
+			Generator<?> generator = createExplicitGenerator(type, uniqueness, context);
 			if (generator != null)
 				return generator;
 		}
@@ -226,5 +212,9 @@ public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
         }
 	    return converter;
     }
+
+    protected boolean shouldNullifyEachNullable(BeneratorContext context) {
+		return (context.getGeneratorFactory().getDefaultsProvider().defaultNullQuota() == 1.);
+	}
 
 }

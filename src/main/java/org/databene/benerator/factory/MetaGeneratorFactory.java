@@ -45,18 +45,18 @@ public class MetaGeneratorFactory {
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Generator<?> createRootGenerator(
     		InstanceDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
-		boolean nullifyIfUnconfigured = DescriptorUtil.isNullable(descriptor, context) && DescriptorUtil.shouldNullifyEachNullable(descriptor, context);
+		boolean nullable = DescriptorUtil.isNullable(descriptor, context);
 		String instanceName = descriptor.getName();
         TypeDescriptor type = descriptor.getTypeDescriptor();
 		TypeGeneratorFactory factory = factoryFor(type);
-        return factory.createRootGenerator(type, instanceName, descriptor.getNullQuota(), nullifyIfUnconfigured, uniqueness, context);
+        return factory.createRootGenerator(type, instanceName, nullable, uniqueness, context);
     }
     
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Generator<?> createTypeGenerator(TypeDescriptor type, String instanceName, 
-    		Double nullQuota, boolean nullifyIfUnconfigured, Uniqueness uniqueness, BeneratorContext context) {
+    		boolean nullable, Uniqueness uniqueness, BeneratorContext context) {
 		TypeGeneratorFactory factory = factoryFor(type);
-		return factory.createGenerator(type, instanceName, nullQuota, nullifyIfUnconfigured, uniqueness, context);
+		return factory.createGenerator(type, instanceName, nullable, uniqueness, context);
     }
 
     protected static TypeGeneratorFactory<?> factoryFor(TypeDescriptor type) {

@@ -176,7 +176,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	private Generator<Entity> createGenerator(InstanceDescriptor instance) {
 		ComplexTypeDescriptor type = (ComplexTypeDescriptor) instance.getTypeDescriptor();
 		Generator<?> generator = new ComplexTypeGeneratorFactory().createGenerator(
-				type, type.getName(), instance.getNullQuota(), false, instance.getUniqueness(), context);
+				type, type.getName(), false, instance.getUniqueness(), context);
 		assertEquals(Entity.class, generator.getGeneratedType());
 		return (Generator<Entity>) generator;
 	}
@@ -184,7 +184,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	@SuppressWarnings("unchecked")
 	private Generator<Entity> createGenerator(ComplexTypeDescriptor type) {
 		Generator<?> generator = new ComplexTypeGeneratorFactory().createGenerator(
-				type, type.getName(), null, false, Uniqueness.NONE, context);
+				type, type.getName(), false, Uniqueness.NONE, context);
 		assertEquals(Entity.class, generator.getGeneratedType());
 		return (Generator<Entity>) generator;
 	}

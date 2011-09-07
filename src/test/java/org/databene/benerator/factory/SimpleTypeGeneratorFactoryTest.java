@@ -221,7 +221,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
     private Generator<String> createAndInitGenerator(
     		SimpleTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
 		Generator<String> generator = (Generator<String>) new SimpleTypeGeneratorFactory().createGenerator(
-				type, null, null, false, uniqueness, context);
+				type, null, false, uniqueness, context);
 		generator.init(context);
 		return generator;
 	}

@@ -106,7 +106,7 @@ public class XMLFileGenerator extends UnsafeGenerator<File> {
         if (rootDescriptor == null)
             throw new ConfigurationError("Type '" + root + "' not found in schema: " + schemaUri);
 		contentGenerator = MetaGeneratorFactory.createTypeGenerator(
-				rootDescriptor, root, null, false, Uniqueness.NONE, beneratorContext);
+				rootDescriptor, root, false, Uniqueness.NONE, beneratorContext);
         contentGenerator.init(context);
         super.init(context);
     }

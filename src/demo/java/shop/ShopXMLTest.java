@@ -101,7 +101,7 @@ public class ShopXMLTest extends GeneratorTest {
         logger.debug("Testing simple type: " + descriptor.getName());
         logger.debug("-------------------------------------");
         Generator<T> generator = (Generator<T>) MetaGeneratorFactory.createTypeGenerator(
-            descriptor, descriptor.getName(), null, false, Uniqueness.NONE, provider.getContext());
+            descriptor, descriptor.getName(), false, Uniqueness.NONE, provider.getContext());
         generator.init(new DefaultBeneratorContext());
         for (int i = 0; i < 10; i++) {
             T object = GeneratorUtil.generateNonNull(generator);
@@ -117,7 +117,7 @@ public class ShopXMLTest extends GeneratorTest {
         logger.debug("Testing complex type: " + descriptor.getName());
         logger.debug("-------------------------------------");
         Generator<?> tmp = (Generator<Entity>) MetaGeneratorFactory.createTypeGenerator(
-        		descriptor, "instance", null, false, Uniqueness.NONE, provider.getContext());
+        		descriptor, "instance", false, Uniqueness.NONE, provider.getContext());
         assertEquals(Entity.class, tmp.getGeneratedType());
         Generator<Entity> generator = (Generator<Entity>) tmp;
         generator.init(new DefaultBeneratorContext());

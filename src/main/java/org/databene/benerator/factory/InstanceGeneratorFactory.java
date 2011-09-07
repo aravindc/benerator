@@ -50,20 +50,22 @@ public class InstanceGeneratorFactory {
 
     public static Generator<?> createSingleInstanceGenerator(
             InstanceDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
-        Generator<?> generator = null;
+        Generator<?> generator = DescriptorUtil.createNullQuotaOneGenerator(descriptor);
+        if (generator != null)
+        	return generator;
         Uniqueness uniqueness = DescriptorUtil.getUniqueness(descriptor, context);
         if (!uniqueness.isUnique())
         	uniqueness = ownerUniqueness;
-		boolean nullifyIfUnconfigured = DescriptorUtil.isNullable(descriptor, context) && DescriptorUtil.shouldNullifyEachNullable(descriptor, context);
+		boolean nullable = DescriptorUtil.isNullable(descriptor, context);
 		TypeDescriptor type = descriptor.getTypeDescriptor();
 		String instanceName = descriptor.getName();
 		if (type != null) {
-			generator = MetaGeneratorFactory.createTypeGenerator(type, instanceName, descriptor.getNullQuota(), nullifyIfUnconfigured, uniqueness, context);
+			generator = MetaGeneratorFactory.createTypeGenerator(type, instanceName, nullable, uniqueness, context);
 		} else {
         	ComponentDescriptor defaultConfig = context.getDefaultComponentConfig(instanceName);
         	if (defaultConfig != null)
         		return createSingleInstanceGenerator(defaultConfig, ownerUniqueness, context);
-        	if (nullifyIfUnconfigured)
+        	if (nullable && DescriptorUtil.shouldNullifyEachNullable(descriptor, context))
         		return createNullGenerator(descriptor, context);
         	if (descriptor instanceof IdDescriptor)
 				generator = new IncrementGenerator(1);
