@@ -93,15 +93,11 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     public PrimitiveType getPrimitiveType() {
     	if (primitiveType != null)
     		return primitiveType;
-        SimpleTypeDescriptor parent = this;
-        while (parent.getParent() != null) {
-            PrimitiveType primitiveType = PrimitiveType.getInstance(parent.getParentName());
-            if (primitiveType != null) {
-            	this.primitiveType = primitiveType;
-                return primitiveType;
-            }
-            parent = (SimpleTypeDescriptor) parent.getParent();
-        }
+        primitiveType = PrimitiveType.getInstance(getName());
+    	if (primitiveType != null)
+    		return primitiveType;
+        if (getParent() != null)
+        	return ((SimpleTypeDescriptor) getParent()).getPrimitiveType();
         return null;
     }
     
