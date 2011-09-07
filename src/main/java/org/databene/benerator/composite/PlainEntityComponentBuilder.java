@@ -37,7 +37,7 @@ import org.databene.model.data.Entity;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class PlainEntityComponentBuilder extends DefaultComponentBuilder<Entity> {
+public class PlainEntityComponentBuilder extends AbstractComponentBuilder<Entity> {
 	
     public PlainEntityComponentBuilder(String name, Generator<?> source) {
     	super(source, new Mutator_(name));
