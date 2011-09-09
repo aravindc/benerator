@@ -436,14 +436,24 @@ public class DescriptorUtil {
         }
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Generator<?> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
+	public static Generator<?> createNullQuotaOneGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
 		// check if nullQuota is 1
         Double nullQuota = descriptor.getNullQuota();
         if (nullQuota != null && nullQuota.doubleValue() == 1.)
-            return new ConstantGenerator(null);
+            return MetaGeneratorFactory.createNullGenerator(descriptor.getTypeDescriptor(), context);
         else
         	return null;
+	}
+
+	public static TypeDescriptor deriveType(String name, TypeDescriptor parentType) {
+		if (parentType instanceof SimpleTypeDescriptor)
+			return new SimpleTypeDescriptor(name, (SimpleTypeDescriptor) parentType);
+		else if (parentType instanceof ComplexTypeDescriptor)
+			return new ComplexTypeDescriptor(name, (ComplexTypeDescriptor) parentType);
+		else if (parentType instanceof ArrayTypeDescriptor)
+			return new ArrayTypeDescriptor(name, (ArrayTypeDescriptor) parentType);
+		else
+			throw new UnsupportedOperationException("Cannot derive child type from " + parentType.getClass());
 	}
 
 }
