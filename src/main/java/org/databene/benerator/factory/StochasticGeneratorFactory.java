@@ -155,7 +155,7 @@ public class StochasticGeneratorFactory extends GeneratorFactory {
     	if (nullQuota == null) {
     		if (nullable == null)
     			nullable = defaultsProvider.defaultNullable();
-    		nullQuota = (nullable ?  defaultsProvider.defaultNullQuota() : 0);
+    		nullQuota = (nullable ? (defaultsProvider.defaultNullQuota() != 1 ? defaultsProvider.defaultNullQuota() : 0) : 0);
     	}
 		return WrapperFactory.injectNulls(source, nullQuota);
 	}
