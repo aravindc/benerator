@@ -21,9 +21,7 @@
 
 package org.databene.model.data;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -33,9 +31,8 @@ import java.util.TreeMap;
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public class ArrayTypeDescriptor extends TypeDescriptor implements VariableHolder {
+public class ArrayTypeDescriptor extends TypeDescriptor {
 
-	private List<InstanceDescriptor> parts;
 	private Map<Integer, ArrayElementDescriptor> elements;
     
 	public ArrayTypeDescriptor(String name) {
@@ -44,7 +41,6 @@ public class ArrayTypeDescriptor extends TypeDescriptor implements VariableHolde
 	
     public ArrayTypeDescriptor(String name, ArrayTypeDescriptor parent) {
 	    super(name, parent);
-        this.parts = new ArrayList<InstanceDescriptor>();
 	    this.elements = new TreeMap<Integer, ArrayElementDescriptor>();
     }
 
@@ -55,12 +51,7 @@ public class ArrayTypeDescriptor extends TypeDescriptor implements VariableHolde
     	return (ArrayTypeDescriptor) super.getParent();
     }
     
-	public List<InstanceDescriptor> getParts() {
-		return parts;
-	}
-	
     public void addElement(ArrayElementDescriptor descriptor) {
-    	parts.add(descriptor);
         elements.put(descriptor.getIndex(), descriptor);
     }
 
@@ -87,15 +78,16 @@ public class ArrayTypeDescriptor extends TypeDescriptor implements VariableHolde
     }
 
 	public int getElementCount() {
-	    return elements.size();
+	    return (parent != null ? ((ArrayTypeDescriptor) parent).getElementCount() : elements.size());
     }
 
     // variable handling -----------------------------------------------------------------------------------------------
-    
+    /*
     public void addVariable(VariableDescriptor variable) {
         parts.add(variable);
     }
-    
+    */
+	
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
