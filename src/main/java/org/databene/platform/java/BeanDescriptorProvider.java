@@ -31,6 +31,8 @@ import org.databene.commons.ConfigurationError;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.PartDescriptor;
+import org.databene.model.data.PrimitiveDescriptorProvider;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.TypeMapper;
 
@@ -39,7 +41,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * Provides EntityDescriptors for JavaBeanClasses
+ * Provides EntityDescriptors for JavaBean classes
  * Created: 27.06.2007 23:04:19
  * @author Volker Bergmann
  */
@@ -100,12 +102,12 @@ public class BeanDescriptorProvider extends DefaultDescriptorProvider {
 		if (mapper.concreteType(abstractTypeName) != null)
 			return null; // the PrimitiveDescriptorProvider is responsible for primitives
 		TypeDescriptor result = super.getTypeDescriptor(abstractTypeName);
-		if (result == null)
-			result = createTypeDescriptor(abstractTypeName);
+		if (result == null && BeanUtil.existsClass(abstractTypeName))
+			result = createTypeDescriptor(BeanUtil.forName(abstractTypeName));
 		return result;
 	}
 
-    /**
+	/**
      * @param concreteType
      * @return the abstract type that corresponds to the specified concrete type
      * @see org.databene.model.data.TypeMapper#abstractType(Class)
@@ -135,10 +137,13 @@ public class BeanDescriptorProvider extends DefaultDescriptorProvider {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-	private TypeDescriptor createTypeDescriptor(String className) {
-	    Class<?> beanClass = BeanUtil.forName(className);
-	    ComplexTypeDescriptor td = new ComplexTypeDescriptor(className);
-	    for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(beanClass)) {
+	private TypeDescriptor createTypeDescriptor(Class<?> javaType) {
+	    String className = javaType.getName();
+	    SimpleTypeDescriptor simpleType = PrimitiveDescriptorProvider.INSTANCE.getPrimitiveTypeDescriptor(javaType);
+	    if (simpleType != null)
+	    	return simpleType;
+		ComplexTypeDescriptor td = new ComplexTypeDescriptor(className);
+	    for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(javaType)) {
 	        if ("class".equals(propertyDescriptor.getName()))
 	            continue;
 	        Class<?> propertyType = propertyDescriptor.getPropertyType();
@@ -148,6 +153,7 @@ public class BeanDescriptorProvider extends DefaultDescriptorProvider {
 	        PartDescriptor pd = new PartDescriptor(propertyDescriptor.getName(), abstractType);
 	        td.addComponent(pd);
 	    }
+	    addDescriptor(td);
 	    return td;
 	}
 
