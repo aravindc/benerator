@@ -57,7 +57,7 @@ public class AnnotationMapperTest {
 
 	@Test
 	public void testUnannotated() throws Exception {
-		checkMethod("unannotatedMethod", String.class, "string", "pattern", null);
+		checkMethod("unannotatedMethod", String.class, "string");
 	}
 
 	public void unannotatedMethod(String name) { }
@@ -86,7 +86,8 @@ public class AnnotationMapperTest {
 	public void testUniqueMethod() throws Exception {
 	    Method stringMethod = getClass().getDeclaredMethod("uniqueMethod", new Class[] { String.class });
 		AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory());
-		InstanceDescriptor arrayDescriptor = mapper.mapMethodParamsAnnotations(stringMethod);
+		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethod);
+		InstanceDescriptor arrayDescriptor = mapper.createMethodParamsInstanceDescriptor(stringMethod, type);
 		assertEquals(true, arrayDescriptor.isUnique());
 	}
 	
@@ -337,11 +338,13 @@ public class AnnotationMapperTest {
             throws NoSuchMethodException {
 	    Method stringMethod = getClass().getDeclaredMethod(method, new Class[] { methodArgType });
 	    AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory());
-		InstanceDescriptor arrayDescriptor = mapper.mapMethodParamsAnnotations(stringMethod);
+		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethod);
+		InstanceDescriptor arrayDescriptor = mapper.createMethodParamsInstanceDescriptor(stringMethod, type);
 		ArrayTypeDescriptor typeDescriptor = (ArrayTypeDescriptor) arrayDescriptor.getTypeDescriptor();
-		assertEquals(1, typeDescriptor.getElements().size());
+		ArrayTypeDescriptor parentTypeDescriptor = typeDescriptor.getParent();
+		assertEquals(1, parentTypeDescriptor.getElements().size());
 		ArrayElementDescriptor param1 = typeDescriptor.getElement(0);
-		assertEquals(expectedType, ((SimpleTypeDescriptor) param1.getTypeDescriptor()).getPrimitiveType().getName());
+		assertEquals(expectedType, ((SimpleTypeDescriptor) parentTypeDescriptor.getElement(0).getTypeDescriptor()).getPrimitiveType().getName());
 		for (int i = 0; i < details.length; i += 2) {
 	        String detailName = (String) details[i];
 	        Object expectedValue = details[i + 1];
