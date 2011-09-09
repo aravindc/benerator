@@ -47,7 +47,6 @@ import javax.validation.constraints.Size;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.DescriptorBasedGenerator;
 import org.databene.benerator.factory.ArrayTypeGeneratorFactory;
 import org.databene.benerator.factory.CoverageGeneratorFactory;
@@ -63,8 +62,10 @@ import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ParseException;
+import org.databene.commons.ProgrammerError;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.model.data.ArrayElementDescriptor;
@@ -91,13 +92,17 @@ import org.slf4j.LoggerFactory;
  */
 public class AnnotationMapper {
 	
-	private static final Package BENERATOR_ANNO_PACKAGE = Unique.class.getPackage();
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationMapper.class);
 	
 	private static final Set<String> STANDARD_METHODS;
 
+	private static final Package BENERATOR_ANNO_PACKAGE = Unique.class.getPackage();
 	private static final Object BEANVAL_ANNO_PACKAGE = Max.class.getPackage();
+	
+	@SuppressWarnings("unchecked")
+	private static final Set<Class<? extends Annotation>> EXPLICITLY_MAPPED_ANNOTATIONS = CollectionUtil.toSet(
+			Bean.class, Database.class, Descriptor.class, InvocationCount.class, 
+			Equivalence.class, Coverage.class, Serial.class, Coverage.class);
 
 	static {
 		STANDARD_METHODS = new HashSet<String>();
@@ -121,6 +126,8 @@ public class AnnotationMapper {
 	
 	// interface -------------------------------------------------------------------------------------------------------
 	
+	/** Parses @{@link Database} and @{@link Bean} annotations attached to a class, 
+	 *  initializes the related objects and puts them into the {@link BeneratorContext} */
 	public void parseClassAnnotations(Annotation[] annotations, BeneratorContext context) {
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof Database)
@@ -130,6 +137,8 @@ public class AnnotationMapper {
 		}
 	}
 	
+	/** scans test class attributes for attributes with @{@link Source} annotation 
+	 * and initializes them with a value from the referred source object */
 	public Generator<?> createAndInitAttributeGenerator(Field attribute, BeneratorContext context) {
 		Source sourceAnno = attribute.getAnnotation(Source.class);
 		if (sourceAnno != null)
@@ -138,51 +147,97 @@ public class AnnotationMapper {
 			return null;
 	}
 
-    public Generator<Object[]> createAndInitMethodParamsGenerator(Method testMethod, BeneratorContext context) {
-		try {
-			applyMethodGeneratorFactory(testMethod, context);
+	public Generator<Object[]> createAndInitMethodParamsGenerator(Method testMethod, BeneratorContext context) {
+		applyMethodGeneratorFactory(testMethod, context);
 
-			// Evaluate @Bean and @Database annotations
-			if (testMethod.getAnnotation(Bean.class) != null)
-				parseBean(testMethod.getAnnotation(Bean.class), context);
-			if (testMethod.getAnnotation(Database.class) != null)
-				parseDatabase(testMethod.getAnnotation(Database.class), context);
-			Generator<Object[]> generator = null;
-			
-			// Evaluate annotations
-			org.databene.benerator.anno.Generator generatorAnno = testMethod.getAnnotation(org.databene.benerator.anno.Generator.class);
-			Source sourceAnno = testMethod.getAnnotation(Source.class);
-			Descriptor descriptorBasedAnno = testMethod.getAnnotation(Descriptor.class);
-			// If there are method annotations, evaluate them, ...
-			if (generatorAnno != null)
-				generator = createGeneratorGenerator(generatorAnno, testMethod, context);
-			else if (sourceAnno != null)
-				generator = createMethodSourceGenerator(sourceAnno, testMethod, context);
-			else if (descriptorBasedAnno != null)
-				generator = createDescriptorBasedGenerator(descriptorBasedAnno, testMethod);
-			else // ... otherwise evaluate parameter annotations
-				generator = createParamsGenerator(testMethod, context);
-			
-			// apply offset
-			Offset offset = testMethod.getAnnotation(Offset.class);
-			if (offset != null)
-				generator = WrapperFactory.applyOffset(generator, offset.value());
-			
-			// evaluate @TestFeed annotation
-			InvocationCount testCount = testMethod.getAnnotation(InvocationCount.class);
-			if (testCount != null)
-				generator = new NShotGeneratorProxy<Object[]>(generator, testCount.value());
-			
-			// create and return FeedIterator
-			generator.init(context);
-			return generator;
-		} catch (IOException e) {
-			throw new ConfigurationError(e);
-		}
+		// Evaluate @Bean and @Database annotations attached to the test method
+		if (testMethod.getAnnotation(Bean.class) != null)
+			parseBean(testMethod.getAnnotation(Bean.class), context);
+		if (testMethod.getAnnotation(Database.class) != null)
+			parseDatabase(testMethod.getAnnotation(Database.class), context);
+		
+		// map the native Java bean informations to an array descriptor
+		ArrayTypeDescriptor type = createMethodParamsType(testMethod);
+	    InstanceDescriptor instance = createMethodParamsInstanceDescriptor(testMethod, type);
+	    Uniqueness uniqueness = (instance.isUnique() != null && instance.isUnique() ? Uniqueness.ORDERED : Uniqueness.NONE);
+
+		// create and return generator
+	    Generator<Object[]> generator = createGenerator(type, testMethod, uniqueness, context);
+		generator.init(context);
+		return generator;
     }
 
     // helper methods --------------------------------------------------------------------------------------------------
 	
+	protected ArrayTypeDescriptor createMethodParamsType(Method testMethod) {
+		ArrayTypeDescriptor nativeType = createNativeParamsDescriptor(testMethod);
+		return createConfiguredParamsDescriptor(testMethod, nativeType);
+	}
+
+	protected InstanceDescriptor createMethodParamsInstanceDescriptor(
+			Method testMethod, ArrayTypeDescriptor type) {
+		InstanceDescriptor instance = new InstanceDescriptor(testMethod.getName(), type);
+		for (Annotation annotation : testMethod.getAnnotations())
+			mapParamAnnotation(annotation, instance);
+		return instance;
+	}
+
+	protected ArrayTypeDescriptor createNativeParamsDescriptor(Method testMethod) {
+		ArrayTypeDescriptor nativeDescriptor = new ArrayTypeDescriptor(testMethod.getName() + "_native");
+		Class<?>[] paramTypes = testMethod.getParameterTypes();
+		for (int i = 0; i < paramTypes.length; i++) {
+			TypeDescriptor elementType = dataModel.getTypeDescriptor(paramTypes[i].getName());
+			ArrayElementDescriptor elementDescriptor = new ArrayElementDescriptor(i, elementType);
+		    if (elementDescriptor.isNullable() == null) { // assure an explicit setting for nullability
+		    	if (BeanUtil.isPrimitiveType(paramTypes[i].getName()))
+		    		elementDescriptor.setNullable(false); // primitives can never be null
+		    	else if (elementDescriptor.getNullQuota() != null && 
+		    			((Double) elementDescriptor.getDeclaredDetailValue("nullQuota")) == 0.)
+		    		elementDescriptor.setNullable(false); // if nullQuota == 0, then set nullable to false
+		    	else
+		    		elementDescriptor.setNullable(true);
+		    }
+			nativeDescriptor.addElement(elementDescriptor);
+		}
+		return nativeDescriptor;
+	}
+
+	private ArrayTypeDescriptor createConfiguredParamsDescriptor(
+			Method testMethod, ArrayTypeDescriptor nativeDescriptor) {
+		ArrayTypeDescriptor type = new ArrayTypeDescriptor(
+				testMethod.getName() + "_configured", nativeDescriptor);
+		Class<?>[] parameterTypes = testMethod.getParameterTypes();
+		Annotation[][] paramAnnos = testMethod.getParameterAnnotations();
+		for (int i = 0; i < parameterTypes.length; i++) {
+			ArrayElementDescriptor parentElement = nativeDescriptor.getElement(i);
+			if (containsConfig(paramAnnos[i])) {
+				TypeDescriptor parentElementType = parentElement.getTypeDescriptor();
+				TypeDescriptor elementType = DescriptorUtil.deriveType(
+						parentElementType.getName(), parentElementType);
+				ArrayElementDescriptor element = new ArrayElementDescriptor(i, elementType);
+				element.setParent(parentElement);
+			    for (Annotation annotation : paramAnnos[i])
+		            mapParamAnnotation(annotation, element);
+				type.addElement(element);
+			}
+		}
+		return type;
+	}
+
+	private boolean containsConfig(Annotation[] annotations) {
+		for (Annotation annotation : annotations) {
+			Package annoPkg = annotation.annotationType().getPackage();
+			if ((annoPkg == BENERATOR_ANNO_PACKAGE || annoPkg == BEANVAL_ANNO_PACKAGE) && 
+					!explicitlyMappedAnnotation(annotation))
+				return true;
+		}
+		return false;
+	}
+
+	protected static boolean explicitlyMappedAnnotation(Annotation annotation) {
+		return EXPLICITLY_MAPPED_ANNOTATIONS.contains(annotation.annotationType());
+	}
+
 	protected void applyMethodGeneratorFactory(Method testMethod, BeneratorContext context) {
 		boolean configured = applyGeneratorFactory(testMethod.getAnnotations(), context);
 		if (!configured)
@@ -237,78 +292,82 @@ public class AnnotationMapper {
 		}
 		return false;
 	}
-
+/*
 	@SuppressWarnings("unchecked")
-	private Generator<Object[]> createMethodSourceGenerator(
-			org.databene.benerator.anno.Source source, Method testMethod, BeneratorContext context) {
-		String methodName = testMethod.getName();
-		ArrayTypeDescriptor nativeDescriptor = new ArrayTypeDescriptor(methodName + "_native");
-		mapParamTypes(testMethod, nativeDescriptor);
-		ArrayTypeDescriptor configuredDescriptor = new ArrayTypeDescriptor(methodName + "_conf", nativeDescriptor);
-		InstanceDescriptor descriptor = new InstanceDescriptor(methodName, configuredDescriptor);
-		mapAnnotation(source, descriptor);
+	private Generator<Object[]> createMethodSourceGenerator(org.databene.benerator.anno.Source source, 
+			Method testMethod, ArrayTypeDescriptor type, BeneratorContext context) {
 		Generator<Object[]> baseGenerator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				configuredDescriptor, testMethod.getName(), false, Uniqueness.NONE, context);
+				type, testMethod.getName(), false, Uniqueness.NONE, context);
 		return baseGenerator;
 	}
-
+*/
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Generator<?> createAndInitAttributeSourceGenerator(
 			org.databene.benerator.anno.Source source, Field attribute, BeneratorContext context) {
 		String attName = attribute.getName();
 		TypeDescriptor typeDescriptor = createTypeDescriptor(attribute.getType());
 		InstanceDescriptor descriptor = new InstanceDescriptor(attName, typeDescriptor);
-		mapAnnotation(source, descriptor);
+		mapParamAnnotation(source, descriptor);
 		Offset offset = attribute.getAnnotation(Offset.class);
 		if (offset != null)
-			mapAnnotation(offset, descriptor);
+			mapParamAnnotation(offset, descriptor);
 		Generator generator = InstanceGeneratorFactory.createSingleInstanceGenerator(
 				descriptor, Uniqueness.NONE, context);
 		generator = WrapperFactory.applyConverter(generator, new Entity2JavaConverter());
 		generator.init(context);
 		return generator;
 	}
-
+/*
 	@SuppressWarnings("unchecked")
-	private Generator<Object[]> createGeneratorGenerator(
-			org.databene.benerator.anno.Generator annotation, Method testMethod, BeneratorContext context) {
-		String methodName = testMethod.getName();
-		ArrayTypeDescriptor nativeDescriptor = new ArrayTypeDescriptor(methodName + "_native");
-		mapParamTypes(testMethod, nativeDescriptor);
-		ArrayTypeDescriptor typeDescriptor = new ArrayTypeDescriptor(methodName + "_conf", nativeDescriptor);
-		InstanceDescriptor descriptor = new InstanceDescriptor(methodName, typeDescriptor);
-		mapAnnotation(annotation, descriptor);
+	private Generator<Object[]> createGeneratorGenerator(org.databene.benerator.anno.Generator annotation, 
+			Method testMethod, ArrayTypeDescriptor type, BeneratorContext context) {
 		return (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
-				typeDescriptor, testMethod.getName(), false, Uniqueness.NONE, context);
+				type, testMethod.getName(), false, Uniqueness.NONE, context);
 	}
+*/
 
-	private void mapParamTypes(Method testMethod, ArrayTypeDescriptor typeDescriptor) {
-		Class<?>[] paramTypes = testMethod.getParameterTypes();
-		for (int i = 0; i < paramTypes.length; i++) {
-			String elementType = BeanDescriptorProvider.defaultInstance().abstractType(paramTypes[i]);
-			ArrayElementDescriptor elementDescriptor = new ArrayElementDescriptor(i, elementType);
-			typeDescriptor.addElement(elementDescriptor);
+    @SuppressWarnings("unchecked")
+	protected Generator<Object[]> createGenerator(ArrayTypeDescriptor type,
+			Method testMethod, Uniqueness uniqueness, BeneratorContext context) {
+		Generator<Object[]> generator;
+		
+		Descriptor descriptorBasedAnno = testMethod.getAnnotation(Descriptor.class);
+		if (descriptorBasedAnno != null) {
+			context.setGeneratorFactory(new StochasticGeneratorFactory());
+			generator = createDescriptorBasedGenerator(descriptorBasedAnno, testMethod, context);
+		} else {
+			generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
+				type, testMethod.getName(), false, uniqueness, context);
 		}
+		Class<?> generatedType = generator.getGeneratedType();
+		if (generatedType != Object[].class && generatedType != Object.class)
+	    	throw new ProgrammerError("Expected Generator<Object[]> or Generator<Object>, but found Generator<" + 
+	    			generatedType.getClass().getSimpleName() + '>');
+		
+		// evaluate @TestFeed annotation
+		InvocationCount testCount = testMethod.getAnnotation(InvocationCount.class);
+		if (testCount != null)
+			generator = new NShotGeneratorProxy<Object[]>(generator, testCount.value());
+		return generator;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected Generator<Object[]> createDescriptorBasedGenerator(
-			Descriptor descriptorAnno, Method testMethod)
-			throws IOException {
-		Generator<Object[]> generator;
-		String filename;
-		if (descriptorAnno.file().length() > 0)
-			filename = descriptorAnno.file();
-		else
-			filename = testMethod.getDeclaringClass().getName().replace('.', File.separatorChar) + ".ben.xml";
-		String testName;
-		if (descriptorAnno.name().length() > 0)
-			testName = descriptorAnno.name();
-		else
-			testName = testMethod.getName();
-		BeneratorContext beneratorContext = new DefaultBeneratorContext();
-		generator = (Generator) new DescriptorBasedGenerator(filename, testName, beneratorContext);
-		return generator;
+	private Generator<Object[]> createDescriptorBasedGenerator(Descriptor annotation, Method testMethod, BeneratorContext context) {
+		String filename = null;
+		try {
+			if (annotation.file().length() > 0)
+				filename = annotation.file();
+			else
+				filename = testMethod.getDeclaringClass().getName().replace('.', File.separatorChar) + ".ben.xml";
+			String testName;
+			if (annotation.name().length() > 0)
+				testName = annotation.name();
+			else
+				testName = testMethod.getName();
+			return (Generator) new DescriptorBasedGenerator(filename, testName, context);
+		} catch (IOException e) {
+			throw new RuntimeException("Error opening file " + filename, e);
+		}
 	}
 
     
@@ -371,29 +430,16 @@ public class AnnotationMapper {
 		} else
 			throw new ConfigurationError("@Property is missing 'value' or 'ref' attribute");
 	}
-
-    private Generator<Object[]> createParamsGenerator(Method testMethod, BeneratorContext context) {
-	    InstanceDescriptor array = mapMethodParamsAnnotations(testMethod);
-        Uniqueness uniqueness = DescriptorUtil.getUniqueness(array, context);
-        Generator<Object[]> generator = arrayTypeGeneratorFactory.createSimpleArrayGenerator(array.getName(),
-				(ArrayTypeDescriptor) array.getTypeDescriptor(), uniqueness, context);
+/*
+    private Generator<Object[]> createParamsGenerator(
+    		Method testMethod, InstanceDescriptor descriptor, BeneratorContext context) {
+        Uniqueness uniqueness = DescriptorUtil.getUniqueness(descriptor, context);
+        Generator<Object[]> generator = arrayTypeGeneratorFactory.createSimpleArrayGenerator(descriptor.getName(),
+				(ArrayTypeDescriptor) descriptor.getTypeDescriptor(), uniqueness, context);
 		return generator;
     }
-
-	InstanceDescriptor mapMethodParamsAnnotations(Method testMethod) {
-		dataModel.addDescriptorProvider(PrimitiveDescriptorProvider.INSTANCE);
-		ArrayTypeDescriptor type = new ArrayTypeDescriptor(testMethod.getName());
-		Class<?>[] parameterTypes = testMethod.getParameterTypes();
-		Annotation[][] paramAnnos = testMethod.getParameterAnnotations();
-		for (int i = 0; i < parameterTypes.length; i++)
-			type.addElement(mapParameter(parameterTypes[i], paramAnnos[i], i));
-	    InstanceDescriptor instance = new InstanceDescriptor(testMethod.getName(), type);
-		if (testMethod.getAnnotation(Unique.class) != null)
-			instance.setUnique(true);
-		return instance;
-    }
-
-	private static <T> void mapAnnotation(Annotation annotation, InstanceDescriptor descriptor) {
+*/
+	private static <T> void mapParamAnnotation(Annotation annotation, InstanceDescriptor descriptor) {
 	    Package annoPackage = annotation.annotationType().getPackage();
 	    if (BENERATOR_ANNO_PACKAGE.equals(annoPackage))
 	    	mapBeneratorParamAnnotation(annotation, descriptor);
@@ -428,7 +474,7 @@ public class AnnotationMapper {
 				mapMinDateAnnotation((MinDate) annotation, instanceDescriptor);
 			else if (annotationType == MaxDate.class)
 				mapMaxDateAnnotation((MaxDate) annotation, instanceDescriptor);
-			else
+			else if (!explicitlyMappedAnnotation(annotation))
 				mapAnyValueTypeAnnotation(annotation, instanceDescriptor);
 		} catch (Exception e) {
 			throw new ConfigurationError("Error mapping annotation settings", e);
@@ -498,22 +544,6 @@ public class AnnotationMapper {
 		Object value = normalize(method.invoke(annotation));
 		String detailName = StringUtil.uncapitalize(annotation.annotationType().getSimpleName());
 		setDetail(detailName, value, instanceDescriptor);
-    }
-
-	private ArrayElementDescriptor mapParameter(Class<?> type, Annotation[] annos, int index) {
-		TypeDescriptor typeDescriptor = createTypeDescriptor(type);
-		ArrayElementDescriptor descriptor = new ArrayElementDescriptor(index, typeDescriptor);
-	    for (Annotation annotation : annos)
-            mapAnnotation(annotation, descriptor);
-	    if (descriptor.getDeclaredDetailValue("nullable") == null) { // assure an explicit setting for nullability
-	    	if (BeanUtil.isPrimitiveType(type.getName()))
-	    		descriptor.setNullable(false); // primitives can never be null
-	    	else if (descriptor.getDeclaredDetailValue("nullQuota") != null && ((Double) descriptor.getDeclaredDetailValue("nullQuota")) == 0.)
-	    		descriptor.setNullable(false); // if nullQuota == 1, then set nullable to false
-	    	else
-	    		descriptor.setNullable(null); // leave the decision to the generator factories
-	    }
-        return descriptor;
     }
 
 	private static void mapBeanValidationParameter(Annotation annotation, InstanceDescriptor element) {
