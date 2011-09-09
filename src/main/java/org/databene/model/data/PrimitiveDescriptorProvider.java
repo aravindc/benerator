@@ -45,7 +45,9 @@ public class PrimitiveDescriptorProvider extends DefaultDescriptorProvider {
 
 	public SimpleTypeDescriptor getPrimitiveTypeDescriptor(Class<? extends Object> javaType) {
 		PrimitiveType type = PrimitiveType.findByJavaType(javaType);
-		return (SimpleTypeDescriptor) getTypeDescriptor(type.getName());
+		if (type != null)
+			return (SimpleTypeDescriptor) getTypeDescriptor(type.getName());
+		return null;
     }
     
 }
