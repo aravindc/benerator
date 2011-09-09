@@ -45,7 +45,11 @@ public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
     }
 
     public Object convert(Object entityOrArray) {
-    	if (entityOrArray == null)
+    	return convertAny(entityOrArray);
+    }
+
+    public static Object convertAny(Object entityOrArray) {
+		if (entityOrArray == null)
     		return null;
     	else if (entityOrArray.getClass().isArray())
     		return convertArray((Object[]) entityOrArray);
@@ -53,16 +57,16 @@ public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
     		return convertEntity((Entity) entityOrArray);
     	else
     		return entityOrArray;
-    }
+	}
 
-	private Object convertArray(Object[] array) {
+	private static Object convertArray(Object[] array) {
 		Object[] result = new Object[array.length];
 		for (int i = 0; i < array.length; i++)
-			result[i] = convert(array[i]);
+			result[i] = convertAny(array[i]);
 		return result;
 	}
 
-	private Object convertEntity(Entity entity) {
+	private static Object convertEntity(Entity entity) {
 		Object result = BeanUtil.newInstance(entity.type());
         for (Map.Entry<String, Object> entry : entity.getComponents().entrySet())
             BeanUtil.setPropertyValue(result, entry.getKey(), entry.getValue(), false);
