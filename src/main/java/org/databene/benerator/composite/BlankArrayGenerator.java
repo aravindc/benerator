@@ -48,4 +48,9 @@ public class BlankArrayGenerator extends ThreadSafeNonNullGenerator<Object[]> {
         return new Object[length];
     }
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + length + ']';
+	}
+	
 }
