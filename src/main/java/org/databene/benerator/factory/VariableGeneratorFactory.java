@@ -47,7 +47,7 @@ public class VariableGeneratorFactory {
 		Generator<?> generator = null;
 		
 		// check if nullQuota == 1
-		generator = DescriptorUtil.createNullQuotaOneGenerator(descriptor);
+		generator = DescriptorUtil.createNullQuotaOneGenerator(descriptor, context);
 		if (generator != null)
 			return null;
 		

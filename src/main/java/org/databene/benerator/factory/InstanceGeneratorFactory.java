@@ -50,7 +50,7 @@ public class InstanceGeneratorFactory {
 
     public static Generator<?> createSingleInstanceGenerator(
             InstanceDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
-        Generator<?> generator = DescriptorUtil.createNullQuotaOneGenerator(descriptor);
+        Generator<?> generator = DescriptorUtil.createNullQuotaOneGenerator(descriptor, context);
         if (generator != null)
         	return generator;
         Uniqueness uniqueness = DescriptorUtil.getUniqueness(descriptor, context);
@@ -72,6 +72,8 @@ public class InstanceGeneratorFactory {
         	else
         		throw new UnsupportedOperationException("Type of " + instanceName + " is not defined");
         }
+		GeneratorFactory generatorFactory = context.getGeneratorFactory();
+		generator = generatorFactory.applyNullSettings(generator, nullable, descriptor.getNullQuota());
 		return generator;
     }
     
