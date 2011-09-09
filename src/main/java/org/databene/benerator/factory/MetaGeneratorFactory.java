@@ -69,5 +69,15 @@ public class MetaGeneratorFactory {
         else
             throw new UnsupportedOperationException("Descriptor type not supported: " + type.getClass());
     }
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Generator<?> createNullGenerator(TypeDescriptor type, BeneratorContext context) {
+		Class generatedType;
+		if (type != null)
+			generatedType = ((TypeGeneratorFactory) factoryFor(type)).getGeneratedType(type);
+		else
+			generatedType = Object.class;
+		return context.getGeneratorFactory().createNullGenerator(generatedType);
+	}
     
 }
