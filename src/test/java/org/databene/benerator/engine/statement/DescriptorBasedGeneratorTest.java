@@ -45,6 +45,7 @@ public class DescriptorBasedGeneratorTest extends GeneratorTest {
 		String lf = SystemInfo.getLineSeparator();
 		String uri = "string://<setup>" + lf +
 				"	<generate name='perGen' type='Person' count='3'>" + lf +
+				"		<id name='id' type='int'/>" + lf +
 				"		<attribute name='name' constant='Alice'/>" + lf +
 				"	</generate>" + lf +
 				"</setup>";
@@ -54,16 +55,13 @@ public class DescriptorBasedGeneratorTest extends GeneratorTest {
 		assertNotNull(generator);
 		generator.init(context);
 		for (int i = 0; i < 3; i++)
-			checkGeneration(generator);
+			checkGeneration((Entity) GeneratorUtil.generateNonNull(generator), i + 1);
 		assertUnavailable(generator);
 		generator.close();
 	}
 
-	private void checkGeneration(Generator<?> generator) {
-	    Entity entity = (Entity) GeneratorUtil.generateNonNull(generator);
-	    assertNotNull(entity);
-		assertEquals("Person", entity.type());
-		assertEquals("Alice", entity.get("name"));
+	private void checkGeneration(Entity entity, int id) {
+	    assertEquals(new Entity("Person", "id", id, "name", "Alice"), entity);
     }
 	
 }
