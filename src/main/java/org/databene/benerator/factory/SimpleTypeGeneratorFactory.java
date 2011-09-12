@@ -398,10 +398,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
 
     private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         // evaluate max length
-        Integer maxLength = (Integer) descriptor.getDeclaredDetailValue(MAX_LENGTH);
-        if (maxLength == null) {
-            // maxLength was not set in this descriptor. So check the parent setting's value 
-            maxLength = descriptor.getMaxLength();
+        Integer maxLength = null;
+        SimpleTypeDescriptor tmp = descriptor;
+        while (maxLength == null && tmp != null) {
+        	maxLength = tmp.getMaxLength();
+        	tmp = tmp.getParent();
         }
 
         // check pattern against null
