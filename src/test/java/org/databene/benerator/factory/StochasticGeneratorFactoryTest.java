@@ -64,7 +64,7 @@ public class StochasticGeneratorFactoryTest extends GeneratorTest {
     // boolean source -----------------------------------------------------------------------------------------------
 
     public void testGetBooleanGenerator() {
-        initAndUseGenerator(generatorFactory.createBooleanGenerator(0.5f));
+        initAndUseGenerator(generatorFactory.createBooleanGenerator(0.5));
     }
 
     // number generators -----------------------------------------------------------------------------------------------
