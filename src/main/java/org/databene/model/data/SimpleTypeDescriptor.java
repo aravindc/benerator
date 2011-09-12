@@ -90,6 +90,11 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
 
     // properties ------------------------------------------------------------------------------------------------------
 
+    @Override
+    public SimpleTypeDescriptor getParent() {
+    	return (SimpleTypeDescriptor) super.getParent();
+    }
+    
     public PrimitiveType getPrimitiveType() {
     	if (primitiveType != null)
     		return primitiveType;
@@ -97,7 +102,7 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     	if (primitiveType != null)
     		return primitiveType;
         if (getParent() != null)
-        	return ((SimpleTypeDescriptor) getParent()).getPrimitiveType();
+        	return getParent().getPrimitiveType();
         return null;
     }
     
