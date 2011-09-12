@@ -202,7 +202,7 @@ public abstract class GeneratorFactory {
         	}
         }
         if (pattern == null)
-            pattern = "[A-Z]";
+            pattern = "[A-Z]*";
         if (lengthDistribution != null) {
         	Set<Character> chars = RegexParser.charsOfPattern(pattern, locale);
 			return createStringGenerator(
