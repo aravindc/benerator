@@ -388,7 +388,7 @@ public class DBSystem extends AbstractStorageSystem {
 	        logger.debug("queryEntityById({}, {})", tableName, id);
 	        ComplexTypeDescriptor descriptor = (ComplexTypeDescriptor) getTypeDescriptor(tableName);
 	        PreparedStatement query = getThreadContext().getSelectByPKStatement(descriptor);
-	        query.setObject(1, id); // TODO v0.8 support composite keys
+	        query.setObject(1, id); // TODO v0.7.1 support composite keys
 	        ResultSet resultSet = query.executeQuery();
 	        if (resultSet.next())
 	        	return ResultSet2EntityConverter.convert(resultSet, descriptor);
@@ -671,7 +671,7 @@ public class DBSystem extends AbstractStorageSystem {
         DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
         if (pkConstraint != null) {
 	        String[] pkColumnNames = pkConstraint.getColumnNames();
-	        if (pkColumnNames.length == 1) { // TODO v0.8 support composite primary keys
+	        if (pkColumnNames.length == 1) { // TODO v0.7.1 support composite primary keys
 	        	String columnName = pkColumnNames[0];
 	        	DBColumn column = table.getColumn(columnName);
 				table.getColumn(columnName);
@@ -702,7 +702,7 @@ public class DBSystem extends AbstractStorageSystem {
                 complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
                 logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
-                // TODO v0.8 handle composite keys
+                // TODO v0.7.1 handle composite keys
             }
         }
         // process normal columns
@@ -743,7 +743,7 @@ public class DBSystem extends AbstractStorageSystem {
                     descriptor.setUnique(true);
                 } else {
                     logger.warn("Automated uniqueness assurance on multiple columns is not provided yet: " + constraint);
-                    // TODO v0.8 support uniqueness constraints on combination of columns
+                    // TODO v0.7.1 support uniqueness constraints on combination of columns
                 }
             }
             logger.debug("parsed attribute " + columnId + ": " + descriptor);

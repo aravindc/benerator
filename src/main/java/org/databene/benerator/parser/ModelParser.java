@@ -92,7 +92,7 @@ public class ModelParser {
     }
 
     public ComplexTypeDescriptor parseComplexType(Element ctElement, ComplexTypeDescriptor descriptor) {
-    	// TODO v0.8 called from XMLSchemaDescriptorProvider
+    	// TODO v0.7.x called from XMLSchemaDescriptorProvider
         assertElementName(ctElement, "entity", "type");
         descriptor = new ComplexTypeDescriptor(descriptor.getName(), descriptor);
         mapTypeDetails(ctElement, descriptor);

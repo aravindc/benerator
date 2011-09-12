@@ -281,7 +281,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	}
 
 	private InstanceDescriptor mapDescriptorElement(Element element, BeneratorContext context) { 
-		// TODO v0.8 Make Descriptors an abstraction of the XML file content and convert XML -> Descriptors -> Statements
+		// TODO v0.7.1 Make Descriptors an abstraction of the XML file content and convert XML -> Descriptors -> Statements
 		
 		// evaluate type
 		String type = parseStringAttribute(element, ATT_TYPE, context, false);

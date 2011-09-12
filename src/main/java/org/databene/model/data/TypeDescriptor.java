@@ -291,7 +291,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
             return parent;
         if (parentName == null)
             return null;
-        // TODO v0.8 the following is a workaround for name conflicts with types of same name in different name spaces, e.g. xs:string <-> ben.string
+        // TODO v0.7.1 the following is a workaround for name conflicts with types of same name in different name spaces, e.g. xs:string <-> ben.string
         TypeDescriptor candidate = DataModel.getDefaultInstance().getTypeDescriptor(parentName);
         if (candidate != this)
         	parent = candidate;
