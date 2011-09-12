@@ -55,6 +55,8 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public static final String COUNT_DISTRIBUTION = "countDistribution";
     public static final String COUNT              = "count";
     public static final String NULL_QUOTA         = "nullQuota";
+    public static final String MODE = "mode";
+    
     
     private InstanceDescriptor parent;
     private TypeDescriptor localType;
@@ -91,6 +93,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
         addConfig(COUNT_GRANULARITY,    Expression.class);
         addConfig(COUNT_DISTRIBUTION, String.class);
         addConfig(NULL_QUOTA,         Double.class);
+        addConfig(MODE, Mode.class);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -223,6 +226,14 @@ public class InstanceDescriptor extends FeatureDescriptor {
     
     public void setNullQuota(Double nullQuota) {
         setDetailValue(NULL_QUOTA, nullQuota);
+    }
+
+    public Mode getMode() {
+        return (Mode) getDetailValue(MODE);
+    }
+
+    public void setMode(Mode mode) {
+        setDetailValue(MODE, mode);
     }
 
     @Override

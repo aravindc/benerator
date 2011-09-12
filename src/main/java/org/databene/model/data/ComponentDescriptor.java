@@ -35,8 +35,6 @@ package org.databene.model.data;
  */
 public abstract class ComponentDescriptor extends InstanceDescriptor {
     
-    public static final String MODE = "mode";
-    
     public ComponentDescriptor(String name, String typeName) {
         this(name, typeName, null);
     }
@@ -47,17 +45,6 @@ public abstract class ComponentDescriptor extends InstanceDescriptor {
     
     protected ComponentDescriptor(String name, String typeName, TypeDescriptor localType) {
         super(name, typeName, localType);
-        addConfig(MODE, Mode.class);
     }
     
-    // properties ------------------------------------------------------------------------------------------------------
-
-    public Mode getMode() {
-        return (Mode) getDetailValue(MODE);
-    }
-
-    public void setMode(Mode mode) {
-        setDetailValue(MODE, mode);
-    }
-
 }
