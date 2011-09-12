@@ -75,11 +75,11 @@ public abstract class GeneratorFactory {
      * @param trueQuota a value from 0 to 1, indicating the quota of true values to generate among the non-null values
      * @return a Boolean generator of the desired characteristics
      */
-	public Generator<Boolean> createBooleanGenerator(double trueQuota) {
+	public Generator<Boolean> createBooleanGenerator(Double trueQuota) {
     	SequenceGenerator<Boolean> generator = new SequenceGenerator<Boolean>(Boolean.class);
-    	if (trueQuota < 1)
+    	if (trueQuota == null || trueQuota < 1)
     		generator.addValue(false);
-    	if (trueQuota > 0)
+    	if (trueQuota == null || trueQuota > 0)
     		generator.addValue(true);
     	return generator;
     }

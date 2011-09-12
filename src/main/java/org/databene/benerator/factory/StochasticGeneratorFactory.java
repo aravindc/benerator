@@ -126,8 +126,8 @@ public class StochasticGeneratorFactory extends GeneratorFactory {
     }
 	
     @Override
-	public Generator<Boolean> createBooleanGenerator(double trueQuota) {
-        return new BooleanGenerator(trueQuota);
+	public Generator<Boolean> createBooleanGenerator(Double trueQuota) {
+        return new BooleanGenerator(trueQuota != null ? trueQuota : 0.5);
     }
 
     private boolean weightsUsed(WeightedSample<?>[] samples) {
