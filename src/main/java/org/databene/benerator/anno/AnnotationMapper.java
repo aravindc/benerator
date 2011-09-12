@@ -73,6 +73,7 @@ import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.Mode;
 import org.databene.model.data.PrimitiveDescriptorProvider;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
@@ -348,7 +349,21 @@ public class AnnotationMapper {
 		InvocationCount testCount = testMethod.getAnnotation(InvocationCount.class);
 		if (testCount != null)
 			generator = new NShotGeneratorProxy<Object[]>(generator, testCount.value());
+		
+		int indexOfLast = indexOfLast(testMethod);
+		if (indexOfLast >= 0)
+			generator = new LastFlagGenerator(generator, indexOfLast);
 		return generator;
+	}
+
+	private int indexOfLast(Method testMethod) {
+		Annotation[][] paramsAnnotations = testMethod.getParameterAnnotations();
+		for (int i = 0; i < paramsAnnotations.length; i++) {
+			for (Annotation paramAnnotation : paramsAnnotations[i])
+				if (paramAnnotation.annotationType() == Last.class)
+					return i;
+		}
+		return -1;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -474,6 +489,8 @@ public class AnnotationMapper {
 				mapMinDateAnnotation((MinDate) annotation, instanceDescriptor);
 			else if (annotationType == MaxDate.class)
 				mapMaxDateAnnotation((MaxDate) annotation, instanceDescriptor);
+			else if (annotationType == Last.class)
+				instanceDescriptor.setMode(Mode.ignored);
 			else if (!explicitlyMappedAnnotation(annotation))
 				mapAnyValueTypeAnnotation(annotation, instanceDescriptor);
 		} catch (Exception e) {

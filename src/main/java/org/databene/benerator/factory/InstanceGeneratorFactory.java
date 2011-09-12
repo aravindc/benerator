@@ -29,6 +29,7 @@ package org.databene.benerator.factory;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.Mode;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
@@ -59,6 +60,8 @@ public class InstanceGeneratorFactory {
 		boolean nullable = DescriptorUtil.isNullable(descriptor, context);
 		TypeDescriptor type = descriptor.getTypeDescriptor();
 		String instanceName = descriptor.getName();
+		if (descriptor.getMode() == Mode.ignored)
+			return null;
 		if (type != null) {
 			generator = MetaGeneratorFactory.createTypeGenerator(type, instanceName, nullable, uniqueness, context);
 		} else {

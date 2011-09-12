@@ -34,7 +34,6 @@ import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
-import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
@@ -42,6 +41,7 @@ import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
+import org.databene.model.data.Mode;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.array.Entity2ArrayConverter;
 import org.databene.platform.csv.CSVArraySourceProvider;
@@ -121,10 +121,13 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
 		// create synthetic element generators if necessary
 		if (generator instanceof BlankArrayGenerator) {
 			generators = createSyntheticElementGenerators(descriptor, uniqueness, context);
-        	generator = context.getGeneratorFactory().createCompositeArrayGenerator(Object.class, generators, uniqueness);
+        	generator = context.getGeneratorFactory().createCompositeArrayGenerator(
+        			Object.class, generators, uniqueness);
 		}
 		// ... and don't forget to support the parent class' functionality
-		return super.applyWrappers(generator, descriptor, instanceName, uniqueness, context);
+		generator = super.applyWrappers(generator, descriptor, instanceName, uniqueness, context);
+		generator = WrapperFactory.applyLastInstanceDetector(generator);
+		return generator;
 	}
 
 	@Override
@@ -179,14 +182,16 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
     @SuppressWarnings("rawtypes")
 	private Generator<?>[] createSyntheticElementGenerators(
     		ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
-		ArrayBuilder<Generator> result = new ArrayBuilder<Generator>(Generator.class);
+		Generator[] result = new Generator[arrayType.getElementCount()];
 		for (int i = 0; i < arrayType.getElementCount(); i++) {
 			ArrayElementDescriptor element = getElementOfTypeOrParents(arrayType, i);
-            Generator<?> generator = InstanceGeneratorFactory.createSingleInstanceGenerator(
-            		element, uniqueness, context);
-			result.add(generator); 
+			if (element.getMode() != Mode.ignored) {
+	            Generator<?> generator = InstanceGeneratorFactory.createSingleInstanceGenerator(
+	            		element, uniqueness, context);
+				result[i] = generator; 
+			}
         }
-	    return result.toArray();
+	    return result;
     }
 
 	protected ArrayElementDescriptor getElementOfTypeOrParents(ArrayTypeDescriptor arrayType, int index) {

@@ -168,4 +168,8 @@ public class WrapperFactory {
 			return new NullInjectingGeneratorProxy<T>(source, nullQuota);
 	}
 
+	public static <T> Generator<T> applyLastInstanceDetector(Generator<T> generator) {
+		return new LastInstanceDetector<T>(generator);
+	}
+
 }

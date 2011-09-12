@@ -82,10 +82,13 @@ public class UniqueMultiSourceArrayGenerator<S> extends MultiGeneratorWrapper<S,
             throw new InvalidGeneratorSetupException("source", "is null");
         buffer = ArrayUtil.newInstance(componentType, sources.size());
         for (int i = 0; i < buffer.length; i++) {
-        	ProductWrapper<?> wrapper = sources.get(i).generate((ProductWrapper) getSourceWrapper());
-            if (wrapper == null)
-                throw new InvalidGeneratorSetupException("Sub generator not available: " + sources.get(i));
-        	buffer[i] = wrapper.unwrap();
+        	Generator<? extends S> source = sources.get(i);
+        	if (source != null) {
+				ProductWrapper<?> wrapper = source.generate((ProductWrapper) getSourceWrapper());
+	            if (wrapper == null)
+	                throw new InvalidGeneratorSetupException("Sub generator not available: " + source);
+	        	buffer[i] = wrapper.unwrap();
+        	}
         }
     }
 
@@ -110,6 +113,10 @@ public class UniqueMultiSourceArrayGenerator<S> extends MultiGeneratorWrapper<S,
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	private void fetchNextArrayItem(int index) {
+    	// skip ignored elements
+    	while (index >= 0 && sources.get(index) == null)
+    		index--;
+    	
         // check for overrun
         if (buffer == null || index < 0 || index >= sources.size()) {
             buffer = null;
@@ -122,7 +129,7 @@ public class UniqueMultiSourceArrayGenerator<S> extends MultiGeneratorWrapper<S,
             buffer[index] = elementWrapper.unwrap();
             return;
         }
-        // sources[index] was not available
+        // sources[index] was not available, move on to the next index
         fetchNextArrayItem(index - 1);
         if (buffer != null) {
             elementGenerator.reset();

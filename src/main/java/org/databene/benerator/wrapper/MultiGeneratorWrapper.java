@@ -106,8 +106,10 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
         if (sources.size() == 0)
             throw new InvalidGeneratorSetupException("sources", "is empty");
         makeAllGeneratorsAvailable();
-        for (Generator<? extends S> source : sources)
-            source.init(context);
+        for (Generator<? extends S> source : sources) {
+        	if (source != null) // some elements may be Mode.ignored
+        		source.init(context);
+        }
         super.init(context);
     }
 
