@@ -69,7 +69,7 @@ public class DbUnitEntityIterator implements DataIterator<Entity> {
     public DbUnitEntityIterator(String uri, Context context) throws IOException {
         this.context = context;
         this.rows = new ArrayList<Row>();
-        Document document = readDocument(uri);
+        Document document = readDocument(uri); // TODO v0.7.1 use SAX parser to support arbitrarily large data sets
         if (isFlatDataset(document))
             parseFlatDataset(document);
         else
