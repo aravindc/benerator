@@ -12,7 +12,6 @@ changes
 - removed number min/maxExlusive, replaced with boolean min/maxInclusive
 - CSVEntityExporter.quoteEmpty is true by default
 - <setup defaultOneToOne="false"> by default
-- removed generic parameter from StorageSystem.queryEntityIds() andStorageSystem.query()
 - removed predefined "benerator" variable from context (use "context" now)
 - removed hexadecimal syntax for decimal number literals in BeneratorScript
 - removed property 'db' from SequenceTableGenerator (replaced with property 'database')
@@ -20,6 +19,7 @@ changes
 - replaced OfflineSequenceGenerator with CachedSequenceGenerator
 - replaced Iterable and Iterator with DataSource and DataIterator
 - Changed signature of generate() method in Generator interface
+- Renamed SimpleConverter to UnsafeConverter and SimpleGenerator to UnsafeGenerator
 - New convenience methods in GeneratorUtil
 - New helper class GeneratingConverter
 - Renamed ValidatingGenerator.generateImpl() to doGenerate()
@@ -27,23 +27,22 @@ changes
 - Removed 'name' property from Sequence
 - Renamed @DescriptorBased to @Descriptor
 - Removed totalDigits and fractionDigits features
-- Removed generic parameter from Consumer interface
 - Moved Consumer interface to org.databene.benerator, moved general implementations to org.databene.consumer
+- Replaced generic parameter in Consumer interface with ProductWrapper
 - Moved StorageSystem interface to org.databene.benerator, moved implementations to org.databene.storage
+- removed generic parameter from StorageSystem.queryEntityIds() and StorageSystem.query()
 - Renamed platform 'flat' to 'fixedwidth' and classes 'FlatFile...' to 'FixedColumnWidth...'
 - <import defaults="true" /> is not necessary any longer: defaults are imported automatically, 
   they are only left out when using <setup ... defaultImports="false"> in the root element
-- Renamed SimpleConverter to UnsafeConverter and SimpleGenerator to UnsafeGenerator
 - Replaced global <property> with <setting>
-- Defined basic swiss address generation
-- Deleted AttachedWeightSampleGenerator
+- Deleted MappedWeightSampleGenerator
 - Renamed IndividualWeightGenerator to IndividualWeightSampleGenerator
 - Renamed DistributingSampleGeneratorProxy to IndexBasedSampleGeneratorProxy
 - renamed 'source' property to 'database' in DBSequenceGenerator and DBSeqHiLoGenerator
 - cleaned up generator hierarchies for arrays
 - changed Statement interface
 - removed multithreading support for <generate> and <iterate> - it never worked satisfactory
-- drooped variable support in XML Schema-based file generation
+- dropped variable support in XML Schema-based file generation
 
 
 enhancements
@@ -67,6 +66,7 @@ enhancements
 - Generating multinational data weighted by country population
 - Executing elements in the order in which they are specified
 - Defined empty consumer class NoConsumer
+- Defined basic swiss address generation
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
