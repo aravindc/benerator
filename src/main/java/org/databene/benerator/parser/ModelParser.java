@@ -202,7 +202,7 @@ public class ModelParser {
                     			} else if (source instanceof EntitySource) {
                     				partType = "entity";
                     			} 
-                    		} else if (sourceSpec.endsWith(".ent.csv") || sourceSpec.endsWith(".flat.csv") 
+                    		} else if (sourceSpec.endsWith(".ent.csv") || sourceSpec.endsWith(".ent.fcw") 
                     				|| sourceSpec.endsWith(".dbunit.xml")) {
                     			partType = "entity";
                     		}

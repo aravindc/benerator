@@ -55,7 +55,7 @@ public class FixedWidthEntityExporter extends TextFileExporter {
     private Converter<Entity, String> converters[];
 
     public FixedWidthEntityExporter() {
-        this("export.flat", null);
+        this("export.fcw", null);
     }
 
     public FixedWidthEntityExporter(String uri, String columnFormatList) {

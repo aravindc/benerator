@@ -7,7 +7,7 @@
     <execute type="shell">{ls ${lsparams}}</execute> 
 
     <execute type="js"> 
-        print('Hello ' + benerator.getContext().get('user.name') + '!'); 
+        print('Hello ' + context.get('user.name') + '!'); 
     </execute> 
 
     <database id="db" url="jdbc:hsqldb:hsql://localhost:9001"

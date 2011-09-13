@@ -13,7 +13,7 @@
     
     <iterate type="db_product" source="db">
         <consumer class="org.databene.platform.fixedwidth.FixedWidthEntityExporter">
-            <property name="uri" value="products.flat"/>
+            <property name="uri" value="products.fcw"/>
             <property name="properties" value="ean_code[13],name[30l],price[10r0]"/>
         </consumer>
     </iterate>

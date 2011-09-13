@@ -46,7 +46,7 @@ import java.io.*;
  */
 public class PersonFixedWidthDemo {
 
-    private static final String FILE_NAME = "persons.flat";
+    private static final String FILE_NAME = "persons.fcw";
     private static final int LENGTH = 5;
 
     public static void main(String[] args) throws IOException {

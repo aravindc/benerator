@@ -49,14 +49,14 @@ import java.text.SimpleDateFormat;
 import java.math.BigDecimal;
 
 /**
- * Demonstrates the creation of flat files from an array generator.<br/>
+ * Demonstrates the creation of fixed column width files from an array generator.<br/>
  * <br/>
  * Created: 07.06.2007 12:04:39
  * @author Volker Bergmann
  */
 public class ArrayFixedWidthDemo {
 
-    private static final String FILE_NAME = "persons.flat";
+    private static final String FILE_NAME = "persons.fcw";
     private static final int LENGTH = 5;
 
     public static void main(String[] args) throws IOException {

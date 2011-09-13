@@ -107,8 +107,8 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 	            generator = new DataSourceGenerator<Entity>(new DbUnitEntitySource(sourceSpec, context));
 	        else if (lcSourceName.endsWith(".csv"))
 	            generator = createCSVSourceGenerator(descriptor, context, sourceSpec);
-	        else if (lcSourceName.endsWith(".flat"))
-	            generator = createFlatSourceGenerator(descriptor, context, sourceSpec);
+	        else if (lcSourceName.endsWith(".fcw"))
+	            generator = createFixedColumnWidthSourceGenerator(descriptor, context, sourceSpec);
 	        else if (lcSourceName.endsWith(".xls"))
 	            generator = createXLSSourceGenerator(descriptor, context, sourceSpec);
 	        else {
@@ -188,7 +188,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 	    return generator;
     }
 
-	private static Generator<Entity> createFlatSourceGenerator(
+	private static Generator<Entity> createFixedColumnWidthSourceGenerator(
 			ComplexTypeDescriptor descriptor, BeneratorContext context, String sourceName) {
 		Generator<Entity> generator;
 		String encoding = descriptor.getEncoding();
@@ -196,7 +196,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 		    encoding = context.getDefaultEncoding();
 		String pattern = descriptor.getPattern();
 		if (pattern == null)
-		    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
+		    throw new ConfigurationError("No pattern specified for FCW file import: " + sourceName);
 		FixedWidthColumnDescriptor[] ffcd = FixedWidthUtil.parseProperties(pattern);
 		Converter<String, String> scriptConverter = DescriptorUtil.createStringScriptConverter(context);
 		FixedWidthEntitySource iterable = new FixedWidthEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);

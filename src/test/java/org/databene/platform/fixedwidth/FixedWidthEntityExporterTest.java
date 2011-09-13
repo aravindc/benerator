@@ -78,7 +78,7 @@ public class FixedWidthEntityExporterTest {
 	}
 
 	private File tempFile() throws IOException {
-		File file = File.createTempFile(getClass().getSimpleName(), ".flat", new File("target"));
+		File file = File.createTempFile(getClass().getSimpleName(), ".fcw", new File("target"));
 		FileUtil.deleteIfExists(file);
 		return file;
 	}

@@ -48,7 +48,7 @@ import org.databene.commons.format.Alignment;
  */
 public class FixedWidthEntitySourceTest extends AbstractEntityIteratorTest {
 
-    private static final String URI = "org/databene/platform/flat/person-bean.flat";
+    private static final String URI = "org/databene/platform/flat/person-bean.fcw";
 
     private static final FixedWidthColumnDescriptor[] descriptors = new FixedWidthColumnDescriptor[] {
             new FixedWidthColumnDescriptor("name", 6, Alignment.LEFT, ' '),
