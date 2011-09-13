@@ -267,7 +267,7 @@ public class BeneratorScriptParser {
 			if (stop.getStopIndex() == 0)
 				throw new SyntaxError("Syntax error after " + stop.getText(), text);
 			else
-				throw new SyntaxError("Syntax error", text);
+				throw new SyntaxError("Unspecific syntax error", text);
 		}
 	}
 	
