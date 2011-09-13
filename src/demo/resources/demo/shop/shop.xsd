@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema 
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
-		xmlns:ben="http://databene.org/benerator-0.5.0.xsd"
-		xmlns="http://databene.org/shop-0.5.0.xsd"
-		targetNamespace="http://databene.org/shop-0.5.0.xsd"
+		xmlns:ben="http://databene.org/benerator-0.7.0.xsd"
+		xmlns="http://databene.org/shop-0.7.0.xsd"
+		targetNamespace="http://databene.org/shop-0.7.0.xsd"
 		elementFormDefault="qualified">
 		
 	<xs:annotation>

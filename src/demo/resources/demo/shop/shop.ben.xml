@@ -13,7 +13,7 @@
 		 !                                                           !
 		 !   These database types are provided:                      !
 		 !       oracle, db2, sql_server, mysql, postgres, hsql,     !
-		 !       hsqlmem, mysql, firebird, derby, h2                 !
+		 !       hsqlmem, firebird, derby, h2                        !
 		 !                                                           !
 		 !   ...and these stage configurations:                      !
 		 !       development, perftest                               !
@@ -26,40 +26,32 @@
 		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	</comment>
 	 
-	<import defaults  = "true"
-			domains   = "person,net,product"
+	<import domains   = "person,net,product"
 			platforms = "db"/>
 
-	<if test="benerator.get('stage') == null">
-		<comment>no stage specified, using 'development'</comment>
-		<execute>stage = 'development'</execute>
-	</if>
-
-	<if test="benerator.get('database') == null">
-		<comment>no database specified, using 'hsqlmem'</comment>
-		<execute>database = 'hsqlmem'</execute>
-	</if>
-
 	<comment>setting default values</comment>
+	<setting name="stage" default="development" />
+	<setting name="database" default="hsqlmem" />
 	<setting name="dbCatalog"  default="" />
 	<setting name="dbSchema"   default="" />
 	<setting name="dbPassword" default="" />
 	<setting name="dbBatch"    default="false" />
 	
 	<comment>import stage and database specific properties</comment>
-	<include uri="{ftl:${database}/shop.${database}.properties}" /> <!-- ftl: is the prefix used for scripting with FreeMarker Template Language -->
+	<include uri="{ftl:${database}/shop.${database}.properties}" />
 	<include uri="{ftl:shop.${stage}.properties}" />
 
 	<comment>log the settings to the console</comment>
-	<echo message="Starting generation for" />
-	<echo message="{ftl:  ${product_count + 6} products}" />
-	<echo message="{ftl:  ${customer_count + 1} customers}" />
-	<echo message="{ftl:  ${orders_per_customer} orders per customer}" />
-	<echo message="{ftl:  ${items_per_order} items per order}" />
-	<echo message="{ftl:Setup: ${benerator.defaultEncoding} def.pageSize=${benerator.defaultPageSize} def.script=${benerator.defaultScript}}" />
-	<echo message="{ftl:JDBC URL: ${dbUrl}}" />
-
-    <comment>define a database that will be referred by the id 'db' later</comment>
+	<echo>Starting generation for</echo>
+	<echo>{ftl:  ${product_count + 6} products}</echo>
+	<echo>{ftl:  ${customer_count + 1} customers}</echo>
+	<echo>{ftl:  ${orders_per_customer} orders per customer}</echo>
+	<echo>{ftl:  ${items_per_order} items per order}</echo>
+	<echo>{ftl:encoding:${context.defaultEncoding} default pageSize:${context.defaultPageSize}}</echo>
+	<echo>{ftl:JDBC URL: ${dbUrl}}</echo>
+	
+	<!--  TODO use environment file -->
+    <comment>define a database that will be referred by the id 'db' subsequently</comment>
     <database id="db" url="{dbUrl}" driver="{dbDriver}" catalog="{dbCatalog}" schema="{dbSchema}"
         user="{dbUser}" password="{dbPassword}" batch="{dbBatch}" />
 
@@ -80,7 +72,7 @@
 			pattern="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]" consumer="db" /</comment>
 
 	<comment>
-		Creating products of random attributes &amp; category and exporting them to 
+		Creating products of random attributes and category and exporting them to 
 		the database as well as to a flat file
 	</comment>
 	<generate type="db_product" count="{product_count}" consumer="db">
@@ -88,13 +80,13 @@
 		<reference name="category_id" targetType="db_category" source="db" distribution="random" />
 		<attribute name="price" type="big_decimal" min="0.49" max="99.99" granularity="0.10" distribution="cumulated" />
 		<!-- Export the generated products not only to the database, but also to a flat file -->
-		<consumer class="FlatFileEntityExporter">
+		<consumer class="FixedWidthEntityExporter">
 			<property name="uri" value="products.flat" />
 			<property name="columns" value="ean_code[13],name[30l],price[10.2r0]" />
 		</consumer>
 	</generate>
 
-	<comment>create one default order for each customer based on a DBUnit template</comment>
+	<!--  comment>create one default order for each customer based on a DBUnit template</comment -->
 	<!-- generate name="db_order" consumer="db">
 		<id name="id" generator="idGen" />
 		<attribute name="customer_id" source="db" selector="select id from db_customer" />
@@ -144,7 +136,7 @@
 		<attribute name="total_price" script="product[1] * db_order_item.number_of_items" />
 	</generate>
 
-    <comment>fix order data</comment>
+    <comment>Update order data, calculating the total sum of each order</comment>
     <iterate source="db" type="db_order" consumer="db.updater()">
         <attribute name="total_price" source="db" 
             selector="{{ftl:select sum(total_price) from db_order_item where order_id = ${db_order.id}}}" 
