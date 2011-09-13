@@ -67,13 +67,13 @@
 	<comment>Importing some more predefined products from a CSV file</comment>
 	<iterate source="products.import.csv" type="db_product" encoding="utf-8" consumer="db" />
 
-	<comment>You could import them from a flat file as well, e.g.
+	<comment>You could import them from a fixed column width file as well, e.g.
 		iterate name="db_product" source="products.import.flat" 
 			pattern="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]" consumer="db" /</comment>
 
 	<comment>
 		Creating products of random attributes and category and exporting them to 
-		the database as well as to a flat file
+		the database as well as to a fixed column width file
 	</comment>
 	<generate type="db_product" count="{product_count}" consumer="db">
 		<id name="ean_code" generator="new EANGenerator(true)" />
