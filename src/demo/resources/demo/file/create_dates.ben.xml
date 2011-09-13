@@ -3,8 +3,6 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://databene.org/benerator/0.7.0 http://databene.org/benerator-0.7.0.xsd">
 
-	<import defaults="true" />
-	
     <bean id="datetime_gen" class="org.databene.benerator.primitive.datetime.DateTimeGenerator"> 
     	<property name="minDate" value="2007-06-21"/>
     	<property name="maxDate" value="2007-09-21"/>

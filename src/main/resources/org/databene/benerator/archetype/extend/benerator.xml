@@ -7,8 +7,6 @@
 		 Demonstrates how to extend benerator's interfaces for customizations
 	</comment>
 	 
-	<import defaults="true"/>
-	
 	<bean id="mysource" class="com.my.PersonSource"/>
 	
 	<generate type="Transaction" count="100" consumer="com.my.ConsoleConsumer">

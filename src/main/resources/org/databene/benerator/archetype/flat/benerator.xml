@@ -3,8 +3,6 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://databene.org/benerator/${version.version} benerator-${version.version}.xsd">
 		
-	<import defaults="true"/>
-	
     <bean id="products_flat" class="FlatFileEntitySource">
         <property name="uri" value="demo/file/products.import.flat"/>
         <property name="entity" value="product"/>

@@ -8,8 +8,6 @@
         Reproduces an existing database
     </comment>
 
-    <import defaults="true"/>
-
     <comment>defining a database that will be referred by the id 'db' later</comment>
     <database id="db" />
 

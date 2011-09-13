@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <setup>
 
-	<import defaults="true" />
-	
   	<database id="s" url="jdbc:hsqldb:mem:s" driver="org.hsqldb.jdbcDriver" schema="PUBLIC" user="sa" />
   	<database id="t" url="jdbc:hsqldb:mem:t" driver="org.hsqldb.jdbcDriver" schema="PUBLIC" user="sa" />
 

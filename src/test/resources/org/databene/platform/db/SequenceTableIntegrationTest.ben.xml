@@ -1,5 +1,4 @@
 <setup>
-	<import defaults="true" />
 	<import platforms="db" />
 	
 	<database id="db" environment="hsqlmem" />

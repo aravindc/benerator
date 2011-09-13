@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <setup>
 
-	<import defaults="true" />
-	
 	<bean id="in" class="CSVEntitySource">
 		<property name="uri" value="headless-in.csv" />
 		<property name="separator" value="," />

@@ -3,8 +3,6 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://databene.org/benerator/0.7.0 http://databene.org/benerator-0.7.0.xsd">
 		
-    <import defaults="true"/>
-	
     <iterate source="products.ent.xls" consumer="ConsoleExporter"/>
         
     <generate type="transaction" count="100">

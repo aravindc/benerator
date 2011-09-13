@@ -3,7 +3,6 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://databene.org/benerator/${version.version} benerator-${version.version}.xsd">
 
-    <import defaults="true"/>
     <import platforms="xml"/>
 
     <bean id="xmlWriter" class="XMLEntityExporter" />

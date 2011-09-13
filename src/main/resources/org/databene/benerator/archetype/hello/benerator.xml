@@ -7,7 +7,6 @@
 		Hello World example
 	 </comment>
 	 
-	<import defaults="true"/>
 	<import domains="person"/>
 
 	<echo message="running the 'Hello World' example..." />

@@ -8,8 +8,6 @@
 		Simple project
 	</comment>
 	
-	<import defaults="true"/>
-	
 	<import domains="person, address"/>
 
 	<echo message="Starting test data generation..." />

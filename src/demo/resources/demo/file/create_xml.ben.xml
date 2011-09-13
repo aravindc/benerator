@@ -3,7 +3,6 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://databene.org/benerator/0.7.0 http://databene.org/benerator-0.7.0.xsd">
 
-	<import defaults="true" />
 	<import domains="person" />
 
 	<bean id="xml" class="org.databene.platform.xml.XMLEntityExporter">

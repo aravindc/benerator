@@ -5,8 +5,6 @@
 
 	<!-- This demonstrates how to create an Excel Sheet using the XLSEntityExporter -->
 
-    <import defaults="true"/>
-
     <generate type="transaction" count="100" 
             consumer="new XLSEntityExporter{uri='target/xls-demo.xls', columns='id,items,name,comment'}">
         <id name="id" type="long" />
