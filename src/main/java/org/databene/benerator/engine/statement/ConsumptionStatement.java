@@ -49,9 +49,9 @@ public class ConsumptionStatement implements Statement {
 		if (consumer != null) {
 			ProductWrapper<?> product = context.getCurrentProduct();
 			if (start)
-				consumer.startConsumption(product);
+				consumer.startConsuming(product);
 			if (finish)
-				consumer.finishConsumption(product);
+				consumer.finishConsuming(product);
 		}
 		return true;
 	}

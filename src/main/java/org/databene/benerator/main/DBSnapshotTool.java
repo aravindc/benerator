@@ -167,9 +167,9 @@ public class DBSnapshotTool {
 				while ((container = source.next(container)) != null) {
 					Entity entity = container.getData();
 					wrapper.wrap(entity);
-                    exporter.startConsumption(wrapper);
+                    exporter.startConsuming(wrapper);
 					wrapper.wrap(entity);
-                    exporter.finishConsumption(wrapper);
+                    exporter.finishConsuming(wrapper);
                     count++;
                 }
                 if (monitor != null)

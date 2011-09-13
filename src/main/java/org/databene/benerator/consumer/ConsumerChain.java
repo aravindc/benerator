@@ -72,17 +72,17 @@ public class ConsumerChain implements Consumer {
     // Processor interface ---------------------------------------------------------------------------------------------
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void startConsumption(ProductWrapper<?> wrapper) {
+	public void startConsuming(ProductWrapper<?> wrapper) {
 		Object product = wrapper.unwrap();
         for (Consumer processor : components)
-            processor.startConsumption(((ProductWrapper) wrapper).wrap(product));
+            processor.startConsuming(((ProductWrapper) wrapper).wrap(product));
     }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void finishConsumption(ProductWrapper<?> wrapper) {
+	public void finishConsuming(ProductWrapper<?> wrapper) {
 		Object product = wrapper.unwrap();
         for (Consumer processor : components)
-            processor.finishConsumption(((ProductWrapper) wrapper).wrap(product));
+            processor.finishConsuming(((ProductWrapper) wrapper).wrap(product));
     }
 
 	public void flush() {

@@ -85,8 +85,8 @@ public class DescriptorRunnerTest {
 	        return EXPORT_FILE_URI;
         }
 
-        public void startConsumption(ProductWrapper<?> object) { }
-        public void finishConsumption(ProductWrapper<?> object) { }
+        public void startConsuming(ProductWrapper<?> object) { }
+        public void finishConsuming(ProductWrapper<?> object) { }
         public void flush() { }
         public void close() { }
 	}

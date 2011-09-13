@@ -45,8 +45,8 @@ public class MappingEntityConsumerTest {
 		consumer.setMappings("'name'->'givenName', 'none'->'some'");
 		
 		Entity input = new Entity("Person", "name", "Alice", "age", 23);
-		consumer.startConsumption(new ProductWrapper<Entity>().wrap(input));
-		consumer.finishConsumption(new ProductWrapper<Entity>().wrap(input));
+		consumer.startConsuming(new ProductWrapper<Entity>().wrap(input));
+		consumer.finishConsuming(new ProductWrapper<Entity>().wrap(input));
 		assertEquals(new Entity("Person", "givenName", "Alice", "age", 23), target.lastProduct);
 	}
 	

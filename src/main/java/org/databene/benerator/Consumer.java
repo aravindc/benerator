@@ -42,8 +42,8 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @author Volker Bergmann
  */
 public interface Consumer extends Flushable, Closeable {
-    void startConsumption(ProductWrapper<?> object);
-    void finishConsumption(ProductWrapper<?> object);
+    void startConsuming(ProductWrapper<?> object);
+    void finishConsuming(ProductWrapper<?> object);
     void flush();
     void close();
 }

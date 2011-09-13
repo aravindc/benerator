@@ -55,20 +55,20 @@ public class MappingEntityConsumer extends ConsumerProxy {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void startConsumption(ProductWrapper<?> wrapper) {
+	public void startConsuming(ProductWrapper<?> wrapper) {
 		Object object = wrapper.unwrap();
 		if (!(object instanceof Entity))
 			throw new IllegalArgumentException("Expected Entity");
 		Entity entity = (Entity) object;
 		Entity output = mapper.convert(entity);
 		stack.push(output);
-		target.startConsumption(((ProductWrapper) wrapper).wrap(output));
+		target.startConsuming(((ProductWrapper) wrapper).wrap(output));
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void finishConsumption(ProductWrapper<?> wrapper) {
-		super.finishConsumption(((ProductWrapper) wrapper).wrap(stack.pop()));
+	public void finishConsuming(ProductWrapper<?> wrapper) {
+		super.finishConsuming(((ProductWrapper) wrapper).wrap(stack.pop()));
 	}
 	
 }

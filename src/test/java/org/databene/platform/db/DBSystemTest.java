@@ -144,8 +144,8 @@ public class DBSystemTest {
 	public void testInserter() throws Exception {
         Consumer inserter = db.inserter();
         Entity entity = new Entity("TEST", "ID", 1, "NAME", "Alice");
-        inserter.startConsumption(new ProductWrapper<Entity>().wrap(entity));
-        inserter.finishConsumption(new ProductWrapper<Entity>().wrap(entity));
+        inserter.startConsuming(new ProductWrapper<Entity>().wrap(entity));
+        inserter.finishConsuming(new ProductWrapper<Entity>().wrap(entity));
         DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
         assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 
@@ -156,8 +156,8 @@ public class DBSystemTest {
 	public void testInserter_table() throws Exception {
         Consumer inserter = db.inserter("TEST");
         Entity entity = new Entity("Xyz", "ID", 1, "NAME", "Alice");
-        inserter.startConsumption(new ProductWrapper<Entity>().wrap(entity));
-        inserter.finishConsumption(new ProductWrapper<Entity>().wrap(entity));
+        inserter.startConsuming(new ProductWrapper<Entity>().wrap(entity));
+        inserter.finishConsuming(new ProductWrapper<Entity>().wrap(entity));
         DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
         assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 

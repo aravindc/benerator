@@ -42,11 +42,11 @@ import org.databene.benerator.wrapper.ProductWrapper;
  */
 public abstract class AbstractConsumer implements Consumer {
 	
-	public void startConsumption(ProductWrapper<?> wrapper) {
+	public void startConsuming(ProductWrapper<?> wrapper) {
 		startProductConsumption(wrapper.unwrap());
 	}
 	
-	public void finishConsumption(ProductWrapper<?> wrapper) {
+	public void finishConsuming(ProductWrapper<?> wrapper) {
 		finishProductConsumption(wrapper.unwrap());
 	}
 

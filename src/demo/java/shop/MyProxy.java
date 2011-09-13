@@ -53,15 +53,15 @@ public class MyProxy extends ConsumerProxy {
     // Consumer interface ----------------------------------------------------------------------------------------------
 
     @Override
-	public void startConsumption(ProductWrapper<?> wrapper) {
+	public void startConsuming(ProductWrapper<?> wrapper) {
         logger.info(wrapper.toString());
-        target.startConsumption(wrapper);
+        target.startConsuming(wrapper);
     }
 
     @Override
-	public void finishConsumption(ProductWrapper<?> wrapper) {
+	public void finishConsuming(ProductWrapper<?> wrapper) {
         logger.info(wrapper.toString());
-        target.finishConsumption(wrapper);
+        target.finishConsuming(wrapper);
     }
     
     @Override

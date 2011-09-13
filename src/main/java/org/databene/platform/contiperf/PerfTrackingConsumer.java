@@ -63,7 +63,7 @@ public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consume
 	
     // Consumer interface implementation -------------------------------------------------------------------------------
     
-	public void startConsumption(ProductWrapper<?> wrapper) {
+	public void startConsuming(ProductWrapper<?> wrapper) {
 	    try {
 	        getTracker().invoke(new Object[] { wrapper });
         } catch (Exception e) {
@@ -71,8 +71,8 @@ public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consume
         }
     }
 	
-	public void finishConsumption(ProductWrapper<?> wrapper) {
-		target.finishConsumption(wrapper);
+	public void finishConsuming(ProductWrapper<?> wrapper) {
+		target.finishConsuming(wrapper);
     }
 
 	public void flush() {

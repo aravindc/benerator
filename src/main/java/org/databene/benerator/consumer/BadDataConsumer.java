@@ -43,13 +43,13 @@ public class BadDataConsumer extends ConsumerProxy {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void startConsumption(ProductWrapper<?> wrapper) {
+	public void startConsuming(ProductWrapper<?> wrapper) {
 		Object product = wrapper.unwrap();
 		try {
-			target.startConsumption(((ProductWrapper) wrapper).wrap(product));
+			target.startConsuming(((ProductWrapper) wrapper).wrap(product));
 		} catch (Exception e) {
-			badDataTarget.startConsumption(((ProductWrapper) wrapper).wrap(product));
-			badDataTarget.finishConsumption(((ProductWrapper) wrapper).wrap(product));
+			badDataTarget.startConsuming(((ProductWrapper) wrapper).wrap(product));
+			badDataTarget.finishConsuming(((ProductWrapper) wrapper).wrap(product));
 		}
 	}
 

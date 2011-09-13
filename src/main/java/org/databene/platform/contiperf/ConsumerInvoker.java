@@ -26,7 +26,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.contiperf.Invoker;
 
 /**
- * ContiPerf {@link Invoker} implementation which calls the {@link Consumer#startConsumption(ProductWrapper)} 
+ * ContiPerf {@link Invoker} implementation which calls the {@link Consumer#startConsuming(ProductWrapper)} 
  * method with the provided argument.<br/><br/>
  * Created: 22.10.2009 17:23:42
  * @since 0.6.0
@@ -47,7 +47,7 @@ public class ConsumerInvoker implements Invoker {
 	}
 
 	public Object invoke(Object[] args) throws Exception {
-		consumer.startConsumption(new ProductWrapper<Object>().wrap(args));
+		consumer.startConsuming(new ProductWrapper<Object>().wrap(args));
 		return null;
 	}
 

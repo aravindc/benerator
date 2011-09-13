@@ -52,8 +52,8 @@ public class BadDataConsumerTest {
 		BadDataConsumer consumer = new BadDataConsumer(badTarget, realTarget);
 
 		for (int i = 1; i <= 5; i++) {
-			consumer.startConsumption(new ProductWrapper<Integer>().wrap(i));
-			consumer.finishConsumption(new ProductWrapper<Integer>().wrap(i));
+			consumer.startConsuming(new ProductWrapper<Integer>().wrap(i));
+			consumer.finishConsuming(new ProductWrapper<Integer>().wrap(i));
 		}
 		consumer.close();
 		

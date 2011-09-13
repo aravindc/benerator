@@ -46,12 +46,12 @@ public abstract class ConsumerProxy implements Consumer {
     	this.target = target;
     }
 
-	public void startConsumption(ProductWrapper<?> wrapper) {
-		target.startConsumption(wrapper);
+	public void startConsuming(ProductWrapper<?> wrapper) {
+		target.startConsuming(wrapper);
 	}
 	
-	public void finishConsumption(ProductWrapper<?> wrapper) {
-	    target.finishConsumption(wrapper);
+	public void finishConsuming(ProductWrapper<?> wrapper) {
+	    target.finishConsuming(wrapper);
     }
 
 	public void flush() {
