@@ -1,7 +1,7 @@
 hello
 simple
 csv
-flat
+fixedwidth
 xls
 db
 reprodb
