@@ -25,7 +25,7 @@
 	<echo>{ftl:JDBC URL: ${dbUrl}}</echo>
 
     <comment>define a database that will be referred by the id 'db' subsequently</comment>
-    <database id="db" /> <!-- TODO define database properties -->
+    <database id="db" />
 
 	<comment>drop the current tables/sequences if they exist and recreate them</comment>
 	<execute uri="{ftl:sql/${db.system}/drop_tables.${db.system}.sql}"   target="db" onError="ignore" />
@@ -57,15 +57,6 @@
 			<property name="columns" value="ean_code[13],name[30l],price[10.2r0]" />
 		</consumer>
 	</generate>
-
-	<!-- comment>create one default order for each customer based on a DBUnit template</comment -->
-	<!-- generate name="db_order" consumer="db">
-		<id name="id" generator="idGen" />
-		<attribute name="customer_id" source="db" selector="select id from db_customer" />
-		<iterate source="default_order.dbunit.xml" type="db_order_item" consumer="db">
-	        <id name="id" generator="idGen" />
-		</generate>
-	</generate-->
 
     <comment>create customers</comment>
     <generate type="db_user" count="{customer_count}" consumer="db">
