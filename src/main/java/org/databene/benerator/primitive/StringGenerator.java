@@ -47,7 +47,7 @@ import org.databene.regex.RegexParser;
  */
 public class StringGenerator extends NonNullGeneratorProxy<String> {
 
-	private String pattern;
+	private String charSet;
 	private Locale locale;
 	private boolean unique;
 	private boolean ordered;
@@ -64,12 +64,12 @@ public class StringGenerator extends NonNullGeneratorProxy<String> {
 	public StringGenerator() {
 		this("\\w", LocaleUtil.getFallbackLocale(), false, false, null, null, null, 1, 8, 1, null);
 	}
-	public StringGenerator(String pattern, Locale locale, boolean unique,
+	public StringGenerator(String charSet, Locale locale, boolean unique,
 			boolean ordered, String prefix, Character minInitial,
 			String suffix, int minLength, int maxLength, int lengthGranularity, 
 			Distribution lengthDistribution) {
 	    super(String.class);
-		this.pattern = pattern;
+		this.charSet = charSet;
 		this.locale = locale;
 		this.unique = unique;
 		this.ordered = ordered;
@@ -83,11 +83,11 @@ public class StringGenerator extends NonNullGeneratorProxy<String> {
 	}
 
 	public String getCharSet() {
-		return pattern;
+		return charSet;
 	}
 
 	public void setCharSet(String charSet) {
-		this.pattern = charSet;
+		this.charSet = charSet;
 	}
 	
 	public Locale getLocale() {
@@ -182,7 +182,7 @@ public class StringGenerator extends NonNullGeneratorProxy<String> {
 	
 	@Override
 	public synchronized void init(GeneratorContext context) {
-		Set<Character> chars = RegexParser.charsOfPattern(pattern, locale);
+		Set<Character> chars = RegexParser.charsOfPattern(charSet, locale);
 		GeneratorFactory factory = context.getGeneratorFactory();
 		if (minInitial != null) {
 			Filter<Character> initialFilter = new Filter<Character>() {
