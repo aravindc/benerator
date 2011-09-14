@@ -29,7 +29,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link LastInstanceDetector}.<br/><br/>
+ * Tests the {@link LastProductDetector}.<br/><br/>
  * Created: 12.09.2011 12:46:53
  * @since 0.7.0
  * @author Volker Bergmann
@@ -39,7 +39,7 @@ public class LastInstanceDetectorTest extends GeneratorTest {
 	@Test
 	public void testLifeCycle() {
 		Generator<Integer> source = new SequenceTestGenerator<Integer>(1, 2);
-		Generator<Integer> generator = initialize(new LastInstanceDetector<Integer>(source));
+		Generator<Integer> generator = initialize(new LastProductDetector<Integer>(source));
 		ProductWrapper<Integer> wrapper = new ProductWrapper<Integer>();
 		checkSequence(generator, wrapper);
 		generator.reset();

@@ -44,10 +44,19 @@ public class LastFlagGenerator extends GeneratorProxy<Object[]> {
 
 	@Override
 	public ProductWrapper<Object[]> generate(ProductWrapper<Object[]> wrapper) {
-		ProductWrapper<Object[]> result = super.generate(wrapper);
-		if (result != null)
-			result.unwrap()[indexOfLastFlag] = ("true".equals(result.getTag("last")));
-		return result;
+		wrapper = super.generate(wrapper);
+		if (wrapper != null) {
+			Object[] product = wrapper.unwrap();
+			if (indexOfLastFlag == product.length) {
+				// the @Last parameter might be additional to an imported array of size = paramCount - 1
+				Object[] tmp = new Object[product.length + 1];
+				System.arraycopy(product, 0, tmp, 0, product.length);
+				product = tmp;
+				wrapper.wrap(product, false);
+			}
+			product[indexOfLastFlag] = ("true".equals(wrapper.getTag("last")));
+		}
+		return wrapper;
 	}
 	
 }

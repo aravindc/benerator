@@ -350,6 +350,9 @@ public class AnnotationMapper {
 		if (testCount != null)
 			generator = new NShotGeneratorProxy<Object[]>(generator, testCount.value());
 		
+		// apply LastInstanceDetector
+		generator = WrapperFactory.applyLastProductDetector(generator);
+
 		int indexOfLast = indexOfLast(testMethod);
 		if (indexOfLast >= 0)
 			generator = new LastFlagGenerator(generator, indexOfLast);

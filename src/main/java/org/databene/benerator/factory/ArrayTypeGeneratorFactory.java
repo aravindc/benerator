@@ -126,7 +126,6 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
 		}
 		// ... and don't forget to support the parent class' functionality
 		generator = super.applyWrappers(generator, descriptor, instanceName, uniqueness, context);
-		generator = WrapperFactory.applyLastInstanceDetector(generator);
 		return generator;
 	}
 

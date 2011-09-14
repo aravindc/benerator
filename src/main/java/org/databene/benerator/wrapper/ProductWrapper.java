@@ -47,8 +47,12 @@ public class ProductWrapper<E> {
 	}
 	
 	public ProductWrapper<E> wrap(E product) {
+		return wrap(product, true);
+	}
+	
+	public ProductWrapper<E> wrap(E product, boolean clearTags) {
 		this.product = product;
-		if (tags != null)
+		if (tags != null && clearTags)
 			tags.clear();
 		return this;
 	}

@@ -32,11 +32,11 @@ import org.databene.benerator.GeneratorContext;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class LastInstanceDetector<E> extends GeneratorProxy<E> {
+public class LastProductDetector<E> extends GeneratorProxy<E> {
 
 	private ProductWrapper<E> next;
 	
-	public LastInstanceDetector(Generator<E> source) {
+	public LastProductDetector(Generator<E> source) {
 		super(source);
 	}
 	
