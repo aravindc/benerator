@@ -53,6 +53,7 @@
 					<xs:attribute name="defaultErrorHandler"  type="errorhandler-type"/>
 					<xs:attribute name="defaultImports"       type="xs:boolean"/>
 					<xs:attribute name="maxCount"             type="xs:long"/>
+		            <xs:attribute name="generatorFactory"     type="xs:string"/>
 		            <xs:attribute name="acceptUnknownSimpleTypes" type="xs:string"/>
 				</xs:extension>
 			</xs:complexContent>
