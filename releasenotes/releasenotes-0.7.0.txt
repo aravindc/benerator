@@ -10,13 +10,13 @@ changes
 -------
 - moved default values from Descriptor classes to GeneratorFactory
 - removed number min/maxExlusive, replaced with boolean min/maxInclusive
-- CSVEntityExporter.quoteEmpty is true by default
+- Added property 'quoteEmpty' to CSVEntityExporter, true by default
 - <setup defaultOneToOne="false"> by default
 - removed predefined "benerator" variable from context (use "context" now)
 - removed hexadecimal syntax for decimal number literals in BeneratorScript
 - removed property 'db' from SequenceTableGenerator (replaced with property 'database')
 - renamed Entity2BeanConverter to Entity2JavaConverter
-- replaced OfflineSequenceGenerator with CachedSequenceGenerator
+- merged OfflineSequenceGenerator into DBSequenceGenerator with property 'cached'
 - replaced Iterable and Iterator with DataSource and DataIterator
 - Changed signature of generate() method in Generator interface
 - Renamed SimpleConverter to UnsafeConverter and SimpleGenerator to UnsafeGenerator
@@ -41,7 +41,7 @@ changes
 - renamed 'source' property to 'database' in DBSequenceGenerator and DBSeqHiLoGenerator
 - cleaned up generator hierarchies for arrays
 - changed Statement interface
-- removed multithreading support for <generate> and <iterate> - it never worked satisfactory
+- removed multithreading support for <generate> and <iterate> - anyway it never worked satisfactory
 - dropped variable support in XML Schema-based file generation
 
 
@@ -50,9 +50,9 @@ enhancements
 - Definition and execution of variables, ids, attributes and references in arbitrary order
 - supporting different types of GeneratorFactories
 - Defined VolumeGeneratorFactory, EquivalenceGeneratorFactory, CoverageGeneratorFactory and SerialGeneratorFactory 
+- Added configurable generatorFactory and defaultsProvider properties to BeneratorContext
 - new annotation @DecimalGranularity
 - New Converter class NumberQuantizer
-- Added configurable GeneratorFactory to BeneratorContext
 - Defined SimpleMethodParamsGenerator as abstract parent class for Generators that create method parameters as Object arrays.
 - Defined AsStringGenerator for wrapping an arbitrary Generator and return String representations of products
 - CompositeStringGenerator supports uniqueness
