@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.databene.benerator.Consumer;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.commons.Encodings;
 import org.databene.commons.IOUtil;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.RoundedNumberFormat;
@@ -117,14 +116,15 @@ public class DBSnapshotTool {
 
 	public static void export(String dbUrl, String dbDriver, String dbSchema,
 			String dbUser, String dbPassword, String filename, String format, String dialect) {
-		export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, format, dialect, null);
+		export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, SystemInfo.getFileEncoding(), 
+				format, dialect, null);
 	}
 	
 	public static void export(String dbUrl, String dbDriver, String dbSchema,
-			String dbUser, String dbPassword, String filename, String format, String dialect, ProgressMonitor monitor) {
+			String dbUser, String dbPassword, String filename, String encoding, String format, String dialect, 
+			ProgressMonitor monitor) {
         if (dbUser == null)
             logger.warn("No JDBC user specified");
-        String fileEncoding = Encodings.UTF_8;
         String lineSeparator = SystemInfo.getLineSeparator();
 		long startTime = System.currentTimeMillis();
 
@@ -140,13 +140,13 @@ public class DBSnapshotTool {
 
             // create exporter
             if (DBUNIT_FORMAT.equals(format.toLowerCase()))
-            	exporter = new DbUnitEntityExporter(filename, fileEncoding);
+            	exporter = new DbUnitEntityExporter(filename, encoding);
             else if (XLS_FORMAT.equals(format))
             	exporter = new XLSEntityExporter(filename);
             else if (SQL_FORMAT.equals(format)) {
             	if (dialect == null)
             		dialect = db.getDialect().getSystem();
-            	exporter = new SQLEntityExporter(filename, fileEncoding, lineSeparator, dialect);
+            	exporter = new SQLEntityExporter(filename, encoding, lineSeparator, dialect);
             } else
             	throw new IllegalArgumentException("Unknown format: " + format);
 
