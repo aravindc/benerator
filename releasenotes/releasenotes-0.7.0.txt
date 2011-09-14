@@ -43,6 +43,7 @@ changes
 - changed Statement interface
 - removed multithreading support for <generate> and <iterate> - anyway it never worked satisfactory
 - dropped variable support in XML Schema-based file generation
+- DbUnitEntityExporter uses UTF-8 by default
 
 
 enhancements
