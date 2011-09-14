@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.databene.benerator.Consumer;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.Encodings;
 import org.databene.commons.IOUtil;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.RoundedNumberFormat;
@@ -123,7 +124,7 @@ public class DBSnapshotTool {
 			String dbUser, String dbPassword, String filename, String format, String dialect, ProgressMonitor monitor) {
         if (dbUser == null)
             logger.warn("No JDBC user specified");
-        String fileEncoding = SystemInfo.getFileEncoding();
+        String fileEncoding = Encodings.UTF_8;
         String lineSeparator = SystemInfo.getLineSeparator();
 		long startTime = System.currentTimeMillis();
 
