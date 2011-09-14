@@ -22,7 +22,6 @@
 	<echo>{ftl:  ${orders_per_customer} orders per customer}</echo>
 	<echo>{ftl:  ${items_per_order} items per order}</echo>
 	<echo>{ftl:encoding:${context.defaultEncoding} default pageSize:${context.defaultPageSize}}</echo>
-	<echo>{ftl:JDBC URL: ${dbUrl}}</echo>
 
     <comment>define a database that will be referred by the id 'db' subsequently</comment>
     <database id="db" />
