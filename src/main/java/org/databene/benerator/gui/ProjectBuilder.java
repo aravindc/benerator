@@ -239,7 +239,8 @@ public class ProjectBuilder implements Runnable {
 		String format = setup.getDbSnapshot();
 		File file = setup.projectFile(setup.getDbSnapshotFile());
 		DBSnapshotTool.export(setup.getDbUrl(), setup.getDbDriver(), setup.getDbSchema(), 
-				setup.getDbUser(), setup.getDbPassword(), file.getAbsolutePath(), format, null, monitor);
+				setup.getDbUser(), setup.getDbPassword(), file.getAbsolutePath(), setup.getEncoding(), format, 
+				null, monitor);
 		return file;
 	}
 
