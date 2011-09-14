@@ -152,6 +152,7 @@
                 <include>org.apache.derby:derbyclient:jar</include>
                 <include>postgresql:postgresql:jar</include>
                 <include>net.sf.squirrel-sql.thirdparty-non-maven:jaybird:jar</include>
+                <include>javax.resource:connector-api:jar</include>
             </includes>
         </dependencySet>
         <dependencySet>
