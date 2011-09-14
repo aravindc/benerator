@@ -4,6 +4,9 @@ release notes benerator 0.7.0
 
 summary
 -------
+Benerator core has been redesigned in central parts to be more user convenient, avoid frequent mistakes and evolve 
+the extension interfaces towards a future-proof form. Core topic was improvement of support for programmatic clients 
+in functional testing like Feed4JUnit and Feed4TestNG.
 
 
 changes
