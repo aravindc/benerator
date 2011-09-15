@@ -55,4 +55,9 @@ public class NullStartingGenerator<E> extends GeneratorProxy<E> {
 		return super.generate(wrapper);
 	}
 	
+	@Override
+	public void reset() {
+		nullUsed = false;
+		super.reset();
+	}
 }
