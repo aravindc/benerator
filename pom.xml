@@ -5,16 +5,16 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.7.0</version>
+    <version>0.7.1</version>
 
     <properties>
     	<build_number>${buildNumber}</build_number>
-    	<jdbacl_version>0.6.10</jdbacl_version>
-    	<dbsanity_version>0.8.2</dbsanity_version>
+    	<jdbacl_version>0.6.11</jdbacl_version>
+    	<dbsanity_version>0.8.3</dbsanity_version>
     	<gui_version>0.2.9</gui_version>
-    	<webdecs_version>0.6.0</webdecs_version>
+    	<webdecs_version>0.6.1</webdecs_version>
     	<commons_version>0.5.9</commons_version>
-    	<contiperf_version>2.0.0-SNAPSHOT-2011-07-21</contiperf_version>
+    	<contiperf_version>2.0.0</contiperf_version>
     </properties>
 
     <packaging>jar</packaging>
@@ -175,7 +175,7 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
-            <version>3.1.3</version>
+            <version>3.3</version>
         </dependency>
 
         <dependency>
