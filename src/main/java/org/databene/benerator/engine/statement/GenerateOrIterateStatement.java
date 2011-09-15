@@ -125,7 +125,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
     		countGenerator.init(context);
     		initialized = true;
     	}
-	    return countGenerator.generate(new ProductWrapper<Long>()).unwrap();
+	    return countGenerator.generate(new ProductWrapper<Long>()).unwrap(); // TODO if no count was defined, null is returned and causes a NPE
     }
 
 	public GeneratorTask getTarget() {
