@@ -59,6 +59,7 @@ import org.databene.benerator.factory.MeanDefaultsProvider;
 import org.databene.benerator.factory.SerialGeneratorFactory;
 import org.databene.benerator.factory.StochasticGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.benerator.wrapper.LastFlagGenerator;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
