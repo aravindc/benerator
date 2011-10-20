@@ -25,4 +25,8 @@
             <value>User</value>
         </row>
     </table>
+    <table name="EMPTY1">
+        <column>name</column>
+    </table>
+    <table name="EMPTY2" />
 </dataset>
