@@ -574,7 +574,10 @@ public class DBSystem extends AbstractStorageSystem {
     	if (dialect == null) {
         	try {
         		DatabaseMetaData metaData = getThreadContext().connection.getMetaData();
-				dialect = DatabaseDialectManager.getDialectForProduct(metaData.getDatabaseProductName());
+				String productName = metaData.getDatabaseProductName();
+                VersionNumber productVersion = VersionNumber.valueOf(metaData.getDatabaseMajorVersion() + "." + 
+                		metaData.getDatabaseMinorVersion());
+				dialect = DatabaseDialectManager.getDialectForProduct(productName, productVersion);
     		} catch (SQLException e) {
     	        throw new ConfigurationError("Database meta data access failed", e);
     		}
@@ -693,7 +696,8 @@ public class DBSystem extends AbstractStorageSystem {
                 ReferenceDescriptor descriptor = new ReferenceDescriptor(
                         fkColumnName, 
                         abstractType,
-                        targetTable.getName());
+                        targetTable.getName(),
+                        constraint.getRefereeColumnNames()[0]);
                 descriptor.getLocalType(false).setSource(id);
                 descriptor.setMinCount(new ConstantExpression<Long>(1L));
                 descriptor.setMaxCount(new ConstantExpression<Long>(1L));
@@ -702,7 +706,7 @@ public class DBSystem extends AbstractStorageSystem {
                 complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
                 logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
-                // TODO v0.7.1 handle composite keys
+                // TODO v0.7.2 handle composite keys
             }
         }
         // process normal columns
