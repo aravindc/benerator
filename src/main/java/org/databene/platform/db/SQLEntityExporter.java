@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 
 import org.databene.benerator.consumer.TextFileExporter;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.version.VersionNumber;
 import org.databene.jdbacl.DatabaseDialect;
 import org.databene.jdbacl.DatabaseDialectManager;
 import org.databene.model.data.Entity;
@@ -55,6 +56,8 @@ public class SQLEntityExporter extends TextFileExporter {
     // attributes ------------------------------------------------------------------------------------------------------
     
     private DatabaseDialect dialect = null;
+    private String dialectName;
+    private VersionNumber dialectVersion;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -76,7 +79,15 @@ public class SQLEntityExporter extends TextFileExporter {
     }
     
     public void setDialect(String dialectName) {
-		this.dialect = (dialectName != null ? DatabaseDialectManager.getDialectForProduct(dialectName) : null);
+    	this.dialectName = dialectName;
+    	if (dialectName != null)
+    		this.dialect = DatabaseDialectManager.getDialectForProduct(dialectName, dialectVersion);
+    }
+
+    public void setVersion(String version) {
+    	this.dialectVersion = VersionNumber.valueOf(version);
+    	if (this.dialectName != null)
+    		this.dialect = DatabaseDialectManager.getDialectForProduct(dialectName, dialectVersion);
     }
 
     // Callback methods for parent class functionality -----------------------------------------------------------------
