@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -138,10 +138,28 @@ public class BeanDescriptorProvider extends DefaultDescriptorProvider {
     // private helpers -------------------------------------------------------------------------------------------------
 
 	private TypeDescriptor createTypeDescriptor(Class<?> javaType) {
+		// check for primitive type
 	    String className = javaType.getName();
 	    SimpleTypeDescriptor simpleType = PrimitiveDescriptorProvider.INSTANCE.getPrimitiveTypeDescriptor(javaType);
 	    if (simpleType != null)
 	    	return simpleType;
+	    
+	    // check for enum
+	    if (javaType.isEnum()) {
+	    	simpleType = new SimpleTypeDescriptor(className, "string");
+	    	Object[] instances = javaType.getEnumConstants();
+	    	StringBuilder builder = new StringBuilder();
+	    	for (int i = 0; i < instances.length; i++) {
+	    		if (i > 0)
+	    			builder.append(",");
+	    		builder.append("'").append(instances[i]).append("'");
+	    	}
+	    	simpleType.setValues(builder.toString());
+	    	addDescriptor(simpleType);
+	    	return simpleType;
+	    }
+	    
+	    // assert complex type
 		ComplexTypeDescriptor td = new ComplexTypeDescriptor(className);
 	    for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(javaType)) {
 	        if ("class".equals(propertyDescriptor.getName()))
