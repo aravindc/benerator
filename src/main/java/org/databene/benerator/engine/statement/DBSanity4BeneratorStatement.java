@@ -36,6 +36,7 @@ import org.databene.commons.version.VersionNumber;
 import org.databene.dbsanity.DbSanity;
 import org.databene.dbsanity.ExecutionMode;
 import org.databene.dbsanity.model.SanityCheckSuite;
+import org.databene.jdbacl.version.ConstantVersionProvider;
 import org.databene.platform.db.DBSystem;
 
 /**
@@ -106,7 +107,7 @@ public class DBSanity4BeneratorStatement implements Statement {
 				dbSanity.setSkin(skin);
 			
 			String appVersion = ExpressionUtil.evaluate(appVersionEx, context);
-			dbSanity.setAppVersion(VersionNumber.valueOf(appVersion));
+			dbSanity.setVersionProvider(new ConstantVersionProvider(VersionNumber.valueOf(appVersion)));
 			
 			String[] tables = ExpressionUtil.evaluate(tablesEx, context);
 			dbSanity.setTables(tables);
