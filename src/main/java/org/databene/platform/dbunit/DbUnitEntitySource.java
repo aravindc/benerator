@@ -26,9 +26,11 @@
 
 package org.databene.platform.dbunit;
 
-import java.io.IOException;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.IOUtil;
 import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
 import org.databene.webdecs.DataIterator;
@@ -42,19 +44,34 @@ import org.databene.webdecs.DataIterator;
  */
 public class DbUnitEntitySource extends FileBasedEntitySource {
 	
+	Boolean flat;
+	
     public DbUnitEntitySource(String uri, BeneratorContext context) {
         super(uri, context);
     }
     
     public DataIterator<Entity> iterator() {
-        try {
-            return new DbUnitEntityIterator(resolveUri(), context);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    	if (flat == null)
+    		flat = isFlat(uri);
+    	if (flat)
+    		return new FlatDbUnitEntityIterator(resolveUri(), context);
+    	else
+    		return new NestedDbUnitEntityIterator(uri, context);
     }
     
-    @Override
+    private Boolean isFlat(String uri) {
+		try {
+			XMLInputFactory factory = XMLInputFactory.newInstance();
+			XMLStreamReader reader = factory.createXMLStreamReader(IOUtil.getInputStreamForURI(uri));
+			DbUnitUtil.skipRootElement(reader);
+			DbUnitUtil.skipNonStartTags(reader);
+			return !"table".equals(reader.getLocalName());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
     public String toString() {
         return getClass().getSimpleName() + '[' + uri + ']';
     }

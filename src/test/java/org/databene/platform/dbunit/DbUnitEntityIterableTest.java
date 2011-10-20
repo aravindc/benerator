@@ -29,8 +29,6 @@ package org.databene.platform.dbunit;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
-import java.io.IOException;
-
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -43,22 +41,27 @@ import org.databene.webdecs.DataUtil;
  * Created: 05.08.2007 08:05:10
  * @author Volker Bergmann
  */
-public class DbUnitEntityIterableTest extends AbstractEntityIteratorTest {
+public class DbUnitEntityIterableTest extends AbstractEntityIteratorTest { // TODO split off tests for the 2 *Iterator classes
 
 	@Test
-    public void testNormalDataset() throws IOException{
-        check("org/databene/platform/importer/dbunit/person+role-dbunit.xml");
+    public void testNormalDataset() {
+        NestedDbUnitEntityIterator iterator = new NestedDbUnitEntityIterator(
+        		"org/databene/platform/importer/dbunit/person+role-dbunit.xml", 
+        		new DefaultBeneratorContext());
+        check(iterator);
     }
 
 	@Test
-    public void testFlatDataset() throws IOException{
-        check("org/databene/platform/importer/dbunit/person+role-dbunit.flat.xml");
+    public void testFlatDataset() {
+        FlatDbUnitEntityIterator iterator = new FlatDbUnitEntityIterator(
+        		"org/databene/platform/importer/dbunit/person+role-dbunit.flat.xml", 
+        		new DefaultBeneratorContext());
+        check(iterator);
     }
 
     // helpers ---------------------------------------------------------------------------------------------------------
 
-    private void check(String uri) throws IOException {
-        DbUnitEntityIterator iterator = new DbUnitEntityIterator(uri, new DefaultBeneratorContext());
+    private void check(AbstractDbUnitEntityIterator iterator) {
         assertEquals(createPerson("Alice", "23"), DataUtil.nextNotNullData(iterator));
         assertEquals(createPerson("Bob", "34"), DataUtil.nextNotNullData(iterator));
         assertEquals(createPerson("Charly", "45"), DataUtil.nextNotNullData(iterator));
