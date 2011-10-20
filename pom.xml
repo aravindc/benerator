@@ -5,15 +5,15 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.2</version>
 
     <properties>
     	<build_number>${buildNumber}</build_number>
-    	<jdbacl_version>0.6.11</jdbacl_version>
-    	<dbsanity_version>0.8.3</dbsanity_version>
-    	<gui_version>0.2.9</gui_version>
-    	<webdecs_version>0.6.1</webdecs_version>
-    	<commons_version>0.5.9</commons_version>
+    	<jdbacl_version>0.6.12</jdbacl_version>
+    	<dbsanity_version>0.8.4</dbsanity_version>
+    	<gui_version>0.2.10</gui_version>
+    	<webdecs_version>0.6.2</webdecs_version>
+    	<commons_version>0.5.10</commons_version>
     	<contiperf_version>2.0.0</contiperf_version>
     </properties>
 
