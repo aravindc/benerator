@@ -104,7 +104,8 @@ public class AnnotationMapper {
 	@SuppressWarnings("unchecked")
 	private static final Set<Class<? extends Annotation>> EXPLICITLY_MAPPED_ANNOTATIONS = CollectionUtil.toSet(
 			Bean.class, Database.class, Descriptor.class, InvocationCount.class, 
-			Equivalence.class, Coverage.class, Serial.class, Coverage.class);
+			Equivalence.class, Coverage.class, Serial.class, Coverage.class,
+			ThreadPoolSize.class);
 
 	static {
 		STANDARD_METHODS = new HashSet<String>();
