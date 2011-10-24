@@ -28,7 +28,7 @@ import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.ConfigurationError;
-import org.databene.jdbacl.hsql.HSQLUtil;
+import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.platform.db.DBSystem;
 import org.junit.Test;
 

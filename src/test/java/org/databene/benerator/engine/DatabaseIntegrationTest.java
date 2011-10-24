@@ -31,7 +31,7 @@ import org.databene.benerator.test.ConsumerMock;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.jdbacl.DBUtil;
-import org.databene.jdbacl.hsql.HSQLUtil;
+import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;

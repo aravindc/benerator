@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.jdbacl.DBUtil;
-import org.databene.jdbacl.hsql.HSQLUtil;
+import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.jdbacl.model.DBForeignKeyConstraint;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;

@@ -36,7 +36,7 @@ import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.jdbacl.DBUtil;
-import org.databene.jdbacl.hsql.HSQLUtil;
+import org.databene.jdbacl.dialect.HSQLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 import java.sql.SQLException;
 
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.jdbacl.hsql.HSQLUtil;
+import org.databene.jdbacl.dialect.HSQLUtil;
 import org.junit.Before;
 import org.junit.Test;
 

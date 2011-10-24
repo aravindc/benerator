@@ -42,7 +42,7 @@ import org.databene.webdecs.DataSource;
 import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.Assert.*;
-import static org.databene.jdbacl.hsql.HSQLUtil.*;
+import static org.databene.jdbacl.dialect.HSQLUtil.*;
 
 /**
  * Tests {@link DBSystem}.<br/>

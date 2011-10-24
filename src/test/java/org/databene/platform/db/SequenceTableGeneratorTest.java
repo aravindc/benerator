@@ -29,7 +29,7 @@ import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.IOUtil;
-import org.databene.jdbacl.hsql.HSQLUtil;
+import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.model.data.Entity;
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -34,7 +34,7 @@ import org.databene.benerator.test.PersonIterable;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.converter.UnsafeConverter;
 import org.databene.commons.validator.AbstractValidator;
-import org.databene.jdbacl.hsql.HSQLUtil;
+import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
