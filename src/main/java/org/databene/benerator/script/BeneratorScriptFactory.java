@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,7 @@ import java.io.IOException;
 
 import org.databene.commons.IOUtil;
 import org.databene.commons.ParseException;
+import org.databene.script.DatabeneScriptParser;
 import org.databene.script.Script;
 import org.databene.script.ScriptFactory;
 
@@ -44,7 +45,7 @@ import org.databene.script.ScriptFactory;
 public class BeneratorScriptFactory implements ScriptFactory {
 
     public Script parseText(String text) throws ParseException {
-        return new BeneratorScript(BeneratorScriptParser.parseExpression(text), text);
+        return new BeneratorScript(DatabeneScriptParser.parseExpression(text), text);
     }
 
     public Script readFile(String uri) throws ParseException, IOException {

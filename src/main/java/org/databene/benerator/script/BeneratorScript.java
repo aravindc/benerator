@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,8 +27,8 @@
 package org.databene.benerator.script;
 
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
 import org.databene.script.AbstractScript;
+import org.databene.script.Expression;
 import org.databene.script.Script;
 import org.databene.script.ScriptException;
 
