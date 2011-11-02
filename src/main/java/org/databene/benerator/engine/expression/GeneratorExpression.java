@@ -30,8 +30,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.DynamicExpression;
+import org.databene.script.Expression;
+import org.databene.script.expression.DynamicExpression;
 
 /**
  * {@link Expression} implementation that evaluates to a {@link Generator}.<br/>

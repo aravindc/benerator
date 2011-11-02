@@ -37,8 +37,6 @@ import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.OneShotGenerator;
 import org.databene.benerator.sample.SampleGenerator;
-import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
 import org.databene.benerator.wrapper.GeneratorChain;
@@ -51,6 +49,8 @@ import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.iterator.ArrayIterable;
 import org.databene.model.data.Uniqueness;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.WeightedSample;
 
 /**
  * {@link GeneratorFactory} implementation that generates docile data in order to avoid functional failures 
@@ -97,7 +97,7 @@ public class StochasticGeneratorFactory extends GeneratorFactory {
 	@SuppressWarnings("unchecked")
 	public <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
             Distribution distribution, boolean unique) {
-	    WeightedSample<T>[] samples = (WeightedSample<T>[]) BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
+	    WeightedSample<T>[] samples = (WeightedSample<T>[]) DatabeneScriptParser.parseWeightedLiteralList(valueSpec);
 	    if (distribution == null && !unique && weightsUsed(samples)) {
 	    	AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>(targetType);
 	    	for (int i = 0; i < samples.length; i++) {

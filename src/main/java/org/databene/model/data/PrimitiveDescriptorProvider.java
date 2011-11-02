@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,6 +25,8 @@
  */
 
 package org.databene.model.data;
+
+import org.databene.script.PrimitiveType;
 
 /**
  * Provides benerator's built-in type descriptors.<br/><br/>

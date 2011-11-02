@@ -22,7 +22,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 
 /**
  * {@link ComponentBuilder} which executes only if a condition expression evaluates to 'true'.<br/><br/>

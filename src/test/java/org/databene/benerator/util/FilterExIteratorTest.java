@@ -19,34 +19,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.parser.xml;
+package org.databene.benerator.util;
 
 import static org.junit.Assert.*;
 
+import org.databene.commons.CollectionUtil;
+import org.databene.commons.Context;
 import org.databene.commons.context.DefaultContext;
-import org.databene.commons.xml.XMLUtil;
 import org.databene.script.Expression;
+import org.databene.script.expression.DynamicExpression;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.util.DataIteratorFromJavaIterator;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
- * Tests the {@link DescriptorParserUtil}.<br/><br/>
- * Created: 11.04.2011 13:10:30
- * @since 0.6.6
+ * Tests the {@link FilterExIterator}.<br/><br/>
+ * Created: 08.03.2011 14:24:18
+ * @since 0.5.8
  * @author Volker Bergmann
  */
-public class DescriptorParserUtilTest {
+public class FilterExIteratorTest {
 
 	@Test
-	public void testParseScriptableElementText() {
-		Element element = XMLUtil.parseStringAsElement("<text>'\\'Test\\''</text>");
-		
-		Expression<String> asIsExpression = DescriptorParserUtil.parseScriptableElementText(element, false);
-		System.out.println(asIsExpression);
-		assertEquals("'\\'Test\\''", asIsExpression.evaluate(new DefaultContext()));
-		
-		Expression<String> unescapingExpression = DescriptorParserUtil.parseScriptableElementText(element, true);
-		System.out.println(unescapingExpression);
-		assertEquals("''Test''", unescapingExpression.evaluate(new DefaultContext()));
+	public void test() {
+		Context context = new DefaultContext();
+		Expression<Boolean> expression = new IsThreeExpression();
+		DataIterator<Integer> source = new DataIteratorFromJavaIterator<Integer>(
+				CollectionUtil.toList(2, 3, 4).iterator(), Integer.class);
+		FilterExIterator<Integer> iterator = new FilterExIterator<Integer>(source, expression, context);
+		assertEquals(3, iterator.next(new DataContainer<Integer>()).getData().intValue());
+		assertNull(iterator.next(new DataContainer<Integer>()));
 	}
+	
+	class IsThreeExpression extends DynamicExpression<Boolean> {
+
+		public Boolean evaluate(Context context) {
+			Integer candidateValue = (Integer) context.get("_candidate");
+			return (candidateValue != null && candidateValue.intValue() == 3);
+		}
+
+	}
+
 }

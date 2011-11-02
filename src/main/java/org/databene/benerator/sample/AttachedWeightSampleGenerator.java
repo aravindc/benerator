@@ -32,6 +32,7 @@ import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.WeightedLongGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.NullSafeComparator;
+import org.databene.script.WeightedSample;
 
 import java.util.ArrayList;
 import java.util.List;

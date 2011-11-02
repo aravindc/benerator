@@ -31,9 +31,9 @@ import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.DynamicExpression;
-import org.databene.commons.expression.ExpressionUtil;
+import org.databene.script.Expression;
+import org.databene.script.expression.DynamicExpression;
+import org.databene.script.expression.ExpressionUtil;
 import org.junit.Test;
 
 /**

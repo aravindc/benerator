@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,11 +27,11 @@
 package org.databene.model.data;
 
 import org.databene.benerator.engine.expression.ScriptExpression;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.ConstantExpression;
-import org.databene.commons.expression.TypeConvertingExpression;
 import org.databene.commons.operation.AndOperation;
 import org.databene.commons.operation.OrOperation;
+import org.databene.script.Expression;
+import org.databene.script.expression.ConstantExpression;
+import org.databene.script.expression.TypeConvertingExpression;
 
 /**
  * Describes generation of (several) entities of a type by uniqueness, 

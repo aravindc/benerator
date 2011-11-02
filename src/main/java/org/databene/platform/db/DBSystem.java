@@ -35,12 +35,12 @@ import org.databene.commons.*;
 import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
-import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.version.VersionNumber;
 import org.databene.jdbacl.ColumnInfo;
 import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.DatabaseDialect;
 import org.databene.jdbacl.DatabaseDialectManager;
+import org.databene.jdbacl.JDBCConnectData;
 import org.databene.jdbacl.ResultSetConverter;
 import org.databene.jdbacl.dialect.OracleDialect;
 import org.databene.jdbacl.model.DBCatalog;
@@ -56,6 +56,8 @@ import org.databene.jdbacl.model.Database;
 import org.databene.jdbacl.model.cache.CachingDBImporter;
 import org.databene.jdbacl.model.jdbc.JDBCDBImporter;
 import org.databene.model.data.*;
+import org.databene.script.expression.ConstantExpression;
+import org.databene.script.PrimitiveType;
 import org.databene.webdecs.DataSource;
 import org.databene.webdecs.util.ConvertingDataSource;
 import org.slf4j.Logger;
@@ -511,7 +513,7 @@ public class DBSystem extends AbstractStorageSystem {
     }
     
     public void setSequenceValue(String sequenceName, long value) throws SQLException {
-    	getDialect().setSequenceValue(sequenceName, value, getThreadContext().connection);
+    	getDialect().setNextSequenceValue(sequenceName, value, getThreadContext().connection);
     }
     
     Connection createConnection() {

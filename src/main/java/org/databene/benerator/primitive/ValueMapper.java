@@ -24,12 +24,12 @@ package org.databene.benerator.primitive;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.databene.benerator.script.BeneratorScriptParser;
-import org.databene.benerator.script.WeightedTransition;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 import org.databene.commons.converter.AnyConverter;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.WeightedTransition;
 
 /**
  * Converter implementation that maps input values in a 'Map' style.<br/><br/>
@@ -65,7 +65,7 @@ public class ValueMapper implements Converter {
 
 	public void setMappings(String mappingSpec) {
 		if (mappingSpec != null) {
-			WeightedTransition[] tl = BeneratorScriptParser.parseTransitionList(mappingSpec);
+			WeightedTransition[] tl = DatabeneScriptParser.parseTransitionList(mappingSpec);
 			for (WeightedTransition t : tl)
 				mappings.put(t.getFrom(), t.getTo());
 			sourceType = BeanUtil.commonSubType(mappings.keySet());

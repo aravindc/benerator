@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,8 +23,8 @@ package org.databene.benerator.util;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.ExpressionUtil;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
 import org.junit.Test;
 
 /**

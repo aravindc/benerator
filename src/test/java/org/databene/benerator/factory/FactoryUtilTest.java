@@ -36,7 +36,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
-import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.WrapperFactory;
@@ -45,6 +44,7 @@ import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
+import org.databene.script.WeightedSample;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;

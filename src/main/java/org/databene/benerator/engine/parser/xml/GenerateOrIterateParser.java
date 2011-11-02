@@ -51,26 +51,26 @@ import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.GeneratorComponentFactory;
 import org.databene.benerator.factory.MetaGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.commons.Validator;
-import org.databene.commons.expression.ConstantExpression;
-import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.InstanceDescriptor;
-import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableHolder;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.Expression;
+import org.databene.script.expression.ConstantExpression;
+import org.databene.script.expression.DynamicExpression;
+import org.databene.script.PrimitiveType;
 import org.databene.task.PageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,7 +126,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
             }
 			@Override
 			public String toString() {
-				return XMLUtil.format(element);
+				return XMLUtil.formatShort(element);
 			}
 		};
 		Statement statement = new LazyStatement(expression);
@@ -164,7 +164,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
 		Expression<Long> pageSize = parsePageSize(element);
 		//Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
-		Expression<PageListener> pager = (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(
+		Expression<PageListener> pager = (Expression<PageListener>) DatabeneScriptParser.parseBeanSpec(
 				element.getAttribute(ATT_PAGER));
 		Expression<ErrorHandler> errorHandler = parseOnErrorAttribute(element, element.getAttribute(ATT_NAME));
 		Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor, 0);

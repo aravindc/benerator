@@ -43,8 +43,6 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.primitive.DynamicCountGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.benerator.script.BeanSpec;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.ExpressionBasedGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
@@ -52,7 +50,6 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
-import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
@@ -63,9 +60,6 @@ import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.converter.String2NumberConverter;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.commons.expression.ConstantExpression;
-import org.databene.commons.expression.ExpressionUtil;
-import org.databene.commons.expression.MinExpression;
 import org.databene.commons.validator.AndValidator;
 import org.databene.commons.validator.bean.BeanConstraintValidator;
 import org.databene.commons.xml.XMLUtil;
@@ -74,12 +68,18 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
-import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableHolder;
+import org.databene.script.BeanSpec;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.Expression;
+import org.databene.script.PrimitiveType;
 import org.databene.script.ScriptConverterForStrings;
+import org.databene.script.expression.ConstantExpression;
+import org.databene.script.expression.ExpressionUtil;
+import org.databene.script.expression.MinExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -129,7 +129,7 @@ public class DescriptorUtil {
 	        if (generatorSpec != null) {
 	        	if (generatorSpec.startsWith("{") && generatorSpec.endsWith("}"))
 	        		generatorSpec = generatorSpec.substring(1, generatorSpec.length() - 1);
-	        	BeanSpec generatorBeanSpec = BeneratorScriptParser.resolveBeanSpec(generatorSpec, context);
+	        	BeanSpec generatorBeanSpec = DatabeneScriptParser.resolveBeanSpec(generatorSpec, context);
 	        	generator = (Generator<?>) generatorBeanSpec.getBean();
 	            FactoryUtil.mapDetailsToBeanProperties(descriptor, generator, context);
 	            if (generatorBeanSpec.isReference())
@@ -148,7 +148,7 @@ public class DescriptorUtil {
 	            return null;
 	        
 	        Validator result = null;
-	        Expression[] beanExpressions = BeneratorScriptParser.parseBeanSpecList(validatorSpec);
+	        Expression[] beanExpressions = DatabeneScriptParser.parseBeanSpecList(validatorSpec);
 			Object[] beans = ExpressionUtil.evaluateAll(beanExpressions, context);
 	        for (Object bean : beans) {
 	        	// check validator type
@@ -181,7 +181,7 @@ public class DescriptorUtil {
 	            return null;
 	        
 	        Converter result = null;
-	        Expression[] beanExpressions = BeneratorScriptParser.parseBeanSpecList(converterSpec);
+	        Expression[] beanExpressions = DatabeneScriptParser.parseBeanSpecList(converterSpec);
 	        Object[] beans = ExpressionUtil.evaluateAll(beanExpressions, context);
 	        for (Object bean : beans) {
 	        	Converter converter;

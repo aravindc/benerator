@@ -22,7 +22,7 @@
 package org.databene.benerator.engine.expression.context;
 
 import org.databene.commons.Context;
-import org.databene.commons.expression.DynamicExpression;
+import org.databene.script.expression.DynamicExpression;
 
 /**
  * Represents and resolves a reference to an object in a {@link Context}.<br/><br/>

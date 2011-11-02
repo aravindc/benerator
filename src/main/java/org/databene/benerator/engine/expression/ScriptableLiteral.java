@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.engine.expression;
 
 import org.databene.commons.Context;
 import org.databene.commons.converter.LiteralParser;
-import org.databene.commons.expression.UnaryExpression;
+import org.databene.script.expression.UnaryExpression;
 
 /**
  * Expression that evaluates a text as a literal; if it encounters a script expression 

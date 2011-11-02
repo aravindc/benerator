@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,26 +19,42 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.sample;
+package org.databene.benerator.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
-import org.databene.script.WeightedSample;
+import org.databene.commons.Context;
+import org.databene.script.Expression;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.util.DataIteratorProxy;
 
 /**
- * Provides utility methods for sample-based generators.<br/><br/>
- * Created: 17.02.2010 23:57:20
- * @since 0.6.0
+ * {@link Iterator} proxy which filters its source's output with a (boolean) filter expression.<br/><br/>
+ * Created: 08.03.2011 11:51:51
+ * @since 0.5.8
  * @author Volker Bergmann
  */
-public class SampleGeneratorUtil {
+public class FilterExIterator<E> extends DataIteratorProxy<E> {
+	
+	Expression<Boolean> filterEx;
+	Context context;
 
-	public static <T> List<T> extractValues(List<WeightedSample<T>> weightedSamples) {
-	    List<T> result = new ArrayList<T>(weightedSamples.size());
-        for (WeightedSample<T> sample : weightedSamples)
-        	result.add(sample.getValue());
-        return result;
-    }
+	public FilterExIterator(DataIterator<E> source, Expression<Boolean> filterEx, Context context) {
+		super(source);
+		this.filterEx = filterEx;
+		this.context = context;
+	}
 
+	@Override
+	public DataContainer<E> next(DataContainer<E> wrapper) {
+		DataContainer<E> tmp;
+		while ((tmp = super.next(wrapper)) != null) {
+			context.set("_candidate", tmp.getData());
+			if (filterEx.evaluate(context))
+				return tmp;
+		}
+		return null;
+	}
+	
 }

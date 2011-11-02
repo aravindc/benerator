@@ -31,6 +31,7 @@ import org.databene.commons.operation.MaxNumberStringOperation;
 import org.databene.commons.operation.MaxOperation;
 import org.databene.commons.operation.MinNumberStringOperation;
 import org.databene.commons.operation.MinOperation;
+import org.databene.script.PrimitiveType;
 
 /**
  * Describes a simple type.<br/>

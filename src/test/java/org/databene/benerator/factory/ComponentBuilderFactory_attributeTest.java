@@ -36,7 +36,6 @@ import org.databene.benerator.factory.ComponentBuilderFactory;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
-import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.validator.StringValidator;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.Entity;
@@ -44,6 +43,7 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
+import org.databene.script.expression.ConstantExpression;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -293,7 +293,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testNullQuotaOneReference() {
 		String componentName = "id";
-		ReferenceDescriptor reference = (ReferenceDescriptor) new ReferenceDescriptor(componentName).withNullQuota(1);
+		ReferenceDescriptor reference = (ReferenceDescriptor) new ReferenceDescriptor(componentName, null).withNullQuota(1);
 		ComponentBuilder builder = createComponentBuilder(reference);
 		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
 		helper.init(context);

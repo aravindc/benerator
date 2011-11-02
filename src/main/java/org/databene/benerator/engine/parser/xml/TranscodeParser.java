@@ -34,10 +34,10 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.FallbackExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.platform.db.DBSystem;
+import org.databene.script.Expression;
+import org.databene.script.expression.FallbackExpression;
 import org.w3c.dom.Element;
 
 /**

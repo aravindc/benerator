@@ -24,7 +24,7 @@ package org.databene.benerator.primitive;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 
 /**
  * Behaves similar to the {@link DynamicLongGenerator}, 

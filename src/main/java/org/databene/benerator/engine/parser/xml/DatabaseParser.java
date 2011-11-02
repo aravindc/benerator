@@ -35,9 +35,9 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.DynamicExpression;
-import org.databene.commons.expression.FallbackExpression;
+import org.databene.script.Expression;
+import org.databene.script.expression.DynamicExpression;
+import org.databene.script.expression.FallbackExpression;
 import org.w3c.dom.Element;
 
 /**

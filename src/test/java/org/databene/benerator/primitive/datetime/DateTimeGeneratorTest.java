@@ -34,7 +34,7 @@ import java.util.GregorianCalendar;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
-import org.databene.commons.math.DateArithmetic;
+import org.databene.script.math.DateArithmetic;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 

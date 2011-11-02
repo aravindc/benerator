@@ -26,7 +26,6 @@
 
 package org.databene.benerator.engine;
 
-import java.io.Closeable;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 
@@ -34,8 +33,8 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.factory.DefaultsProvider;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.commons.bean.ClassProvider;
 import org.databene.model.data.ComponentDescriptor;
+import org.databene.script.ScriptContext;
 
 /**
  * A BeneratorContext.<br/><br/>
@@ -43,7 +42,7 @@ import org.databene.model.data.ComponentDescriptor;
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public interface BeneratorContext extends GeneratorContext, ClassProvider, Closeable {
+public interface BeneratorContext extends GeneratorContext, ScriptContext {
 
 	BeneratorContext createSubContext();
 	
@@ -52,7 +51,6 @@ public interface BeneratorContext extends GeneratorContext, ClassProvider, Close
 	DefaultsProvider getDefaultsProvider();
 	void setDefaultsProvider(DefaultsProvider defaultsProvider);
 	void setSetting(String name, Object value);
-	void close();
 
 	void setDefaultEncoding(String defaultEncoding);
 	void setDefaultLineSeparator(String defaultLineSeparator);

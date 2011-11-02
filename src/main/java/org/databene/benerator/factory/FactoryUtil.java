@@ -42,22 +42,22 @@ import org.databene.benerator.distribution.FeatureWeight;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.ScriptGenerator;
-import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
-import org.databene.commons.expression.DynamicExpression;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.Uniqueness;
 import org.databene.regex.RegexParser;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.Expression;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
+import org.databene.script.WeightedSample;
+import org.databene.script.expression.DynamicExpression;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
@@ -138,7 +138,7 @@ public class FactoryUtil {
 
         // check for explicit construction
     	try {
-	        Expression beanEx = BeneratorScriptParser.parseBeanSpec(spec);
+	        Expression beanEx = DatabeneScriptParser.parseBeanSpec(spec);
 	        return (Distribution) beanEx.evaluate(context);
         } catch (ParseException e) {
         	throw new ConfigurationError("Error parsing distribution spec: " + spec);

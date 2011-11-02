@@ -28,8 +28,8 @@ import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
 import org.databene.commons.accessor.FeatureAccessor;
 import org.databene.commons.converter.NumberToNumberConverter;
-import org.databene.commons.math.ArithmeticEngine;
-import org.databene.model.data.PrimitiveType;
+import org.databene.script.PrimitiveType;
+import org.databene.script.math.ArithmeticEngine;
 
 /**
  * {@link Consumer} implementation which sums up the values of a 'feature' of all objects it consumes

@@ -26,9 +26,9 @@ import org.databene.commons.converter.AbstractConverter;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
-import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.script.PrimitiveType;
 
 /**
  * Converts an array's elements to the types defined in a related {@link ArrayTypeDescriptor}.<br/><br/>

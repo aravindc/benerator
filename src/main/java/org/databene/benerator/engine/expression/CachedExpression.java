@@ -22,8 +22,8 @@
 package org.databene.benerator.engine.expression;
 
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.ExpressionProxy;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionProxy;
 
 /**
  * Caches the result of another expression and returns it on subsequent calls 

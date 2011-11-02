@@ -28,16 +28,16 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
-import org.databene.commons.JDBCConnectData;
 import org.databene.commons.Level;
-import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.version.VersionNumber;
 import org.databene.dbsanity.DbSanity;
 import org.databene.dbsanity.ExecutionMode;
 import org.databene.dbsanity.model.SanityCheckSuite;
+import org.databene.jdbacl.JDBCConnectData;
 import org.databene.jdbacl.version.ConstantVersionProvider;
 import org.databene.platform.db.DBSystem;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
 
 /**
  * {@link Statement} implementation that performs DB Sanity checks 
@@ -125,7 +125,7 @@ public class DBSanity4BeneratorStatement implements Statement {
 			
 			// perform check(s)
 			SanityCheckSuite dbsSuite = dbSanity.execute();
-			boolean success = (dbsSuite.getErrorCount() == 0 && dbsSuite.getFailureCount() == 0);
+			boolean success = (dbsSuite.countErredChecks() == 0 && dbsSuite.countFailedChecks() == 0);
 			
 			if (!success)
 				getErrorHandler(context).handleError("DB Sanity check failed.");

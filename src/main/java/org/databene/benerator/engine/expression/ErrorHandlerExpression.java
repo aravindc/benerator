@@ -29,10 +29,10 @@ package org.databene.benerator.engine.expression;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
 import org.databene.commons.Level;
-import org.databene.commons.expression.DynamicExpression;
-import org.databene.commons.expression.ExpressionUtil;
+import org.databene.script.Expression;
+import org.databene.script.expression.DynamicExpression;
+import org.databene.script.expression.ExpressionUtil;
 
 /**
  * Parses an <code>onError</code> attribute in an XML descriptor element.<br/>

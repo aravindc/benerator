@@ -24,7 +24,7 @@ package org.databene.benerator.primitive.number;
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.NumberToNumberConverter;
 import org.databene.commons.converter.ThreadSafeConverter;
-import org.databene.commons.math.ArithmeticEngine;
+import org.databene.script.math.ArithmeticEngine;
 
 /**
  * A quantizer for arbitrary number types.<br/><br/>

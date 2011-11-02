@@ -24,7 +24,7 @@ package org.databene.benerator.util;
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 
 /**
  * Generator proxy which takes the input of another Generator and only 

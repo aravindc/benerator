@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.commons.ConfigurationError;
+import org.databene.script.PrimitiveType;
 
 /**
  * Describes an XML schema style type. 

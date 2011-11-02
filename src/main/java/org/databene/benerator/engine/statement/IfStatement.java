@@ -26,7 +26,7 @@ import java.io.IOException;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 
 /**
  * {@link CompositeStatement} that executes it parts 

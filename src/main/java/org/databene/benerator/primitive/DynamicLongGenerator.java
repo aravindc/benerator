@@ -26,8 +26,8 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.ExpressionUtil;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
 
 /**
  * {@link Generator} implementation that generates {@link Long} numbers, 

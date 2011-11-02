@@ -34,11 +34,11 @@ import org.databene.benerator.dataset.AtomicDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
 import org.databene.benerator.dataset.DatasetUtil;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
-import org.databene.benerator.sample.WeightedSample;
 import org.databene.commons.Converter;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
+import org.databene.script.WeightedSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

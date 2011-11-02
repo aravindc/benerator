@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 
 /**
  * 'While' loop statement.<br/><br/>

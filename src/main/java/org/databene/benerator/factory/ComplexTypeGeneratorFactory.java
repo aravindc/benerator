@@ -44,8 +44,6 @@ import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
-import org.databene.benerator.script.BeanSpec;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
@@ -55,6 +53,9 @@ import org.databene.platform.dbunit.DbUnitEntitySource;
 import org.databene.platform.fixedwidth.FixedWidthEntitySource;
 import org.databene.platform.xls.XLSEntitySourceProvider;
 import org.databene.platform.csv.CSVEntitySourceProvider;
+import org.databene.script.BeanSpec;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.Expression;
 import org.databene.script.ScriptConverterForStrings;
 import org.databene.script.ScriptUtil;
 import org.databene.webdecs.DataSource;
@@ -113,7 +114,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 	            generator = createXLSSourceGenerator(descriptor, context, sourceSpec);
 	        else {
 	        	try {
-		        	BeanSpec sourceBeanSpec = BeneratorScriptParser.resolveBeanSpec(sourceSpec, context);
+		        	BeanSpec sourceBeanSpec = DatabeneScriptParser.resolveBeanSpec(sourceSpec, context);
 		        	sourceObject = sourceBeanSpec.getBean();
 		        	generator = createSourceGeneratorFromObject(descriptor, context, sourceObject);
 		        	if (sourceBeanSpec.isReference() && !(sourceObject instanceof StorageSystem))

@@ -38,10 +38,10 @@ import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.Expression;
 import org.databene.commons.TypedIterable;
-import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.data.Entity;
+import org.databene.script.Expression;
+import org.databene.script.expression.ConstantExpression;
 import org.databene.task.Task;
 import org.databene.task.test.AbstractTaskTest;
 

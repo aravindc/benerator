@@ -25,8 +25,8 @@ import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.CachedExpression;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
 import org.databene.commons.Level;
+import org.databene.script.Expression;
 
 /**
  * Abstract implementation of the Statement interface.<br/><br/>

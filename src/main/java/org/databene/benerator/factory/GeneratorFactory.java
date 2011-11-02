@@ -37,6 +37,7 @@ import org.databene.commons.*;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.model.data.Uniqueness;
 import org.databene.regex.RegexParser;
+import org.databene.script.WeightedSample;
 
 import java.util.*;
 

@@ -39,8 +39,6 @@ import org.databene.benerator.primitive.EquivalenceStringGenerator;
 import org.databene.benerator.primitive.number.NumberQuantizer;
 import org.databene.benerator.sample.OneShotGenerator;
 import org.databene.benerator.sample.SequenceGenerator;
-import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
 import org.databene.benerator.wrapper.GeneratorChain;
@@ -57,9 +55,11 @@ import org.databene.commons.Period;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.NumberToNumberConverter;
-import org.databene.commons.math.ArithmeticEngine;
 import org.databene.commons.math.Interval;
 import org.databene.model.data.Uniqueness;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.WeightedSample;
+import org.databene.script.math.ArithmeticEngine;
 
 /**
  * {@link GeneratorFactory} implementation which creates minimal data sets for 
@@ -97,7 +97,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
             Distribution distribution, boolean unique) {
-	    List<WeightedSample<?>> samples = CollectionUtil.toList(BeneratorScriptParser.parseWeightedLiteralList(valueSpec));
+	    List<WeightedSample<?>> samples = CollectionUtil.toList(DatabeneScriptParser.parseWeightedLiteralList(valueSpec));
 		List<?> values = FactoryUtil.extractValues((List) samples);
 	    Converter<?, T> typeConverter = new AnyConverter<T>(targetType);
 	    Collection<T> convertedValues = ConverterManager.convertAll((List) values, typeConverter);

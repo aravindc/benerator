@@ -26,12 +26,12 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.script.BeneratorScriptParser;
-import org.databene.benerator.script.Transition;
-import org.databene.benerator.script.WeightedTransition;
 import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.converter.AnyConverter;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.Transition;
+import org.databene.script.WeightedTransition;
 
 /**
  * Generates state transitions of a state machine.<br/>
@@ -55,7 +55,7 @@ public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition>
 	    super(new StateGenerator<E>(stateType));
 	    this.stateType = stateType;
 	    if (transitionSpec != null) {
-	    	WeightedTransition[] transitions = BeneratorScriptParser.parseTransitionList(transitionSpec);
+	    	WeightedTransition[] transitions = DatabeneScriptParser.parseTransitionList(transitionSpec);
 	    	for (WeightedTransition t : transitions)
 	    		addTransition(convert(t.getFrom()), convert(t.getTo()), t.getWeight());
 	    }

@@ -25,11 +25,11 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
-import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.converter.NumberToNumberConverter;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.WeightedSample;
 
 /**
  * Generates numbers with weights that are defined using a literal, 
@@ -53,7 +53,7 @@ public class WeightedNumbers<E> extends Sequence {
     }
 
 	public void setSpec(String spec) {
-		samples = BeneratorScriptParser.parseWeightedLiteralList(spec);
+		samples = DatabeneScriptParser.parseWeightedLiteralList(spec);
 	}
 
 	public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T granularity,

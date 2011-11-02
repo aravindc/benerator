@@ -32,6 +32,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.platform.java.BeanDescriptorProvider;
+import org.databene.script.PrimitiveType;
 
 /**
  * Instance of a composite data type as described by a {@link ComplexTypeDescriptor}.<br/>

@@ -36,16 +36,16 @@ import org.databene.benerator.consumer.NonClosingConsumerProxy;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.parser.xml.BeanParser;
-import org.databene.benerator.script.BeanSpec;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.storage.StorageSystemInserter;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.context.ContextAware;
-import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.script.BeanSpec;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.expression.DynamicExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -77,7 +77,7 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer> {
 		// parse consumer attribute
 		if (entityElement.hasAttribute(ATT_CONSUMER)) {
 			String consumerSpec = parseStringAttribute(entityElement, ATT_CONSUMER, context);
-			BeanSpec[] beanSpecs = BeneratorScriptParser.resolveBeanSpecList(consumerSpec, beneratorContext);
+			BeanSpec[] beanSpecs = DatabeneScriptParser.resolveBeanSpecList(consumerSpec, beneratorContext);
 			for (BeanSpec beanSpec : beanSpecs) {
 				addConsumer(beanSpec, beneratorContext, consumerChain);
 			}
@@ -95,7 +95,7 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer> {
 				beanSpec = BeanParser.resolveBeanExpression(consumerElement, beneratorContext);
 			} else
 				throw new UnsupportedOperationException(
-						"Can't handle " + XMLUtil.format(consumerElement));
+						"Can't handle " + XMLUtil.formatShort(consumerElement));
 			addConsumer(beanSpec, beneratorContext, consumerChain);
 		}
 		
@@ -128,7 +128,7 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer> {
 
 	@Override
 	public String toString() {
-	    return getClass().getSimpleName() + '(' + XMLUtil.format(entityElement) + ')';
+	    return getClass().getSimpleName() + '(' + XMLUtil.formatShort(entityElement) + ')';
 	}
 	
 }

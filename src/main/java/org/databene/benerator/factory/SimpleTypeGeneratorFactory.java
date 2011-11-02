@@ -43,8 +43,6 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
-import org.databene.benerator.script.BeanSpec;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AccessingGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.AsByteGeneratorWrapper;
@@ -65,10 +63,12 @@ import org.databene.commons.converter.DateString2DurationConverter;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.validator.StringLengthValidator;
-import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
+import org.databene.script.BeanSpec;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.PrimitiveType;
 import org.databene.script.ScriptConverterForStrings;
 
 import static org.databene.model.data.SimpleTypeDescriptor.*;
@@ -187,7 +187,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
             generator = SourceFactory.createTextLineGenerator(source);
         } else {
         	try {
-	        	BeanSpec sourceSpec = BeneratorScriptParser.resolveBeanSpec(source, context);
+	        	BeanSpec sourceSpec = DatabeneScriptParser.resolveBeanSpec(source, context);
 	        	generator = createSourceGeneratorFromObject(descriptor, context, sourceSpec);
         	} catch (Exception e) {
                 generator = new AccessingGenerator(Object.class, new GraphAccessor(source), context);

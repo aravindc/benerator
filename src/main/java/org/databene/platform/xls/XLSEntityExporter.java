@@ -50,9 +50,9 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.platform.csv.CSVEntityExporter;
+import org.databene.script.PrimitiveType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

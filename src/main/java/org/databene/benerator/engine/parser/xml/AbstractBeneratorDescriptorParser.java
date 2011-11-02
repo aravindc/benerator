@@ -34,7 +34,7 @@ import org.databene.benerator.engine.statement.GeneratorStatement;
 import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.benerator.engine.statement.WhileStatement;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 import org.databene.webdecs.xml.AbstractXMLElementParser;
 import org.databene.webdecs.xml.ParseContext;
 import org.slf4j.Logger;

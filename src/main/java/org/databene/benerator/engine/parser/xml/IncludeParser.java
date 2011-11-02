@@ -30,8 +30,8 @@ import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.StringExpression;
+import org.databene.script.Expression;
+import org.databene.script.expression.StringExpression;
 import org.w3c.dom.Element;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 

@@ -27,8 +27,8 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.ErrorStatement;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.StringExpression;
+import org.databene.script.Expression;
+import org.databene.script.expression.StringExpression;
 import org.w3c.dom.Element;
 
 /**

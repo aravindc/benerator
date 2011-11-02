@@ -31,9 +31,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
 import org.databene.commons.collection.OrderedNameMap;
-import org.databene.commons.expression.ExpressionUtil;
 import org.databene.dbsanity.parser.TestSuiteParser;
 import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
@@ -45,6 +43,8 @@ import org.databene.jdbacl.model.Database;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.platform.db.DBSystem;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
 
 /**
  * Groups {@link TranscodeStatement}s and provides common features like 
@@ -162,7 +162,8 @@ public class TranscodingTaskStatement extends SequentialStatement {
 			DBSystem target = getTarget(context);
 			Database database = target.getDbMetaData();
 			File reportFolder = new File("dbsanity-report");
-			new TestSuiteParser().parseHierarchy(new File(idFile), reportFolder, reportFolder, new File("temp"), database, mapper, identityProvider);
+			TestSuiteParser parser = new TestSuiteParser(database, null, null, null);
+			parser.parseHierarchy(new File(idFile), reportFolder, new File("temp"), mapper, identityProvider);
 		} catch (Exception e) {
 			throw new ConfigurationError("Error setting up transcoding task", e);
 		}

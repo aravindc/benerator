@@ -28,11 +28,11 @@ package org.databene.task.runner;
 
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
 import org.databene.commons.context.DefaultContext;
-import org.databene.commons.expression.ExpressionUtil;
 import org.databene.contiperf.PerformanceTracker;
 import org.databene.platform.contiperf.PerfTrackingTaskProxy;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
 import org.databene.task.PageListener;
 import org.databene.task.StateTrackingTaskProxy;
 import org.databene.task.Task;

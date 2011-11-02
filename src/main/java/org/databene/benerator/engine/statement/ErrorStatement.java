@@ -24,8 +24,8 @@ package org.databene.benerator.engine.statement;
 import org.databene.benerator.BeneratorError;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.ExpressionUtil;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
 
 /**
  * {@link Statement} implementation that raises a {@link BeneratorError} 

@@ -42,6 +42,7 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
+import org.databene.script.Expression;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
 import org.databene.benerator.Generator;
@@ -64,7 +65,6 @@ import org.databene.benerator.wrapper.AsIntegerGeneratorWrapper;
 import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,14 +143,17 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     static ComponentBuilder<?> createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
-        boolean unique = DescriptorUtil.isUnique(descriptor, context);
-        Uniqueness uniqueness = (unique ? Uniqueness.SIMPLE : Uniqueness.NONE);
         SimpleTypeDescriptor typeDescriptor = (SimpleTypeDescriptor) descriptor.getTypeDescriptor();
 
+		// check uniqueness
+        boolean unique = DescriptorUtil.isUnique(descriptor, context);
+        Uniqueness uniqueness = (unique ? Uniqueness.SIMPLE : Uniqueness.NONE);
+        
         // do I only need to generate nulls?
         if (DescriptorUtil.isNullable(descriptor, context) && DescriptorUtil.shouldNullifyEachNullable(descriptor, context))
             return builderFromGenerator(createNullGenerator(descriptor, context), descriptor, context);
         
+        // TODO use SimpleTypeGeneratorFactory?
         Generator<?> generator = null;
 		generator = DescriptorUtil.getGeneratorByName(typeDescriptor, context);
         if (generator == null)
@@ -172,6 +175,9 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	        if (targetType == null)
 	            throw new ConfigurationError("Type not defined: " + targetTypeName);
 	        
+	        // check targetComponent
+	        String targetComponent = descriptor.getTargetComponent();
+	        
 	        // check source
 	        String sourceName = typeDescriptor.getSource();
 	        if (sourceName == null)
@@ -187,7 +193,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	            	generator = new DataSourceGenerator(sourceSystem.query(selectorToUse, true, context));
 	            } else {
 		            generator = new DataSourceGenerator(sourceSystem.queryEntityIds(
-		            		targetTypeName, selectorToUse, context));
+		            		targetTypeName, selectorToUse, context)); // TODO v0.7.2 query by targetComponent
 		            if (selectorToUse == null && distribution == null)
 		            	if (context.isDefaultOneToOne())
 		            		distribution = new ExpandSequence();

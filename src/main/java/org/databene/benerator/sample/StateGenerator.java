@@ -33,13 +33,13 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.script.BeneratorScriptParser;
-import org.databene.benerator.script.WeightedTransition;
 import org.databene.benerator.util.UnsafeNonNullGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.WeightedTransition;
 
 /**
  * Generates states as configured by a state machine.<br/>
@@ -80,7 +80,7 @@ public class StateGenerator<E> extends UnsafeNonNullGenerator<E> {
 			return;
 		}
     	try {
-    		WeightedTransition[] ts = BeneratorScriptParser.parseTransitionList(transitionSpec);
+    		WeightedTransition[] ts = DatabeneScriptParser.parseTransitionList(transitionSpec);
 	    	for (WeightedTransition t : ts)
 	    		addTransition((E) t.getFrom(), (E) t.getTo(), t.getWeight());
     	} catch (ParseException e) {

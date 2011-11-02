@@ -31,9 +31,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.StringUtil;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.WeightedSample;
 
 /**
  * Provides utility functions for generating numbers in an interval.<br/>
@@ -108,7 +108,7 @@ public class RandomUtil {
 	public static Object randomFromWeightLiteral(String literal) {
 		if (StringUtil.isEmpty(literal))
 			return null;
-	    WeightedSample<?>[] samples = BeneratorScriptParser.parseWeightedLiteralList(literal);
+	    WeightedSample<?>[] samples = DatabeneScriptParser.parseWeightedLiteralList(literal);
         int sampleCount = samples.length;
         if (sampleCount == 1)
         	return samples[0];

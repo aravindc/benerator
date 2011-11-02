@@ -24,7 +24,7 @@ package org.databene.benerator.engine.statement;
 import java.io.Closeable;
 
 import org.databene.benerator.engine.Statement;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 
 /**
  * {@link CompositeStatement} that holds a condition expression.<br/><br/>

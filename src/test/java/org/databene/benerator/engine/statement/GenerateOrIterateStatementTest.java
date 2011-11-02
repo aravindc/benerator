@@ -34,9 +34,9 @@ import org.databene.benerator.engine.Statement;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.data.Entity;
+import org.databene.script.Expression;
+import org.databene.script.expression.ConstantExpression;
 import org.junit.Test;
 
 /**

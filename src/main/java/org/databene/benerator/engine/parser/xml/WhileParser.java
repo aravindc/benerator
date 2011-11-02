@@ -33,7 +33,7 @@ import java.util.Set;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.WhileStatement;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 import org.w3c.dom.Element;
 
 /**

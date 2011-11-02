@@ -58,7 +58,6 @@ import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.factory.MeanDefaultsProvider;
 import org.databene.benerator.factory.SerialGeneratorFactory;
 import org.databene.benerator.factory.StochasticGeneratorFactory;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.LastFlagGenerator;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.benerator.wrapper.WrapperFactory;
@@ -82,6 +81,7 @@ import org.databene.model.data.Uniqueness;
 import org.databene.platform.db.DBSystem;
 import org.databene.platform.java.BeanDescriptorProvider;
 import org.databene.platform.java.Entity2JavaConverter;
+import org.databene.script.DatabeneScriptParser;
 import org.databene.script.ScriptUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -420,7 +420,7 @@ public class AnnotationMapper {
 			try {
 				if (beanClass != Object.class)
 					throw new ConfigurationError("'type' and 'spec' exclude each other in a @Bean");
-		        return BeneratorScriptParser.parseBeanSpec(beanSpec).evaluate(context);
+		        return DatabeneScriptParser.parseBeanSpec(beanSpec).evaluate(context);
 			} catch (ParseException e) {
 				throw new ConfigurationError("Error parsing bean spec: " + beanSpec, e);
 			}

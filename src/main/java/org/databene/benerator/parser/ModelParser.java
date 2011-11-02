@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,7 +35,6 @@ import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
@@ -52,6 +51,7 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.VariableDescriptor;
 import org.databene.model.data.VariableHolder;
+import org.databene.script.expression.ConstantExpression;
 
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.*;
 

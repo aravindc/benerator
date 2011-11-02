@@ -22,10 +22,10 @@
 package org.databene.benerator.engine.expression;
 
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
-import org.databene.commons.expression.ConstantExpression;
-import org.databene.commons.expression.DynamicExpression;
+import org.databene.script.Expression;
+import org.databene.script.expression.ConstantExpression;
+import org.databene.script.expression.DynamicExpression;
 import org.databene.script.ScriptUtil;
 
 /**

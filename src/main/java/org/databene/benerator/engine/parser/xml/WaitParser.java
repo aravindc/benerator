@@ -33,8 +33,8 @@ import org.databene.benerator.primitive.DynamicLongGenerator;
 import org.databene.benerator.util.ExpressionBasedGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.ExpressionUtil;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
 import org.databene.model.data.Uniqueness;
 import org.w3c.dom.Element;
 

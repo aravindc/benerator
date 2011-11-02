@@ -44,11 +44,11 @@ import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.StatementUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
 import org.databene.commons.MessageHolder;
 import org.databene.commons.Resettable;
-import org.databene.commons.expression.ExpressionUtil;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
 import org.databene.task.PageListener;
 import org.databene.task.TaskResult;
 

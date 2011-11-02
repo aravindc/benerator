@@ -32,13 +32,13 @@ import java.io.Closeable;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.script.BeanConstruction;
 import org.databene.commons.BeanUtil;
-import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.commons.context.ContextAware;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DescriptorProvider;
+import org.databene.script.Expression;
+import org.databene.script.expression.BeanConstruction;
 import org.databene.task.Task;
 
 /**

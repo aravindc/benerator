@@ -28,9 +28,9 @@ package org.databene.benerator.engine.statement;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.mutator.AnyMutator;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
 
 /**
  * Sets a global Benerator property.<br/>

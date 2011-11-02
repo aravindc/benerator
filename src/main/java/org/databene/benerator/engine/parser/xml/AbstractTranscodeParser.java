@@ -26,9 +26,9 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.pars
 
 import java.util.Set;
 
-import org.databene.commons.Expression;
-import org.databene.commons.expression.ConvertingExpression;
 import org.databene.platform.db.DBSystem;
+import org.databene.script.Expression;
+import org.databene.script.expression.ConvertingExpression;
 import org.databene.text.SplitStringConverter;
 import org.w3c.dom.Element;
 

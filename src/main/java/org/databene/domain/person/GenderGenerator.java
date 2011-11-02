@@ -30,10 +30,10 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.CollectionUtil;
+import org.databene.script.WeightedSample;
 
 /**
  * Generates {@link Gender} objects.<br/>

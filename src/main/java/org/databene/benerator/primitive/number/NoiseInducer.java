@@ -28,8 +28,8 @@ import org.databene.benerator.util.GeneratingConverter;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Converter;
 import org.databene.commons.converter.ConverterManager;
-import org.databene.commons.math.ArithmeticEngine;
 import org.databene.model.data.Uniqueness;
+import org.databene.script.math.ArithmeticEngine;
 
 /**
  * {@link Converter} implementation that transforms numbers 

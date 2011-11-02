@@ -24,10 +24,10 @@ package org.databene.benerator.engine.statement;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
+import org.databene.script.Expression;
 import org.w3c.dom.Element;
 
 /**

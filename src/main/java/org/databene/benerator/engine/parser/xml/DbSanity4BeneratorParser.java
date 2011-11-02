@@ -35,11 +35,11 @@ import org.databene.benerator.engine.statement.WhileStatement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
 import org.databene.commons.converter.String2EnumConverter;
-import org.databene.commons.expression.ConvertingExpression;
 import org.databene.dbsanity.ExecutionMode;
 import org.databene.platform.db.DBSystem;
+import org.databene.script.Expression;
+import org.databene.script.expression.ConvertingExpression;
 import org.w3c.dom.Element;
 
 /**

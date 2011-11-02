@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,8 +25,8 @@ import java.util.Locale;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.ExpressionUtil;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
 
 /**
  * Evaluates a string expression for a Locale string, if none is set, it picks Benerator's default Locale.<br/><br/>

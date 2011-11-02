@@ -45,7 +45,6 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Encodings;
-import org.databene.commons.Expression;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.OrderedMap;
@@ -54,7 +53,6 @@ import org.databene.commons.SystemInfo;
 import org.databene.commons.accessor.GraphAccessor;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.maven.MavenUtil;
 import org.databene.commons.ui.I18NError;
 import org.databene.commons.ui.ProgressMonitor;
@@ -72,6 +70,8 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.db.DBSystem;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
 import org.databene.text.LFNormalizingStringBuilder;
 
 /**

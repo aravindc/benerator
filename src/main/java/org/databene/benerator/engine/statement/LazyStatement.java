@@ -23,7 +23,7 @@ package org.databene.benerator.engine.statement;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 
 /**
  * {@link Statement} implementation that evaluates an {@link Expression} 

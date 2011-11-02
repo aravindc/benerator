@@ -32,6 +32,7 @@ import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
+import org.databene.script.WeightedSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

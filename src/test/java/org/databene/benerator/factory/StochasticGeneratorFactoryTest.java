@@ -31,7 +31,6 @@ import java.math.BigInteger;
 import java.util.*;
 
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
-import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.distribution.Sequence;
@@ -44,6 +43,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.commons.*;
 import org.databene.model.data.Uniqueness;
+import org.databene.script.WeightedSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Test;

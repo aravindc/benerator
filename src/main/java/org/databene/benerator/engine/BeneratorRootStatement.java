@@ -32,13 +32,13 @@ import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.SequentialStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 import org.databene.commons.Visitor;
-import org.databene.commons.expression.ExpressionUtil;
+import org.databene.script.expression.ExpressionUtil;
+import org.databene.script.DatabeneScriptParser;
 
 /**
  * The root {@link Statement} for executing descriptor file based data generation.<br/><br/>
@@ -85,7 +85,7 @@ public class BeneratorRootStatement extends SequentialStatement {
 			String value = attribute.getValue();
 			Object result;
 			if ("generatorFactory".equals(key))
-    			result = BeneratorScriptParser.parseBeanSpec(value).evaluate(context);
+    			result = DatabeneScriptParser.parseBeanSpec(value).evaluate(context);
 			else 
 				result = value;
 			BeanUtil.setPropertyValue(context, key, result, true, true);

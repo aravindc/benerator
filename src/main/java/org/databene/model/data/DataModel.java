@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.databene.commons.ConfigurationError;
+import org.databene.script.PrimitiveType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

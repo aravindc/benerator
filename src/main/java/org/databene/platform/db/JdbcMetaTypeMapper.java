@@ -32,7 +32,7 @@ import java.util.Map;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.jdbacl.model.DBDataType;
-import org.databene.model.data.PrimitiveType;
+import org.databene.script.PrimitiveType;
 
 /**
  * Maps JDBC types to benerator types.

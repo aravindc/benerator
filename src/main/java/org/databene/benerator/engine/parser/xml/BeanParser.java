@@ -29,19 +29,19 @@ import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.BeanStatement;
 import org.databene.benerator.engine.statement.IfStatement;
-import org.databene.benerator.script.Assignment;
-import org.databene.benerator.script.BeanConstruction;
-import org.databene.benerator.script.BeanSpec;
-import org.databene.benerator.script.BeneratorScriptParser;
-import org.databene.benerator.script.DefaultConstruction;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
-import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
-import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.script.Assignment;
+import org.databene.script.BeanSpec;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.Expression;
+import org.databene.script.expression.ExpressionUtil;
+import org.databene.script.expression.BeanConstruction;
+import org.databene.script.expression.DefaultConstruction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -82,7 +82,7 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
         String beanClass = element.getAttribute(ATT_CLASS);
         if (!StringUtil.isEmpty(beanSpec)) {
         	try {
-		        instantiation = BeneratorScriptParser.parseBeanSpec(beanSpec);
+		        instantiation = DatabeneScriptParser.parseBeanSpec(beanSpec);
         	} catch (ParseException e) {
         		throw new ConfigurationError("Error parsing bean spec: " + beanSpec, e);
         	}
@@ -105,7 +105,7 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
         boolean ref = false;
         if (!StringUtil.isEmpty(beanSpecString)) {
         	try {
-		        BeanSpec spec = BeneratorScriptParser.resolveBeanSpec(beanSpecString, context);
+		        BeanSpec spec = DatabeneScriptParser.resolveBeanSpec(beanSpecString, context);
 				instantiation = ExpressionUtil.constant(spec.getBean());
 				ref = spec.isReference();
         	} catch (ParseException e) {

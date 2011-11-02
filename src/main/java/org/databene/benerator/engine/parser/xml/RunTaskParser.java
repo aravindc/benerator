@@ -33,12 +33,12 @@ import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.benerator.engine.statement.WhileStatement;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.Expression;
 import org.databene.task.PageListener;
 import org.databene.task.Task;
 import org.w3c.dom.Element;
@@ -81,7 +81,7 @@ public class RunTaskParser extends AbstractBeneratorDescriptorParser {
 	@SuppressWarnings("unchecked")
     private Expression<PageListener> parsePager(Element element) {
 		String pagerSpec = element.getAttribute(ATT_PAGER);
-		return (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(pagerSpec);
+		return (Expression<PageListener>) DatabeneScriptParser.parseBeanSpec(pagerSpec);
 	}
 
 }

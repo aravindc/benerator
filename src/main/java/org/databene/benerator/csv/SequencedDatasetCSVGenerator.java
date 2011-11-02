@@ -27,11 +27,11 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.sample.SampleGeneratorUtil;
 import org.databene.benerator.sample.SampleGenerator;
-import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.script.ScriptConverterForStrings;
+import org.databene.script.WeightedSample;
 
 /**
  * Generates values from a dataset based on a {@link Sequence}.<br/><br/>

@@ -29,10 +29,10 @@ package org.databene.benerator.sample;
 import java.util.List;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.script.Transition;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.CollectionUtil;
+import org.databene.script.Transition;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 

@@ -28,7 +28,7 @@ import java.util.List;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 import org.databene.task.PageListener;
 import org.databene.task.Task;
 import org.databene.task.runner.PagedTaskRunner;

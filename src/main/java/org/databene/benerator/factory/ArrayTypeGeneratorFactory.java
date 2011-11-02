@@ -29,13 +29,10 @@ import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
-import org.databene.benerator.script.BeanSpec;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
@@ -46,6 +43,9 @@ import org.databene.model.data.Uniqueness;
 import org.databene.platform.array.Entity2ArrayConverter;
 import org.databene.platform.csv.CSVArraySourceProvider;
 import org.databene.platform.xls.XLSArraySourceProvider;
+import org.databene.script.BeanSpec;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.Expression;
 import org.databene.script.ScriptConverterForObjects;
 import org.databene.script.ScriptConverterForStrings;
 import org.databene.script.ScriptUtil;
@@ -78,7 +78,7 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
 	            generator = createXLSSourceGenerator(descriptor, context, sourceName);
 	        else {
 	        	try {
-		        	BeanSpec sourceBeanSpec = BeneratorScriptParser.resolveBeanSpec(sourceName, context);
+		        	BeanSpec sourceBeanSpec = DatabeneScriptParser.resolveBeanSpec(sourceName, context);
 		        	Object sourceObject = sourceBeanSpec.getBean();
 		        	generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
 		        	if (sourceBeanSpec.isReference())

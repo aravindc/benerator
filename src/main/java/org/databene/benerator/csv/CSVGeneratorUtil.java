@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.dataset.DatasetUtil;
-import org.databene.benerator.sample.WeightedSample;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.document.csv.CSVLineIterator;
+import org.databene.script.WeightedSample;
 import org.databene.webdecs.DataContainer;
 
 /**

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,23 +37,20 @@ import org.databene.commons.operation.FirstArgSelector;
  */
 public class ReferenceDescriptor extends ComponentDescriptor {
 	
-	// TODO v0.7.1 the class implies a reference to a primary key, but it could be an arbitrary column
-
     private static final String TARGET_TYPE = "targetType";
+    private static final String TARGET_COMPONENT = "targetComponent";
     
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public ReferenceDescriptor(String name) {
-        this(name, null);
-    }
-
     public ReferenceDescriptor(String name, String typeName) {
-        this(name, typeName, null);
+        this(name, typeName, null, null);
     }
 
-    public ReferenceDescriptor(String name, String typeName, String targetType) {
+    public ReferenceDescriptor(String name, String typeName, String targetType, String targetComponent) {
+    	// TODO v0.7.2 test non-PK reference
         super(name, typeName);
-        addConstraint(TARGET_TYPE, String.class, new FirstArgSelector<String>());
+        addConstraint(TARGET_TYPE,      String.class, new FirstArgSelector<String>());
+        addConstraint(TARGET_COMPONENT, String.class, new FirstArgSelector<String>());
         setTargetType(targetType);
     }
     
@@ -67,10 +64,24 @@ public class ReferenceDescriptor extends ComponentDescriptor {
         setDetailValue(TARGET_TYPE, targetType);
     }
     
+    public String getTargetComponent() {
+        return (String) getDetailValue(TARGET_COMPONENT);
+    }
+
+    public void setTargetComponent(String targetComponent) {
+        setDetailValue(TARGET_COMPONENT, targetComponent);
+    }
+    
     // convenience-with-methods for construction -----------------------------------------------------------------------
     
-    public ReferenceDescriptor withTargetTye(String targetType) {
+    public ReferenceDescriptor withTargetType(String targetType) {
         setTargetType(targetType);
         return this;
     }
+    
+    public ReferenceDescriptor withTargetComponent(String targetComponent) {
+        setTargetComponent(targetComponent);
+        return this;
+    }
+    
 }

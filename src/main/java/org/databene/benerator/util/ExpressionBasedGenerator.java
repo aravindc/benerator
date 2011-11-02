@@ -22,7 +22,7 @@
 package org.databene.benerator.util;
 
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.commons.Expression;
+import org.databene.script.Expression;
 
 /**
  * Evaluates an {@link Expression} on each call to {@link ExpressionBasedGenerator#generate(ProductWrapper)} 

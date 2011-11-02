@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,7 +23,7 @@ package org.databene.benerator.engine.expression.context;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
-import org.databene.commons.expression.DynamicExpression;
+import org.databene.script.expression.DynamicExpression;
 
 /**
  * Evaluates to the default page size of the {@link BeneratorContext}.<br/><br/>

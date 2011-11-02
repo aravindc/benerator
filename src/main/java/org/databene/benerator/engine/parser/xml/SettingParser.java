@@ -30,18 +30,18 @@ import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.expression.context.ContextReference;
 import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.SetSettingStatement;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
-import org.databene.commons.expression.CompositeExpression;
-import org.databene.commons.expression.DynamicExpression;
-import org.databene.commons.expression.ExpressionUtil;
-import org.databene.commons.expression.IsNullExpression;
+import org.databene.script.Expression;
+import org.databene.script.expression.CompositeExpression;
+import org.databene.script.expression.DynamicExpression;
+import org.databene.script.expression.ExpressionUtil;
+import org.databene.script.expression.IsNullExpression;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.script.DatabeneScriptParser;
 import org.w3c.dom.Element;
 
 /**
@@ -82,7 +82,7 @@ public class SettingParser extends AbstractBeneratorDescriptorParser {
 	        for (int j = 0; j < childElements.length; j++)
 	        	subExpressions[j] = BeanParser.parseBeanExpression(childElements[j]);
 	        switch (subExpressions.length) {
-		        case 0: throw new ConfigurationError("No valid property spec: " + XMLUtil.format(element));
+		        case 0: throw new ConfigurationError("No valid property spec: " + XMLUtil.formatShort(element));
 		        case 1: return subExpressions[0];
 		        default: return new CompositeExpression<Object, Object>(subExpressions) {
 		    		public Object[] evaluate(Context context) {
@@ -96,7 +96,7 @@ public class SettingParser extends AbstractBeneratorDescriptorParser {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Expression<?> parseSource(String source) {
 		try {
-			return new SourceExpression(BeneratorScriptParser.parseBeanSpec(source));
+			return new SourceExpression(DatabeneScriptParser.parseBeanSpec(source));
         } catch (ParseException e) {
             throw new ConfigurationError("Error parsing property source expression: " + source, e);
         }

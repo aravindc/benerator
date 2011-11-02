@@ -28,8 +28,8 @@ import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.SequentialStatement;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.Expression;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.script.Expression;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;

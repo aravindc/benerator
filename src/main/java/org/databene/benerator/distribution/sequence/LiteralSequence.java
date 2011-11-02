@@ -23,11 +23,11 @@ package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.NumberToNumberConverter;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.WeightedSample;
 
 /**
  * {@link Sequence} implementation that provides values specified in a comma-separated value list, 
@@ -55,7 +55,7 @@ public class LiteralSequence extends Sequence {
 	private static Number[] parseSpec(String spec) {
 		if (StringUtil.isEmpty(spec))
 			return new Number[0];
-	    WeightedSample<?>[] samples = BeneratorScriptParser.parseWeightedLiteralList(spec);
+	    WeightedSample<?>[] samples = DatabeneScriptParser.parseWeightedLiteralList(spec);
 	    Number[] result = new Number[samples.length];
 	    for (int i = 0; i < samples.length; i++)
 	    	result[i] = (Number) samples[i].getValue();

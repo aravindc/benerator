@@ -25,8 +25,8 @@ import java.util.concurrent.ExecutorService;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.DynamicExpression;
+import org.databene.script.Expression;
+import org.databene.script.expression.DynamicExpression;
 
 /**
  * {@link Expression} that returns the {@link ExecutorService} 

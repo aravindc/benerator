@@ -36,8 +36,6 @@ import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.EquivalenceStringGenerator;
 import org.databene.benerator.sample.OneShotGenerator;
 import org.databene.benerator.sample.SequenceGenerator;
-import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.CompositeStringGenerator;
 import org.databene.benerator.wrapper.GeneratorChain;
 import org.databene.benerator.wrapper.SimpleMultiSourceArrayGenerator;
@@ -49,6 +47,8 @@ import org.databene.commons.NumberUtil;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.model.data.Uniqueness;
+import org.databene.script.DatabeneScriptParser;
+import org.databene.script.WeightedSample;
 
 /**
  * {@link GeneratorFactory} implementation which provides 
@@ -85,7 +85,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
             Distribution distribution, boolean unique) {
-	    List<WeightedSample<?>> samples = CollectionUtil.toList(BeneratorScriptParser.parseWeightedLiteralList(valueSpec));
+	    List<WeightedSample<?>> samples = CollectionUtil.toList(DatabeneScriptParser.parseWeightedLiteralList(valueSpec));
     	List<?> values = FactoryUtil.extractValues((List) samples);
 	    Converter<?, T> typeConverter = new AnyConverter<T>(targetType);
 	    Collection<T> convertedValues = ConverterManager.convertAll((List) values, typeConverter);
