@@ -35,6 +35,7 @@ import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
 import org.databene.jdbacl.identity.KeyMapper;
 import org.databene.jdbacl.identity.NoIdentity;
+import org.databene.jdbacl.model.DBTable;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
@@ -182,19 +183,20 @@ public class TranscodeStatement extends SequentialStatement implements CascadePa
 		for (InstanceDescriptor component : tableDescriptor.getParts()) {
 			if (component instanceof ReferenceDescriptor) {
 				ReferenceDescriptor fk = (ReferenceDescriptor) component;
-				String refereeTable = fk.getTargetType();
+				String refereeTableName = fk.getTargetType();
 				Object sourceRef = entity.get(fk.getName());
 				if (sourceRef != null) {
 					IdentityProvider identityProvider = parent.getIdentityProvider();
-					IdentityModel sourceIdentity = identityProvider.getIdentity(refereeTable, false);
+					IdentityModel sourceIdentity = identityProvider.getIdentity(refereeTableName, false);
 					if (sourceIdentity == null) {
-						sourceIdentity = new NoIdentity(source.getDbMetaData().getTable(refereeTable));
-						identityProvider.registerIdentity(sourceIdentity, refereeTable);
+						DBTable refereeTable = source.getDbMetaData().getTable(refereeTableName);
+						sourceIdentity = new NoIdentity(refereeTable.getName());
+						identityProvider.registerIdentity(sourceIdentity, refereeTableName);
 					}
 						
-					boolean needsNkMapping = parent.needsNkMapping(refereeTable);
+					boolean needsNkMapping = parent.needsNkMapping(refereeTableName);
 					if (sourceIdentity instanceof NoIdentity && needsNkMapping)
-						throw new ConfigurationError("No identity defined for table " + refereeTable);
+						throw new ConfigurationError("No identity defined for table " + refereeTableName);
 					KeyMapper mapper = parent.getKeyMapper();
 					Object targetRef;
 					if (needsNkMapping) {
@@ -204,9 +206,9 @@ public class TranscodeStatement extends SequentialStatement implements CascadePa
 						targetRef = mapper.getTargetPK(source.getId(), sourceIdentity, sourceRef);
 					}
 					if (targetRef == null) {
-						String message = "No mapping found for " + source.getId() + '.' + refereeTable + "#" + sourceRef + 
+						String message = "No mapping found for " + source.getId() + '.' + refereeTableName + "#" + sourceRef + 
 								" referred in " + entity.type() + "(" + fk.getName() + "). " +
-								"Probably has not been in the result set of the former '" + refereeTable + "' nk query.";
+								"Probably has not been in the result set of the former '" + refereeTableName + "' nk query.";
 						getErrorHandler(context).handleError(message);
 					}
 					entity.set(fk.getName(), targetRef);

@@ -163,19 +163,20 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 		for (InstanceDescriptor component : tableDescriptor.getParts()) {
 			if (component instanceof ReferenceDescriptor) {
 				ReferenceDescriptor fk = (ReferenceDescriptor) component;
-				String refereeTable = fk.getTargetType();
+				String refereeTableName = fk.getTargetType();
 				Object sourceRef = entity.get(fk.getName());
 				if (sourceRef != null) {
 					IdentityProvider identityProvider = parent.getIdentityProvider();
-					IdentityModel sourceIdentity = identityProvider.getIdentity(refereeTable, false);
+					IdentityModel sourceIdentity = identityProvider.getIdentity(refereeTableName, false);
 					if (sourceIdentity == null) {
-						sourceIdentity = new NoIdentity(source.getDbMetaData().getTable(refereeTable));
-						identityProvider.registerIdentity(sourceIdentity, refereeTable);
+						DBTable refereeTable = source.getDbMetaData().getTable(refereeTableName);
+						sourceIdentity = new NoIdentity(refereeTable.getName());
+						identityProvider.registerIdentity(sourceIdentity, refereeTableName);
 					}
 						
-					boolean needsNkMapping = parent.needsNkMapping(refereeTable);
+					boolean needsNkMapping = parent.needsNkMapping(refereeTableName);
 					if (sourceIdentity instanceof NoIdentity && needsNkMapping)
-						throw new ConfigurationError("No identity defined for table " + refereeTable);
+						throw new ConfigurationError("No identity defined for table " + refereeTableName);
 					KeyMapper mapper = parent.getKeyMapper();
 					Object targetRef;
 					if (needsNkMapping) {
@@ -185,9 +186,9 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 						targetRef = mapper.getTargetPK(source.getId(), sourceIdentity, sourceRef);
 					}
 					if (targetRef == null) {
-						String message = "No mapping found for " + source.getId() + '.' + refereeTable + "#" + sourceRef + 
+						String message = "No mapping found for " + source.getId() + '.' + refereeTableName + "#" + sourceRef + 
 								" referred in " + entity.type() + "(" + fk.getName() + "). " +
-								"Probably has not been in the result set of the former '" + refereeTable + "' nk query.";
+								"Probably has not been in the result set of the former '" + refereeTableName + "' nk query.";
 						getErrorHandler(context).handleError(message);
 					}
 					entity.set(fk.getName(), targetRef);

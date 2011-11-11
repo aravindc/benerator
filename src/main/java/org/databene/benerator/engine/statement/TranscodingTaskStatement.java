@@ -32,7 +32,7 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.collection.OrderedNameMap;
-import org.databene.dbsanity.parser.TestSuiteParser;
+import org.databene.dbsanity.parser.SanityCheckSuiteParser;
 import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
 import org.databene.jdbacl.identity.KeyMapper;
@@ -101,7 +101,8 @@ public class TranscodingTaskStatement extends SequentialStatement {
 	@Override
 	public boolean execute(BeneratorContext context) {
 		DBSystem target = getTarget(context);
-		mapper = new MemKeyMapper(null, null, target.getConnection(), target.getId(), identityProvider);
+		Database database = target.getDbMetaData();
+		mapper = new MemKeyMapper(null, null, target.getConnection(), target.getId(), identityProvider, database);
 		checkPrecoditions(context);
 		super.execute(context);
     	return true;
@@ -122,7 +123,8 @@ public class TranscodingTaskStatement extends SequentialStatement {
 					throw new ConfigurationError("For transcoding, an identity definition of table '" + tableName + "' is required");
 				} else {
 					DBTable table = target.getDbMetaData().getTable(tableName);
-					identityProvider.registerIdentity(new NoIdentity(table), tableName);
+					identity = new NoIdentity(table.getName());
+					identityProvider.registerIdentity(identity, tableName);
 				}
 			}
 		}
@@ -159,11 +161,9 @@ public class TranscodingTaskStatement extends SequentialStatement {
 			if (identityUri == null)
 				throw new ConfigurationError("No 'identity' definition file defined");
 			String idFile = context.resolveRelativeUri(identityUri);
-			DBSystem target = getTarget(context);
-			Database database = target.getDbMetaData();
 			File reportFolder = new File("dbsanity-report");
-			TestSuiteParser parser = new TestSuiteParser(database, null, null, null);
-			parser.parseHierarchy(new File(idFile), reportFolder, new File("temp"), mapper, identityProvider);
+			SanityCheckSuiteParser parser = new SanityCheckSuiteParser();
+			parser.parseHierarchy(new File(idFile), reportFolder, new File("temp"));
 		} catch (Exception e) {
 			throw new ConfigurationError("Error setting up transcoding task", e);
 		}
