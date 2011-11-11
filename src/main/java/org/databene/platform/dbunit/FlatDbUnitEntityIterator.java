@@ -67,7 +67,7 @@ public class FlatDbUnitEntityIterator extends AbstractDbUnitEntityIterator {
     		cellValues[i] = reader.getAttributeValue(i);
     	}
         Row row = new Row(tableName, columnNames, cellValues);
-        LOGGER.debug("parsed row {}", row);
+        logger.debug("parsed row {}", row);
         return row;
     }
 

@@ -35,14 +35,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO Document class.<br/><br/>
+ * Abstract parent class for classes that iterate DbUnit files and provide their content as {@link Entity}.<br/><br/>
  * Created: 20.09.2011 08:07:44
- * @since TODO version
+ * @since 0.7.1
  * @author Volker Bergmann
  */
 public abstract class AbstractDbUnitEntityIterator implements DataIterator<Entity> {
 
-    protected final Logger LOGGER = LoggerFactory.getLogger(getClass()); // TODO dont use capitals for LOGGER
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected Context context;
     
@@ -71,7 +71,7 @@ public abstract class AbstractDbUnitEntityIterator implements DataIterator<Entit
     		try {
 				reader.close();
 			} catch (XMLStreamException e) {
-				LOGGER.warn("Error closing XML reader", e);
+				logger.warn("Error closing XML reader", e);
 			}
     	}
         this.reader = null;

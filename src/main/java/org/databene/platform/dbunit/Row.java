@@ -24,9 +24,9 @@ package org.databene.platform.dbunit;
 import org.databene.commons.ArrayFormat;
 
 /**
- * TODO Document class.<br/><br/>
+ * Provides the data of a database row with meta information.<br/><br/>
  * Created: 20.09.2011 08:06:13
- * @since TODO version
+ * @since 0.7.1
  * @author Volker Bergmann
  */
 class Row {

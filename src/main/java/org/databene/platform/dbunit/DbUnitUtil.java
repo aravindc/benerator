@@ -26,9 +26,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 /**
- * TODO Document class.<br/><br/>
+ * Provides utility methods for DbUnit files.<br/><br/>
  * Created: 21.09.2011 15:09:03
- * @since TODO version
+ * @since 0.7.1
  * @author Volker Bergmann
  */
 public class DbUnitUtil {
