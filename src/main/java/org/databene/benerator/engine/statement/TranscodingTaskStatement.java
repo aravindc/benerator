@@ -32,6 +32,7 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.collection.OrderedNameMap;
+import org.databene.dbsanity.parser.DbSanityParseContext;
 import org.databene.dbsanity.parser.SanityCheckSuiteParser;
 import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
@@ -163,7 +164,8 @@ public class TranscodingTaskStatement extends SequentialStatement {
 			String idFile = context.resolveRelativeUri(identityUri);
 			File reportFolder = new File("dbsanity-report");
 			SanityCheckSuiteParser parser = new SanityCheckSuiteParser();
-			parser.parseHierarchy(new File(idFile), reportFolder, new File("temp"));
+			DbSanityParseContext parseContext = new DbSanityParseContext(reportFolder, new File("temp"), identityProvider);
+			parser.parseHierarchy(new File(idFile), parseContext);
 		} catch (Exception e) {
 			throw new ConfigurationError("Error setting up transcoding task", e);
 		}
