@@ -28,8 +28,11 @@ package org.databene.platform.csv;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
+
+import org.databene.commons.Encodings;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.PartDescriptor;
 import org.databene.platform.AbstractEntityIteratorTest;
 import org.databene.webdecs.DataIterator;
 
@@ -42,21 +45,46 @@ import org.databene.webdecs.DataIterator;
  */
 public class CSVEntityIteratorTest extends AbstractEntityIteratorTest {
 
-    private static final String URI = "org/databene/platform/csv/person-bean.csv";
+    private static final String PLAIN_URI = "org/databene/platform/csv/person-bean.csv";
+    private static final String GRAPH_URI = "org/databene/platform/csv/person-graph.csv";
 
     // test methods ----------------------------------------------------------------------------------------------------
 
     @Test
     public void testWithHeader() throws Exception {
-    	CSVEntityIterator iterator = new CSVEntityIterator(URI, "Person", ',');
+    	CSVEntityIterator iterator = new CSVEntityIterator(PLAIN_URI, "Person", ',');
         checkIteration(iterator, "name", "age", false);
     }
 
     @Test
     public void testWithoutHeader() throws Exception {
-    	CSVEntityIterator iterator = new CSVEntityIterator(URI, "Person", ',');
+    	CSVEntityIterator iterator = new CSVEntityIterator(PLAIN_URI, "Person", ',');
     	iterator.setColumns(new String[] { "c1", "c2" });
         checkIteration(iterator, "c1", "c2", true);
+    }
+
+    @Test
+    public void testGraph() throws Exception {
+    	// Define Country type
+    	ComplexTypeDescriptor countryDescriptor = new ComplexTypeDescriptor("Country");
+    	countryDescriptor.addComponent(new PartDescriptor("isoCode", "string"));
+    	countryDescriptor.addComponent(new PartDescriptor("name", "string"));
+    	// Define Person type
+    	ComplexTypeDescriptor personDescriptor = new ComplexTypeDescriptor("Person");
+    	personDescriptor.addComponent(new PartDescriptor("name", "string"));
+    	personDescriptor.addComponent(new PartDescriptor("age", "int"));
+    	personDescriptor.addComponent(new PartDescriptor("country", countryDescriptor));
+    	// Define expected countries
+    	Entity germany = new Entity(countryDescriptor, "isoCode", "DE", "name", "Germany");
+    	Entity usa = new Entity(countryDescriptor, "isoCode", "US", "name", "USA");
+    	// Define expected persons
+    	Entity alice = new Entity(personDescriptor, "name", "Alice", "age", 23, "country", germany);
+    	Entity bob   = new Entity(personDescriptor, "name", "Bob", "age", 34, "country", usa);
+    	// iterate CSV file and check iterator output 
+    	CSVEntityIterator iterator = new CSVEntityIterator(GRAPH_URI, personDescriptor, null, ',', Encodings.UTF_8);
+        assertEquals(alice, nextOf(iterator));
+        assertEquals(bob, nextOf(iterator));
+        assertUnavailable(iterator);
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
