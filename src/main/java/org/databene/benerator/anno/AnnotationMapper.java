@@ -99,7 +99,7 @@ public class AnnotationMapper {
 	private static final Set<String> STANDARD_METHODS;
 
 	private static final Package BENERATOR_ANNO_PACKAGE = Unique.class.getPackage();
-	private static final Object BEANVAL_ANNO_PACKAGE = Max.class.getPackage();
+	private static final Package BEANVAL_ANNO_PACKAGE = Max.class.getPackage();
 	
 	@SuppressWarnings("unchecked")
 	private static final Set<Class<? extends Annotation>> EXPLICITLY_MAPPED_ANNOTATIONS = CollectionUtil.toSet(
@@ -119,11 +119,11 @@ public class AnnotationMapper {
 
 	private ArrayTypeGeneratorFactory arrayTypeGeneratorFactory;
 	
-	public AnnotationMapper(GeneratorFactory defaultFactory) {
-		this.defaultFactory = defaultFactory;
-		this.dataModel = new DataModel();
+	public AnnotationMapper(GeneratorFactory defaultFactory, DataModel dataModel) {
+		this.dataModel = dataModel;
 		this.dataModel.addDescriptorProvider(PrimitiveDescriptorProvider.INSTANCE);
 		this.dataModel.addDescriptorProvider(BeanDescriptorProvider.defaultInstance());
+		this.defaultFactory = defaultFactory;
 		this.arrayTypeGeneratorFactory = new ArrayTypeGeneratorFactory();
 	}
 	
@@ -523,6 +523,7 @@ public class AnnotationMapper {
 		mapSourceSetting(source.filter(),    "filter",    instanceDescriptor);
 		mapSourceSetting(source.selector(),  "selector",  instanceDescriptor);
 		mapSourceSetting(source.separator(), "separator", instanceDescriptor);
+    	setDetail("rowBased", source.rowBased(), instanceDescriptor);
     }
 
 	private static void mapSourceSetting(String value, String detailName, InstanceDescriptor instanceDescriptor) {
