@@ -34,6 +34,7 @@ import org.databene.benerator.factory.DefaultsProvider;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.model.data.ComponentDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.script.ScriptContext;
 
 /**
@@ -48,6 +49,8 @@ public interface BeneratorContext extends GeneratorContext, ScriptContext {
 	
 	GeneratorFactory getGeneratorFactory();
 	void setGeneratorFactory(GeneratorFactory generatorFactory);
+	DataModel getDataModel();
+	void setDataModel(DataModel dataModel);
 	DefaultsProvider getDefaultsProvider();
 	void setDefaultsProvider(DefaultsProvider defaultsProvider);
 	void setSetting(String name, Object value);

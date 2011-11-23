@@ -80,6 +80,8 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 
 	private ProductWrapper<?> currentProduct;
 
+	private DataModel dataModel;
+
     static {
     	ScriptUtil.addFactory("ben", new BeneratorScriptFactory());
     	ScriptUtil.setDefaultScriptEngine("ben");
@@ -93,6 +95,7 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 	public DefaultBeneratorContext(String contextUri) {
 		if (contextUri == null)
 			throw new ConfigurationError("No context URI specified");
+		this.dataModel = new DataModel();
 		this.contextUri = contextUri;
 		this.generatorFactory = new StochasticGeneratorFactory();
 		settings = new DefaultContext();
@@ -338,6 +341,14 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 			set("this", currentProduct.unwrap());
 		else
 			remove("this");
+	}
+
+	public DataModel getDataModel() {
+		return dataModel;
+	}
+
+	public void setDataModel(DataModel dataModel) {
+		this.dataModel = dataModel;
 	}
 	
 }

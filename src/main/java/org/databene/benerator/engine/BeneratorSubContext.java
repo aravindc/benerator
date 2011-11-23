@@ -33,6 +33,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.model.data.ComponentDescriptor;
+import org.databene.model.data.DataModel;
 
 /**
  * Sub context version of the {@link BeneratorContext}.<br/><br/>
@@ -278,6 +279,14 @@ public class BeneratorSubContext implements BeneratorContext {
 
 	public void setDefaultImports(boolean defaultImports) {
 		parent.setDefaultImports(defaultImports);
+	}
+
+	public DataModel getDataModel() {
+		return parent.getDataModel();
+	}
+
+	public void setDataModel(DataModel dataModel) {
+		parent.setDataModel(dataModel);
 	}
 
 }
