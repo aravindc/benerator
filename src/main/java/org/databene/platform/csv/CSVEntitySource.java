@@ -23,8 +23,10 @@ package org.databene.platform.csv;
 
 import java.io.FileNotFoundException;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
@@ -32,6 +34,7 @@ import org.databene.commons.Tabular;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.document.csv.CSVUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
 import org.databene.webdecs.DataIterator;
@@ -46,6 +49,7 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
     private String encoding;
     private Converter<String, ?> preprocessor;
 
+    private String entityTypeName;
     private ComplexTypeDescriptor entityDescriptor;
 	private String[] columnNames;
 	private boolean expectingHeader;
@@ -57,29 +61,25 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
         this(null, null);
     }
 
-    public CSVEntitySource(String uri, String entityName) {
-        this(uri, entityName, ',', SystemInfo.getFileEncoding());
+    public CSVEntitySource(String uri, String entityTypeName) {
+        this(uri, entityTypeName, ',', SystemInfo.getFileEncoding());
     }
 
-    public CSVEntitySource(String uri, String entityName, char separator) {
-        this(uri, entityName, separator, SystemInfo.getFileEncoding());
+    public CSVEntitySource(String uri, String entityTypeName, char separator) {
+        this(uri, entityTypeName, separator, SystemInfo.getFileEncoding());
     }
 
-    public CSVEntitySource(String uri, String entityName, char separator, String encoding) {
-        this(uri, new ComplexTypeDescriptor(entityName), new NoOpConverter<String>(), separator, encoding);
+    public CSVEntitySource(String uri, String entityTypeName, char separator, String encoding) {
+        this(uri, entityTypeName, new NoOpConverter<String>(), separator, encoding);
     }
 
-    public CSVEntitySource(String uri, String entityName, Converter<String, ?> preprocessor, 
-    		char separator, String encoding) {
-        this(uri, new ComplexTypeDescriptor(entityName), preprocessor, separator, encoding);
-    }
-
-    public CSVEntitySource(String uri, ComplexTypeDescriptor descriptor, Converter<String, ?> preprocessor, 
+    public CSVEntitySource(String uri, String entityTypeName, Converter<String, ?> preprocessor, 
     		char separator, String encoding) {
         super(uri);
         this.separator = separator;
         this.encoding = encoding;
-        this.entityDescriptor = descriptor;
+        this.entityTypeName = entityTypeName;
+        this.entityDescriptor = null;
         this.preprocessor = preprocessor;
         this.expectingHeader = true;
     }
@@ -115,6 +115,15 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
 			expectingHeader = false;
 		}
     }
+	
+	@Override
+	public void setContext(Context context) {
+		super.setContext(context);
+		DataModel dataModel = ((BeneratorContext) context).getDataModel();
+		this.entityDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(entityTypeName);
+		if (this.entityDescriptor == null)
+			this.entityDescriptor = new ComplexTypeDescriptor(entityTypeName);
+	}
 
     // EntitySource interface ------------------------------------------------------------------------------------------
 

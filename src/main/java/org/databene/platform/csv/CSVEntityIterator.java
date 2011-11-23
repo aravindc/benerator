@@ -32,6 +32,7 @@ import org.databene.webdecs.DataIterator;
 import org.databene.webdecs.util.ConvertingDataIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.document.csv.CSVColumnIterator;
 import org.databene.document.csv.CSVLineIterator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.Converter;
@@ -65,6 +66,7 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
     private String[] columns;
     private Converter<String, ?> preprocessor;
     private boolean expectingHeader;
+    private boolean rowBased;
 
     private DataIterator<Entity> source;
     
@@ -99,12 +101,21 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
         this.entityDescriptor = descriptor;
         this.initialized = false;
         this.expectingHeader = true;
+        this.rowBased = true;
     }
     
     // properties ------------------------------------------------------------------------------------------------------
     
 	public void setExpectingHeader(boolean expectHeader) {
 		this.expectingHeader = expectHeader;
+	}
+	
+	public boolean isRowBased() {
+		return rowBased;
+	}
+	
+	public void setRowBased(boolean rowBased) {
+		this.rowBased = rowBased;
 	}
 	
     public String[] getColumnNames() {
@@ -165,7 +176,11 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void init() {
 		try {
-			DataIterator<String[]> cellIterator = new CSVLineIterator(uri, separator, true, encoding);
+			DataIterator<String[]> cellIterator;
+			if (rowBased)
+				cellIterator = new CSVLineIterator(uri, separator, true, encoding);
+			else
+				cellIterator = new CSVColumnIterator(uri, separator, encoding);
 			if (expectingHeader)
 				setColumns(cellIterator.next(new DataContainer<String[]>()).getData());
 	        Converter<String[], Object[]> arrayConverter = new ArrayConverter(String.class, Object.class, preprocessor); 

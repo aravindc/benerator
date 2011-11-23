@@ -143,7 +143,7 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
 		char separator = DescriptorUtil.getSeparator(arrayType, context);
-		DataSourceProvider<Object[]> factory = new CSVArraySourceProvider(arrayType.getName(), new ScriptConverterForStrings(context), separator, encoding);
+		DataSourceProvider<Object[]> factory = new CSVArraySourceProvider(arrayType.getName(), new ScriptConverterForStrings(context), arrayType.isRowBased(), separator, encoding);
 		Generator<Object[]> generator = SourceFactory.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
 		return WrapperFactory.applyConverter(generator, new ArrayElementTypeConverter(arrayType));
     }

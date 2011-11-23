@@ -229,6 +229,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
 			SimpleTypeDescriptor descriptor, String sourceName, Uniqueness uniqueness, BeneratorContext context) {
 		Generator<?> generator;
 		char separator = DescriptorUtil.getSeparator(descriptor, context);
+		boolean rowBased = (descriptor.isRowBased() == null || descriptor.isRowBased());
 		String encoding = descriptor.getEncoding();
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
@@ -248,7 +249,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
         	generator = new WeightedCSVSampleGenerator(
         			Object.class, sourceName, encoding, new ScriptConverterForStrings(context));
         } else {
-    		Generator<String[]> src = SourceFactory.createCSVLineGenerator(sourceName, separator, encoding, true);
+    		Generator<String[]> src = SourceFactory.createCSVGenerator(sourceName, separator, encoding, true, rowBased);
     		Converter<String[], Object> converterChain = new ConverterChain<String[], Object>(
     				new ArrayElementExtractor<String>(String.class, 0), 
     				new ScriptConverterForStrings(context));

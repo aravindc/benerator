@@ -51,6 +51,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     public static final String SCRIPT       = "script";
 
     public static final String SOURCE       = "source";
+    public static final String ROW_BASED    = "rowBased";
     public static final String OFFSET       = "offset";
     public static final String SELECTOR     = "selector";
     public static final String SUB_SELECTOR = "subSelector";
@@ -99,6 +100,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         addConfig(PATTERN,        String.class);
         addConfig(SCRIPT,         String.class);
         addConfig(SOURCE,         String.class);
+        addConfig(ROW_BASED,      Boolean.class);
         addConfig(OFFSET,         Integer.class);
         addConfig(SELECTOR,       String.class);
         addConfig(SUB_SELECTOR,   String.class);
@@ -121,6 +123,14 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     
     public void setParentName(String parentName) {
         this.parentName = parentName;
+    }
+    
+    public Boolean isRowBased() {
+        return (Boolean) getDetailValue(ROW_BASED);
+    }
+    
+    public void setRowBased(Boolean rowBased) {
+        setDetailValue(ROW_BASED, rowBased);
     }
     
     public String getValidator() {

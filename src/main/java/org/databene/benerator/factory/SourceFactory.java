@@ -28,7 +28,7 @@ import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.iterator.TextLineIterable;
 import org.databene.document.csv.CSVCellSource;
-import org.databene.document.csv.CSVLineSource;
+import org.databene.document.csv.CSVSource;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.xls.XLSLineSource;
 import org.databene.webdecs.DataSource;
@@ -54,17 +54,23 @@ public class SourceFactory {
         return new DataSourceGenerator<String>(new CSVCellSource(uri, separator));
     }
 
+    public static Generator<String[]> createCSVGenerator(String uri, char separator, String encoding, 
+    		boolean ignoreEmptyLines, boolean rowBased) {
+        return new DataSourceGenerator<String[]>(new CSVSource(uri, separator, encoding, ignoreEmptyLines, rowBased));
+    }
+
     /**
      * Creates a generator that creates lines from a CSV file as String arrays.
      *
      * @param uri              the uri of the CSV file
      * @param separator        the cell separator used in the CSV file
      * @param encoding 
-     * @param ignoreEmptyLines flag wether to leave out empty lines
+     * @param ignoreEmptyLines flag whether to leave out empty lines
      * @return a generator of the desired characteristics
      */
-    public static Generator<String[]> createCSVLineGenerator(String uri, char separator, String encoding, boolean ignoreEmptyLines) {
-        return new DataSourceGenerator<String[]>(new CSVLineSource(uri, separator, ignoreEmptyLines, encoding));
+    public static Generator<String[]> createCSVLineGenerator(String uri, char separator, String encoding, 
+    		boolean ignoreEmptyLines) {
+        return new DataSourceGenerator<String[]>(new CSVSource(uri, separator, encoding, ignoreEmptyLines, true));
     }
 
     /**
