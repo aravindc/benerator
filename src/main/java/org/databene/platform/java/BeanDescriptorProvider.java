@@ -140,13 +140,15 @@ public class BeanDescriptorProvider extends DefaultDescriptorProvider {
 	private TypeDescriptor createTypeDescriptor(Class<?> javaType) {
 		// check for primitive type
 	    String className = javaType.getName();
-	    SimpleTypeDescriptor simpleType = PrimitiveDescriptorProvider.INSTANCE.getPrimitiveTypeDescriptor(javaType);
-	    if (simpleType != null)
-	    	return simpleType;
+	    {
+		    SimpleTypeDescriptor simpleType = PrimitiveDescriptorProvider.INSTANCE.getPrimitiveTypeDescriptor(javaType);
+		    if (simpleType != null)
+		    	return simpleType;
+	    }
 	    
 	    // check for enum
 	    if (javaType.isEnum()) {
-	    	simpleType = new SimpleTypeDescriptor(className, "string");
+	    	SimpleTypeDescriptor simpleType = new SimpleTypeDescriptor(className, "string");
 	    	Object[] instances = javaType.getEnumConstants();
 	    	StringBuilder builder = new StringBuilder();
 	    	for (int i = 0; i < instances.length; i++) {
@@ -165,10 +167,9 @@ public class BeanDescriptorProvider extends DefaultDescriptorProvider {
 	        if ("class".equals(propertyDescriptor.getName()))
 	            continue;
 	        Class<?> propertyType = propertyDescriptor.getPropertyType();
-	        String abstractType = mapper.abstractType(propertyType);
-	        if (abstractType == null)
-	            abstractType = propertyType.getName();
-	        PartDescriptor pd = new PartDescriptor(propertyDescriptor.getName(), abstractType);
+	        mapper.abstractType(propertyType);
+	        TypeDescriptor propertyTypeDescriptor = createTypeDescriptor(propertyType);
+	        PartDescriptor pd = new PartDescriptor(propertyDescriptor.getName(), propertyTypeDescriptor);
 	        td.addComponent(pd);
 	    }
 	    addDescriptor(td);

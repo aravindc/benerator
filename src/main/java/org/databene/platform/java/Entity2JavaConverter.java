@@ -68,8 +68,10 @@ public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
 
 	private static Object convertEntity(Entity entity) {
 		Object result = BeanUtil.newInstance(entity.type());
-        for (Map.Entry<String, Object> entry : entity.getComponents().entrySet())
-            BeanUtil.setPropertyValue(result, entry.getKey(), entry.getValue(), false);
+        for (Map.Entry<String, Object> entry : entity.getComponents().entrySet()) {
+            Object value = convertAny(entry.getValue());
+			BeanUtil.setPropertyValue(result, entry.getKey(), value, false);
+        }
         return result;
 	}
 

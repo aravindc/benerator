@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,13 +30,17 @@ import org.databene.commons.ArrayFormat;
 import org.databene.commons.Converter;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
+import org.databene.commons.Mutator;
+import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.commons.converter.AnyConverter;
+import org.databene.commons.mutator.ConvertingMutator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.EntityGraphMutator;
 import org.databene.model.data.SimpleTypeDescriptor;
 
 /**
@@ -51,33 +55,52 @@ public class Array2EntityConverter extends ThreadSafeConverter<Object[], Entity>
     
     private String[] featureNames;
     
-    @SuppressWarnings("rawtypes")
-	private Converter[] converters;
+	private Mutator[] entityMutators;
     
-    Escalator escalator = new LoggerEscalator();
+    protected Escalator escalator = new LoggerEscalator();
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Array2EntityConverter(ComplexTypeDescriptor descriptor, String[] featureNames, boolean stringSource) {
     	super(Object[].class, Entity.class);
         this.descriptor = descriptor;
         this.featureNames = featureNames;
-        this.converters = new Converter[featureNames.length];
-        for (int i = 0; i < featureNames.length; i++) {
-        	ComponentDescriptor component = descriptor.getComponent(featureNames[i]);
-        	if (component != null && component.getTypeDescriptor() != null) {
-        		SimpleTypeDescriptor componentType = (SimpleTypeDescriptor) component.getTypeDescriptor();
-				Class<?> javaType = componentType.getPrimitiveType().getJavaType();
-        		if (stringSource)
-        			this.converters[i] = ConverterManager.getInstance().createConverter(String.class, javaType);
-        		else
-        			this.converters[i] = new AnyConverter(javaType);
-        	} else
-        		this.converters[i] = new NoOpConverter();
-        	
-        }
+        this.entityMutators = new Mutator[featureNames.length];
+        for (int i = 0; i < featureNames.length; i++)
+        	this.entityMutators[i] = createMutator(featureNames[i], descriptor, stringSource);
     }
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
+	protected ConvertingMutator createMutator(
+			String featureName, ComplexTypeDescriptor descriptor, boolean stringSource) {
+		Converter converter = createConverter(featureName, descriptor, stringSource);
+		Mutator mutator = new EntityGraphMutator(featureName, descriptor);
+		return new ConvertingMutator(mutator, converter);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected Converter createConverter(
+			String featureName, ComplexTypeDescriptor descriptor, boolean stringSource) {
+		Converter converter = new NoOpConverter();
+		while (featureName.contains(".")) {
+			String[] pathComponents = StringUtil.splitOnFirstSeparator(featureName, '.');
+			String partName = pathComponents[0];
+			ComponentDescriptor component = descriptor.getComponent(partName);
+			descriptor = (ComplexTypeDescriptor) component.getTypeDescriptor();
+			featureName = pathComponents[1];
+		}
+		if (descriptor != null) {
+			ComponentDescriptor component = descriptor.getComponent(featureName);
+			if (component != null && component.getTypeDescriptor() != null) {
+				SimpleTypeDescriptor componentType = (SimpleTypeDescriptor) component.getTypeDescriptor();
+				Class<?> javaType = componentType.getPrimitiveType().getJavaType();
+				if (stringSource)
+					converter = ConverterManager.getInstance().createConverter(String.class, javaType);
+				else
+					converter = new AnyConverter(javaType);
+			}
+		}
+		return converter;
+	}
+
     public Entity convert(Object[] sourceValue) {
     	if (sourceValue == null)
     		return null;
@@ -89,7 +112,7 @@ public class Array2EntityConverter extends ThreadSafeConverter<Object[], Entity>
         } else
         	length = sourceValue.length;
         for (int i = 0; i < length; i++)
-            entity.setComponent(featureNames[i], converters[i].convert(sourceValue[i]));
+			entityMutators[i].setValue(entity, sourceValue[i]);
         return entity;
     }
     
