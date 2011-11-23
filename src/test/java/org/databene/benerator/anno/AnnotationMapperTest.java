@@ -40,6 +40,7 @@ import org.databene.benerator.factory.StochasticGeneratorFactory;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.platform.db.DBSystem;
@@ -53,7 +54,7 @@ import org.junit.Test;
  */
 public class AnnotationMapperTest {
 
-	private AnnotationMapper annotationMapper = new AnnotationMapper(new StochasticGeneratorFactory());
+	private AnnotationMapper annotationMapper = new AnnotationMapper(new StochasticGeneratorFactory(), new DataModel());
 
 	@Test
 	public void testUnannotated() throws Exception {
@@ -85,7 +86,8 @@ public class AnnotationMapperTest {
 	@Test
 	public void testUniqueMethod() throws Exception {
 	    Method stringMethod = getClass().getDeclaredMethod("uniqueMethod", new Class[] { String.class });
-		AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory());
+	    BeneratorContext context = new DefaultBeneratorContext();
+		AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory(), context.getDataModel());
 		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethod);
 		InstanceDescriptor arrayDescriptor = mapper.createMethodParamsInstanceDescriptor(stringMethod, type);
 		assertEquals(true, arrayDescriptor.isUnique());
@@ -334,10 +336,11 @@ public class AnnotationMapperTest {
 		return context;
 	}
 	
-	private void checkMethod(String method, Class<?> methodArgType, String expectedType, Object ... details)
+	private void checkMethod(String methodName, Class<?> methodArgType, String expectedType, Object ... details)
             throws NoSuchMethodException {
-	    Method stringMethod = getClass().getDeclaredMethod(method, new Class[] { methodArgType });
-	    AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory());
+	    Method stringMethod = getClass().getDeclaredMethod(methodName, new Class[] { methodArgType });
+		DefaultBeneratorContext context = new DefaultBeneratorContext();
+	    AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory(), context.getDataModel());
 		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethod);
 		InstanceDescriptor arrayDescriptor = mapper.createMethodParamsInstanceDescriptor(stringMethod, type);
 		ArrayTypeDescriptor typeDescriptor = (ArrayTypeDescriptor) arrayDescriptor.getTypeDescriptor();
