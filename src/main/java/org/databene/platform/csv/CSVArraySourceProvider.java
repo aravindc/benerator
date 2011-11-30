@@ -39,11 +39,11 @@ import org.databene.webdecs.util.OffsetDataSource;
 public class CSVArraySourceProvider implements DataSourceProvider<Object[]> {
 	
 	private Converter<String, ?> preprocessor;
-	private Boolean rowBased;
+	private boolean rowBased;
 	private char separator;
 	private String encoding;
 	
-	public CSVArraySourceProvider(String type, Converter<String, ?> preprocessor, Boolean rowBased, char separator, String encoding) {
+	public CSVArraySourceProvider(String type, Converter<String, ?> preprocessor, boolean rowBased, char separator, String encoding) {
 	    this.preprocessor = preprocessor;
 	    this.rowBased = rowBased;
 	    this.separator = separator;
