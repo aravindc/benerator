@@ -112,7 +112,7 @@ public class DescriptorRunner implements ResourceManager {
 	public BeneratorRootStatement parseDescriptorFile() throws IOException {
 		Document document = XMLUtil.parse(uri);
 	    Element root = document.getDocumentElement();
-	    BeneratorParseContext parsingContext = factory.createParsingContext(resourceManager);
+	    BeneratorParseContext parsingContext = factory.createParseContext(resourceManager);
 	    BeneratorRootStatement statement = (BeneratorRootStatement) parsingContext.parseElement(root, null);
 		// prepare system
 		generatedFiles = new ArrayList<String>();
