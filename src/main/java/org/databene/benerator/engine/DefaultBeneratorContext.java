@@ -56,8 +56,7 @@ import org.databene.script.ScriptUtil;
  */
 public class DefaultBeneratorContext extends ContextStack implements BeneratorContext {
 
-    static final String CELL_SEPARATOR_SYSPROP = "cell.separator";
-
+    public static final String CELL_SEPARATOR_SYSPROP = "cell.separator";
  	public static final char DEFAULT_CELL_SEPARATOR = ',';
 
 	private GeneratorFactory generatorFactory;
