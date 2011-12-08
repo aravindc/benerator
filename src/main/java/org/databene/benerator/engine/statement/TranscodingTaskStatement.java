@@ -21,7 +21,6 @@
 
 package org.databene.benerator.engine.statement;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,14 +30,16 @@ import org.databene.benerator.engine.Statement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
+import org.databene.commons.IOUtil;
 import org.databene.commons.collection.OrderedNameMap;
-import org.databene.dbsanity.parser.DbSanityParseContext;
-import org.databene.dbsanity.parser.SanityCheckSuiteParser;
+import org.databene.commons.xml.XMLUtil;
 import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
 import org.databene.jdbacl.identity.KeyMapper;
 import org.databene.jdbacl.identity.NoIdentity;
 import org.databene.jdbacl.identity.mem.MemKeyMapper;
+import org.databene.jdbacl.identity.xml.IdentityParseContext;
+import org.databene.jdbacl.identity.xml.IdentityParser;
 import org.databene.jdbacl.model.DBTable;
 import org.databene.jdbacl.model.Database;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -46,6 +47,8 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.platform.db.DBSystem;
 import org.databene.script.Expression;
 import org.databene.script.expression.ExpressionUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Groups {@link TranscodeStatement}s and provides common features like 
@@ -162,10 +165,12 @@ public class TranscodingTaskStatement extends SequentialStatement {
 			if (identityUri == null)
 				throw new ConfigurationError("No 'identity' definition file defined");
 			String idFile = context.resolveRelativeUri(identityUri);
-			File reportFolder = new File("dbsanity-report");
-			SanityCheckSuiteParser parser = new SanityCheckSuiteParser();
-			DbSanityParseContext parseContext = new DbSanityParseContext(reportFolder, new File("temp"), identityProvider);
-			parser.parseHierarchy(new File(idFile), parseContext);
+			IdentityParser parser = new IdentityParser();
+			IdentityParseContext parseContext = new IdentityParseContext(identityProvider);
+			Document idXml = XMLUtil.parse(IOUtil.getInputStreamForURI(idFile));
+			Object[] parentPath = new Object[0];
+			for (Element child : XMLUtil.getChildElements(idXml.getDocumentElement()))
+				parser.parse(child, parentPath, parseContext);
 		} catch (Exception e) {
 			throw new ConfigurationError("Error setting up transcoding task", e);
 		}
