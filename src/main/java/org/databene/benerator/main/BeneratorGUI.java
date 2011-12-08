@@ -45,9 +45,9 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.LogCategories;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.log.LoggingInfoPrinter;
+import org.databene.commons.ui.ApplicationUtil;
+import org.databene.commons.ui.JavaApplication;
 import org.databene.commons.version.VersionInfo;
-import org.databene.gui.os.ApplicationUtil;
-import org.databene.gui.os.JavaApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
