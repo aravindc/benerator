@@ -1,0 +1,16 @@
+release notes benerator 0.7.4
+=============================
+
+summary
+-------
+
+
+changes
+-------
+- removed dependencies to gui library
+- removed dependencies to DB Sanity (now available by dbsanity4benerator)
+
+
+enhancements
+------------
+- introduced platform descriptor concept
