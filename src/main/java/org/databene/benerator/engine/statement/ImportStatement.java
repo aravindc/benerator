@@ -26,6 +26,9 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.util.List;
+
+import org.databene.benerator.PlatformDescriptor;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 
@@ -42,10 +45,10 @@ public class ImportStatement implements Statement {
 	private boolean defaultImports;
 	private String[] classImports;
 	private String[] domainImports;
-	private String[] platformImports;
+	private List<PlatformDescriptor> platformImports;
 
     public ImportStatement(boolean defaultImports, String[] classImports, String[] domainImports,
-            String[] platformImports) {
+    		List<PlatformDescriptor> platformImports) {
 	    this.defaultImports = defaultImports;
 	    this.classImports = classImports;
 	    this.domainImports = domainImports;
@@ -65,7 +68,7 @@ public class ImportStatement implements Statement {
     			importDomain(domainImport, context);
 		
     	if (platformImports != null)
-    		for (String platformImport : platformImports)
+    		for (PlatformDescriptor platformImport : platformImports)
     			importPlatform(platformImport, context);
     	return true;
     }
@@ -77,11 +80,8 @@ public class ImportStatement implements Statement {
 			context.importPackage(domain);
 	}
 
-	public void importPlatform(String platform, BeneratorContext context) {
-		if (platform.indexOf('.') < 0)
-			context.importPackage("org.databene.platform." + platform);
-		else
-			context.importPackage(platform);
+	public void importPlatform(PlatformDescriptor platformDescriptor, BeneratorContext context) {
+		platformDescriptor.init(context);
 	}
 
 }

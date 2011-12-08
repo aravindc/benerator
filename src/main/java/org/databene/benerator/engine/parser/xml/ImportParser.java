@@ -21,13 +21,20 @@
 
 package org.databene.benerator.engine.parser.xml;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import org.databene.benerator.DefaultPlatformDescriptor;
+import org.databene.benerator.PlatformDescriptor;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.ImportStatement;
 import org.databene.commons.ArrayBuilder;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.ExceptionUtil;
 import org.databene.commons.StringUtil;
+import org.databene.webdecs.xml.XMLElementParser;
 import org.w3c.dom.Element;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
@@ -54,7 +61,6 @@ public class ImportParser extends AbstractBeneratorDescriptorParser {
 		// prepare parsing
 		ArrayBuilder<String> classImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> domainImports = new ArrayBuilder<String>(String.class); 
-		ArrayBuilder<String> platformImports = new ArrayBuilder<String>(String.class); 
 		
 		// defaults import
 		boolean defaults = ("true".equals(element.getAttribute("defaults")));
@@ -71,11 +77,38 @@ public class ImportParser extends AbstractBeneratorDescriptorParser {
 		
 		// (multiple) platform import
 		attribute = element.getAttribute("platforms");
-		if (!StringUtil.isEmpty(attribute))
-			platformImports.addAll(StringUtil.trimAll(StringUtil.tokenize(attribute, ',')));
 		
-		return new ImportStatement(defaults, classImports.toArray(), 
-				domainImports.toArray(), platformImports.toArray());
+		List<PlatformDescriptor> platformImports = null; 
+		if (!StringUtil.isEmpty(attribute))
+			platformImports = importPlatforms(StringUtil.trimAll(attribute.split(",")), context);
+		
+		return new ImportStatement(defaults, classImports.toArray(), domainImports.toArray(), platformImports);
+	}
+
+	private List<PlatformDescriptor> importPlatforms(String[] platformNames, BeneratorParseContext context) {
+		List<PlatformDescriptor> platforms = new ArrayList<PlatformDescriptor>(platformNames.length);
+		for (String platformName : platformNames) {
+			PlatformDescriptor platformDescriptor = createPlatformDescriptor(platformName);
+			for (XMLElementParser<Statement> parser : platformDescriptor.getParsers())
+				context.addParser(parser);
+			platforms.add(platformDescriptor);
+		}
+		return platforms;
+	}
+
+	private PlatformDescriptor createPlatformDescriptor(String platformName) {
+		String platformPackage = (platformName.indexOf('.') < 0 ? "org.databene.platform." + platformName : platformName);
+		String descriptorClassName = platformPackage + ".PlatformDescriptor";
+		try {
+			// if there is a platform descriptor, then use it
+			return (PlatformDescriptor) BeanUtil.newInstance(descriptorClassName);
+		} catch (RuntimeException e) {
+			if (ExceptionUtil.getRootCause(e) instanceof ClassNotFoundException) { // TODO test
+				DefaultPlatformDescriptor descriptor = new DefaultPlatformDescriptor(platformPackage);
+				return descriptor;
+			} else
+				throw e;
+		}
 	}
 
 }
