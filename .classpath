@@ -27,13 +27,11 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/commons"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdecs"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gui"/>
 	<classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.2/antlr-runtime-3.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/h2database/h2/1.2.132/h2-1.2.132.jar"/>
 	<classpathentry kind="var" path="M2_REPO/net/sf/squirrel-sql/thirdparty-non-maven/jaybird/2.1.6/jaybird-2.1.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/oracle/ojdbc/11.2.0.2.0/ojdbc6-11.2.0.2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jdbacl"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/dbsanity"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/contiperf"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/databene-script"/>
 	<classpathentry kind="output" path="target/classes"/>
