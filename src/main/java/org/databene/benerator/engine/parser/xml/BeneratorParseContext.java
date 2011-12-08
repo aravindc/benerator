@@ -43,7 +43,6 @@ public class BeneratorParseContext extends ParseContext<Statement> {
 		factory.addParser(new CascadeParser());
 		factory.addParser(new CommentParser());
 		factory.addParser(new DatabaseParser());
-		factory.addParser(new DbSanity4BeneratorParser());
 		factory.addParser(new DefaultComponentParser());
 		factory.addParser(new EchoParser());
 		factory.addParser(new ErrorParser());
