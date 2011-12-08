@@ -41,7 +41,7 @@ public abstract class BeneratorFactory {
 
 	public static final String XML_SCHEMA_PATH = "org/databene/benerator/benerator-" + VersionInfo.getInfo("benerator").getVersion() + ".xsd";
 	
-    public abstract BeneratorParseContext createParsingContext(ResourceManager resourceManager);
+    public abstract BeneratorParseContext createParseContext(ResourceManager resourceManager);
     
 	private static BeneratorFactory instance;
 

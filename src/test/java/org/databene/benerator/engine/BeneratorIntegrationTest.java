@@ -74,7 +74,7 @@ public abstract class BeneratorIntegrationTest extends GeneratorTest {
 	public Statement parse(String xml) {
 		Element element = XMLUtil.parseStringAsElement(xml);
 		ResourceManagerSupport resourceManager = new ResourceManagerSupport();
-		BeneratorParseContext parsingContext = BeneratorFactory.getInstance().createParsingContext(resourceManager);
+		BeneratorParseContext parsingContext = BeneratorFactory.getInstance().createParseContext(resourceManager);
 		return parsingContext.parseElement(element, null);
 	}
 	
