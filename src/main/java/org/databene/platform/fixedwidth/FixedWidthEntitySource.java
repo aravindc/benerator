@@ -60,6 +60,7 @@ public class FixedWidthEntitySource extends FileBasedEntitySource {
 	private static final Escalator escalator = new LoggerEscalator();
 	
     private String encoding;
+    private String entityTypeName;
     private ComplexTypeDescriptor entityDescriptor;
     private FixedWidthColumnDescriptor[] descriptors;
     private String lineFilter;
@@ -97,11 +98,11 @@ public class FixedWidthEntitySource extends FileBasedEntitySource {
 	}
 
 	public String getEntity() {
-        return entityDescriptor.getName();
+        return entityTypeName;
     }
 
     public void setEntity(String entity) {
-        this.entityDescriptor = new ComplexTypeDescriptor(entity);
+        this.entityTypeName = entity;
     }
 
     public void setProperties(String properties) {
@@ -136,6 +137,8 @@ public class FixedWidthEntitySource extends FileBasedEntitySource {
     // private helpers -------------------------------------------------------------------------------------------------
     
     private void init() {
+    	if (this.entityDescriptor == null)
+    		this.entityDescriptor = new ComplexTypeDescriptor(entityTypeName, context.getLocalDescriptorProvider());
     	if (ArrayUtil.isEmpty(descriptors))
     		throw new InvalidGeneratorSetupException("Missing column descriptors. " +
     				"Use the 'columns' property of the " + getClass().getSimpleName() + " to define them.");

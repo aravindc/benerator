@@ -44,7 +44,7 @@ public class LazyTableComplexTypeDescriptor extends ComplexTypeDescriptor {
 	boolean loaded;
 
 	public LazyTableComplexTypeDescriptor(DBTable table, DBSystem db) {
-		super(table.getName());
+		super(table.getName(), db);
 		this.table = table;
 		this.db = db;
 		this.loaded = false;

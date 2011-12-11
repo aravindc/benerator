@@ -25,10 +25,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.databene.commons.Context;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.IOUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.webdecs.DataIterator;
 import org.slf4j.Logger;
@@ -44,13 +43,11 @@ public abstract class AbstractDbUnitEntityIterator implements DataIterator<Entit
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected Context context;
+    protected BeneratorContext context;
     
     protected XMLStreamReader reader;
 
-    protected DataModel dataModel = DataModel.getDefaultInstance();
-
-    public AbstractDbUnitEntityIterator(String uri, Context context) {
+    public AbstractDbUnitEntityIterator(String uri, BeneratorContext context) {
         try {
 			this.context = context;
 			XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -81,9 +78,9 @@ public abstract class AbstractDbUnitEntityIterator implements DataIterator<Entit
     
     protected ComplexTypeDescriptor getType(Row row) {
         String name = row.getTableName();
-        ComplexTypeDescriptor type = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(name);
+        ComplexTypeDescriptor type = (ComplexTypeDescriptor) context.getDataModel().getTypeDescriptor(name);
         if (type == null)
-            type = new ComplexTypeDescriptor(name);
+            type = new ComplexTypeDescriptor(name, context.getLocalDescriptorProvider());
         return type;
     }
 

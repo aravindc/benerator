@@ -24,9 +24,9 @@ package org.databene.platform.dbunit;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ArrayUtil;
-import org.databene.commons.Context;
 import org.databene.commons.SyntaxError;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -45,7 +45,7 @@ public class NestedDbUnitEntityIterator extends AbstractDbUnitEntityIterator { /
 	
 	private Table currentTable;
 
-    public NestedDbUnitEntityIterator(String uri, Context context) {
+    public NestedDbUnitEntityIterator(String uri, BeneratorContext context) {
     	super(uri, context);
     	DbUnitUtil.skipRootElement(reader);
         this.currentTable = null;

@@ -28,9 +28,9 @@ import java.sql.SQLException;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.SimpleTypeDescriptor;
-import org.databene.platform.java.BeanDescriptorProvider;
 import org.databene.script.PrimitiveType;
 
 /**
@@ -58,14 +58,15 @@ public class ResultSet2EntityConverter {
 	                typeName = "string";
 	        } else
 	            typeName = "string";
-	        Object javaValue = javaValue(resultSet, columnIndex, typeName);
+	        DataModel dataModel = (descriptor != null ? descriptor.getDataModel() : null);
+	        Object javaValue = javaValue(resultSet, columnIndex, typeName, dataModel);
 	        entity.setComponent(columnName, javaValue);
 	    }
 	    return entity;
     }
 
     // TODO v1.0 perf: use a dedicated converter for each column
-    private static Object javaValue(ResultSet resultSet, int columnIndex, String primitiveType) throws SQLException {
+    private static Object javaValue(ResultSet resultSet, int columnIndex, String primitiveType, DataModel dataModel) throws SQLException {
         if ("date".equals(primitiveType))
             return resultSet.getDate(columnIndex);
         else if ("timestamp".equals(primitiveType))
@@ -74,8 +75,11 @@ public class ResultSet2EntityConverter {
             return resultSet.getString(columnIndex);
         // try generic conversion
         Object driverValue = resultSet.getObject(columnIndex);
-        Class<?> javaType = BeanDescriptorProvider.defaultInstance().concreteType(primitiveType);
-        Object javaValue = AnyConverter.convert(driverValue, javaType);
+        Object javaValue = driverValue;
+        if (dataModel != null) {
+	        Class<?> javaType = dataModel.getBeanDescriptorProvider().concreteType(primitiveType);
+	        javaValue = AnyConverter.convert(driverValue, javaType);
+        }
         return javaValue;
     }
 

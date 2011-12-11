@@ -124,7 +124,7 @@ public class DBSystem extends AbstractStorageSystem {
 
     private Database database;
 
-    private Map<Thread, ThreadContext> contexts;
+    private Map<Thread, ThreadContext> threadContexts;
     private Map<String, TypeDescriptor> typeDescriptors;
     Map<String, DBTable> tables;
     
@@ -165,7 +165,7 @@ public class DBSystem extends AbstractStorageSystem {
         setLazy(true);
         setDynamicQuerySupported(true);
         this.typeDescriptors = null;
-        this.contexts = new HashMap<Thread, ThreadContext>();
+        this.threadContexts = new HashMap<Thread, ThreadContext>();
         this.driverTypeMapper = driverTypeMapper();
         this.connectedBefore = false;
         this.invalidationCount = new AtomicInteger();
@@ -369,7 +369,7 @@ public class DBSystem extends AbstractStorageSystem {
 	public void flush() {
         if (logger.isDebugEnabled())
             logger.debug("flush()");
-    	for (ThreadContext threadContext : contexts.values())
+    	for (ThreadContext threadContext : threadContexts.values())
     		threadContext.commit();
     }
 
@@ -377,7 +377,7 @@ public class DBSystem extends AbstractStorageSystem {
         if (logger.isDebugEnabled())
             logger.debug("close()");
         flush();
-        Iterator<ThreadContext> iterator = contexts.values().iterator();
+        Iterator<ThreadContext> iterator = threadContexts.values().iterator();
         while (iterator.hasNext()) {
             iterator.next().close();
             iterator.remove();
@@ -474,8 +474,8 @@ public class DBSystem extends AbstractStorageSystem {
     	return new StorageSystemInserter(this);
     }
     
-    public Consumer inserter(String table) {
-    	return new StorageSystemInserter(this, table);
+    public Consumer inserter(String tableName) {
+    	return new StorageSystemInserter(this, (ComplexTypeDescriptor) getTypeDescriptor(tableName));
     }
     
     public Consumer updater() {
@@ -667,7 +667,7 @@ public class DBSystem extends AbstractStorageSystem {
         if (lazy) 
         	complexType = new LazyTableComplexTypeDescriptor(table, this);
         else
-        	complexType = mapTableToComplexTypeDescriptor(table, new ComplexTypeDescriptor(tableName));
+        	complexType = mapTableToComplexTypeDescriptor(table, new ComplexTypeDescriptor(tableName, this));
         typeDescriptors.put(tableName, complexType);
     }
 
@@ -681,7 +681,7 @@ public class DBSystem extends AbstractStorageSystem {
 	        	DBColumn column = table.getColumn(columnName);
 				table.getColumn(columnName);
 	            String abstractType = JdbcMetaTypeMapper.abstractType(column.getType(), acceptUnknownColumnTypes);
-	        	IdDescriptor idDescriptor = new IdDescriptor(columnName, abstractType);
+	        	IdDescriptor idDescriptor = new IdDescriptor(columnName, this, abstractType);
 				complexType.setComponent(idDescriptor);
 	        }
         }
@@ -697,6 +697,7 @@ public class DBSystem extends AbstractStorageSystem {
                 String abstractType = JdbcMetaTypeMapper.abstractType(concreteType, acceptUnknownColumnTypes);
                 ReferenceDescriptor descriptor = new ReferenceDescriptor(
                         fkColumnName, 
+                        this,
                         abstractType,
                         targetTable.getName(),
                         constraint.getRefereeColumnNames()[0]);
@@ -726,7 +727,7 @@ public class DBSystem extends AbstractStorageSystem {
             DBDataType columnType = column.getType();
             String type = JdbcMetaTypeMapper.abstractType(columnType, acceptUnknownColumnTypes);
             String defaultValue = column.getDefaultValue();
-            SimpleTypeDescriptor typeDescriptor = new SimpleTypeDescriptor(columnId, type);
+            SimpleTypeDescriptor typeDescriptor = new SimpleTypeDescriptor(columnId, this, type);
             if (defaultValue != null)
                 typeDescriptor.setDetailValue("constant", defaultValue);
             if (column.getSize() != null)
@@ -738,7 +739,7 @@ public class DBSystem extends AbstractStorageSystem {
             		typeDescriptor.setGranularity(decimalGranularity(column.getFractionDigits()));
             }
             //typeDescriptors.put(typeDescriptor.getName(), typeDescriptor);
-            PartDescriptor descriptor = new PartDescriptor(columnName);
+            PartDescriptor descriptor = new PartDescriptor(columnName, this);
             descriptor.setLocalType(typeDescriptor);
             descriptor.setMinCount(new ConstantExpression<Long>(1L));
             descriptor.setMaxCount(new ConstantExpression<Long>(1L));
@@ -847,10 +848,10 @@ public class DBSystem extends AbstractStorageSystem {
 
 	private synchronized ThreadContext getThreadContext() {
         Thread currentThread = Thread.currentThread();
-        ThreadContext context = contexts.get(currentThread);
+        ThreadContext context = threadContexts.get(currentThread);
         if (context == null) {
             context = new ThreadContext();
-            contexts.put(currentThread, context);
+            threadContexts.put(currentThread, context);
         }
         return context;
     }

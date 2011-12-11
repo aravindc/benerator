@@ -24,7 +24,7 @@ package org.databene.platform.dbunit;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 
-import org.databene.commons.Context;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.script.ScriptUtil;
@@ -38,7 +38,7 @@ import org.databene.webdecs.DataContainer;
  */
 public class FlatDbUnitEntityIterator extends AbstractDbUnitEntityIterator {
 
-    public FlatDbUnitEntityIterator(String uri, Context context) {
+    public FlatDbUnitEntityIterator(String uri, BeneratorContext context) {
     	super(uri, context);
     	DbUnitUtil.skipRootElement(reader);
     }
