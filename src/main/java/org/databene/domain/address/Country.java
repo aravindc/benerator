@@ -98,7 +98,7 @@ public class Country {
         	LOGGER.debug("No states defined for {}", this);
         	return;
         }
-		ComplexTypeDescriptor stateDescriptor = (ComplexTypeDescriptor) new BeanDescriptorProvider(null).getTypeDescriptor(State.class.getName());
+		ComplexTypeDescriptor stateDescriptor = (ComplexTypeDescriptor) new BeanDescriptorProvider().getTypeDescriptor(State.class.getName());
 		CSVEntitySource source = new CSVEntitySource(filename, stateDescriptor, Encodings.UTF_8);
 		source.setContext(new DefaultBeneratorContext());
         DataIterator<Entity> iterator = source.iterator();

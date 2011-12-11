@@ -79,7 +79,7 @@ public class CityManager {
     private static void parseStateFile(Country country) {
 		try {
 			String uri = "/org/databene/domain/address/state_" + country.getIsoCode() + ".csv";
-			ComplexTypeDescriptor stateDescriptor = (ComplexTypeDescriptor) new BeanDescriptorProvider(null).getTypeDescriptor(State.class.getName());
+			ComplexTypeDescriptor stateDescriptor = (ComplexTypeDescriptor) new BeanDescriptorProvider().getTypeDescriptor(State.class.getName());
 			DataIterator<State> iterator = new ConvertingDataIterator<Entity, State>(
 					new CSVEntityIterator(uri, stateDescriptor, new NoOpConverter<String>(), ',', Encodings.UTF_8),
 					(Converter) new Entity2JavaConverter());
