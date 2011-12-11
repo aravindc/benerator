@@ -95,7 +95,7 @@ public class MemStore extends AbstractStorageSystem {
 		Map<Object, Entity> idMap = getOrCreateIdMapForType(entityType);
 		idMap.put(entity.idComponentValues(), entity);
 		if (!types.containsKey(entityType))
-			types.put(entityType, new ComplexTypeDescriptor(entityType));
+			types.put(entityType, new ComplexTypeDescriptor(entityType, this));
 	}
 
 	public void update(Entity entity) {

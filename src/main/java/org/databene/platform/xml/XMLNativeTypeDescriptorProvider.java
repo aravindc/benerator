@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.platform.xml;
 
+import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.SimpleTypeDescriptor;
 
@@ -43,66 +44,66 @@ public class XMLNativeTypeDescriptorProvider extends DefaultDescriptorProvider {
     private static final String REGEX_TIMEZONE = "(Z|[+\\-]\\d{2}:\\d{2})";
     private static final String REGEX_OPTIONAL_TIMEZONE = REGEX_TIMEZONE + '?';
 
-    public XMLNativeTypeDescriptorProvider(String id) {
-        super(id);
+    public XMLNativeTypeDescriptorProvider(String id, DataModel dataModel) {
+        super(id, dataModel);
 
         // schema types that resemble the benerator primitives
-        addDescriptor(new SimpleTypeDescriptor("string", "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("string", this, "string")); // TODO refer to primitives explicitly
         
-        addDescriptor(new SimpleTypeDescriptor("boolean", "boolean"));
+        addTypeDescriptor(new SimpleTypeDescriptor("boolean", this, "boolean"));
         
-        addDescriptor(new SimpleTypeDescriptor("byte", "byte"));
-        addDescriptor(new SimpleTypeDescriptor("short", "short"));
-        addDescriptor(new SimpleTypeDescriptor("int", "int"));
-        addDescriptor(new SimpleTypeDescriptor("long", "long"));
+        addTypeDescriptor(new SimpleTypeDescriptor("byte", this, "byte"));
+        addTypeDescriptor(new SimpleTypeDescriptor("short", this, "short"));
+        addTypeDescriptor(new SimpleTypeDescriptor("int", this, "int"));
+        addTypeDescriptor(new SimpleTypeDescriptor("long", this, "long"));
         
-        addDescriptor(new SimpleTypeDescriptor("float", "float"));
-        addDescriptor(new SimpleTypeDescriptor("double", "double"));
+        addTypeDescriptor(new SimpleTypeDescriptor("float", this, "float"));
+        addTypeDescriptor(new SimpleTypeDescriptor("double", this, "double"));
         
-        addDescriptor(new SimpleTypeDescriptor("date", "date"));
-        addDescriptor(new SimpleTypeDescriptor("time", "time"));
+        addTypeDescriptor(new SimpleTypeDescriptor("date", this, "date"));
+        addTypeDescriptor(new SimpleTypeDescriptor("time", this, "time"));
         
         // schema specific types
-        addDescriptor(new SimpleTypeDescriptor("integer", "int"));
-        addDescriptor(new SimpleTypeDescriptor("nonPositiveInteger", "int").withMin("-2147483648").withMax("0"));
-        addDescriptor(new SimpleTypeDescriptor("negativeInteger", "int").withMin("-2147483648").withMax("-1"));
-        addDescriptor(new SimpleTypeDescriptor("nonNegativeInteger", "int").withMin("0"));
-        addDescriptor(new SimpleTypeDescriptor("positiveInteger", "int").withMin("1"));
+        addTypeDescriptor(new SimpleTypeDescriptor("integer", this, "int"));
+        addTypeDescriptor(new SimpleTypeDescriptor("nonPositiveInteger", this, "int").withMin("-2147483648").withMax("0"));
+        addTypeDescriptor(new SimpleTypeDescriptor("negativeInteger", this, "int").withMin("-2147483648").withMax("-1"));
+        addTypeDescriptor(new SimpleTypeDescriptor("nonNegativeInteger", this, "int").withMin("0"));
+        addTypeDescriptor(new SimpleTypeDescriptor("positiveInteger", this, "int").withMin("1"));
                 
-        addDescriptor(new SimpleTypeDescriptor("unsignedLong", "big_decimal").withMin("0").withMax("9223372036854775807")); // this is only Long.MAX_VALUE
-        addDescriptor(new SimpleTypeDescriptor("unsignedInt", "long").withMin("0").withMax("4294967295"));
-        addDescriptor(new SimpleTypeDescriptor("unsignedShort", "int").withMin("0").withMax("32767"));
-        addDescriptor(new SimpleTypeDescriptor("unsignedByte", "short").withMin("0").withMax("256"));
+        addTypeDescriptor(new SimpleTypeDescriptor("unsignedLong", this, "big_decimal").withMin("0").withMax("9223372036854775807")); // this is only Long.MAX_VALUE
+        addTypeDescriptor(new SimpleTypeDescriptor("unsignedInt", this, "long").withMin("0").withMax("4294967295"));
+        addTypeDescriptor(new SimpleTypeDescriptor("unsignedShort", this, "int").withMin("0").withMax("32767"));
+        addTypeDescriptor(new SimpleTypeDescriptor("unsignedByte", this, "short").withMin("0").withMax("256"));
 
-        addDescriptor(new SimpleTypeDescriptor("decimal", "big_decimal"));
-        addDescriptor(new SimpleTypeDescriptor("precisionDecimal", "big_decimal"));
+        addTypeDescriptor(new SimpleTypeDescriptor("decimal", this, "big_decimal"));
+        addTypeDescriptor(new SimpleTypeDescriptor("precisionDecimal", this, "big_decimal"));
 
-        addDescriptor(new SimpleTypeDescriptor("dateTime", "timestamp"));
+        addTypeDescriptor(new SimpleTypeDescriptor("dateTime", this, "timestamp"));
         
-        addDescriptor(new SimpleTypeDescriptor("duration", "string").withPattern("\\-?P(\\d+Y)?(\\d+M)?(\\d+D)?(T(\\d+H)?(\\d+M)?(\\d+S)?)?"));
-        addDescriptor(new SimpleTypeDescriptor("gYearMonth", "string").withPattern(REGEX_YEAR + "\\-" + REGEX_MONTH_NUMBER + REGEX_OPTIONAL_TIMEZONE));
-        addDescriptor(new SimpleTypeDescriptor("gYear", "string").withPattern(REGEX_YEAR + REGEX_OPTIONAL_TIMEZONE));
-        addDescriptor(new SimpleTypeDescriptor("gMonthDay", "string").withPattern(REGEX_MONTH_NUMBER + "\\-" + REGEX_DAY_OF_MONTH + REGEX_OPTIONAL_TIMEZONE));
-        addDescriptor(new SimpleTypeDescriptor("gDay", "string").withPattern(REGEX_DAY_OF_MONTH + REGEX_OPTIONAL_TIMEZONE));
-        addDescriptor(new SimpleTypeDescriptor("gMonth", "int").withPattern(REGEX_MONTH_NUMBER + REGEX_OPTIONAL_TIMEZONE));
+        addTypeDescriptor(new SimpleTypeDescriptor("duration", this, "string").withPattern("\\-?P(\\d+Y)?(\\d+M)?(\\d+D)?(T(\\d+H)?(\\d+M)?(\\d+S)?)?"));
+        addTypeDescriptor(new SimpleTypeDescriptor("gYearMonth", this, "string").withPattern(REGEX_YEAR + "\\-" + REGEX_MONTH_NUMBER + REGEX_OPTIONAL_TIMEZONE));
+        addTypeDescriptor(new SimpleTypeDescriptor("gYear", this, "string").withPattern(REGEX_YEAR + REGEX_OPTIONAL_TIMEZONE));
+        addTypeDescriptor(new SimpleTypeDescriptor("gMonthDay", this, "string").withPattern(REGEX_MONTH_NUMBER + "\\-" + REGEX_DAY_OF_MONTH + REGEX_OPTIONAL_TIMEZONE));
+        addTypeDescriptor(new SimpleTypeDescriptor("gDay", this, "string").withPattern(REGEX_DAY_OF_MONTH + REGEX_OPTIONAL_TIMEZONE));
+        addTypeDescriptor(new SimpleTypeDescriptor("gMonth", this, "int").withPattern(REGEX_MONTH_NUMBER + REGEX_OPTIONAL_TIMEZONE));
         
-        addDescriptor(new SimpleTypeDescriptor("hexBinary", "string").withPattern("([0-9a-fA-F]{2})*"));
-        addDescriptor(new SimpleTypeDescriptor("base64Binary", "string").withPattern("[a-zA-Z0-9+/= ]*"));
+        addTypeDescriptor(new SimpleTypeDescriptor("hexBinary", this, "string").withPattern("([0-9a-fA-F]{2})*"));
+        addTypeDescriptor(new SimpleTypeDescriptor("base64Binary", this, "string").withPattern("[a-zA-Z0-9+/= ]*"));
 
-        addDescriptor(new SimpleTypeDescriptor("anyURI", "string"));
-        addDescriptor(new SimpleTypeDescriptor("QName", "string"));
-        addDescriptor(new SimpleTypeDescriptor("NOTATION", "string"));
-        addDescriptor(new SimpleTypeDescriptor("normalizedString", "string"));
-        addDescriptor(new SimpleTypeDescriptor("token", "string"));
-        addDescriptor(new SimpleTypeDescriptor("language", "string"));
-        addDescriptor(new SimpleTypeDescriptor("NMTOKEN", "string").withPattern("[A-Za-z:_\\-\\.0-9]*"));
-        addDescriptor(new SimpleTypeDescriptor("NMTOKENS", "string"));
-        addDescriptor(new SimpleTypeDescriptor("Name", "string"));
-        addDescriptor(new SimpleTypeDescriptor("NCName", "string"));
-        addDescriptor(new SimpleTypeDescriptor("ID", "string")); // TODO v0.8 support this in XML schema generation
-        addDescriptor(new SimpleTypeDescriptor("IDREFS", "string"));
-        addDescriptor(new SimpleTypeDescriptor("ENTITY", "string"));
-        addDescriptor(new SimpleTypeDescriptor("ENTITIES", "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("anyURI", this, "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("QName", this, "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("NOTATION", this, "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("normalizedString", this, "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("token", this, "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("language", this, "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("NMTOKEN", this, "string").withPattern("[A-Za-z:_\\-\\.0-9]*"));
+        addTypeDescriptor(new SimpleTypeDescriptor("NMTOKENS", this, "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("Name", this, "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("NCName", this, "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("ID", this, "string")); // TODO v0.8 support this in XML schema generation
+        addTypeDescriptor(new SimpleTypeDescriptor("IDREFS", this, "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("ENTITY", this, "string"));
+        addTypeDescriptor(new SimpleTypeDescriptor("ENTITIES", this, "string"));
     }
 
 }
