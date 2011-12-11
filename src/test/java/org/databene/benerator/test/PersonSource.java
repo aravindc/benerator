@@ -26,6 +26,7 @@ import java.util.List;
 import org.databene.commons.CollectionUtil;
 import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.model.data.PartDescriptor;
@@ -39,26 +40,32 @@ import org.databene.webdecs.util.DataIteratorFromJavaIterator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class PersonIterable extends AbstractEntitySource {
-
-	public static final ComplexTypeDescriptor PERSON_DESCRIPTOR = new ComplexTypeDescriptor(
-			"Person").withComponent(new PartDescriptor("name", "string"))
-			.withComponent(new PartDescriptor("age", "int"));
-
+public class PersonSource extends AbstractEntitySource {
+	
 	public DataIterator<Entity> iterator() {
 		return new DataIteratorFromJavaIterator<Entity>(createPersons().iterator(), Entity.class);
 	}
 
-	public static List<Entity> createPersons() {
-		return CollectionUtil.toList(createAlice(), createBob());
+	public List<Entity> createPersons() {
+		return CollectionUtil.toList(createAlice(), createBob(provider()));
 	}
 
-	public static Entity createAlice() {
-		return new Entity(PERSON_DESCRIPTOR, "name", "Alice", "age", "23");
+	public Entity createAlice() {
+		return new Entity(createPersonDescriptor(), "name", "Alice", "age", "23");
 	}
 
-	public static Entity createBob() {
-		return new Entity(PERSON_DESCRIPTOR, "name", "Bob", "age", "34");
+	public Entity createBob(DescriptorProvider provider) {
+		return new Entity(createPersonDescriptor(), "name", "Bob", "age", "34");
+	}
+	
+	public ComplexTypeDescriptor createPersonDescriptor() {
+		return new ComplexTypeDescriptor(
+				"Person", provider()).withComponent(new PartDescriptor("name", provider(), "string"))
+				.withComponent(new PartDescriptor("age", provider(), "int"));
+	}
+	
+	private DescriptorProvider provider() {
+		return context.getLocalDescriptorProvider();
 	}
 
 }
