@@ -30,7 +30,7 @@ import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.test.ConsumerMock;
-import org.databene.benerator.test.PersonIterable;
+import org.databene.benerator.test.PersonSource;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.converter.UnsafeConverter;
 import org.databene.commons.validator.AbstractValidator;
@@ -296,14 +296,14 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		statement.execute(context);
 		assertEquals(9, consumer.startConsumingCount.get());
 		assertOuter(1, consumer.products.get(0));
-		assertEquals(new Entity("inner"), consumer.products.get(1));
+		assertEquals(createEntity("inner"), consumer.products.get(1));
 		assertOuter(2, consumer.products.get(2));
-		assertEquals(new Entity("inner"), consumer.products.get(3));
-		assertEquals(new Entity("inner"), consumer.products.get(4));
+		assertEquals(createEntity("inner"), consumer.products.get(3));
+		assertEquals(createEntity("inner"), consumer.products.get(4));
 		assertOuter(3, consumer.products.get(5));
-		assertEquals(new Entity("inner"), consumer.products.get(6));
-		assertEquals(new Entity("inner"), consumer.products.get(7));
-		assertEquals(new Entity("inner"), consumer.products.get(8));
+		assertEquals(createEntity("inner"), consumer.products.get(6));
+		assertEquals(createEntity("inner"), consumer.products.get(7));
+		assertEquals(createEntity("inner"), consumer.products.get(8));
 	}
 
     /** Tests a combination of variable and attribute with the same name. */
@@ -349,12 +349,14 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	@Test
 	public void testIterate() throws Exception {
 		Statement statement = parse("<iterate type='Person' source='personSource' consumer='cons' />");
-		context.set("personSource", new PersonIterable());
+		PersonSource source = new PersonSource();
+		source.setContext(context);
+		context.set("personSource", source);
 		ConsumerMock consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 		statement.execute(context);
 		assertEquals(2, consumer.products.size());
-		assertEquals(PersonIterable.createPersons(), consumer.products);
+		assertEquals(source.createPersons(), consumer.products);
 	}
 	
 	/** Tests pure {@link Entity} generation */

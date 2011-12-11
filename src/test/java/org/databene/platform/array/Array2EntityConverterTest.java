@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,7 @@ import java.util.List;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
+import org.databene.benerator.test.ModelTest;
 import org.databene.commons.Escalation;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
@@ -44,11 +45,11 @@ import org.databene.model.data.ComplexTypeDescriptor;
  * Created: 29.08.2007 19:09:05
  * @author Volker Bergmann
  */
-public class Array2EntityConverterTest {
+public class Array2EntityConverterTest extends ModelTest {
 	
 	@Test
     public void testSimple() {
-        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
+        ComplexTypeDescriptor descriptor = createComplexType("Person");
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         String[] featureNames = { "name", "age" };
         Object[] array = new Object[] { "Alice", 23 };
@@ -57,7 +58,7 @@ public class Array2EntityConverterTest {
 	
 	@Test
     public void testOverflow() {
-        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
+        ComplexTypeDescriptor descriptor = createComplexType("Person");
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         String[] featureNames = { "name", "age" };
         Object[] array = new Object[] { "Alice", 23, "superfluous" };

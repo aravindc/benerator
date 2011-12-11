@@ -126,8 +126,8 @@ public class SequenceTableGeneratorTest extends GeneratorTest {
 		new DescriptorRunner("org/databene/platform/db/SequenceTableIntegrationTest.ben.xml", context).run();
 		List<Entity> products = (List<Entity>) consumer.getProducts();
 		assertEquals(2, products.size());
-		assertEquals(new Entity("x", "id", 2000), products.get(0));
-		assertEquals(new Entity("x", "id", 2001), products.get(1));
+		assertEquals(createEntity("x", "id", 2000), products.get(0));
+		assertEquals(createEntity("x", "id", 2001), products.get(1));
 	}
 	
 }

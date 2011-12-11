@@ -41,6 +41,7 @@ import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.test.ConverterMock;
 import org.databene.benerator.test.GeneratorMock;
 import org.databene.benerator.test.JSR303ConstraintValidatorMock;
+import org.databene.benerator.test.ModelTest;
 import org.databene.benerator.test.ValidatorMock;
 import org.databene.benerator.test.WeightFunctionMock;
 import org.databene.benerator.util.GeneratorUtil;
@@ -49,7 +50,6 @@ import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
-import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
@@ -67,7 +67,7 @@ import static junit.framework.Assert.*;
  * @since 0.5.7
  * @author Volker Bergmann
  */
-public class DescriptorUtilTest {
+public class DescriptorUtilTest extends ModelTest {
 	
 	private BeneratorContext context;
 	
@@ -115,7 +115,7 @@ public class DescriptorUtilTest {
 	}
 	
 	private void checkConversion(Object source, String targetType, Object expectedResult) {
-		DataModel model = DataModel.getDefaultInstance();
+		DataModel model = new DataModel();
 		SimpleTypeDescriptor typeDescriptor = (SimpleTypeDescriptor) model.getTypeDescriptor(targetType);
 		Object result = DescriptorUtil.convertType(source, typeDescriptor);
 		if (expectedResult instanceof BigDecimal && result instanceof BigDecimal)
@@ -200,14 +200,14 @@ public class DescriptorUtilTest {
 
 	@Test
     public void testGetDistributionWeighted_simple() { // testing 'weighted'
-		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType").withDistribution("weighted");
+		SimpleTypeDescriptor descriptor = createSimpleType("myType").withDistribution("weighted");
 		Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, true, context);
 		assertTrue(distribution instanceof AttachedWeight);
 	}
 
 	@Test
     public void testGetDistributionWeighted_property() { // testing 'weighted[population]'
-		SimpleTypeDescriptor descriptor2 = new SimpleTypeDescriptor("myType").withDistribution("weighted[population]");
+		SimpleTypeDescriptor descriptor2 = createSimpleType("myType").withDistribution("weighted[population]");
 		Distribution distribution2 = FactoryUtil.getDistribution(descriptor2.getDistribution(), Uniqueness.NONE, true, context);
 		assertTrue(distribution2 instanceof FeatureWeight);
 		assertEquals("population", ((FeatureWeight) distribution2).getWeightFeature());
@@ -216,13 +216,13 @@ public class DescriptorUtilTest {
 	@Test
 	public void testIsWrappedSimpleType() {
 		// test wrapped simple type
-		PartDescriptor bodyDescriptor = new PartDescriptor(ComplexTypeDescriptor.__SIMPLE_CONTENT);
-		ComplexTypeDescriptor wrappedSimpleType = new ComplexTypeDescriptor("Test").withComponent(bodyDescriptor);
+		PartDescriptor bodyDescriptor = createPart(ComplexTypeDescriptor.__SIMPLE_CONTENT);
+		ComplexTypeDescriptor wrappedSimpleType = createComplexType("Test").withComponent(bodyDescriptor);
 		assertTrue(DescriptorUtil.isWrappedSimpleType(wrappedSimpleType));
 		
 		// test complex type
-		PartDescriptor partDescriptor = new PartDescriptor("name");
-		ComplexTypeDescriptor complexType = new ComplexTypeDescriptor("Test").withComponent(partDescriptor);
+		PartDescriptor partDescriptor = createPart("name");
+		ComplexTypeDescriptor complexType = createComplexType("Test").withComponent(partDescriptor);
 		assertFalse(DescriptorUtil.isWrappedSimpleType(complexType));
 	}
 
@@ -233,27 +233,27 @@ public class DescriptorUtilTest {
 	public void testGetPatternAsDateFormat() {
 		Date date = TimeUtil.date(2000, 0, 2);
 		// test default format
-		DateFormat format = DescriptorUtil.getPatternAsDateFormat(new SimpleTypeDescriptor("test"));
+		DateFormat format = DescriptorUtil.getPatternAsDateFormat(createSimpleType("test"));
 		assertEquals("2000-01-02", format.format(date));
 		// test custom format
-		format = DescriptorUtil.getPatternAsDateFormat(new SimpleTypeDescriptor("test").withPattern("yy-MM-dd"));
+		format = DescriptorUtil.getPatternAsDateFormat(createSimpleType("test").withPattern("yy-MM-dd"));
 		assertEquals("00-01-02", format.format(date));
 	}
 
 	@Test
 	public void testIsUnique() {
-		assertEquals(false, DescriptorUtil.isUnique(new InstanceDescriptor("test"), context));
-		assertEquals(false, DescriptorUtil.isUnique(new InstanceDescriptor("test").withUnique(false), context));
-		assertEquals(true, DescriptorUtil.isUnique(new InstanceDescriptor("test").withUnique(true), context));
+		assertEquals(false, DescriptorUtil.isUnique(createInstance("test"), context));
+		assertEquals(false, DescriptorUtil.isUnique(createInstance("test").withUnique(false), context));
+		assertEquals(true, DescriptorUtil.isUnique(createInstance("test").withUnique(true), context));
 	}
 
 	@Test
 	public void testGetSeparator() {
 		try {
-			assertEquals(',', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x"), context));
+			assertEquals(',', DescriptorUtil.getSeparator(createSimpleType("x"), context));
 			context.setDefaultSeparator('|');
-			assertEquals('|', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x"), context));
-			assertEquals(';', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x").withSeparator(";"), context));
+			assertEquals('|', DescriptorUtil.getSeparator(createSimpleType("x"), context));
+			assertEquals(';', DescriptorUtil.getSeparator(createSimpleType("x").withSeparator(";"), context));
 		} finally {
 			context.setDefaultSeparator(',');
 		}
@@ -262,32 +262,32 @@ public class DescriptorUtilTest {
 	@Test
 	public void testGetMinCount() {
 		// default
-		assertEquals(1, DescriptorUtil.getMinCount(new InstanceDescriptor("x")).evaluate(context).intValue());
+		assertEquals(1, DescriptorUtil.getMinCount(createInstance("x")).evaluate(context).intValue());
 		// set explicitly
-		assertEquals(2, DescriptorUtil.getMinCount(new InstanceDescriptor("x").withMinCount(2)).evaluate(context).intValue());
+		assertEquals(2, DescriptorUtil.getMinCount(createInstance("x").withMinCount(2)).evaluate(context).intValue());
 		// override by global maxCount
 		context.setMaxCount(3L);
-		assertEquals(3, DescriptorUtil.getMinCount(new InstanceDescriptor("x").withMinCount(4)).evaluate(context).intValue());
+		assertEquals(3, DescriptorUtil.getMinCount(createInstance("x").withMinCount(4)).evaluate(context).intValue());
 		// ignore global maxCount in default case
 		context.setMaxCount(5L);
-		assertEquals(1, DescriptorUtil.getMinCount(new InstanceDescriptor("x")).evaluate(context).intValue());
+		assertEquals(1, DescriptorUtil.getMinCount(createInstance("x")).evaluate(context).intValue());
 		// global maxCount overrides default
 		context.setMaxCount(0L);
-		assertEquals(0, DescriptorUtil.getMinCount(new InstanceDescriptor("x")).evaluate(context).intValue());
+		assertEquals(0, DescriptorUtil.getMinCount(createInstance("x")).evaluate(context).intValue());
 	}
 	
 	@Test
 	public void testGetMaxCount() {
 		// default
-		assertNull(DescriptorUtil.getMaxCount(new InstanceDescriptor("x")).evaluate(context));
+		assertNull(DescriptorUtil.getMaxCount(createInstance("x")).evaluate(context));
 		// explicit setting
-		assertEquals(2L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(2)).evaluate(context).longValue());
+		assertEquals(2L, DescriptorUtil.getMaxCount(createInstance("x").withMaxCount(2)).evaluate(context).longValue());
 		// override by global maxCount
 		context.setMaxCount(3L);
-		assertEquals(3L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(4)).evaluate(context).longValue());
+		assertEquals(3L, DescriptorUtil.getMaxCount(createInstance("x").withMaxCount(4)).evaluate(context).longValue());
 		// global maxCount overrides default
 		context.setMaxCount(null);
-		assertEquals(null, DescriptorUtil.getMaxCount(new InstanceDescriptor("x")).evaluate(context));
+		assertEquals(null, DescriptorUtil.getMaxCount(createInstance("x")).evaluate(context));
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
@@ -296,7 +296,7 @@ public class DescriptorUtilTest {
 	private void checkGetConverter(String contextKey, Converter<Integer, ?> contextValue, String converterSpec, int expectedValue) {
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
-		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
+		TypeDescriptor descriptor = createSimpleType("x");
 		descriptor.setConverter(converterSpec);
 		Converter<Integer, ?> converter = DescriptorUtil.getConverter(descriptor.getConverter(), context);
 		assertNotNull(converter);
@@ -307,7 +307,7 @@ public class DescriptorUtilTest {
 	private void checkGetValidator(String contextKey, Validator<Integer> contextValue, String validatorSpec, Integer validValue) {
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
-		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
+		TypeDescriptor descriptor = createSimpleType("x");
 		descriptor.setValidator(validatorSpec);
 		Validator<Integer> validator = DescriptorUtil.getValidator(descriptor.getValidator(), context);
 		assertNotNull(validator);
@@ -319,7 +319,7 @@ public class DescriptorUtilTest {
 			String contextKey, Generator<?> contextValue, String generatorSpec, int expectedValue) {
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
-		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
+		TypeDescriptor descriptor = createSimpleType("x");
 		descriptor.setGenerator(generatorSpec);
 		Generator<?> generator = DescriptorUtil.getGeneratorByName(descriptor, context);
 		assertNotNull(generator);
@@ -331,7 +331,7 @@ public class DescriptorUtilTest {
 			String contextKey, Distribution contextValue, String distributionSpec, double expectedValue) {
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
-		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
+		TypeDescriptor descriptor = createSimpleType("x");
 		descriptor.setDistribution(distributionSpec);
 		Distribution distribution = FactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, true, context);
 		assertNotNull(distribution);

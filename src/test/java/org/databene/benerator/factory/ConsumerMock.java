@@ -78,7 +78,7 @@ public class ConsumerMock extends AbstractConsumer implements ContextAware {
     }
     
     public void enrolCustomer(String name, int age) throws Exception {
-        lastProduct = new Entity("Person", "name", name, "age", age);
+        lastProduct = new Entity("Person", null, "name", name, "age", age);
         System.out.println("enrolled: " + name + " (" + age + ") - " + Thread.currentThread().getName());
         Thread.sleep(50 + random.nextInt(100));
     }

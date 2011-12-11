@@ -26,6 +26,7 @@
 
 package org.databene.platform.fixedwidth;
 
+import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -54,12 +55,19 @@ public class FixedWidthEntitySourceTest extends AbstractEntityIteratorTest {
             new FixedWidthColumnDescriptor("name", 6, Alignment.LEFT, ' '),
             new FixedWidthColumnDescriptor("age", 3, Alignment.RIGHT, '0')
     };
-    private static final ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("person");
+    private ComplexTypeDescriptor descriptor;
 
-	private static final Entity CHARLY = new Entity(descriptor, "name", "Charly", "age", "45");
+    private Entity ALICE;
+	private Entity BOB;
+	private Entity CHARLY;
 
-	private static final Entity BOB = new Entity(descriptor, "name", "Bob", "age", "34");
-    private static final Entity ALICE = new Entity(descriptor, "name", "Alice", "age", "23");
+	@Before
+	public void setUpPersons() {
+	    descriptor = createComplexType("person");
+	    ALICE = new Entity(descriptor, "name", "Alice", "age", "23");
+		BOB = new Entity(descriptor, "name", "Bob", "age", "34");
+		CHARLY = new Entity(descriptor, "name", "Charly", "age", "45");
+	}
     
     @Test
     public void testUnfiltered() {

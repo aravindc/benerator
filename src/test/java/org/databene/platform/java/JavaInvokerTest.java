@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,7 +23,7 @@ package org.databene.platform.java;
 
 import static org.junit.Assert.*;
 
-import org.databene.model.data.Entity;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.platform.java.JavaInvoker;
 import org.junit.Test;
 
@@ -33,14 +33,14 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class JavaInvokerTest {
+public class JavaInvokerTest extends GeneratorTest {
 
 	@Test
 	public void testInstanceMethodEntity() {
 		POJO target = new POJO();
 		JavaInvoker invoker = new JavaInvoker(target, "dynP2");
-		invoker.startProductConsumption(new Entity("params", "name", "Alice", "age", 23));
-		invoker.startProductConsumption(new Entity("params", "name", "Bob", "age", 34));
+		invoker.startProductConsumption(createEntity("params", "name", "Alice", "age", 23));
+		invoker.startProductConsumption(createEntity("params", "name", "Bob", "age", 34));
 		assertEquals(2, target.dynCountP2);
 	}
 
@@ -49,8 +49,8 @@ public class JavaInvokerTest {
 		POJO.statCountP2 = 0;
 		Class<POJO> target = POJO.class;
 		JavaInvoker invoker = new JavaInvoker(target, "statP2");
-		invoker.startProductConsumption(new Entity("params", "name", "Alice", "age", 23));
-		invoker.startProductConsumption(new Entity("params", "name", "Bob", "age", 34));
+		invoker.startProductConsumption(createEntity("params", "name", "Alice", "age", 23));
+		invoker.startProductConsumption(createEntity("params", "name", "Bob", "age", 34));
 		assertEquals(2, POJO.statCountP2);
 	}
 	

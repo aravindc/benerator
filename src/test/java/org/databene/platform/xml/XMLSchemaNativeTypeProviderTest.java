@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,7 @@ package org.databene.platform.xml;
 
 import java.util.regex.Pattern;
 
+import org.databene.model.data.DataModel;
 import org.databene.model.data.TypeDescriptor;
 
 import org.junit.Test;
@@ -41,7 +42,7 @@ import static junit.framework.Assert.*;
  */
 public class XMLSchemaNativeTypeProviderTest {
     
-    private XMLNativeTypeDescriptorProvider provider = new XMLNativeTypeDescriptorProvider("xs");
+    private XMLNativeTypeDescriptorProvider provider = new XMLNativeTypeDescriptorProvider("xsd", new DataModel());
 
     @Test
     public void testDurationType() {

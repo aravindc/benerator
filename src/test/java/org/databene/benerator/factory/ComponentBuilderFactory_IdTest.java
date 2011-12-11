@@ -44,9 +44,9 @@ public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFact
 
     @Test
 	public void testDefault() {
-		IdDescriptor id = new IdDescriptor("id", "int");
+		IdDescriptor id = createId("id", "int");
 		ComponentBuilder<Entity> generator = createAndInitBuilder(id);
-		Entity entity = new Entity("Person");
+		Entity entity = createEntity("Person");
 		setCurrentProduct(entity);
 		generator.execute(context);
 		assertEquals(1, entity.get("id"));
@@ -60,9 +60,9 @@ public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFact
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testUuid() {
 		String componentName = "id";
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "string");
+		SimpleTypeDescriptor type = createSimpleType("idType", "string");
 		type.setGenerator(HibUUIDGenerator.class.getName());
-		IdDescriptor id = new IdDescriptor(componentName, type);
+		IdDescriptor id = createId(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
 		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
 		helper.init(context);
@@ -77,9 +77,9 @@ public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFact
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testIncrementIdWithoutType() {
 		String componentName = "id";
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "long");
+		SimpleTypeDescriptor type = createSimpleType("idType", "long");
 		type.setGenerator(IncrementGenerator.class.getName());
-		IdDescriptor id = new IdDescriptor(componentName, type);
+		IdDescriptor id = createId(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
 		ComponentBuilderGenerator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
 		helper.init(context);
@@ -94,7 +94,7 @@ public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFact
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testDefaultIdGeneration() {
 		String componentName = "id";
-		IdDescriptor id = new IdDescriptor(componentName);
+		IdDescriptor id = createId(componentName);
 		ComponentBuilder builder = createComponentBuilder(id);
 		ComponentBuilderGenerator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
 		helper.init(context);
@@ -110,9 +110,9 @@ public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFact
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testIncrementByteId() {
 		String componentName = "id";
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "byte");
+		SimpleTypeDescriptor type = createSimpleType("idType", "byte");
 		type.setGenerator(IncrementGenerator.class.getName());
-		IdDescriptor id = new IdDescriptor(componentName, type);
+		IdDescriptor id = createId(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
 		ComponentBuilderGenerator<Byte> helper = new ComponentBuilderGenerator(builder, componentName);
 		helper.init(context);

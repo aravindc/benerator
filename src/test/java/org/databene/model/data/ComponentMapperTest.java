@@ -23,6 +23,7 @@ package org.databene.model.data;
 
 import static org.junit.Assert.*;
 
+import org.databene.benerator.test.ModelTest;
 import org.junit.Test;
 
 /**
@@ -31,11 +32,11 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ComponentMapperTest {
+public class ComponentMapperTest extends ModelTest {
 
 	@Test
 	public void test() {
-		Entity in = new Entity("Person", "name", "Alice", "age", 23);
+		Entity in = createEntity("Person", "name", "Alice", "age", 23);
 		ComponentNameMapper mapper = new ComponentNameMapper("'name'->'givenName','none'->'some'");
 		Entity out = mapper.convert(in);
 		assertEquals(in.type(), out.type());

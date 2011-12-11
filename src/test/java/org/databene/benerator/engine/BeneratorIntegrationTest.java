@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.IOUtil;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.data.DataModel;
 import org.junit.After;
 import org.junit.Before;
 import org.w3c.dom.Element;
@@ -43,13 +42,11 @@ public abstract class BeneratorIntegrationTest extends GeneratorTest {
 	
 	@Before
 	public void setUpEnvironment() throws Exception {
-		DataModel.getDefaultInstance().clear();
 		System.setProperty(DefaultBeneratorContext.CELL_SEPARATOR_SYSPROP, ",");
 	}
 
 	@After
 	public void tearDown() {
-		DataModel.getDefaultInstance().clear();
 		System.setProperty(DefaultBeneratorContext.CELL_SEPARATOR_SYSPROP, ",");
 	}
 

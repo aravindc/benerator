@@ -23,6 +23,7 @@ package org.databene.platform;
 
 import static junit.framework.Assert.assertNull;
 
+import org.databene.benerator.test.ModelTest;
 import org.databene.model.data.Entity;
 import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
@@ -33,7 +34,7 @@ import org.databene.webdecs.DataIterator;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public abstract class AbstractEntityIteratorTest {
+public abstract class AbstractEntityIteratorTest extends ModelTest {
 
 	public static Entity nextOf(DataIterator<Entity> iterator) {
 		return iterator.next(new DataContainer<Entity>()).getData();

@@ -30,13 +30,14 @@ import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.benerator.test.PersonIterable;
+import org.databene.benerator.test.PersonSource;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Uniqueness;
+import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -50,15 +51,21 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	
     private static final String PERSON_TAB_CSV = "org/databene/benerator/factory/person_tab.csv";
     private static final String PERSON_CSV = "org/databene/benerator/factory/person.ent.csv";
-    
-	private Entity alice = new Entity("person", "name", "Alice", "age", "23");
-	private Entity otto = new Entity("person", "name", "Otto", "age", "89");
-	
-	// testing generator feature ---------------------------------------------------------------------------------------
+
+	private Entity alice;
+	private Entity otto;
+
+	@Before
+    public void setUpPersons() {
+    	alice = createEntity("person", "name", "Alice", "age", "23");
+    	otto = createEntity("person", "name", "Otto", "age", "89");
+    }
+
+    // testing generator feature ---------------------------------------------------------------------------------------
 
 	@Test
 	public void testGeneratorBean() {
-		ComplexTypeDescriptor type = new ComplexTypeDescriptor("LocaleGenerator");
+		ComplexTypeDescriptor type = createComplexType("LocaleGenerator");
 		type.setDetailValue("generator", MyGenerator.class.getName());
 		type.setDetailValue("locale", "de");
 		Generator<Entity> generator = createGenerator(type);
@@ -72,7 +79,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testSimpleCSVImport() {
-		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
+		ComplexTypeDescriptor type = createComplexType("person");
 		type.setSource(PERSON_CSV);
 		Generator<Entity> generator = createGenerator(type);
 		context.set("ottos_age", 89);
@@ -83,7 +90,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testSimpleCSVImport_scriptedSource() {
 		context.set("filepath", PERSON_CSV);
-		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
+		ComplexTypeDescriptor type = createComplexType("person");
 		type.setSource("{filepath}");
 		Generator<Entity> generator = createGenerator(type);
 		context.set("ottos_age", 89);
@@ -93,7 +100,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testTabbedCSVImport() {
-		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
+		ComplexTypeDescriptor type = createComplexType("person");
 		type.setSource(PERSON_TAB_CSV);
 		type.setSeparator("\t");
 		Generator<Entity> generator = createGenerator(type);
@@ -103,7 +110,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testCyclicCSVImport() {
-		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
+		ComplexTypeDescriptor type = createComplexType("person");
 		type.setSource(PERSON_CSV);
 		type.setCyclic(true);
 		Generator<Entity> generator = createGenerator(type);
@@ -111,14 +118,14 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		generator.init(context);
 		expectGeneratedSequence(generator, alice, otto, alice).withContinuedAvailability();
 	}
-
+	
 	@Test
 	public void testWeightedCSVImport() {
-		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
+		ComplexTypeDescriptor type = createComplexType("person");
 		type.setSource(PERSON_CSV);
 		type.setDetailValue("distribution", "weighted[age]");
 		Generator<Entity> generator = createGenerator(type);
-		context.set("ottos_age", 89);
+		context.set("ottos_age", "89");
 		generator.init(context);
 		expectGeneratedSet(generator, 20, alice, otto).withContinuedAvailability();
 		ObjectCounter<Entity> counter = new ObjectCounter<Entity>(2);
@@ -130,7 +137,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testSequencedCSVImport() {
-		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
+		ComplexTypeDescriptor type = createComplexType("person");
 		type.setSource(PERSON_CSV);
 		type.setDistribution("new StepSequence(-1)");
 		Generator<Entity> generator = createGenerator(type);
@@ -141,9 +148,9 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testUniqueCSVImport() {
-		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
+		ComplexTypeDescriptor type = createComplexType("person");
 		type.setSource(PERSON_CSV);
-		InstanceDescriptor instance = new InstanceDescriptor("person", type);
+		InstanceDescriptor instance = createInstance("person", type);
 		instance.setUnique(true);
 		Generator<Entity> generator = createGenerator(instance);
 		context.set("ottos_age", 89);
@@ -158,15 +165,17 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testFilteredImport() {
-		ComplexTypeDescriptor twenType = new ComplexTypeDescriptor("Twen");
+		ComplexTypeDescriptor twenType = createComplexType("Twen");
 		twenType.setSource("personSource");
 		twenType.setFilter("_candidate.age < 30 && _candidate.age >= 20");
-		InstanceDescriptor twen = new InstanceDescriptor("twen", twenType);
-		context.set("personSource", new PersonIterable());
+		InstanceDescriptor twen = createInstance("twen", twenType);
+		PersonSource source = new PersonSource();
+		source.setContext(context);
+		context.set("personSource", source);
 		Generator<Entity> generator = createGenerator(twen);
 		generator.init(context);
 		Entity person1 = GeneratorUtil.generateNonNull(generator);
-		assertEquals(PersonIterable.createAlice(), person1);
+		assertEquals(source.createAlice(), person1);
 		assertUnavailable(generator);
 	}
 	

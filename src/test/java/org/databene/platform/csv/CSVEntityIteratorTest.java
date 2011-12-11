@@ -30,11 +30,10 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 import org.databene.commons.Encodings;
+import org.databene.commons.converter.NoOpConverter;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.PartDescriptor;
 import org.databene.platform.AbstractEntityIteratorTest;
-import org.databene.webdecs.DataIterator;
 
 /**
  * Tests the {@link CSVEntityIterator}.<br/>
@@ -52,28 +51,32 @@ public class CSVEntityIteratorTest extends AbstractEntityIteratorTest {
 
     @Test
     public void testWithHeader() throws Exception {
-    	CSVEntityIterator iterator = new CSVEntityIterator(PLAIN_URI, "Person", ',');
-        checkIteration(iterator, "name", "age", false);
+    	ComplexTypeDescriptor countryDescriptor = createCountryDescriptor();
+    	ComplexTypeDescriptor personDescriptor = createPersonDescriptor(countryDescriptor);
+    	CSVEntityIterator iterator = new CSVEntityIterator(PLAIN_URI, personDescriptor, new NoOpConverter<String>(), ',', Encodings.UTF_8);
+        assertEquals(new Entity(personDescriptor, "name", "Alice", "age", 23), nextOf(iterator));
+        assertEquals(new Entity(personDescriptor, "name", "Bob", "age", 34), nextOf(iterator));
+        assertEquals(new Entity(personDescriptor, "name", "Charly", "age", 45), nextOf(iterator));
+        assertUnavailable(iterator);
     }
 
     @Test
     public void testWithoutHeader() throws Exception {
-    	CSVEntityIterator iterator = new CSVEntityIterator(PLAIN_URI, "Person", ',');
+    	ComplexTypeDescriptor countryDescriptor = createCountryDescriptor();
+    	ComplexTypeDescriptor personDescriptor = createPersonDescriptor(countryDescriptor);
+    	CSVEntityIterator iterator = new CSVEntityIterator(PLAIN_URI, personDescriptor, new NoOpConverter<String>(), ',', Encodings.UTF_8);
     	iterator.setColumns(new String[] { "c1", "c2" });
-        checkIteration(iterator, "c1", "c2", true);
+        assertEquals(new Entity(personDescriptor, "c1", "name", "c2", "age"), nextOf(iterator));
+        assertEquals(new Entity(personDescriptor, "c1", "Alice", "c2", "23"), nextOf(iterator));
+        assertEquals(new Entity(personDescriptor, "c1", "Bob", "c2", "34"), nextOf(iterator));
+        assertEquals(new Entity(personDescriptor, "c1", "Charly", "c2", "45"), nextOf(iterator));
+        assertUnavailable(iterator);
     }
 
     @Test
     public void testGraph() throws Exception {
-    	// Define Country type
-    	ComplexTypeDescriptor countryDescriptor = new ComplexTypeDescriptor("Country");
-    	countryDescriptor.addComponent(new PartDescriptor("isoCode", "string"));
-    	countryDescriptor.addComponent(new PartDescriptor("name", "string"));
-    	// Define Person type
-    	ComplexTypeDescriptor personDescriptor = new ComplexTypeDescriptor("Person");
-    	personDescriptor.addComponent(new PartDescriptor("name", "string"));
-    	personDescriptor.addComponent(new PartDescriptor("age", "int"));
-    	personDescriptor.addComponent(new PartDescriptor("country", countryDescriptor));
+    	ComplexTypeDescriptor countryDescriptor = createCountryDescriptor();
+    	ComplexTypeDescriptor personDescriptor = createPersonDescriptor(countryDescriptor);
     	// Define expected countries
     	Entity germany = new Entity(countryDescriptor, "isoCode", "DE", "name", "Germany");
     	Entity usa = new Entity(countryDescriptor, "isoCode", "US", "name", "USA");
@@ -87,16 +90,21 @@ public class CSVEntityIteratorTest extends AbstractEntityIteratorTest {
         assertUnavailable(iterator);
     }
 
+	private ComplexTypeDescriptor createPersonDescriptor(ComplexTypeDescriptor countryDescriptor) {
+		ComplexTypeDescriptor personDescriptor = createComplexType("Person");
+    	personDescriptor.addComponent(createPart("name", "string"));
+    	personDescriptor.addComponent(createPart("age", "int"));
+    	personDescriptor.addComponent(createPart("country", countryDescriptor));
+		return personDescriptor;
+	}
+
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private void checkIteration(DataIterator<Entity> iterator, String header1, String header2, boolean expectHeaderRow) {
-        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
-        if (expectHeaderRow)
-	        assertEquals(new Entity(descriptor, header1, "name", header2, "age"), nextOf(iterator));
-        assertEquals(new Entity(descriptor, header1, "Alice", header2, "23"), nextOf(iterator));
-        assertEquals(new Entity(descriptor, header1, "Bob", header2, "34"), nextOf(iterator));
-        assertEquals(new Entity(descriptor, header1, "Charly", header2, "45"), nextOf(iterator));
-        assertUnavailable(iterator);
-    }
+	private ComplexTypeDescriptor createCountryDescriptor() {
+		ComplexTypeDescriptor countryDescriptor = createComplexType("Country");
+    	countryDescriptor.addComponent(createPart("isoCode", "string"));
+    	countryDescriptor.addComponent(createPart("name", "string"));
+		return countryDescriptor;
+	}
 
 }

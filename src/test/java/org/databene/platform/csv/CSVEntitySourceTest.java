@@ -30,6 +30,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 import org.databene.benerator.engine.DefaultBeneratorContext;
+import org.databene.commons.Encodings;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.AbstractEntityIteratorTest;
@@ -49,14 +50,14 @@ public class CSVEntitySourceTest extends AbstractEntityIteratorTest {
 
     @Test
     public void testSingleRun() {
-    	CSVEntitySource source = new CSVEntitySource(PERSON_URI, "Person");
+    	CSVEntitySource source = new CSVEntitySource(PERSON_URI, createPersonDescriptor(), Encodings.UTF_8);
     	source.setContext(new DefaultBeneratorContext());
         checkIteration(source.iterator(), "name", "age", false);
     }
 
     @Test
     public void testReset() {
-    	CSVEntitySource source = new CSVEntitySource(PERSON_URI, "Person");
+    	CSVEntitySource source = new CSVEntitySource(PERSON_URI, createPersonDescriptor(), Encodings.UTF_8);
     	source.setContext(new DefaultBeneratorContext());
         checkIteration(source.iterator(), "name", "age", false);
         checkIteration(source.iterator(), "name", "age", false);
@@ -64,7 +65,7 @@ public class CSVEntitySourceTest extends AbstractEntityIteratorTest {
 
     @Test
     public void testWithoutHeaders() {
-    	CSVEntitySource source = new CSVEntitySource(PERSON_URI_WO_HEADERS, "Person");
+    	CSVEntitySource source = new CSVEntitySource(PERSON_URI_WO_HEADERS, createPersonDescriptor(), Encodings.UTF_8);
     	source.setColumns(new String[] { "c1", "c2" });
     	source.setContext(new DefaultBeneratorContext());
         checkIteration(source.iterator(), "c1", "c2", false);
@@ -74,7 +75,7 @@ public class CSVEntitySourceTest extends AbstractEntityIteratorTest {
     // private helpers -------------------------------------------------------------------------------------------------
 
     private void checkIteration(DataIterator<Entity> iterator, String col1, String col2, boolean headersAsEntityExpected) {
-        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
+        ComplexTypeDescriptor descriptor = createPersonDescriptor();
         if (headersAsEntityExpected)
             assertEquals(new Entity(descriptor, col1, "name", col2, "age"), nextOf(iterator));
         assertEquals(new Entity(descriptor, col1, "Alice",  col2, "23"), nextOf(iterator));
@@ -82,5 +83,12 @@ public class CSVEntitySourceTest extends AbstractEntityIteratorTest {
         assertEquals(new Entity(descriptor, col1, "Charly", col2, "45"), nextOf(iterator));
         assertUnavailable(iterator);
     }
+
+	private ComplexTypeDescriptor createPersonDescriptor() {
+		ComplexTypeDescriptor countryDescriptor = createComplexType("Country");
+    	countryDescriptor.addComponent(createPart("isoCode", "string"));
+    	countryDescriptor.addComponent(createPart("name", "string"));
+		return countryDescriptor;
+	}
 
 }

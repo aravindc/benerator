@@ -136,7 +136,7 @@ public class AddressGeneratorTest extends GeneratorClassTest {
     	xml += "/>";
 		Element element = XMLUtil.parseStringAsElement(xml);
 		ModelParser parser = new ModelParser(context);
-    	ComplexTypeDescriptor parent = new ComplexTypeDescriptor("y");
+    	ComplexTypeDescriptor parent = createComplexType("y");
 		InstanceDescriptor descriptor = parser.parseVariable(element, parent);
 		Generator<Address> generator = (Generator<Address>) InstanceGeneratorFactory.createSingleInstanceGenerator(
 				descriptor, Uniqueness.NONE, context);

@@ -21,6 +21,7 @@
 
 package org.databene.benerator.engine.parser.xml;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Assert;
@@ -35,13 +36,19 @@ import org.databene.model.data.Entity;
  */
 public class GeneratorMock extends UnsafeGenerator<Entity> {
 
+	private BeneratorContext context;
+	
+	public GeneratorMock(BeneratorContext context) {
+		this.context = context;
+	}
+
 	public Class<Entity> getGeneratedType() {
 		return Entity.class;
     }
 
 	public ProductWrapper<Entity> generate(ProductWrapper<Entity> wrapper) {
 		Assert.notNull(context, "context");
-		return wrapper.wrap(new Entity("Dummy"));
+		return wrapper.wrap(new Entity("Dummy", context.getLocalDescriptorProvider()));
     }
 
 }

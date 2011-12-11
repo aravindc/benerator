@@ -37,7 +37,6 @@ import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.measure.count.ObjectCounter;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.script.ScriptUtil;
@@ -70,14 +69,13 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	public void setUpConverterManager() {
     	ConverterManager.getInstance().reset();
     	ConverterManager.getInstance().setContext(context);
-    	DataModel.getDefaultInstance().clear();
 	}
 	
 	// 'value' attribute tests -----------------------------------------------------------------------------------------
 
 	@Test
 	public void testValues() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("string");
+		SimpleTypeDescriptor type = createSimpleType("string");
 		type.setValues("'A','B','C'");
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE);
 		expectGeneratedSet(generator, 100, "A", "B", "C").withContinuedAvailability();
@@ -85,7 +83,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testUniqueValues() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("string");
+		SimpleTypeDescriptor type = createSimpleType("string");
 		type.setValues("'A','B','C'");
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.ORDERED);
 		expectUniquelyGeneratedSet(generator, "A", "B", "C").withCeasedAvailability();
@@ -93,17 +91,17 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testCreateSampleGeneratorWithoutValues() {
-		Generator<?> generator = SimpleTypeGeneratorFactory.createValuesGenerator(new SimpleTypeDescriptor("test"), Uniqueness.NONE, null);
+		Generator<?> generator = SimpleTypeGeneratorFactory.createValuesGenerator(createSimpleType("test"), Uniqueness.NONE, null);
 		assertNull(generator);
 	}
 	
 	@Test
 	public void testCreateSampleGeneratorUnweighted() {
 		BeneratorContext context = new DefaultBeneratorContext();
-		Generator<?> generator = SimpleTypeGeneratorFactory.createValuesGenerator(new SimpleTypeDescriptor("test").withValues("'a','b'"), Uniqueness.NONE, context);
+		Generator<?> generator = SimpleTypeGeneratorFactory.createValuesGenerator(createSimpleType("test").withValues("'a','b'"), Uniqueness.NONE, context);
 		generator.init(context);
 		expectRelativeWeights(generator, 1000, "a", 1, "b", 1);
-		SimpleTypeDescriptor descriptor = (SimpleTypeDescriptor) new SimpleTypeDescriptor("test").withValues("'a','b,c'").withSeparator("|");
+		SimpleTypeDescriptor descriptor = (SimpleTypeDescriptor) createSimpleType("test").withValues("'a','b,c'").withSeparator("|");
 		generator = SimpleTypeGeneratorFactory.createValuesGenerator(descriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		expectRelativeWeights(generator, 1000, "a", 1, "b,c", 1);
@@ -112,7 +110,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testCreateSampleGeneratorWeighted() {
 		BeneratorContext context = new DefaultBeneratorContext();
-		Generator<?> generator = SimpleTypeGeneratorFactory.createValuesGenerator(new SimpleTypeDescriptor("test").withValues("'a'^2,'b'"), Uniqueness.NONE, context);
+		Generator<?> generator = SimpleTypeGeneratorFactory.createValuesGenerator(createSimpleType("test").withValues("'a'^2,'b'"), Uniqueness.NONE, context);
 		generator.init(context);
 		expectRelativeWeights(generator, 3000, "a", 2, "b", 1);
 	}
@@ -121,7 +119,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testSimpleCSVImport() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
+		SimpleTypeDescriptor type = createSimpleType("givenName");
 		type.setSource(NAME_CSV);
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE);
 		expectGeneratedSequence(generator, "Alice", "Otto").withCeasedAvailability();
@@ -129,7 +127,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testSimpleCSVImportWithOffset() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenNameWithOffset");
+		SimpleTypeDescriptor type = createSimpleType("givenNameWithOffset");
 		type.setSource(NAME_CSV);
 		type.setOffset(1);
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE);
@@ -138,7 +136,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testTabSeparatedCSVImport() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
+		SimpleTypeDescriptor type = createSimpleType("name");
 		type.setSource(NAMES_TAB_CSV);
 		type.setSeparator("\t");
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE);
@@ -147,7 +145,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testScriptedCSVImport() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
+		SimpleTypeDescriptor type = createSimpleType("name");
 		type.setSource(SCRIPTED_NAMES_CSV);
 		context.set("some_user", "the_user");
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE, context);
@@ -156,7 +154,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testScriptedWgtCSVImport() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
+		SimpleTypeDescriptor type = createSimpleType("name");
 		type.setSource(SCRIPTED_NAMES_WGT_CSV); // contains an entry with {some_user},1 - all others have weight 0
 		context.set("some_user", "the_user"); // {some_user} is assigned the value 'the_user'
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE, context);
@@ -168,7 +166,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testWeightedCSVImport() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
+		SimpleTypeDescriptor type = createSimpleType("givenName");
 		type.setSource(NAME_CSV);
 		type.setDetailValue("distribution", "weighted");
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE);
@@ -182,7 +180,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testSequencedCSVImport() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
+		SimpleTypeDescriptor type = createSimpleType("givenName");
 		type.setSource(NAME_CSV);
 		type.setDistribution("new StepSequence(-1)");
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE);
@@ -191,7 +189,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
 	public void testUniqueCSVImport() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
+		SimpleTypeDescriptor type = createSimpleType("givenName");
 		type.setSource(NAME_CSV);
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.SIMPLE);
 		ObjectCounter<String> counter = new ObjectCounter<String>(2);
@@ -204,7 +202,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testCyclicCSVImport() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
+		SimpleTypeDescriptor type = createSimpleType("givenName");
 		type.setSource(NAME_CSV);
 		type.setCyclic(true);
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE);

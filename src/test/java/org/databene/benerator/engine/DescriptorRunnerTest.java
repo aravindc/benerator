@@ -32,8 +32,8 @@ import java.util.List;
 
 import org.databene.benerator.consumer.AbstractConsumer;
 import org.databene.benerator.consumer.FileExporter;
+import org.databene.benerator.test.ModelTest;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.model.data.Entity;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -46,7 +46,7 @@ import static junit.framework.Assert.*;
  * @author Volker Bergmann
  */
 
-public class DescriptorRunnerTest {
+public class DescriptorRunnerTest extends ModelTest {
 
     private static final String EXPORT_FILE_URI = "test-uri.txt";
 
@@ -65,7 +65,7 @@ public class DescriptorRunnerTest {
 		context.set("myConsumer", myConsumer);
 		runner.run();
 		assertEquals(1, myConsumer.products.size());
-		assertEquals(new Entity("Person", "name", "Alice"), myConsumer.products.get(0));
+		assertEquals(createEntity("Person", "name", "Alice"), myConsumer.products.get(0));
 	}
 	
     @Test

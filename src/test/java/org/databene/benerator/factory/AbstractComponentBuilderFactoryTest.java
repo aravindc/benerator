@@ -58,7 +58,7 @@ public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest 
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static final class ComponentBuilderGenerator<E> extends AbstractGenerator<E> {
+	public final class ComponentBuilderGenerator<E> extends AbstractGenerator<E> {
 		
         @SuppressWarnings("rawtypes")
 		private ComponentBuilder builder;
@@ -80,14 +80,15 @@ public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest 
 	        return (Class<E>) Object.class;
         }
 
+		@SuppressWarnings("synthetic-access")
         public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
-			Entity entity = new Entity("Test");
+			Entity entity = createEntity("Test");
 			context.setCurrentProduct(new ProductWrapper<Entity>(entity));
 			if (!builder.execute((BeneratorContext) context))
 				return null;
 			return wrapper.wrap((E) entity.get(componentName));
 		}
-		
+
 		@Override
 		public void reset() {
 			super.reset();

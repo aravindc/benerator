@@ -57,14 +57,14 @@ import org.databene.webdecs.util.DataSourceProxy;
  */
 public class ReferenceComponentBuilderFactoryTest extends GeneratorTest { 
 	
-    @SuppressWarnings("rawtypes")
+	@SuppressWarnings("rawtypes")
     @Test
 	public void testScript() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
 			.withCount(1);
 		ref.getTypeDescriptor().setScript("8");
 		ComponentBuilder generator = createAndInitBuilder(ref);
-		Entity entity = new Entity("Person");
+		Entity entity = createPersonEntity();
 		setCurrentProduct(entity);
 		generator.execute(context);
 		assertEquals(8, entity.get("ref"));
@@ -76,7 +76,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
 			.withNullQuota(1).withCount(1);
 		ComponentBuilder generator = createAndInitBuilder(ref);
-		Entity entity = new Entity("Person");
+		Entity entity = createPersonEntity();
 		setCurrentProduct(entity);
 		generator.execute(context);
 		assertEquals(null, entity.get("ref"));
@@ -89,7 +89,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 			.withCount(1);
 		ref.setNullable(true);
 		ComponentBuilder generator = createAndInitBuilder(ref);
-		Entity entity = new Entity("Person");
+		Entity entity = createPersonEntity();
 		setCurrentProduct(entity);
 		generator.execute(context);
 		assertEquals(null, entity.get("ref"));
@@ -102,7 +102,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 			.withCount(1);
 		ref.getTypeDescriptor().setGenerator("new " + ConstantGenerator.class.getName() + "(42)");
 		ComponentBuilder generator = createAndInitBuilder(ref);
-		Entity entity = new Entity("Person");
+		Entity entity = createPersonEntity();
 		setCurrentProduct(entity);
 		generator.execute(context);
 		assertEquals(42, entity.get("ref"));
@@ -115,7 +115,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 			.withCount(1);
 		((SimpleTypeDescriptor) ref.getTypeDescriptor()).setConstant("3");
 		ComponentBuilder generator = createAndInitBuilder(ref);
-		Entity entity = new Entity("Person");
+		Entity entity = createPersonEntity();
 		setCurrentProduct(entity);
 		generator.execute(context);
 		assertEquals(3, entity.get("ref"));
@@ -128,7 +128,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 			.withCount(1);
 		((SimpleTypeDescriptor) ref.getTypeDescriptor()).setValues("6");
 		ComponentBuilder generator = createAndInitBuilder(ref);
-		Entity entity = new Entity("Person");
+		Entity entity = createPersonEntity();
 		setCurrentProduct(entity);
 		generator.execute(context);
 		assertEquals("6", entity.get("ref"));
@@ -155,7 +155,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		ref.setCount(new ConstantExpression<Long>(1L));
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		assertTrue(generator != null);
-		Entity entity = new Entity("Person");
+		Entity entity = createPersonEntity();
 		setCurrentProduct(entity);
 		generator.execute(context);
 		assertTrue("Alice".equals(entity.get("ref")) || "Bob".equals(entity.get("ref")));
@@ -168,7 +168,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		ref.setCount(new ConstantExpression<Long>(2L));
 		ComponentBuilder builder = createAndInitBuilder(ref);
 		assertTrue(builder != null);
-		Entity entity = new Entity("Person");
+		Entity entity = createPersonEntity();
 		setCurrentProduct(entity);
 		builder.execute(context);
 		String[] product = (String[]) entity.get("ref");
@@ -180,27 +180,30 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private ReferenceDescriptor createTargetTypeDescriptor(String refName, String targetType, String source) {
-		DataModel.getDefaultInstance().clear();
-		ReferenceDescriptor descriptor = new ReferenceDescriptor(refName, "string");
+		ReferenceDescriptor descriptor = new ReferenceDescriptor(refName, testDescriptorProvider, "string");
 		descriptor.getLocalType(false).setSource(source);
 		descriptor.setTargetType(targetType);
 		return descriptor;
 	}
 
     private ComponentBuilder<?> createAndInitBuilder(ReferenceDescriptor ref) {
-		StorageSystemMock storageSystem = new StorageSystemMock();
-		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);
+		StorageSystemMock storageSystem = new StorageSystemMock(ref.getDataModel());
+		context.getDataModel().addDescriptorProvider(storageSystem);
 		context.set(storageSystem.getId(), storageSystem);
 		ComponentBuilder<?> builder = ComponentBuilderFactory.createComponentBuilder(ref, Uniqueness.NONE, context);
 		builder.prepare(context);
 		return builder;
 	}
 	
+	public Entity createPersonEntity() {
+		return new Entity("Person", testDescriptorProvider);
+	}
+
 	public static class StorageSystemMock extends DefaultDescriptorProvider implements StorageSystem {
 		
-		public StorageSystemMock() {
-			super("Storage");
-			super.addDescriptor(new ComplexTypeDescriptor("Person"));
+		public StorageSystemMock(DataModel dataModel) {
+			super("Storage", dataModel);
+			super.addTypeDescriptor(new ComplexTypeDescriptor("Person", this));
 		}
 
 		public void close() {

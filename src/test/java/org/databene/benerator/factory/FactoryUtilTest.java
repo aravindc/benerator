@@ -61,7 +61,7 @@ public class FactoryUtilTest extends GeneratorTest {
 	
 	@Test
 	public void testGetDistribution_default() {
-		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType");
+		SimpleTypeDescriptor descriptor = createSimpleType("myType");
 		assertNull(FactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, false, context));
 		assertEquals(SequenceManager.EXPAND_SEQUENCE, 
 				FactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.SIMPLE, true, context));
@@ -70,7 +70,7 @@ public class FactoryUtilTest extends GeneratorTest {
 	@Test
 	public void testCreateDynamicCountGenerator_default() {
 		// given an instance descriptor without limits defined
-		InstanceDescriptor descriptor = new InstanceDescriptor("inst");
+		InstanceDescriptor descriptor = createInstance("inst");
 		// when creating a count generator for this
 		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
@@ -80,7 +80,7 @@ public class FactoryUtilTest extends GeneratorTest {
 	
 	@Test
 	public void testCreateDynamicCountGenerator_distributed() {
-		InstanceDescriptor descriptor = new InstanceDescriptor("inst").withMinCount(2).withMaxCount(4);
+		InstanceDescriptor descriptor = createInstance("inst").withMinCount(2).withMaxCount(4);
 		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
 		expectGeneratedSet(countGenerator, 100, 2L, 3L, 4L).withContinuedAvailability();
@@ -88,7 +88,7 @@ public class FactoryUtilTest extends GeneratorTest {
 	
 	@Test
 	public void testCreateDynamicCountGenerator_minMax() {
-		InstanceDescriptor descriptor = new InstanceDescriptor("inst").withMinCount(2).withMaxCount(3);
+		InstanceDescriptor descriptor = createInstance("inst").withMinCount(2).withMaxCount(3);
 		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
 		expectGeneratedSet(countGenerator, 20, 2L, 3L).withContinuedAvailability();
@@ -97,7 +97,7 @@ public class FactoryUtilTest extends GeneratorTest {
 	@Test
 	public void testCreateDynamicCountGenerator_min() {
 		// given an instance descriptor with just a lower limit defined
-		InstanceDescriptor descriptor = new InstanceDescriptor("inst").withMinCount(6);
+		InstanceDescriptor descriptor = createInstance("inst").withMinCount(6);
 		// when creating a count generator for this
 		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
 		countGenerator.init(context);

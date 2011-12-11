@@ -27,10 +27,10 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.test.ModelTest;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 
 import org.junit.Test;
@@ -42,7 +42,7 @@ import static junit.framework.Assert.*;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class SimpleTypeEntityGeneratorTest {
+public class SimpleTypeEntityGeneratorTest extends ModelTest {
 
 	@Test
 	public void test() {
@@ -55,9 +55,9 @@ public class SimpleTypeEntityGeneratorTest {
 	}
 	
 	private ComplexTypeDescriptor createComplexType() {
-		ComplexTypeDescriptor type = new ComplexTypeDescriptor(null);
-		SimpleTypeDescriptor content = new SimpleTypeDescriptor(null, "string");
-		type.addComponent(new PartDescriptor(ComplexTypeDescriptor.__SIMPLE_CONTENT, content));
+		ComplexTypeDescriptor type = createComplexType(null);
+		SimpleTypeDescriptor content = createSimpleType(null, "string");
+		type.addComponent(createPart(ComplexTypeDescriptor.__SIMPLE_CONTENT, content));
 		return type;
 	}
 	

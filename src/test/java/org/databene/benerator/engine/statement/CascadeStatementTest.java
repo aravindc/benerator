@@ -28,7 +28,6 @@ import org.databene.benerator.test.GeneratorTest;
 import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.jdbacl.model.DBForeignKeyConstraint;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
 import org.databene.webdecs.DataContainer;
@@ -74,19 +73,19 @@ public class CascadeStatementTest extends GeneratorTest {
 		db.execute("insert into referer (id, referee_id) values (4, 2)");
 		db.execute("insert into referer (id, referee_id) values (5, 3)");
 		context.set("db", db);
-		DataModel.getDefaultInstance().addDescriptorProvider(db);
+		context.getDataModel().addDescriptorProvider(db);
 	}
 	
 	@Test
 	public void testResolveToManyReference() {
 		CascadeStatement.Reference ref = new CascadeStatement.Reference("referee", new String[] { "id" });
 		DBForeignKeyConstraint fk = db.getDbMetaData().getTable("referer").getForeignKeyConstraint(new String[] { "referee_id" });
-		Entity fromEntity = new Entity("referee", "id", 2);
+		Entity fromEntity = createEntity("referee", "id", 2);
 		DataIterator<Entity> iterator = ref.resolveToManyReference(fromEntity, fk, db, context);
 		DataContainer<Entity> container = new DataContainer<Entity>();
 		DataContainer<Entity> next = iterator.next(container);
 		assertNotNull("referee not found", next);
-		assertEquals(new Entity("REFERER", "ID", 4, "REFEREE_ID", 2, "THE_DATE", null), next.getData());
+		assertEquals(createEntity("REFERER", "ID", 4, "REFEREE_ID", 2, "THE_DATE", null), next.getData());
 		assertNull(iterator.next(container));
 	}
 	
@@ -94,12 +93,12 @@ public class CascadeStatementTest extends GeneratorTest {
 	public void testResolveToOneReference() {
 		CascadeStatement.Reference ref = new CascadeStatement.Reference("referer", new String[] { "referee_id" });
 		DBForeignKeyConstraint fk = db.getDbMetaData().getTable("referer").getForeignKeyConstraint(new String[] { "referee_id" });
-		Entity fromEntity = new Entity("referer", "id", 4, "referee_id", 2);
+		Entity fromEntity = createEntity("referer", "id", 4, "referee_id", 2);
 		DataIterator<Entity> iterator = ref.resolveToOneReference(fromEntity, fk, db, context);
 		DataContainer<Entity> container = new DataContainer<Entity>();
 		DataContainer<Entity> next = iterator.next(container);
 		assertNotNull("referee not found", next);
-		assertEquals(new Entity("REFEREE", "ID", 2, "N", 2), next.getData());
+		assertEquals(createEntity("REFEREE", "ID", 2, "N", 2), next.getData());
 		assertNull(iterator.next(container));
 	}
 	

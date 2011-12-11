@@ -61,7 +61,7 @@ public class DescriptorBasedGeneratorTest extends GeneratorTest {
 	}
 
 	private void checkGeneration(Entity entity, int id) {
-	    assertEquals(new Entity("Person", "id", id, "name", "Alice"), entity);
+	    assertEquals(createEntity("Person", "id", id, "name", "Alice"), entity);
     }
 	
 }

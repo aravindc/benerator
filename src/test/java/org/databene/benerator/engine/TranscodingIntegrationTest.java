@@ -198,17 +198,17 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void assertNextCountry(int id, String name, DataIterator<Entity> iterator) {
-		Entity expectedCountry = new Entity("COUNTRY", "ID", id, "NAME", name);
+		Entity expectedCountry = createEntity("COUNTRY", "ID", id, "NAME", name);
 		assertEquals(expectedCountry, iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
 	private void assertNextState(int id, Integer countryId, String name, DataIterator<Entity> iterator) {
-		Entity expectedState = new Entity("STATE", "ID", id, "COUNTRY_FK", countryId, "NAME", name);
+		Entity expectedState = createEntity("STATE", "ID", id, "COUNTRY_FK", countryId, "NAME", name);
 		assertEquals(expectedState, iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
 	private void assertNextCity(int id, Integer stateId, String name, DataIterator<Entity> iterator) {
-		Entity expectedCity = new Entity("CITY", "ID", id, "STATE_FK", stateId, "NAME", name);
+		Entity expectedCity = createEntity("CITY", "ID", id, "STATE_FK", stateId, "NAME", name);
 		assertEquals(expectedCity, iterator.next(new DataContainer<Entity>()).getData());
 	}
 	

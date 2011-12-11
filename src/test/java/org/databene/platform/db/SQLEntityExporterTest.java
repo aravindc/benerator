@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.File;
 
+import org.databene.benerator.test.ModelTest;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
@@ -40,7 +41,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class SQLEntityExporterTest {
+public class SQLEntityExporterTest extends ModelTest {
 	
 	private static final String FILENAME = "target" + File.separator 
 		+ SQLEntityExporterTest.class.getSimpleName() + ".sql";
@@ -49,7 +50,7 @@ public class SQLEntityExporterTest {
 	public void testWithoutDialect() throws Exception {
 		SQLEntityExporter exporter = new SQLEntityExporter(FILENAME);
 		try {
-			Entity alice = new Entity("Person", "name", "Alice", "birthDate", TimeUtil.date(1987, 11, 31), "score", 23);
+			Entity alice = createEntity("Person", "name", "Alice", "birthDate", TimeUtil.date(1987, 11, 31), "score", 23);
 			exporter.startProductConsumption(alice);
 		} finally {
 			exporter.close();
@@ -60,8 +61,8 @@ public class SQLEntityExporterTest {
 	@Test
 	public void testNormal() throws Exception {
 		try {
-			Entity alice = new Entity("Person", "name", "Alice", "birthDate", TimeUtil.date(1987, 11, 31), "score", 23);
-			Entity bob = new Entity("Person", "name", "Bob", "birthDate", TimeUtil.date(1977, 11, 31), "score", 34);
+			Entity alice = createEntity("Person", "name", "Alice", "birthDate", TimeUtil.date(1987, 11, 31), "score", 23);
+			Entity bob = createEntity("Person", "name", "Bob", "birthDate", TimeUtil.date(1977, 11, 31), "score", 34);
 			SQLEntityExporter exporter = new SQLEntityExporter(FILENAME);
 			exporter.setDialect("hsql");
 			exporter.startProductConsumption(alice);

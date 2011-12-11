@@ -31,7 +31,6 @@ import static junit.framework.Assert.*;
 
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.model.data.Entity;
-import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.AbstractEntityIteratorTest;
 import org.databene.webdecs.DataUtil;
 
@@ -42,7 +41,7 @@ import org.databene.webdecs.DataUtil;
  * @author Volker Bergmann
  */
 public class DbUnitEntityIterableTest extends AbstractEntityIteratorTest { // TODO split off tests for the 2 *Iterator classes
-
+	
 	@Test
     public void testNormalDataset() {
         NestedDbUnitEntityIterator iterator = new NestedDbUnitEntityIterator(
@@ -72,14 +71,14 @@ public class DbUnitEntityIterableTest extends AbstractEntityIteratorTest { // TO
     }
 
     private Entity createPerson(String name, String age) {
-        Entity person = new Entity(new ComplexTypeDescriptor("PERSON"));
+        Entity person = new Entity(createComplexType("PERSON"));
         person.setComponent("name", name);
         person.setComponent("age", age);
         return person;
     }
 
     private Entity createRole(String name) {
-        Entity role = new Entity(new ComplexTypeDescriptor("ROLE"));
+        Entity role = new Entity(createComplexType("ROLE"));
         role.setComponent("name", name);
         return role;
     }

@@ -29,7 +29,7 @@ import java.util.Arrays;
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.benerator.test.PersonIterable;
+import org.databene.benerator.test.PersonSource;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ArrayFormat;
@@ -39,8 +39,6 @@ import org.databene.commons.converter.ConverterManager;
 import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
-import org.databene.model.data.DataModel;
-import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
@@ -71,16 +69,12 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 	@Before
 	public void setup() {
 		ConverterManager.getInstance().reset();
-	    DefaultDescriptorProvider provider = new DefaultDescriptorProvider(ArrayTypeGeneratorFactoryTest.class.getName());
-		provider.addDescriptor(createPersonDescriptor());
-		DataModel dataModel = DataModel.getDefaultInstance();
-		dataModel.clear();
-		dataModel.addDescriptorProvider(provider);
+		testDescriptorProvider.addTypeDescriptor(createPersonDescriptor());
 	}
 
 	@Test
 	public void testGenerator() {
-		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testGenerator");
+		ArrayTypeDescriptor descriptor = createArrayType("testGenerator");
 		descriptor.setGenerator(PersonAttrArrayGenerator.class.getName());
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
 				descriptor, "testGenerator", false, Uniqueness.NONE, context);
@@ -92,7 +86,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testXlsSource() {
 		ArrayTypeDescriptor parent = createPersonDescriptor();
-		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testXlsSource", parent);
+		ArrayTypeDescriptor descriptor = createArrayType("testXlsSource", parent);
 		descriptor.setSource("org/databene/benerator/factory/person.ent.xls");
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
 				descriptor, "testXlsSource", false, Uniqueness.NONE, context);
@@ -101,10 +95,10 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		expectGeneratedSequence(generator, ALICE, OTTO).withCeasedAvailability();
 	}
 	
-    @Test
+	@Test
 	public void testXlsDataset() {
 		ArrayTypeDescriptor parent = createPersonDescriptor();
-		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testXlsDataset", parent);
+		ArrayTypeDescriptor descriptor = createArrayType("testXlsDataset", parent);
 		descriptor.setSource("org/databene/benerator/factory/dataset_{0}.xls");
 		descriptor.setNesting("org/databene/benerator/factory/testnesting");
 		descriptor.setDataset("DACH");
@@ -120,7 +114,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testCsvSource() {
 		ArrayTypeDescriptor parent = createPersonDescriptor();
-		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testCsvSource", parent);
+		ArrayTypeDescriptor descriptor = createArrayType("testCsvSource", parent);
 		descriptor.setSource("org/databene/benerator/factory/person.ent.csv");
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
 				descriptor, "testCsvSource", false, Uniqueness.NONE, context);
@@ -134,7 +128,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
     @Test
 	public void testCsvDataset() {
 		ArrayTypeDescriptor parent = createPersonDescriptor();
-		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testCsvDataset", parent);
+		ArrayTypeDescriptor descriptor = createArrayType("testCsvDataset", parent);
 		descriptor.setSource("org/databene/benerator/factory/dataset_{0}.csv");
 		descriptor.setNesting("org/databene/benerator/factory/testnesting");
 		descriptor.setDataset("DACH");
@@ -164,7 +158,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 			
 			// prepare descriptor
 			ArrayTypeDescriptor parent = createPersonDescriptor();
-			ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testDatabaseSource", parent);
+			ArrayTypeDescriptor descriptor = createArrayType("testDatabaseSource", parent);
 			descriptor.setSource("db");
 			descriptor.setSelector("select name, age from agft_person");
 			Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
@@ -185,8 +179,8 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testEntitySource() {
-		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testEntitySourceType");
-		descriptor.setSource(PersonIterable.class.getName());
+		ArrayTypeDescriptor descriptor = createArrayType("testEntitySourceType");
+		descriptor.setSource(PersonSource.class.getName());
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
 				descriptor, "testEntitySource", false, Uniqueness.NONE, context);
 		generator.init(context);
@@ -202,7 +196,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 	public void testGeneratorSource() {
 		context.set("myGen", new PersonAttrArrayGenerator());
 		ArrayTypeDescriptor parent = createPersonDescriptor();
-		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testGeneratorSource", parent);
+		ArrayTypeDescriptor descriptor = createArrayType("testGeneratorSource", parent);
 		descriptor.setSource("myGen");
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
 				descriptor, "testGeneratorSource", false, Uniqueness.NONE, context);
@@ -213,7 +207,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test(expected = ConfigurationError.class)
 	public void testIllegalSourceType() {
-		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("");
+		ArrayTypeDescriptor descriptor = createArrayType("");
 		descriptor.setSource("illegalSource");
 		context.set("illegalSource", new File("txt.txt"));
 		Generator<Object[]> generator = (Generator<Object[]>) arrayTypeGeneratorFactory.createGenerator(
@@ -224,11 +218,11 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testSyntheticGeneration() {
 		// given an array descriptor
-		ArrayTypeDescriptor arrayDescriptor = new ArrayTypeDescriptor("");
-		ArrayElementDescriptor e1 = new ArrayElementDescriptor(0, "string");
+		ArrayTypeDescriptor arrayDescriptor = createArrayType("");
+		ArrayElementDescriptor e1 = createArrayElement(0, "string");
 		((SimpleTypeDescriptor) e1.getLocalType(false)).setValues("'Alice', 'Bob'");
 		arrayDescriptor.addElement(e1);
-		ArrayElementDescriptor e2 = new ArrayElementDescriptor(1, "int");
+		ArrayElementDescriptor e2 = createArrayElement(1, "int");
 		((SimpleTypeDescriptor) e2.getLocalType(false)).setValues("23,34");
 		arrayDescriptor.addElement(e2);
 		// when creating a generator for the descriptor
@@ -268,20 +262,20 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
     public void testUniqueArrayGeneration() {
-		ArrayTypeDescriptor arrayTypeDescriptor = new ArrayTypeDescriptor("MyArray");
+		ArrayTypeDescriptor arrayTypeDescriptor = createArrayType("MyArray");
 		
 		// create descriptor
 		context.set("gen0", new SequenceTestGenerator<Integer>(1, 2));
-		ArrayElementDescriptor e0 = new ArrayElementDescriptor(0, "int");
+		ArrayElementDescriptor e0 = createArrayElement(0, "int");
 		((SimpleTypeDescriptor) e0.getLocalType(false)).setGenerator("gen0");
 		arrayTypeDescriptor.addElement(e0);
 		
 		context.set("gen1", new SequenceTestGenerator<Integer>(3, 4));
-		ArrayElementDescriptor e1 = new ArrayElementDescriptor(1, "int");
+		ArrayElementDescriptor e1 = createArrayElement(1, "int");
 		((SimpleTypeDescriptor) e1.getLocalType(false)).setGenerator("gen1");
 		arrayTypeDescriptor.addElement(e1);
 		
-		InstanceDescriptor arrayInstDescriptor = new InstanceDescriptor("array", arrayTypeDescriptor);
+		InstanceDescriptor arrayInstDescriptor = createInstance("array", arrayTypeDescriptor);
 		arrayInstDescriptor.setUnique(true);
 		
 		// create generator
@@ -299,17 +293,17 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 
 	@Test
     public void testUniqueValuesArrayGeneration() {
-		ArrayElementDescriptor e0 = new ArrayElementDescriptor(0, "int");
+		ArrayElementDescriptor e0 = createArrayElement(0, "int");
 		((SimpleTypeDescriptor) e0.getLocalType(false)).setValues("1,2");
 		
-		ArrayElementDescriptor e1 = new ArrayElementDescriptor(1, "int");
+		ArrayElementDescriptor e1 = createArrayElement(1, "int");
 		((SimpleTypeDescriptor) e1.getLocalType(false)).setValues("3,4");
 		
-		ArrayTypeDescriptor arrayTypeDescriptor = new ArrayTypeDescriptor("MyArray");
+		ArrayTypeDescriptor arrayTypeDescriptor = createArrayType("MyArray");
 		arrayTypeDescriptor.addElement(e0);
 		arrayTypeDescriptor.addElement(e1);
 		
-		InstanceDescriptor arrayInstDescriptor = new InstanceDescriptor("array", arrayTypeDescriptor);
+		InstanceDescriptor arrayInstDescriptor = createInstance("array", arrayTypeDescriptor);
 		arrayInstDescriptor.setUnique(true);
 		
 		Generator<Object[]> generator = (Generator<Object[]>) InstanceGeneratorFactory.createSingleInstanceGenerator(
@@ -347,11 +341,11 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		return "Expected " + Arrays.toString(expected) + ", found: " + Arrays.toString(actual);
     }
 
-	private static ArrayTypeDescriptor createPersonDescriptor() {
-		ArrayTypeDescriptor arrayDescriptor = new ArrayTypeDescriptor("personType");
-		ArrayElementDescriptor e1 = new ArrayElementDescriptor(0, "string");
+	private ArrayTypeDescriptor createPersonDescriptor() {
+		ArrayTypeDescriptor arrayDescriptor = createArrayType("personType");
+		ArrayElementDescriptor e1 = createArrayElement(0, "string");
 		arrayDescriptor.addElement(e1);
-		ArrayElementDescriptor e2 = new ArrayElementDescriptor(1, "int");
+		ArrayElementDescriptor e2 = createArrayElement(1, "int");
 		arrayDescriptor.addElement(e2);
 		return arrayDescriptor;
 	}

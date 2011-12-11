@@ -45,9 +45,11 @@ import org.databene.platform.java.Entity2JavaConverter;
  */
 public class Entity2JavaConverterTest {
 
-	@Test
+    final BeanDescriptorProvider provider = new BeanDescriptorProvider();
+
+    @Test
     public void testEntity() {
-        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor(PersonBean.class.getName());
+		ComplexTypeDescriptor descriptor = getPersonTypeDescriptor();
         Entity entity = createAlice(descriptor);
         PersonBean bean = new PersonBean("Alice", 23);
         assertEquals(bean, new Entity2JavaConverter().convert(entity));
@@ -55,13 +57,17 @@ public class Entity2JavaConverterTest {
 
 	@Test
     public void testEntityArray() {
-        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor(PersonBean.class.getName());
+        ComplexTypeDescriptor descriptor = getPersonTypeDescriptor();
         Object[] expected = new Object[] { new PersonBean("Alice", 23), new PersonBean("Bob", 34) };
         Object[] array = new Object[] { createAlice(descriptor), createBob(descriptor) };
         Object[] actual = (Object[]) new Entity2JavaConverter().convert(array);
 		assertTrue("Expected [" + ArrayFormat.format(expected) + "], found: [" + ArrayFormat.format(actual) + "]",
 				Arrays.deepEquals(expected, actual));
     }
+
+	private ComplexTypeDescriptor getPersonTypeDescriptor() {
+		return (ComplexTypeDescriptor) provider.getTypeDescriptor(PersonBean.class.getName());
+	}
 
 	protected Entity createAlice(ComplexTypeDescriptor descriptor) {
 		return new Entity(descriptor, "name", "Alice", "age", 23);

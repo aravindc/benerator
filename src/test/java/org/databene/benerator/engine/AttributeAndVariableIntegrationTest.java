@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.databene.benerator.test.ConsumerMock;
-import org.databene.benerator.test.PersonIterable;
+import org.databene.benerator.test.PersonSource;
 import org.databene.model.data.Entity;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,9 @@ public class AttributeAndVariableIntegrationTest extends BeneratorIntegrationTes
 	public void setUpSourceAndConsumer() throws Exception {
 		consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
-		context.set("pit", new PersonIterable());
+		PersonSource pit = new PersonSource();
+		pit.setContext(context);
+		context.set("pit", pit);
 	}
 	
 	// test methods ----------------------------------------------------------------------------------------------------

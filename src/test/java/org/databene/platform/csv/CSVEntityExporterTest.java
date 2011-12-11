@@ -33,11 +33,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.PartDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +53,7 @@ import static org.junit.Assert.assertEquals;
  * @author Volker Bergmann
  */
 
-public class CSVEntityExporterTest {
+public class CSVEntityExporterTest extends GeneratorTest {
 	
 	private static final File DEFAULT_FILE = new File("export.csv");
 	
@@ -65,13 +66,13 @@ public class CSVEntityExporterTest {
 	@Before
 	public void setUp() {
 		// create descriptor for 'Person' entities
-		descriptor = new ComplexTypeDescriptor("Person", "entity");
-		descriptor.addComponent(new PartDescriptor("name", "string"));
-		descriptor.addComponent(new PartDescriptor("age", "int"));
-		descriptor.addComponent(new PartDescriptor("notes", "string"));
+		descriptor = createComplexType("Person", (ComplexTypeDescriptor) dataModel.getTypeDescriptor("entity"));
+		descriptor.addComponent(createPart("name", dataModel.getTypeDescriptor("string")));
+		descriptor.addComponent(createPart("age", dataModel.getTypeDescriptor("int")));
+		descriptor.addComponent(createPart("notes", dataModel.getTypeDescriptor("string")));
 		// create Person instances for testing
-		alice = new Entity("Person", "name", "Alice", "age", 23, "notes", "");
-		bob = new Entity("Person", "name", "Bob", "age", 34, "notes", null);
+		alice = createEntity("Person", "name", "Alice", "age", 23, "notes", "");
+		bob = createEntity("Person", "name", "Bob", "age", 34, "notes", null);
 	}
 	
 	// tests -----------------------------------------------------------------------------------------------------------
@@ -221,7 +222,7 @@ public class CSVEntityExporterTest {
 			CSVEntityExporter exporter = new CSVEntityExporter();
 			exporter.setDecimalPattern("0.00");
 			exporter.setDecimalSeparator('-');
-			Entity entity = new Entity("test", "value", 1.);
+			Entity entity = createEntity("test", "value", 1.);
 			exporter.startProductConsumption(entity);
 			exporter.finishProductConsumption(entity);
 			exporter.close();
@@ -234,10 +235,11 @@ public class CSVEntityExporterTest {
 	@Test
 	public void testMultiThreaded() throws Exception {
 		try {
-			ComplexTypeDescriptor type = new ComplexTypeDescriptor("testtype");
-			type.addComponent(new PartDescriptor("a", "string"));
-			type.addComponent(new PartDescriptor("b", "string"));
-			type.addComponent(new PartDescriptor("c", "string"));
+			ComplexTypeDescriptor type = createComplexType("testtype");
+			SimpleTypeDescriptor stringType = dataModel.getPrimitiveTypeDescriptor(String.class);
+			type.addComponent(createPart("a", stringType));
+			type.addComponent(createPart("b", stringType));
+			type.addComponent(createPart("c", stringType));
 			final CSVEntityExporter exporter = new CSVEntityExporter(
 					DEFAULT_FILE.getAbsolutePath(), type);
 			final Entity entity = new Entity(type, "a", "0123456789", "b", "5555555555", "c", "9876543210");

@@ -36,8 +36,6 @@ import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.data.DataModel;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,12 +55,6 @@ public class XMLFileGeneratorTest extends GeneratorTest {
     //private static final String VARIABLE_TEST_XSD = "org/databene/benerator/xml/variable_test.xsd";
 
     private static final Logger logger = LoggerFactory.getLogger(XMLFileGeneratorTest.class);
-    
-    @Before
-    public void setUpDataModelAndContext() throws Exception {
-    	super.setUp();
-        DataModel.getDefaultInstance().clear();
-    }
     
     @Test
     public void testSimpleTypeElement() throws IOException {

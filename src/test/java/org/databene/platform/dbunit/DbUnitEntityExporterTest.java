@@ -25,9 +25,11 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
+import org.databene.benerator.test.ModelTest;
 import org.databene.commons.FileUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.Entity;
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -38,12 +40,18 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DbUnitEntityExporterTest {
+public class DbUnitEntityExporterTest extends ModelTest {
 
 	private static final String FILENAME = "target/" + DbUnitEntityExporterTest.class.getName() + ".dbunit.xml";
-	private static final Entity ALICE = new Entity("Person", "name", "Alice", "age", 23);
-	private static final Entity BOB = new Entity("Person", "name", "Bob", "age", 34);
+	private Entity ALICE;
+	private Entity BOB;
 
+	@Before
+	public void setUpExpectedEntities() {
+		ALICE = createEntity("Person", "name", "Alice", "age", 23);
+		BOB = createEntity("Person", "name", "Bob", "age", 34);
+	}
+	
 	@Test
 	public void test() throws Exception {
 		DbUnitEntityExporter exporter = new DbUnitEntityExporter(FILENAME);

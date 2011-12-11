@@ -49,8 +49,8 @@ public class InstanceGeneratorFactoryTest extends GeneratorTest {
 	 */
 	@Test
 	public void testUniqueRandom() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor(null, "long").withMin("1").withMax("3").withDistribution("random");
-		InstanceDescriptor instance = new InstanceDescriptor("n", type).withUnique(true);
+		SimpleTypeDescriptor type = createSimpleType(null, "long").withMin("1").withMax("3").withDistribution("random");
+		InstanceDescriptor instance = createInstance("n", type).withUnique(true);
 		Generator<Long> generator = createInstanceGenerator(instance);
 		generator.init(context);
 		expectUniquelyGeneratedSet(generator, 1L, 2L, 3L).withCeasedAvailability();
@@ -58,7 +58,7 @@ public class InstanceGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testDefaultId() {
-		IdDescriptor descriptor = new IdDescriptor("id", "long");
+		IdDescriptor descriptor = createId("id", "long");
 		Generator<Long> generator = createInstanceGenerator(descriptor);
 		generator.init(context);
 		expectUniquelyGeneratedSet(generator, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L).withContinuedAvailability();

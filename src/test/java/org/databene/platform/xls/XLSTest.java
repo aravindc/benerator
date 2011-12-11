@@ -33,6 +33,8 @@ import java.util.Date;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.iterator.IteratorTestCase;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.DataModel;
+import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
 
@@ -62,30 +64,33 @@ public abstract class XLSTest extends IteratorTestCase {
     protected static final int PERSON1_AGE = 23;
 
     protected static final ComplexTypeDescriptor XYZ_DESCRIPTOR;
+    
+    protected static DefaultDescriptorProvider p = new DefaultDescriptorProvider("Test", new DataModel());
+    
 	static {
-		XYZ_DESCRIPTOR = new ComplexTypeDescriptor("XYZ");
-		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("ean", "string"));
-		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("price", "big_decimal"));
-		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("date", "date"));
-		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("avail", "boolean"));
-		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("updated", "timestamp"));
+		XYZ_DESCRIPTOR = new ComplexTypeDescriptor("XYZ", p);
+		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("ean", p, "string"));
+		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("price", p, "big_decimal"));
+		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("date", p, "date"));
+		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("avail", p, "boolean"));
+		XYZ_DESCRIPTOR.addComponent(new PartDescriptor("updated", p, "timestamp"));
 	}
 	
     protected static final ComplexTypeDescriptor PRODUCT_DESCRIPTOR;
 	static {
-		PRODUCT_DESCRIPTOR = new ComplexTypeDescriptor("Product");
-		PRODUCT_DESCRIPTOR.addComponent(new PartDescriptor("ean", "string"));
-		PRODUCT_DESCRIPTOR.addComponent(new PartDescriptor("price", "big_decimal"));
-		PRODUCT_DESCRIPTOR.addComponent(new PartDescriptor("date", "date"));
-		PRODUCT_DESCRIPTOR.addComponent(new PartDescriptor("avail", "boolean"));
-		PRODUCT_DESCRIPTOR.addComponent(new PartDescriptor("updated", "timestamp"));
+		PRODUCT_DESCRIPTOR = new ComplexTypeDescriptor("Product", p);
+		PRODUCT_DESCRIPTOR.addComponent(new PartDescriptor("ean", p, "string"));
+		PRODUCT_DESCRIPTOR.addComponent(new PartDescriptor("price", p, "big_decimal"));
+		PRODUCT_DESCRIPTOR.addComponent(new PartDescriptor("date", p, "date"));
+		PRODUCT_DESCRIPTOR.addComponent(new PartDescriptor("avail", p, "boolean"));
+		PRODUCT_DESCRIPTOR.addComponent(new PartDescriptor("updated", p, "timestamp"));
 	}
 	
 	protected static final ComplexTypeDescriptor PERSON_DESCRIPTOR;
 	static {
-		PERSON_DESCRIPTOR = new ComplexTypeDescriptor("Person");
-		PERSON_DESCRIPTOR.addComponent(new PartDescriptor("name", "string"));
-		PERSON_DESCRIPTOR.addComponent(new PartDescriptor("age", "int"));
+		PERSON_DESCRIPTOR = new ComplexTypeDescriptor("Person", p);
+		PERSON_DESCRIPTOR.addComponent(new PartDescriptor("name", p, "string"));
+		PERSON_DESCRIPTOR.addComponent(new PartDescriptor("age", p, "int"));
 	}
 	
 	protected static final Entity PROD1 = new Entity(PRODUCT_DESCRIPTOR, 

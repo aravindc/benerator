@@ -29,16 +29,16 @@ package org.databene.platform.xls;
 import java.util.Date;
 import java.util.List;
 
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
-import org.databene.model.data.TypeDescriptor;
 import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
 import org.databene.webdecs.DataUtil;
@@ -59,15 +59,19 @@ public class XLSEntityIteratorTest extends XLSTest {
 	
 	private static final String PRODUCT_XLS = "org/databene/platform/xls/product-singlesheet.ent.xls";
 	private static final String IMPORT_XLS = "org/databene/platform/xls/import-multisheet.ent.xls";
+	private static final String PRODUCT_COLUMNS_XLS = "org/databene/platform/xls/product-columns.ent.xls";
+	
+	BeneratorContext context;
 
     @Before
 	public void setUp() {
-		DataModel.getDefaultInstance().clear();
+		context = new DefaultBeneratorContext();
 	}
 	
 	@Test
 	public void testImport() throws Exception {
 		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
+		iterator.setContext(context);
 		try {
 			assertProduct(PROD1, DataUtil.nextNotNullData(iterator));
 			Entity next = DataUtil.nextNotNullData(iterator);
@@ -81,7 +85,8 @@ public class XLSEntityIteratorTest extends XLSTest {
 	
 	@Test
 	public void testImportPredefinedEntityType() throws Exception {
-		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, new NoOpConverter<String>(), "XYZ");
+		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, new NoOpConverter<String>(), new ComplexTypeDescriptor("XYZ", context.getLocalDescriptorProvider()));
+		iterator.setContext(context);
 		try {
 			assertXYZ(XYZ11, DataUtil.nextNotNullData(iterator));
 			Entity next = DataUtil.nextNotNullData(iterator);
@@ -106,68 +111,48 @@ public class XLSEntityIteratorTest extends XLSTest {
 
 	@Test
 	public void testTypes() throws Exception {
+		DescriptorProvider dp = new DefaultDescriptorProvider("test", new DataModel());
 		// Create descriptor
-		final ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Product");
-		descriptor.addComponent(new PartDescriptor("ean", "string"));
-		SimpleTypeDescriptor priceTypeDescriptor = new SimpleTypeDescriptor("priceType", "big_decimal");
+		final ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Product", dp);
+		descriptor.addComponent(new PartDescriptor("ean", dp, "string"));
+		SimpleTypeDescriptor priceTypeDescriptor = new SimpleTypeDescriptor("priceType", dp, "big_decimal");
 		priceTypeDescriptor.setGranularity("0.01");
-		descriptor.addComponent(new PartDescriptor("price", priceTypeDescriptor));
-		descriptor.addComponent(new PartDescriptor("date", "date"));
-		descriptor.addComponent(new PartDescriptor("available", "boolean"));
-		descriptor.addComponent(new PartDescriptor("updated", "timestamp"));
-		DescriptorProvider dp = new DefaultDescriptorProvider("test") {
-			@Override
-			public TypeDescriptor getTypeDescriptor(String typeName) {
-			    return ("Product".equals(typeName) ? descriptor : null);
-			}
-		};
-		DataModel.getDefaultInstance().addDescriptorProvider(dp);
+		descriptor.addComponent(new PartDescriptor("price", dp, priceTypeDescriptor));
+		descriptor.addComponent(new PartDescriptor("date", dp, "date"));
+		descriptor.addComponent(new PartDescriptor("available", dp, "boolean"));
+		descriptor.addComponent(new PartDescriptor("updated", dp, "timestamp"));
+		context.getDataModel().addDescriptorProvider(dp);
 		
 		// test import
 		XLSEntityIterator iterator = new XLSEntityIterator(PRODUCT_XLS);
+		iterator.setContext(context);
 		try {
 			assertProduct(PROD1, DataUtil.nextNotNullData(iterator));
 			assertProduct(PROD2, DataUtil.nextNotNullData(iterator));
 			assertNull(iterator.next(new DataContainer<Entity>()));
 		} finally {
 			iterator.close();
-			DataModel.getDefaultInstance().removeDescriptorProvider("test");
+			context.getDataModel().removeDescriptorProvider("test");
 		}
 	}
-
+	
 	@Test
-	public void testTypeDef() throws Exception {
-		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
+	public void testColumnIteration() throws Exception {
+		// test import
+		XLSEntityIterator iterator = new XLSEntityIterator(PRODUCT_COLUMNS_XLS);
+		iterator.setContext(context);
+		iterator.setRowBased(false);
 		try {
-			while (iterator.next(new DataContainer<Entity>()) != null) {
-				// only iterate
-			}
+			assertProduct(PROD1, DataUtil.nextNotNullData(iterator));
+			assertProduct(PROD2, DataUtil.nextNotNullData(iterator));
+			assertNull(iterator.next(new DataContainer<Entity>()));
 		} finally {
 			iterator.close();
 		}
-		DataModel dataModel = DataModel.getDefaultInstance();
-		ComplexTypeDescriptor personDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor("Person");
-		assertNotNull(personDescriptor);
-		assertComponent(personDescriptor, "name", "string");
-		assertComponent(personDescriptor, "age",  "double");
-		ComplexTypeDescriptor productDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor("Product");
-		assertNotNull(productDescriptor);
-		assertComponent(productDescriptor, "ean",     "string");
-		assertComponent(productDescriptor, "price",   "double");
-		assertComponent(productDescriptor, "date",    "date");
-		assertComponent(productDescriptor, "avail",   "boolean");
-		assertComponent(productDescriptor, "updated", "date");
 	}
-	
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 	
-    private void assertComponent(ComplexTypeDescriptor complexTypeDescriptor, String componentName, String componentType) {
-	    ComponentDescriptor component = complexTypeDescriptor.getComponent(componentName);
-	    assertNotNull(component);
-	    assertEquals("Type of component " + componentName + " is wrong, ", componentType, component.getTypeDescriptor().getName());
-    }
-
 	private void assertXYZ(Entity expected, Entity actual) {
 		assertEquals("XYZ", actual.type());
 		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));

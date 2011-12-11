@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,8 @@ package org.databene.platform.java;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
+
+import org.databene.benerator.test.ModelTest;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.PersonBean;
@@ -38,11 +40,11 @@ import org.databene.platform.java.Bean2EntityConverter;
  * Created: 29.08.2007 18:54:45
  * @author Volker Bergmann
  */
-public class Bean2EntityConverterTest {
+public class Bean2EntityConverterTest extends ModelTest {
 
 	@Test
     public void test() {
-        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor(PersonBean.class.getName());
+        ComplexTypeDescriptor descriptor = createComplexType(PersonBean.class.getName());
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         PersonBean bean = new PersonBean("Alice", 23);
         assertEquals(entity, new Bean2EntityConverter(descriptor).convert(bean));

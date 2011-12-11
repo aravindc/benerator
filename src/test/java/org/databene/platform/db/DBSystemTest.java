@@ -59,10 +59,10 @@ public class DBSystemTest {
 		db.setReadOnly(false);
 		
 		// test insert w/o readOnly
-		db.store(new Entity("Test", "ID", 1, "NAME", "Alice"));
+		db.store(new Entity("Test", db, "ID", 1, "NAME", "Alice"));
 		
 		// test update w/o readOnly
-		db.update(new Entity("Test", "ID", 1, "NAME", "Bob"));
+		db.update(new Entity("Test", db, "ID", 1, "NAME", "Bob"));
 	}
 	
 	@Test
@@ -75,7 +75,7 @@ public class DBSystemTest {
 
 		// test insert w/ readOnly
 		try {
-			db.store(new Entity("Test", "ID", 2, "NAME", "Charly"));
+			db.store(new Entity("Test", db, "ID", 2, "NAME", "Charly"));
 			fail("Exception expected in store()");
 		} catch (Exception e) {
 			// That's the required behavior!
@@ -83,7 +83,7 @@ public class DBSystemTest {
 
 		// test update w/ readOnly
 		try {
-			db.update(new Entity("Test", "ID", 2, "NAME", "Doris"));
+			db.update(new Entity("Test", db, "ID", 2, "NAME", "Doris"));
 			fail("Exception expected in update()");
 		} catch (Exception e) {
 			// That's the required behavior!
@@ -136,31 +136,31 @@ public class DBSystemTest {
 		db.execute("insert into TEST (ID, NAME) values (1, 'Alice')");
 		DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
-        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 
+        assertEquals(new Entity("TEST", db, "ID", 1, "NAME", "Alice"), 
         		iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
 	@Test
 	public void testInserter() throws Exception {
         Consumer inserter = db.inserter();
-        Entity entity = new Entity("TEST", "ID", 1, "NAME", "Alice");
+        Entity entity = new Entity("TEST", db, "ID", 1, "NAME", "Alice");
         inserter.startConsuming(new ProductWrapper<Entity>().wrap(entity));
         inserter.finishConsuming(new ProductWrapper<Entity>().wrap(entity));
         DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
-        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 
+        assertEquals(new Entity("TEST", db, "ID", 1, "NAME", "Alice"), 
         		iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
 	@Test
 	public void testInserter_table() throws Exception {
         Consumer inserter = db.inserter("TEST");
-        Entity entity = new Entity("Xyz", "ID", 1, "NAME", "Alice");
+        Entity entity = new Entity("Xyz", db, "ID", 1, "NAME", "Alice");
         inserter.startConsuming(new ProductWrapper<Entity>().wrap(entity));
         inserter.finishConsuming(new ProductWrapper<Entity>().wrap(entity));
         DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
-        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), 
+        assertEquals(new Entity("TEST", db, "ID", 1, "NAME", "Alice"), 
         		iterator.next(new DataContainer<Entity>()).getData());
 	}
 	

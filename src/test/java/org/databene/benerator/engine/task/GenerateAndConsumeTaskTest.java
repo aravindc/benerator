@@ -45,6 +45,7 @@ import org.databene.script.expression.ConstantExpression;
 import org.databene.task.Task;
 import org.databene.task.test.AbstractTaskTest;
 
+import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -58,8 +59,14 @@ import static junit.framework.Assert.*;
 
 public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
 	
-    static final Entity ALICE = new Entity("Person", "name", "Alice");
-    static final Entity BOB = new Entity("Person", "name", "Bob");
+	protected Entity ALICE;
+	protected Entity BOB;
+
+    @Before
+    public void createPersons() {
+        ALICE = createEntity("Person", "name", "Alice");
+        BOB = createEntity("Person", "name", "Bob");
+    }
     
     // tests -----------------------------------------------------------------------------------------------------------
 
@@ -94,8 +101,8 @@ public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
 		assertEquals(BOB, consumer.getConsumedData().get(1));
     }
 	
-	static class AB implements TypedIterable<Entity> {
-		private static final List<Entity> ab = CollectionUtil.toList(ALICE, BOB);
+	class AB implements TypedIterable<Entity> {
+		private final List<Entity> ab = CollectionUtil.toList(ALICE, BOB);
         public Class<Entity> getType() {
 	        return Entity.class;
         }

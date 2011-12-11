@@ -45,6 +45,7 @@ public class DepartmentNameGeneratorTest extends GeneratorClassTest {
 	@Test
 	public void testLocales() {
 		Runnable runner = new Runnable() {
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				logger.debug("Checking Locale " + Locale.getDefault());
 				DepartmentNameGenerator generator = new DepartmentNameGenerator();

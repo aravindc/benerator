@@ -30,6 +30,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.benerator.test.ModelTest;
 import org.databene.commons.CollectionUtil;
 
 import java.util.Map;
@@ -40,11 +41,11 @@ import java.util.Map;
  * Created: 29.08.2007 19:09:05
  * @author Volker Bergmann
  */
-public class Entity2MapConverterTest {
+public class Entity2MapConverterTest extends ModelTest {
 	
 	@Test
     public void test() {
-        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
+        ComplexTypeDescriptor descriptor = createComplexType("Person");
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         Map<?,?> map = CollectionUtil.buildMap("name", "Alice", "age", 23);
         assertEquals(map, new Entity2MapConverter().convert(entity));

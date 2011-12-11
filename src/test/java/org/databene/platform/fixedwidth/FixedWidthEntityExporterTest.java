@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.databene.benerator.test.ModelTest;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.Encodings;
 import org.databene.commons.FileUtil;
@@ -41,7 +42,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class FixedWidthEntityExporterTest {
+public class FixedWidthEntityExporterTest extends ModelTest {
 
 	private static final String ENCODING = Encodings.UTF_8;
 
@@ -72,7 +73,7 @@ public class FixedWidthEntityExporterTest {
 	}
 
 	private void consumeEntity(FixedWidthEntityExporter exporter, Number left, Number right) {
-		Entity entity = new Entity("row", "left", left, "right", right);
+		Entity entity = createEntity("row", "left", left, "right", right);
 		exporter.startProductConsumption(entity);
 		exporter.finishProductConsumption(entity);
 	}

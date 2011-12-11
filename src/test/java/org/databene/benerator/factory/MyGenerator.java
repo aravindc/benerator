@@ -31,10 +31,14 @@ import java.util.Locale;
 
 import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.model.data.DataModel;
+import org.databene.model.data.DefaultDescriptorProvider;
+import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
 
 public class MyGenerator extends UnsafeGenerator<Entity> {
 	
+	private DescriptorProvider descriptorProvider = new DefaultDescriptorProvider(getClass().getName(), new DataModel());
 	private Locale locale;
 	
 	public Locale getLocale() {
@@ -46,7 +50,7 @@ public class MyGenerator extends UnsafeGenerator<Entity> {
 	}
 
 	public ProductWrapper<Entity> generate(ProductWrapper<Entity> wrapper) {
-		return wrapper.wrap(new Entity("MyEntity", "locale", locale));
+		return wrapper.wrap(new Entity("MyEntity", descriptorProvider, "locale", locale));
 	}
 
     public Class<Entity> getGeneratedType() {

@@ -74,7 +74,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testScriptAttribute() {
-		PartDescriptor name = new PartDescriptor("name");
+		PartDescriptor name = createPart("name");
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setScript("'OK'");
 		ComponentBuilder<?> builder = createComponentBuilder(name);
@@ -87,7 +87,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testNullScriptAttribute() {
-		PartDescriptor name = new PartDescriptor("name");
+		PartDescriptor name = createPart("name");
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setScript("null");
 		ComponentBuilder builder = createComponentBuilder(name);
@@ -100,7 +100,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testScriptWithConverterAttribute() {
-		PartDescriptor name = new PartDescriptor("name");
+		PartDescriptor name = createPart("name");
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setScript("'abc'");
 		type.setConverter("org.databene.commons.converter.ToUpperCaseConverter");
@@ -114,7 +114,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testEnumNameScriptAttribute() {
-		PartDescriptor part = new PartDescriptor("name");
+		PartDescriptor part = createPart("name");
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) part.getLocalType(false);
 		type.setScript("myEnum.name()");
 		BeneratorContext context = new DefaultBeneratorContext();
@@ -131,7 +131,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testEmptyConstantAttribute() {
-		PartDescriptor name = new PartDescriptor("name");
+		PartDescriptor name = createPart("name");
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setConstant("");
 		ComponentBuilder builder = createComponentBuilder(name);
@@ -146,7 +146,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testConstantOnNullableAttribute() {
-		PartDescriptor name = new PartDescriptor("name");
+		PartDescriptor name = createPart("name");
 		name.setNullable(true);
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setParentName("string");
@@ -165,7 +165,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
     @Test
 	public void testMultiValuesAttribute() {
 		String componentName = "name";
-		PartDescriptor name = new PartDescriptor(componentName);
+		PartDescriptor name = createPartDescriptor(componentName);
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setValues("'A','B',null");
 		expectSet(name, 300, "A", "B", null);
@@ -175,7 +175,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
     @Test
 	public void testSingleValuesAttribute() {
 		String componentName = "name";
-		PartDescriptor name = new PartDescriptor(componentName);
+		PartDescriptor name = createPartDescriptor(componentName);
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setValues("'A'");
 		ComponentBuilder builder = createComponentBuilder(name);
@@ -189,7 +189,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
     @Test
 	public void testEmptyValuesAttribute() {
 		String componentName = "name";
-		PartDescriptor name = new PartDescriptor(componentName);
+		PartDescriptor name = createPartDescriptor(componentName);
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setValues("");
 		ComponentBuilder builder = createComponentBuilder(name);
@@ -205,7 +205,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
     @Test
 	public void testPatternAttribute() {
 		String componentName = "name";
-		PartDescriptor name = new PartDescriptor(componentName);
+		PartDescriptor name = createPartDescriptor(componentName);
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setPattern("\\d{2,4}");
 		ComponentBuilder builder = createComponentBuilder(name);
@@ -223,7 +223,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
     @Test
 	public void testEmptyPatternAttribute() {
 		String componentName = "name";
-		PartDescriptor name = new PartDescriptor(componentName);
+		PartDescriptor name = createPartDescriptor(componentName);
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setPattern("");
 		ComponentBuilder builder = createComponentBuilder(name);
@@ -269,7 +269,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 		PartDescriptor name = createCSVStringAttributeDescriptor(EMPTY_WGT_CSV, ",");
 		ComponentBuilder<Entity> builder = createComponentBuilder(name);
 		builder.prepare(context);
-    	setCurrentProduct(new Entity("E"));
+    	setCurrentProduct(createEntity("E"));
 		assertFalse(builder.execute(context));
 	}
 
@@ -279,7 +279,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 	
 	private PartDescriptor createCSVStringAttributeDescriptor(String uri, String separator) {
 		String componentName = "name";
-		PartDescriptor name = new PartDescriptor(componentName);
+		PartDescriptor name = createPartDescriptor(componentName);
 		name.setMinCount(new ConstantExpression<Long>(1L));
 		name.setMaxCount(new ConstantExpression<Long>(1L));
 		name.getLocalType(false).setSource(uri);
@@ -293,7 +293,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testNullQuotaOneReference() {
 		String componentName = "id";
-		ReferenceDescriptor reference = (ReferenceDescriptor) new ReferenceDescriptor(componentName, null).withNullQuota(1);
+		ReferenceDescriptor reference = (ReferenceDescriptor) createReference(componentName, null).withNullQuota(1);
 		ComponentBuilder builder = createComponentBuilder(reference);
 		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
 		helper.init(context);
@@ -304,7 +304,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testNullQuotaOneAttribute() {
 		String componentName = "part";
-		PartDescriptor attribute = (PartDescriptor) new PartDescriptor(componentName).withNullQuota(1);
+		PartDescriptor attribute = (PartDescriptor) createPartDescriptor(componentName).withNullQuota(1);
 		ComponentBuilder builder = createComponentBuilder(attribute);
 		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
 		helper.init(context);
@@ -316,47 +316,47 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 	@Test
     @SuppressWarnings({ "cast", "rawtypes" })
     public void testAlternative() {
-    	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
-    	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("'1'");
-		alternativeType.addComponent(new PartDescriptor("a", typeA));
-    	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("'2'");
-		alternativeType.addComponent(new PartDescriptor("b", typeB));
-		PartDescriptor part = new PartDescriptor(null, alternativeType);
+    	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null, testDescriptorProvider);
+    	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) createSimpleType("A", "string").withValues("'1'");
+		alternativeType.addComponent(createPart("a", typeA));
+    	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) createSimpleType("B", "string").withValues("'2'");
+		alternativeType.addComponent(createPart("b", typeB));
+		PartDescriptor part = createPart(null, alternativeType);
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.SIMPLE, context);
 		builder.prepare(context);
-		Entity entity = new Entity("Entity");
+		Entity entity = createEntity();
 		setCurrentProduct(entity);
 		builder.execute(context);
 		assertTrue("1".equals(entity.get("a")) || "2".equals(entity.get("b")));
     }
-	
+
 	@SuppressWarnings("rawtypes")
     @Test
 	public void testMap() {
 		String componentName = "flag";
-		PartDescriptor part = new PartDescriptor(componentName);
+		PartDescriptor part = createPartDescriptor(componentName);
 		part.setMinCount(new ConstantExpression<Long>(1L));
 		part.setMaxCount(new ConstantExpression<Long>(1L));
 		((SimpleTypeDescriptor) part.getLocalType(false)).setMap("1->'A',2->'B'");
 		part.getLocalType(false).setGenerator("org.databene.benerator.primitive.IncrementGenerator");
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.NONE, context);
 		builder.prepare(context);
-		Entity entity = new Entity("Entity");
+		Entity entity = createEntity();
 		setCurrentProduct(entity);
 		builder.execute(context);
 		assertEquals("A", entity.get("flag"));
 		builder.execute(context);
 		assertEquals("B", entity.get("flag"));
 	}
-    
+
     // test date and time generation -----------------------------------------------------------------------------------
 
 	@Test
 	public void testDateMinMax() {
 		String componentName = "part";
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("lDate", "date").withMin("2000-03-04").withMax("2000-08-09");
+		SimpleTypeDescriptor type = createSimpleType("lDate", "date").withMin("2000-03-04").withMax("2000-08-09");
 		type.setGranularity("0000-00-01");
-		PartDescriptor attribute = new PartDescriptor(componentName, type);
+		PartDescriptor attribute = createPart(componentName, type);
 		ComponentBuilder<Entity> builder = createComponentBuilder(attribute);
 		ComponentBuilderGenerator<Date> helper = new ComponentBuilderGenerator<Date>(builder, componentName);
 		helper.init(context);
@@ -652,4 +652,8 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
         return builder;
     }
 */
+	public Entity createEntity() {
+		return new Entity("Entity", testDescriptorProvider);
+	}
+	
 }

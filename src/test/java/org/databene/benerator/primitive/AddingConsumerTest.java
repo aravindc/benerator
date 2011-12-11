@@ -28,6 +28,7 @@ import java.io.IOException;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.model.data.Entity;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -38,8 +39,14 @@ import org.junit.Test;
  */
 public class AddingConsumerTest extends GeneratorTest {
 	
-	private static Entity ALICE = new Entity("Person", "age", 23L); // long age
-	private static Entity METHUSALEM = new Entity("Person", "age", 1024.); // double age
+	private Entity ALICE;
+	private Entity METHUSALEM;
+	
+	@Before
+	public void setUpPersons() {
+		ALICE = createEntity("Person", "age", 23L); // long age
+		METHUSALEM = createEntity("Person", "age", 1024.); // double age
+	}
 	
 	@Test
 	public void testJavaInvocation() {

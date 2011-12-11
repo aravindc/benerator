@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.databene.benerator.consumer.ConsoleExporter;
+import org.databene.benerator.test.ModelTest;
 import org.databene.commons.Patterns;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.TimestampFormatter;
@@ -47,7 +48,7 @@ import static junit.framework.Assert.*;
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public class ConsoleExporterTest {
+public class ConsoleExporterTest extends ModelTest {
 	
 	private static final String LF = SystemInfo.getLineSeparator();
 
@@ -74,13 +75,13 @@ public class ConsoleExporterTest {
 	
 	@Test
 	public void testEntity() {
-		Entity entity = new Entity("e", "i", 3, "d", 5., "s", "sss");
+		Entity entity = createEntity("e", "i", 3, "d", 5., "s", "sss");
 		check("e[i=3, d=5, s=sss]" + LF, entity);
 	}
 	
 	@Test
 	public void testLimit() {
-		Entity entity = new Entity("e", "i", 3, "d", 5., "s", "sss");
+		Entity entity = createEntity("e", "i", 3, "d", 5., "s", "sss");
 		check(new ConsoleExporter(1L), "e[i=3, d=5, s=sss]" + LF + '.', entity, entity);
 	}
 	

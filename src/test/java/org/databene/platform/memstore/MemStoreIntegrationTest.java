@@ -29,9 +29,7 @@ import java.util.List;
 import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
-import org.databene.model.data.IdDescriptor;
 import org.databene.platform.memstore.MemStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,11 +54,11 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 		// create source store and prefill it
 		src = new MemStore("src");
 		context.set("src", src);
-		ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("product");
-		descriptor.addComponent(new IdDescriptor("id", "int"));
+		ComplexTypeDescriptor descriptor = createComplexType("product");
+		descriptor.addComponent(createId("id", "int"));
 		for (int i = 3; i < 6; i++)
 			src.store(new Entity(descriptor, "id", i));
-		DataModel.getDefaultInstance().addDescriptorProvider(src);
+		context.getDataModel().addDescriptorProvider(src);
 
 		// create dest store
 		dst = new MemStore("dst");

@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.consumer.MappingEntityConsumer;
 import org.databene.benerator.factory.ConsumerMock;
+import org.databene.benerator.test.ModelTest;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.model.data.Entity;
 import org.junit.Test;
@@ -35,7 +36,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class MappingEntityConsumerTest {
+public class MappingEntityConsumerTest extends ModelTest {
 
 	@Test
 	public void test() {
@@ -44,10 +45,10 @@ public class MappingEntityConsumerTest {
 		consumer.setTarget(target);
 		consumer.setMappings("'name'->'givenName', 'none'->'some'");
 		
-		Entity input = new Entity("Person", "name", "Alice", "age", 23);
+		Entity input = createEntity("Person", "name", "Alice", "age", 23);
 		consumer.startConsuming(new ProductWrapper<Entity>().wrap(input));
 		consumer.finishConsuming(new ProductWrapper<Entity>().wrap(input));
-		assertEquals(new Entity("Person", "givenName", "Alice", "age", 23), target.lastProduct);
+		assertEquals(createEntity("Person", "givenName", "Alice", "age", 23), target.lastProduct);
 	}
 	
 }

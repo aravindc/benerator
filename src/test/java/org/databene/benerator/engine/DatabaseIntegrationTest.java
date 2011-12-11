@@ -32,7 +32,6 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.dialect.HSQLUtil;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
 import org.junit.Before;
@@ -71,7 +70,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 				"	primary key (id)," +
 				"   constraint referee_fk foreign key (referee_id) references referee (id))");
 		context.set("db", db);
-		DataModel.getDefaultInstance().addDescriptorProvider(db);
+		context.getDataModel().addDescriptorProvider(db);
 	}
 	
 	

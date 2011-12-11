@@ -32,6 +32,7 @@ import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ErrorHandler;
 import org.databene.model.data.Entity;
@@ -45,7 +46,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class GenerateOrIterateStatementTest {
+public class GenerateOrIterateStatementTest extends GeneratorTest {
 
 	private static final int THREAD_COUNT = 30;
 	private static final long INVOCATION_COUNT = 6000L;
@@ -81,11 +82,12 @@ public class GenerateOrIterateStatementTest {
 		public int invocationCount;
 		public Set<Thread> threads = new HashSet<Thread>();
 
+		@SuppressWarnings("synthetic-access")
 		public boolean execute(BeneratorContext context) {
 			int tmp = invocationCount;
 			threads.add(Thread.currentThread());
             invocationCount = tmp + 1; 	// update is slightly delayed in order to provoke update errors...
-            ProductWrapper<Entity> wrapper = new ProductWrapper<Entity>().wrap(new Entity("Person", "name", "Alice"));
+            ProductWrapper<Entity> wrapper = new ProductWrapper<Entity>().wrap(createEntity("Person", "name", "Alice"));
 			context.setCurrentProduct(wrapper); // ...in case of concurrency issues
 			return true;
 		}
