@@ -24,6 +24,7 @@ package org.databene.platform.xls;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.DataSourceProvider;
 import org.databene.commons.Converter;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 
@@ -35,10 +36,10 @@ import org.databene.model.data.EntitySource;
  */
 public class XLSEntitySourceProvider implements DataSourceProvider<Entity> {
 	
-	private String entityType;
+	private ComplexTypeDescriptor entityType;
 	private Converter<String, ?> scriptConverter;
 	
-	public XLSEntitySourceProvider(String entityType, Converter<String, ?> scriptConverter) {
+	public XLSEntitySourceProvider(ComplexTypeDescriptor entityType, Converter<String, ?> scriptConverter) {
 		this.entityType = entityType;
 	    this.scriptConverter = scriptConverter;
     }

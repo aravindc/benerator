@@ -23,10 +23,8 @@ package org.databene.platform.csv;
 
 import java.io.FileNotFoundException;
 
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
@@ -34,7 +32,6 @@ import org.databene.commons.Tabular;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.document.csv.CSVUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
 import org.databene.webdecs.DataIterator;
@@ -49,8 +46,7 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
     private String encoding;
     private Converter<String, ?> preprocessor;
 
-    private String entityTypeName;
-    private ComplexTypeDescriptor entityDescriptor;
+    private ComplexTypeDescriptor entityType;
 	private String[] columnNames;
 	private boolean expectingHeader;
 	
@@ -58,28 +54,19 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public CSVEntitySource() {
-        this(null, null);
+        this(null, null, SystemInfo.getFileEncoding());
     }
-
-    public CSVEntitySource(String uri, String entityTypeName) {
-        this(uri, entityTypeName, ',', SystemInfo.getFileEncoding());
+	
+    public CSVEntitySource(String uri, ComplexTypeDescriptor entityType, String encoding) {
+        this(uri, entityType, encoding, new NoOpConverter<String>(), ',');
     }
-
-    public CSVEntitySource(String uri, String entityTypeName, char separator) {
-        this(uri, entityTypeName, separator, SystemInfo.getFileEncoding());
-    }
-
-    public CSVEntitySource(String uri, String entityTypeName, char separator, String encoding) {
-        this(uri, entityTypeName, new NoOpConverter<String>(), separator, encoding);
-    }
-
-    public CSVEntitySource(String uri, String entityTypeName, Converter<String, ?> preprocessor, 
-    		char separator, String encoding) {
+	
+    public CSVEntitySource(String uri, ComplexTypeDescriptor entityType, String encoding, 
+    		Converter<String, ?> preprocessor, char separator) {
         super(uri);
         this.separator = separator;
         this.encoding = encoding;
-        this.entityTypeName = entityTypeName;
-        this.entityDescriptor = null;
+        this.entityType = entityType;
         this.preprocessor = preprocessor;
         this.expectingHeader = true;
     }
@@ -92,10 +79,6 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
 
     public void setEncoding(String encoding) {
         this.encoding = encoding;
-    }
-
-    public void setEntityName(String entityName) {
-        this.entityDescriptor = new ComplexTypeDescriptor(entityName);
     }
 
 	public String[] getColumnNames() {
@@ -116,20 +99,11 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
 		}
     }
 	
-	@Override
-	public void setContext(Context context) {
-		super.setContext(context);
-		DataModel dataModel = ((BeneratorContext) context).getDataModel();
-		this.entityDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(entityTypeName);
-		if (this.entityDescriptor == null)
-			this.entityDescriptor = new ComplexTypeDescriptor(entityTypeName);
-	}
-
     // EntitySource interface ------------------------------------------------------------------------------------------
 
 	public DataIterator<Entity> iterator() {
         try {
-			CSVEntityIterator iterator = new CSVEntityIterator(resolveUri(), entityDescriptor, preprocessor, separator, encoding);
+			CSVEntityIterator iterator = new CSVEntityIterator(resolveUri(), entityType, preprocessor, separator, encoding);
 			if (!expectingHeader) {
 				iterator.setColumns(getColumnNames());
 				iterator.setExpectingHeader(false);
@@ -145,7 +119,7 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
     @Override
 	public String toString() {
         return getClass().getSimpleName() + "[uri=" + uri + ", encoding=" + encoding + ", separator=" + separator +
-                ", entityName=" + entityDescriptor.getName() + "]";
+                ", entityType=" + entityType.getName() + "]";
     }
 
 }

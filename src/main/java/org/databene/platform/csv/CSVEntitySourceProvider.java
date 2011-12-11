@@ -24,6 +24,7 @@ package org.databene.platform.csv;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.DataSourceProvider;
 import org.databene.commons.Converter;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 
@@ -35,20 +36,20 @@ import org.databene.model.data.EntitySource;
  */
 public class CSVEntitySourceProvider implements DataSourceProvider<Entity> {
 	
-	private String type;
+	private ComplexTypeDescriptor entityType;
 	private Converter<String, ?> converter;
 	private char separator;
 	private String encoding;
 	
-	public CSVEntitySourceProvider(String type, Converter<String, ?> converter, char separator, String encoding) {
-	    this.type = type;
+	public CSVEntitySourceProvider(ComplexTypeDescriptor entityType, Converter<String, ?> converter, char separator, String encoding) {
+	    this.entityType = entityType;
 	    this.converter = converter;
 	    this.separator = separator;
 	    this.encoding = encoding;
     }
 
 	public EntitySource create(String id, BeneratorContext context) {
-		CSVEntitySource iterable = new CSVEntitySource(id, type, converter, separator, encoding);
+		CSVEntitySource iterable = new CSVEntitySource(id, entityType, encoding, converter, separator);
 		iterable.setContext(context);
 		return iterable;
     }

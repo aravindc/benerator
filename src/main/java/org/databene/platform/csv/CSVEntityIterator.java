@@ -29,21 +29,19 @@ package org.databene.platform.csv;
 import org.databene.platform.array.Array2EntityConverter;
 import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.OrthogonalArrayIterator;
 import org.databene.webdecs.util.ConvertingDataIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.document.csv.CSVColumnIterator;
 import org.databene.document.csv.CSVLineIterator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Patterns;
 import org.databene.commons.StringUtil;
-import org.databene.commons.SystemInfo;
 import org.databene.commons.Tabular;
 import org.databene.commons.converter.ArrayConverter;
 import org.databene.commons.converter.ConverterChain;
-import org.databene.commons.converter.NoOpConverter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -74,23 +72,7 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
     private ComplexTypeDescriptor entityDescriptor;
 
     // constructors ----------------------------------------------------------------------------------------------------
-
-    public CSVEntityIterator(String uri, String entityName) throws FileNotFoundException {
-        this(uri, entityName, ',', SystemInfo.getFileEncoding());
-    }
-
-    public CSVEntityIterator(String uri, String entityName, char separator) throws FileNotFoundException {
-        this(uri, entityName, separator, SystemInfo.getFileEncoding());
-    }
-
-    public CSVEntityIterator(String uri, String entityName, char separator, String encoding) throws FileNotFoundException {
-        this(uri, new ComplexTypeDescriptor(entityName), new NoOpConverter<String>(), separator, encoding);
-    }
-
-    public CSVEntityIterator(String uri, String entityName, Converter<String, ?> preprocessor, char separator, String encoding) throws FileNotFoundException {
-        this(uri, new ComplexTypeDescriptor(entityName), preprocessor, separator, encoding);
-    }
-
+    
     public CSVEntityIterator(String uri, ComplexTypeDescriptor descriptor, Converter<String, ?> preprocessor, char separator, String encoding) throws FileNotFoundException {
     	if (!IOUtil.isURIAvailable(uri))
     		throw new FileNotFoundException("URI not found: " + uri);
@@ -101,7 +83,7 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
         this.entityDescriptor = descriptor;
         this.initialized = false;
         this.expectingHeader = true;
-        this.rowBased = true;
+        this.rowBased = (descriptor != null && descriptor.isRowBased() != null ? descriptor.isRowBased() : true);
     }
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -147,7 +129,8 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
 		 IOUtil.close(source);
 	}
 
-    public static List<Entity> parseAll(String uri, char separator, String encoding, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor, Patterns patterns) throws FileNotFoundException {
+    public static List<Entity> parseAll(String uri, char separator, String encoding, ComplexTypeDescriptor descriptor, 
+    		Converter<String, String> preprocessor, Patterns patterns) throws FileNotFoundException {
     	List<Entity> list = new ArrayList<Entity>();
     	CSVEntityIterator iterator = new CSVEntityIterator(uri, descriptor, preprocessor, separator, encoding);
     	DataContainer<Entity> container = new DataContainer<Entity>();
@@ -177,10 +160,9 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
 	private void init() {
 		try {
 			DataIterator<String[]> cellIterator;
-			if (rowBased)
 				cellIterator = new CSVLineIterator(uri, separator, true, encoding);
-			else
-				cellIterator = new CSVColumnIterator(uri, separator, encoding);
+				if (!rowBased)
+					cellIterator = new OrthogonalArrayIterator<String>(cellIterator);
 			if (expectingHeader)
 				setColumns(cellIterator.next(new DataContainer<String[]>()).getData());
 	        Converter<String[], Object[]> arrayConverter = new ArrayConverter(String.class, Object.class, preprocessor); 

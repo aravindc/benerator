@@ -30,7 +30,7 @@ import java.io.IOException;
 
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
-import org.databene.commons.converter.NoOpConverter;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.model.data.FileBasedEntitySource;
@@ -46,24 +46,12 @@ import org.databene.webdecs.DataIterator;
 
 public class XLSEntitySource extends FileBasedEntitySource {
 	
-	private String entityType;
+	private ComplexTypeDescriptor entityType;
     private Converter<String, ?> preprocessor;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public XLSEntitySource() {
-        this(null);
-    }
-
-    public XLSEntitySource(String uri) {
-        this(uri, new NoOpConverter<String>());
-    }
-
-    public XLSEntitySource(String uri, Converter<String, ?> preprocessor) {
-        this(uri, preprocessor, null);
-    }
-
-    public XLSEntitySource(String uri, Converter<String, ?> preprocessor, String entityType) {
+    public XLSEntitySource(String uri, Converter<String, ?> preprocessor, ComplexTypeDescriptor entityType) {
         super(uri);
         this.entityType = entityType;
         this.preprocessor = preprocessor;

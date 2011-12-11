@@ -25,26 +25,31 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.DataSourceProvider;
 import org.databene.commons.Converter;
 import org.databene.commons.converter.ArrayConverter;
+import org.databene.document.xls.XLSSource;
 import org.databene.webdecs.DataSource;
 import org.databene.webdecs.util.ConvertingDataSource;
+import org.databene.webdecs.util.OffsetDataSource;
 
 /**
- * {@link DataSourceProvider} implementation which creates {@link XLSLineSource}s.<br/><br/>
+ * {@link DataSourceProvider} implementation which creates {@link XLSSource}s.<br/><br/>
  * Created: 19.07.2011 08:31:10
  * @since 0.7.0
  * @author Volker Bergmann
  */
 public class XLSArraySourceProvider implements DataSourceProvider<Object[]> {
 	
-	Converter<?, ?> scriptConverter;
+	private Converter<?, ?> scriptConverter;
+	private boolean rowBased;
 	
-	public XLSArraySourceProvider(Converter<?, ?> scriptConverter) {
+	public XLSArraySourceProvider(Converter<?, ?> scriptConverter, boolean rowBased) {
 	    this.scriptConverter = scriptConverter;
+	    this.rowBased = rowBased;
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public DataSource<Object[]> create(String uri, BeneratorContext context) {
-		XLSLineSource source =  new XLSLineSource(uri, true);
+		DataSource<Object[]> source = new XLSSource(uri, rowBased);
+		source = new OffsetDataSource<Object[]>(source, 1); // skip header row
         Converter<Object[], Object[]> converter = new ArrayConverter(Object.class, Object.class, scriptConverter); 
 		return new ConvertingDataSource<Object[], Object[]>(source, converter);
 	}
