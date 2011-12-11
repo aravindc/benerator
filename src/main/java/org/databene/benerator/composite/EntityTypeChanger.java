@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,6 +23,7 @@ package org.databene.benerator.composite;
 
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.ThreadSafeConverter;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
 /**
@@ -32,21 +33,21 @@ import org.databene.model.data.Entity;
  * @since 0.6.3
  * @author Volker Bergmann
  */
-public class EntityRenamer extends ThreadSafeConverter<Entity, Entity> {
+public class EntityTypeChanger extends ThreadSafeConverter<Entity, Entity> {
 	
-	private String targetName;
+	private ComplexTypeDescriptor targetType;
 	
-	public EntityRenamer(String targetName) {
+	public EntityTypeChanger(ComplexTypeDescriptor targetType) {
 	    super(Entity.class, Entity.class);
-	    this.targetName = targetName;
+	    this.targetType = targetType;
     }
 
 	public Entity convert(Entity entity) throws ConversionException {
-		return rename(entity, targetName);
+		return changeType(entity, targetType);
     }
 
-	public static Entity rename(Entity entity, String targetName) {
-	    Entity result = new Entity(targetName);
+	public static Entity changeType(Entity entity, ComplexTypeDescriptor targetType) {
+	    Entity result = new Entity(targetType);
 	    result.setComponents(entity.getComponents());
 	    return result;
 	}
