@@ -29,9 +29,9 @@ package org.databene.platform.java;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.PartDescriptor;
-import org.databene.model.data.PrimitiveDescriptorProvider;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.TypeMapper;
@@ -47,54 +47,21 @@ import java.math.BigInteger;
  */
 public class BeanDescriptorProvider extends DefaultDescriptorProvider {
 	
-	private static final BeanDescriptorProvider DEFAULT_INSTANCE = new BeanDescriptorProvider();
+	public static final String NAMESPACE = "bean";
 	
-	public static BeanDescriptorProvider defaultInstance() {
-		return DEFAULT_INSTANCE;
-	}
-
 	private TypeMapper mapper;
     
     public BeanDescriptorProvider() {
-    	super("bean", false);
-        mapper = new TypeMapper(
-                "byte", byte.class,
-                "byte", Byte.class,
-
-                "short", short.class,
-                "short", Short.class,
-                
-                "int", int.class,
-                "int", Integer.class,
-                
-                "long", long.class,
-                "long", Long.class,
-                
-                "big_integer", BigInteger.class,
-
-                "float", float.class,
-                "float", Float.class,
-                
-                "double", double.class,
-                "double", Double.class,
-
-                "big_decimal", BigDecimal.class,
-
-                "boolean", boolean.class,
-                "boolean", Boolean.class,
-
-                "char", char.class,
-                "char", Character.class,
-            
-                "date", java.util.Date.class,
-                "timestamp", java.sql.Timestamp.class,
-
-                "string", String.class,
-                "object", Object.class,
-                "binary", byte[].class
-            );
+    	this(new DataModel());
     }
-    
+
+    public BeanDescriptorProvider(DataModel dataModel) {
+    	super(NAMESPACE, dataModel, false);
+    	if (dataModel == null)
+    		throw new IllegalArgumentException("DataModel is null");
+        initMapper();
+    }
+
     // interface -------------------------------------------------------------------------------------------------------
 
 	@Override
@@ -135,20 +102,64 @@ public class BeanDescriptorProvider extends DefaultDescriptorProvider {
         }
     }
 
+    public void clear() {
+    	typeMap.clear();
+    	initMapper();
+    }
+
     // private helpers -------------------------------------------------------------------------------------------------
 
+	private void initMapper() {
+		mapper = new TypeMapper(
+                "byte", byte.class,
+                "byte", Byte.class,
+
+                "short", short.class,
+                "short", Short.class,
+                
+                "int", int.class,
+                "int", Integer.class,
+                
+                "long", long.class,
+                "long", Long.class,
+                
+                "big_integer", BigInteger.class,
+
+                "float", float.class,
+                "float", Float.class,
+                
+                "double", double.class,
+                "double", Double.class,
+
+                "big_decimal", BigDecimal.class,
+
+                "boolean", boolean.class,
+                "boolean", Boolean.class,
+
+                "char", char.class,
+                "char", Character.class,
+            
+                "date", java.util.Date.class,
+                "timestamp", java.sql.Timestamp.class,
+
+                "string", String.class,
+                "object", Object.class,
+                "binary", byte[].class
+            );
+	}
+    
 	private TypeDescriptor createTypeDescriptor(Class<?> javaType) {
 		// check for primitive type
 	    String className = javaType.getName();
 	    {
-		    SimpleTypeDescriptor simpleType = PrimitiveDescriptorProvider.INSTANCE.getPrimitiveTypeDescriptor(javaType);
+		    SimpleTypeDescriptor simpleType = getDataModel().getPrimitiveTypeDescriptor(javaType);
 		    if (simpleType != null)
 		    	return simpleType;
 	    }
 	    
 	    // check for enum
 	    if (javaType.isEnum()) {
-	    	SimpleTypeDescriptor simpleType = new SimpleTypeDescriptor(className, "string");
+	    	SimpleTypeDescriptor simpleType = new SimpleTypeDescriptor(className, this, "string");
 	    	Object[] instances = javaType.getEnumConstants();
 	    	StringBuilder builder = new StringBuilder();
 	    	for (int i = 0; i < instances.length; i++) {
@@ -157,22 +168,21 @@ public class BeanDescriptorProvider extends DefaultDescriptorProvider {
 	    		builder.append("'").append(instances[i]).append("'");
 	    	}
 	    	simpleType.setValues(builder.toString());
-	    	addDescriptor(simpleType);
+	    	addTypeDescriptor(simpleType);
 	    	return simpleType;
 	    }
 	    
 	    // assert complex type
-		ComplexTypeDescriptor td = new ComplexTypeDescriptor(className);
+		ComplexTypeDescriptor td = new ComplexTypeDescriptor(className, this);
 	    for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(javaType)) {
 	        if ("class".equals(propertyDescriptor.getName()))
 	            continue;
 	        Class<?> propertyType = propertyDescriptor.getPropertyType();
-	        mapper.abstractType(propertyType);
-	        TypeDescriptor propertyTypeDescriptor = createTypeDescriptor(propertyType);
-	        PartDescriptor pd = new PartDescriptor(propertyDescriptor.getName(), propertyTypeDescriptor);
+	        TypeDescriptor propertyTypeDescriptor = dataModel.getTypeDescriptor(propertyType.getName());
+	        PartDescriptor pd = new PartDescriptor(propertyDescriptor.getName(), this, propertyTypeDescriptor);
 	        td.addComponent(pd);
 	    }
-	    addDescriptor(td);
+	    addTypeDescriptor(td);
 	    return td;
 	}
 
