@@ -66,10 +66,9 @@ public class ShopXMLTest extends GeneratorTest {
     @Test
     public void test() {
     	System.setProperty("stage", "test");
-        
+    	DataModel dataModel = new DataModel();
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(schemaUri, context);
-        DataModel.getDefaultInstance().addDescriptorProvider(provider);
-        DataModel.getDefaultInstance().validate();
+        dataModel.validate();
 
         logger.debug("Supported types:");
         logger.debug("----------------");
