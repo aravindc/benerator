@@ -447,11 +447,11 @@ public class DescriptorUtil {
 
 	public static TypeDescriptor deriveType(String name, TypeDescriptor parentType) {
 		if (parentType instanceof SimpleTypeDescriptor)
-			return new SimpleTypeDescriptor(name, (SimpleTypeDescriptor) parentType);
+			return new SimpleTypeDescriptor(name, parentType.getOwner(), (SimpleTypeDescriptor) parentType);
 		else if (parentType instanceof ComplexTypeDescriptor)
-			return new ComplexTypeDescriptor(name, (ComplexTypeDescriptor) parentType);
+			return new ComplexTypeDescriptor(name, parentType.getOwner(), (ComplexTypeDescriptor) parentType);
 		else if (parentType instanceof ArrayTypeDescriptor)
-			return new ArrayTypeDescriptor(name, (ArrayTypeDescriptor) parentType);
+			return new ArrayTypeDescriptor(name, parentType.getOwner(), (ArrayTypeDescriptor) parentType);
 		else
 			throw new UnsupportedOperationException("Cannot derive child type from " + parentType.getClass());
 	}

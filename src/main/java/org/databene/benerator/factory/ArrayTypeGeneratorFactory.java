@@ -34,6 +34,7 @@ import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
+import org.databene.commons.context.ContextAware;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -80,6 +81,8 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
 	        	try {
 		        	BeanSpec sourceBeanSpec = DatabeneScriptParser.resolveBeanSpec(sourceName, context);
 		        	Object sourceObject = sourceBeanSpec.getBean();
+		        	if (!sourceBeanSpec.isReference() && sourceObject instanceof ContextAware)
+		        		((ContextAware) sourceObject).setContext(context);
 		        	generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
 		        	if (sourceBeanSpec.isReference())
 		        		generator = WrapperFactory.preventClosing(generator);
@@ -152,7 +155,8 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
 	private Generator<Object[]> createXLSSourceGenerator(ArrayTypeDescriptor arrayType, BeneratorContext context,
             String sourceName) {
 		logger.debug("createXLSSourceGenerator({})", arrayType);
-		DataSourceProvider<Object[]> factory = new XLSArraySourceProvider(new ScriptConverterForObjects(context));
+		boolean rowBased = (arrayType.isRowBased() != null ? arrayType.isRowBased() : true);
+		DataSourceProvider<Object[]> factory = new XLSArraySourceProvider(new ScriptConverterForObjects(context), rowBased);
 		Generator<Object[]> generator = SourceFactory.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
 		generator = WrapperFactory.applyConverter(generator, new ArrayElementTypeConverter(arrayType));
 		return generator;

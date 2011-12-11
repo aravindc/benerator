@@ -68,13 +68,14 @@ import org.databene.commons.ParseException;
 import org.databene.commons.ProgrammerError;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
+import org.databene.commons.context.ContextAware;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
+import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Mode;
-import org.databene.model.data.PrimitiveDescriptorProvider;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
@@ -92,7 +93,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public class AnnotationMapper {
+public class AnnotationMapper extends DefaultDescriptorProvider {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationMapper.class);
 	
@@ -103,8 +104,13 @@ public class AnnotationMapper {
 	
 	@SuppressWarnings("unchecked")
 	private static final Set<Class<? extends Annotation>> EXPLICITLY_MAPPED_ANNOTATIONS = CollectionUtil.toSet(
-			Bean.class, Database.class, Descriptor.class, InvocationCount.class, 
-			Equivalence.class, Coverage.class, Serial.class, Coverage.class,
+			Bean.class, 
+			Database.class, 
+			Descriptor.class, 
+			InvocationCount.class, 
+			Equivalence.class, 
+			Coverage.class, 
+			Serial.class, 
 			ThreadPoolSize.class);
 
 	static {
@@ -114,15 +120,14 @@ public class AnnotationMapper {
 	}
 
 	private DataModel dataModel;
-
 	private GeneratorFactory defaultFactory;
 
 	private ArrayTypeGeneratorFactory arrayTypeGeneratorFactory;
 	
 	public AnnotationMapper(GeneratorFactory defaultFactory, DataModel dataModel) {
+		super("anno", dataModel);
 		this.dataModel = dataModel;
-		this.dataModel.addDescriptorProvider(PrimitiveDescriptorProvider.INSTANCE);
-		this.dataModel.addDescriptorProvider(BeanDescriptorProvider.defaultInstance());
+		this.dataModel.addDescriptorProvider(this);
 		this.defaultFactory = defaultFactory;
 		this.arrayTypeGeneratorFactory = new ArrayTypeGeneratorFactory();
 	}
@@ -179,18 +184,19 @@ public class AnnotationMapper {
 
 	protected InstanceDescriptor createMethodParamsInstanceDescriptor(
 			Method testMethod, ArrayTypeDescriptor type) {
-		InstanceDescriptor instance = new InstanceDescriptor(testMethod.getName(), type);
+		InstanceDescriptor instance = new InstanceDescriptor(testMethod.getName(), this, type);
 		for (Annotation annotation : testMethod.getAnnotations())
 			mapParamAnnotation(annotation, instance);
 		return instance;
 	}
 
 	protected ArrayTypeDescriptor createNativeParamsDescriptor(Method testMethod) {
-		ArrayTypeDescriptor nativeDescriptor = new ArrayTypeDescriptor(testMethod.getName() + "_native");
+		ArrayTypeDescriptor nativeDescriptor = new ArrayTypeDescriptor(testMethod.getName() + "_native", this);
 		Class<?>[] paramTypes = testMethod.getParameterTypes();
 		for (int i = 0; i < paramTypes.length; i++) {
 			TypeDescriptor elementType = dataModel.getTypeDescriptor(paramTypes[i].getName());
-			ArrayElementDescriptor elementDescriptor = new ArrayElementDescriptor(i, elementType);
+			BeanDescriptorProvider beanDescriptorProvider = dataModel.getBeanDescriptorProvider();
+			ArrayElementDescriptor elementDescriptor = new ArrayElementDescriptor(i, beanDescriptorProvider, elementType);
 		    if (elementDescriptor.isNullable() == null) { // assure an explicit setting for nullability
 		    	if (BeanUtil.isPrimitiveType(paramTypes[i].getName()))
 		    		elementDescriptor.setNullable(false); // primitives can never be null
@@ -208,7 +214,7 @@ public class AnnotationMapper {
 	private ArrayTypeDescriptor createConfiguredParamsDescriptor(
 			Method testMethod, ArrayTypeDescriptor nativeDescriptor) {
 		ArrayTypeDescriptor type = new ArrayTypeDescriptor(
-				testMethod.getName() + "_configured", nativeDescriptor);
+				testMethod.getName() + "_configured", this, nativeDescriptor);
 		Class<?>[] parameterTypes = testMethod.getParameterTypes();
 		Annotation[][] paramAnnos = testMethod.getParameterAnnotations();
 		for (int i = 0; i < parameterTypes.length; i++) {
@@ -217,7 +223,7 @@ public class AnnotationMapper {
 				TypeDescriptor parentElementType = parentElement.getTypeDescriptor();
 				TypeDescriptor elementType = DescriptorUtil.deriveType(
 						parentElementType.getName(), parentElementType);
-				ArrayElementDescriptor element = new ArrayElementDescriptor(i, elementType);
+				ArrayElementDescriptor element = new ArrayElementDescriptor(i, this, elementType);
 				element.setParent(parentElement);
 			    for (Annotation annotation : paramAnnos[i])
 		            mapParamAnnotation(annotation, element);
@@ -309,7 +315,7 @@ public class AnnotationMapper {
 			org.databene.benerator.anno.Source source, Field attribute, BeneratorContext context) {
 		String attName = attribute.getName();
 		TypeDescriptor typeDescriptor = createTypeDescriptor(attribute.getType());
-		InstanceDescriptor descriptor = new InstanceDescriptor(attName, typeDescriptor);
+		InstanceDescriptor descriptor = new InstanceDescriptor(attName, this, typeDescriptor);
 		mapParamAnnotation(source, descriptor);
 		Offset offset = attribute.getAnnotation(Offset.class);
 		if (offset != null)
@@ -411,6 +417,8 @@ public class AnnotationMapper {
         Object bean = instantiateBean(annotation, context);
         applyProperties(annotation.properties(), bean, context);
         context.set(annotation.id(), bean);
+        if (bean instanceof ContextAware)
+        	((ContextAware) bean).setContext(context);
 	}
 
 	private static Object instantiateBean(Bean beanAnno, BeneratorContext context) {
@@ -623,16 +631,16 @@ public class AnnotationMapper {
 	}
 
 	protected TypeDescriptor createTypeDescriptor(Class<?> type) {
-		String abstractType = BeanDescriptorProvider.defaultInstance().abstractType(type);
+		String abstractType = dataModel.getBeanDescriptorProvider().abstractType(type);
 		TypeDescriptor baseTypeDescriptor = dataModel.getTypeDescriptor(abstractType);
 		TypeDescriptor typeDescriptor;
 		if (baseTypeDescriptor instanceof SimpleTypeDescriptor) {
-			typeDescriptor = new SimpleTypeDescriptor(type.getName(), (SimpleTypeDescriptor) baseTypeDescriptor);
+			typeDescriptor = new SimpleTypeDescriptor(type.getName(), this, (SimpleTypeDescriptor) baseTypeDescriptor);
 		} else if (baseTypeDescriptor instanceof ComplexTypeDescriptor) {
-			typeDescriptor = new ComplexTypeDescriptor(type.getName(), (ComplexTypeDescriptor) baseTypeDescriptor);
+			typeDescriptor = new ComplexTypeDescriptor(type.getName(), this, (ComplexTypeDescriptor) baseTypeDescriptor);
 		} else
 			throw new ConfigurationError("Cannot handle descriptor: " + baseTypeDescriptor);
 		return typeDescriptor;
 	}
-	
+
 }

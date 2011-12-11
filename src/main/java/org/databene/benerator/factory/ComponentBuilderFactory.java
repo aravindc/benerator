@@ -35,7 +35,6 @@ import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
@@ -80,8 +79,6 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComponentBuilderFactory.class);
     
-    private static DataModel dataModel = DataModel.getDefaultInstance();
-
     // factory methods for component generators ------------------------------------------------------------------------
 
     public static ComponentBuilder<?> createComponentBuilder(
@@ -171,7 +168,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         if (generator == null) {
 	        // check target type
 	        String targetTypeName = descriptor.getTargetType();
-			ComplexTypeDescriptor targetType = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(targetTypeName);
+			ComplexTypeDescriptor targetType = (ComplexTypeDescriptor) context.getDataModel().getTypeDescriptor(targetTypeName);
 	        if (targetType == null)
 	            throw new ConfigurationError("Type not defined: " + targetTypeName);
 	        

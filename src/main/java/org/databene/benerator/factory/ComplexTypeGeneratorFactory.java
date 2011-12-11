@@ -213,7 +213,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 		    encoding = context.getDefaultEncoding();
 		Converter<String, String> scriptConverter = DescriptorUtil.createStringScriptConverter(context);
 		char separator = DescriptorUtil.getSeparator(complexType, context);
-	    DataSourceProvider<Entity> fileProvider = new CSVEntitySourceProvider(complexType.getName(), scriptConverter, 
+	    DataSourceProvider<Entity> fileProvider = new CSVEntitySourceProvider(complexType, scriptConverter, 
 	    		separator, encoding);
 	    return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
@@ -221,7 +221,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
     private static Generator<Entity> createXLSSourceGenerator(
 			ComplexTypeDescriptor complexType, BeneratorContext context, String sourceName) {
 	    DataSourceProvider<Entity> fileProvider = new XLSEntitySourceProvider(
-	    		complexType.getName(), new ScriptConverterForStrings(context));
+	    		complexType, new ScriptConverterForStrings(context));
 		return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
 

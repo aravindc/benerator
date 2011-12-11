@@ -29,8 +29,8 @@ import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.iterator.TextLineIterable;
 import org.databene.document.csv.CSVCellSource;
 import org.databene.document.csv.CSVSource;
+import org.databene.document.xls.XLSLineSource;
 import org.databene.model.data.Uniqueness;
-import org.databene.platform.xls.XLSLineSource;
 import org.databene.webdecs.DataSource;
 
 /**
@@ -79,7 +79,7 @@ public class SourceFactory {
      * @return a generator of the desired characteristics
      */
     public static Generator<Object[]> createXLSLineGenerator(String uri) {
-        return new DataSourceGenerator<Object[]>(new XLSLineSource(uri, false));
+        return new DataSourceGenerator<Object[]>(new XLSLineSource(uri));
     }
 
     /**
