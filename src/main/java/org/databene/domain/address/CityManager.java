@@ -28,13 +28,16 @@ package org.databene.domain.address;
 
 import org.databene.document.csv.BeanCSVWriter;
 import org.databene.document.csv.CSVLineIterator;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityIterator;
+import org.databene.platform.java.BeanDescriptorProvider;
 import org.databene.platform.java.Entity2JavaConverter;
 import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
 import org.databene.webdecs.util.ConvertingDataIterator;
 import org.databene.commons.*;
+import org.databene.commons.converter.NoOpConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +55,7 @@ import java.io.FileWriter;
 public class CityManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CityManager.class);
-
+    
     public static void readCities(Country country) {
         String filename = "/org/databene/domain/address/city_" + country.getIsoCode() + ".csv";
         if (IOUtil.isURIAvailable(filename))
@@ -75,9 +78,10 @@ public class CityManager {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     private static void parseStateFile(Country country) {
 		try {
+			String uri = "/org/databene/domain/address/state_" + country.getIsoCode() + ".csv";
+			ComplexTypeDescriptor stateDescriptor = (ComplexTypeDescriptor) new BeanDescriptorProvider(null).getTypeDescriptor(State.class.getName());
 			DataIterator<State> iterator = new ConvertingDataIterator<Entity, State>(
-					new CSVEntityIterator("/org/databene/domain/address/state_" + country.getIsoCode() + ".csv", 
-							"org.databene.domain.address.State", ',', Encodings.UTF_8),
+					new CSVEntityIterator(uri, stateDescriptor, new NoOpConverter<String>(), ',', Encodings.UTF_8),
 					(Converter) new Entity2JavaConverter());
 			DataContainer<State> state = new DataContainer<State>();
 			while ((state = iterator.next(state)) != null)
