@@ -34,6 +34,8 @@ import org.databene.commons.Context;
 import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
+import org.databene.model.data.DescriptorProvider;
+import org.databene.model.data.TypeDescriptor;
 
 /**
  * Sub context version of the {@link BeneratorContext}.<br/><br/>
@@ -287,6 +289,14 @@ public class BeneratorSubContext implements BeneratorContext {
 
 	public void setDataModel(DataModel dataModel) {
 		parent.setDataModel(dataModel);
+	}
+
+	public DescriptorProvider getLocalDescriptorProvider() {
+		return parent.getLocalDescriptorProvider();
+	}
+	
+	public void addLocalType(TypeDescriptor type) {
+		parent.addLocalType(type);
 	}
 
 }

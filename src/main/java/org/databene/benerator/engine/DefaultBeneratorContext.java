@@ -46,6 +46,9 @@ import org.databene.domain.address.Country;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
+import org.databene.model.data.DefaultDescriptorProvider;
+import org.databene.model.data.DescriptorProvider;
+import org.databene.model.data.TypeDescriptor;
 import org.databene.script.ScriptUtil;
 
 /**
@@ -74,12 +77,13 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
     public    boolean acceptUnknownSimpleTypes = false;
 
 
-    protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
+    protected ComplexTypeDescriptor defaultComponent;
     protected ExecutorService executorService = Executors.newCachedThreadPool();
 
 	private ProductWrapper<?> currentProduct;
 
 	private DataModel dataModel;
+	private DefaultDescriptorProvider localDescriptorProvider;
 
     static {
     	ScriptUtil.addFactory("ben", new BeneratorScriptFactory());
@@ -94,8 +98,10 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 	public DefaultBeneratorContext(String contextUri) {
 		if (contextUri == null)
 			throw new ConfigurationError("No context URI specified");
-		this.dataModel = new DataModel();
 		this.contextUri = contextUri;
+		this.dataModel = new DataModel();
+		this.localDescriptorProvider = new DefaultDescriptorProvider("ctx", dataModel);
+		this.defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent", localDescriptorProvider);
 		this.generatorFactory = new StochasticGeneratorFactory();
 		settings = new DefaultContext();
 		push(new DefaultContext(java.lang.System.getenv()));
@@ -120,8 +126,16 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 		this.generatorFactory = generatorFactory;
 	}
 	
+	public DescriptorProvider getLocalDescriptorProvider() {
+		return localDescriptorProvider;
+	}
+	
 	public void setDefaultsProvider(DefaultsProvider defaultsProvider) {
 		this.generatorFactory.setDefaultsProvider(defaultsProvider);
+	}
+	
+	public void addLocalType(TypeDescriptor type) {
+		localDescriptorProvider.addTypeDescriptor(type);
 	}
 
 	public void setSetting(String name, Object value) {
@@ -306,7 +320,7 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 
 	public void setAcceptUnknownSimpleTypes(boolean acceptUnknownSimpleTypes) {
     	this.acceptUnknownSimpleTypes = acceptUnknownSimpleTypes;
-    	DataModel.getDefaultInstance().setAcceptUnknownPrimitives(acceptUnknownSimpleTypes);
+    	dataModel.setAcceptUnknownPrimitives(acceptUnknownSimpleTypes);
     }
     
 	public static char getDefaultCellSeparator() {

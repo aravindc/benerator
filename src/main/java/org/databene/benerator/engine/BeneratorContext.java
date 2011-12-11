@@ -35,6 +35,8 @@ import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
+import org.databene.model.data.DescriptorProvider;
+import org.databene.model.data.TypeDescriptor;
 import org.databene.script.ScriptContext;
 
 /**
@@ -83,7 +85,9 @@ public interface BeneratorContext extends GeneratorContext, ScriptContext {
 	boolean isAcceptUnknownSimpleTypes();
 	void setAcceptUnknownSimpleTypes(boolean acceptUnknownSimpleTypes);
 
-	public ComponentDescriptor getDefaultComponentConfig(String name);
-	public void setDefaultComponentConfig(ComponentDescriptor component);
-	
+	ComponentDescriptor getDefaultComponentConfig(String name);
+	void setDefaultComponentConfig(ComponentDescriptor component);
+
+	DescriptorProvider getLocalDescriptorProvider();
+	void addLocalType(TypeDescriptor type);
 }
