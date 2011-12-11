@@ -246,7 +246,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 		    if (sector) {
 	        	try {
 	        		Country country = Country.getInstance(datasetName);
-					sectorGenerator = new SectorGenerator(country.getDefaultLanguage());
+					sectorGenerator = new SectorGenerator(country.getDefaultLanguageLocale());
 	        		sectorGenerator.init(context);
 	        	} catch (Exception e) {
 	        		if ("US".equals(datasetName))
