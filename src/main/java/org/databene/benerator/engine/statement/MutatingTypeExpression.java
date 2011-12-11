@@ -25,7 +25,6 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.commons.Context;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.script.Expression;
 import org.w3c.dom.Element;
@@ -54,10 +53,11 @@ public class MutatingTypeExpression implements Expression<ComplexTypeDescriptor>
 		return true;
 	}
 
-	public ComplexTypeDescriptor evaluate(Context context) {
-	    ComplexTypeDescriptor parent = (ComplexTypeDescriptor) DataModel.getDefaultInstance().getTypeDescriptor(typeName);
-	    ComplexTypeDescriptor type = new ComplexTypeDescriptor(typeName, parent);
-	    DescriptorUtil.parseComponentConfig(element, type, (BeneratorContext) context);
+	public ComplexTypeDescriptor evaluate(Context ctx) {
+		BeneratorContext context = (BeneratorContext) ctx;
+	    ComplexTypeDescriptor parent = (ComplexTypeDescriptor) context.getDataModel().getTypeDescriptor(typeName);
+	    ComplexTypeDescriptor type = new ComplexTypeDescriptor(typeName, context.getLocalDescriptorProvider(), parent);
+	    DescriptorUtil.parseComponentConfig(element, type, context);
 	    return type;
 	}
 

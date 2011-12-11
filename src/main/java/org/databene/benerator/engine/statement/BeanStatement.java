@@ -35,7 +35,6 @@ import org.databene.benerator.engine.ResourceManager;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.context.ContextAware;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.script.Expression;
 import org.databene.script.expression.BeanConstruction;
@@ -76,7 +75,7 @@ public class BeanStatement extends SequentialStatement {
         if (bean instanceof ContextAware)
 			((ContextAware) bean).setContext(context);
 		if (bean instanceof DescriptorProvider)
-			DataModel.getDefaultInstance().addDescriptorProvider((DescriptorProvider) bean);
+			context.getDataModel().addDescriptorProvider((DescriptorProvider) bean);
 		if (bean instanceof Closeable && resourceManager != null)
 			resourceManager.addResource((Closeable) bean);
 		if (bean instanceof Generator && constructionExpression instanceof BeanConstruction)

@@ -25,7 +25,6 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.ConfigurationError;
-import org.databene.model.data.DataModel;
 import org.databene.platform.memstore.MemStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,7 @@ public class MemStoreStatement implements Statement {
 		MemStore store = new MemStore(id);
 	    // register this object on all relevant managers and in the context
 	    context.set(id, store);
-	    DataModel.getDefaultInstance().addDescriptorProvider(store);
+	    context.getDataModel().addDescriptorProvider(store);
 	    resourceManager.addResource(store);
     	return true;
     }

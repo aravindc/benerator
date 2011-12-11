@@ -61,7 +61,7 @@ import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
-import org.databene.model.data.DataModel;
+import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
@@ -99,8 +99,6 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	//		EL_VARIABLE, EL_VALUE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
 	
 	private static final Set<String> CONSUMER_EXPECTING_ELEMENTS = CollectionUtil.toSet(EL_GENERATE, EL_ITERATE);
-
-	DataModel dataModel = DataModel.getDefaultInstance();
 
 	// DescriptorParser interface --------------------------------------------------------------------------------------
 	
@@ -286,20 +284,21 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		// evaluate type
 		String type = parseStringAttribute(element, ATT_TYPE, context, false);
 		TypeDescriptor localType;
+		DescriptorProvider localDescriptorProvider = context.getLocalDescriptorProvider();
 		if (PrimitiveType.ARRAY.getName().equals(type) 
-				|| XMLUtil.getChildElements(element, false, EL_VALUE).length > 0)
-			localType = new ArrayTypeDescriptor(element.getAttribute(ATT_NAME));
-		else {
-			TypeDescriptor parentType = dataModel.getTypeDescriptor(type);
+				|| XMLUtil.getChildElements(element, false, EL_VALUE).length > 0) {
+			localType = new ArrayTypeDescriptor(element.getAttribute(ATT_NAME), localDescriptorProvider);
+		} else {
+			TypeDescriptor parentType = context.getDataModel().getTypeDescriptor(type);
 			if (parentType != null) {
 				type = parentType.getName(); // take over capitalization of the parent
-				localType = new ComplexTypeDescriptor(parentType.getName(), (ComplexTypeDescriptor) parentType);
+				localType = new ComplexTypeDescriptor(parentType.getName(), localDescriptorProvider, (ComplexTypeDescriptor) parentType);
 			} else
-				localType = new ComplexTypeDescriptor(type, "entity");
+				localType = new ComplexTypeDescriptor(type, localDescriptorProvider, "entity");
 		}
 		
 		// assemble instance descriptor
-		InstanceDescriptor instance = new InstanceDescriptor(type, type);
+		InstanceDescriptor instance = new InstanceDescriptor(type, localDescriptorProvider, type);
 		instance.setLocalType(localType);
 		
 		// map element attributes

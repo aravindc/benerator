@@ -30,7 +30,6 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.ConfigurationError;
-import org.databene.model.data.DataModel;
 import org.databene.platform.db.DBSystem;
 import org.databene.script.Expression;
 import org.databene.script.expression.ExpressionUtil;
@@ -138,7 +137,7 @@ public class DefineDatabaseStatement implements Statement {
 
 	    // register this object on all relevant managers and in the context
 	    context.set(idValue, db);
-	    DataModel.getDefaultInstance().addDescriptorProvider(db, context.isValidate() && !isLazy);
+	    context.getDataModel().addDescriptorProvider(db, context.isValidate() && !isLazy);
 	    resourceManager.addResource(db);
     	return true;
     }
