@@ -38,7 +38,6 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.data.DataModel;
 import org.databene.profile.Profiler;
 import org.databene.profile.Profiling;
 import org.slf4j.Logger;
@@ -66,8 +65,7 @@ public class DescriptorRunner implements ResourceManager {
 
 	private BeneratorContext context;
 
-	BeneratorFactory factory = BeneratorFactory.getInstance();
-	DataModel dataModel = DataModel.getDefaultInstance();
+	BeneratorFactory factory;
 	private List<String> generatedFiles;
 	
 	private ResourceManagerSupport resourceManager = new ResourceManagerSupport();
@@ -84,6 +82,7 @@ public class DescriptorRunner implements ResourceManager {
 	public DescriptorRunner(String uri, BeneratorContext context) {
 		this.uri = uri;
 		this.context = context;
+		this.factory = BeneratorFactory.getInstance();
 		this.generatedFiles = new ArrayList<String>();
 		ConverterManager.getInstance().setContext(context);
 	}
