@@ -39,8 +39,10 @@ import org.databene.commons.LocaleUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.document.csv.CSVLineIterator;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntitySource;
+import org.databene.platform.java.BeanDescriptorProvider;
 import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
 import org.slf4j.Logger;
@@ -65,7 +67,7 @@ public class Country {
 	private RegexStringGenerator mobilePrefixGenerator;
     private RandomVarLengthStringGenerator localNumberGenerator;
     private Locale countryLocale;
-    private Locale defaultLanguage;
+    private Locale defaultLanguageLocale;
     private Map<String, State> states;
     private int population;
 
@@ -75,7 +77,7 @@ public class Country {
     private Country(String isoCode, String defaultLanguage, int population, String phoneCode, String mobileCodePattern, 
     		String name) {
         this.isoCode = isoCode;
-        this.defaultLanguage = LocaleUtil.getLocale(defaultLanguage);
+        this.defaultLanguageLocale = LocaleUtil.getLocale(defaultLanguage);
         this.phoneCode = phoneCode;
         this.countryLocale = new Locale(LocaleUtil.getLocale(defaultLanguage).getLanguage(), isoCode);
         this.mobilePhoneCityRelated = "BR".equals(isoCode.toUpperCase()); // TODO v1.0 make configuration generic
@@ -89,14 +91,15 @@ public class Country {
         instances.put(isoCode, this);
     }
 
-    private void importStates() {
+    private void importStates() { // TODO merge with CityManager.parseStateFile(Country) ?
         this.states = new OrderedNameMap<State>();
         String filename = "/org/databene/domain/address/state_" + isoCode + ".csv";
         if (!IOUtil.isURIAvailable(filename)) {
         	LOGGER.debug("No states defined for {}", this);
         	return;
         }
-		CSVEntitySource source = new CSVEntitySource(filename, "State", ',', Encodings.UTF_8);
+		ComplexTypeDescriptor stateDescriptor = (ComplexTypeDescriptor) new BeanDescriptorProvider(null).getTypeDescriptor(State.class.getName());
+		CSVEntitySource source = new CSVEntitySource(filename, stateDescriptor, Encodings.UTF_8);
 		source.setContext(new DefaultBeneratorContext());
         DataIterator<Entity> iterator = source.iterator();
         DataContainer<Entity> container = new DataContainer<Entity>();
@@ -133,11 +136,11 @@ public class Country {
 
     /** Returns the name in the country's own {@link Locale} */
     public String getLocalName() {
-        return countryLocale.getDisplayCountry(new Locale(defaultLanguage.getLanguage()));
+        return countryLocale.getDisplayCountry(new Locale(defaultLanguageLocale.getLanguage()));
     }
 
-    public Locale getDefaultLanguage() {
-    	return defaultLanguage;
+    public Locale getDefaultLanguageLocale() {
+    	return defaultLanguageLocale;
     }
     
 	public int getPopulation() {

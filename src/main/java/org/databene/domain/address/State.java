@@ -47,7 +47,7 @@ public class State {
     private Country country;
     private Map<CityId, City> cities;
     private int population;
-	private Locale defaultLanguage;
+	private Locale defaultLanguageLocale;
 
     // constructors ----------------------------------------------------------------------------------------------------
     
@@ -78,15 +78,23 @@ public class State {
 		this.name = name;
 	}
 	
-	public Locale getDefaultLanguage() {
-		if (defaultLanguage != null)
-			return defaultLanguage;
-		else
-			return country.getDefaultLanguage();
+	public String getDefaultLanguage() {
+		return getDefaultLanguageLocale().getLanguage();
 	}
     
-	public void setDefaultLanguage(Locale defaultLanguage) {
-		this.defaultLanguage = defaultLanguage;
+	public void setDefaultLanguage(String defaultLanguage) {
+		setDefaultLanguageLocale(new Locale(defaultLanguage));
+	}
+    
+	public Locale getDefaultLanguageLocale() {
+		if (defaultLanguageLocale != null)
+			return defaultLanguageLocale;
+		else
+			return country.getDefaultLanguageLocale();
+	}
+    
+	public void setDefaultLanguageLocale(Locale defaultLanguage) {
+		this.defaultLanguageLocale = defaultLanguage;
 	}
     
 	public int getPopulation() {
