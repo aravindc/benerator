@@ -40,7 +40,7 @@ import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
-import org.databene.model.data.DataModel;
+import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.model.data.IdDescriptor;
@@ -68,9 +68,11 @@ import org.w3c.dom.NamedNodeMap;
 public class ModelParser {
 	
     private BeneratorContext context;
+    private DescriptorProvider descriptorProvider;
 	
     public ModelParser(BeneratorContext context) {
 		this.context = context;
+		this.descriptorProvider = context.getLocalDescriptorProvider();
 	}
 
     public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner) {
@@ -94,7 +96,7 @@ public class ModelParser {
     public ComplexTypeDescriptor parseComplexType(Element ctElement, ComplexTypeDescriptor descriptor) {
     	// TODO v0.7.x called from XMLSchemaDescriptorProvider
         assertElementName(ctElement, "entity", "type");
-        descriptor = new ComplexTypeDescriptor(descriptor.getName(), descriptor);
+        descriptor = new ComplexTypeDescriptor(descriptor.getName(), descriptorProvider, descriptor);
         mapTypeDetails(ctElement, descriptor);
         for (Element child : XMLUtil.getChildElements(ctElement))
             parseComplexTypeChild(child, descriptor);
@@ -116,10 +118,10 @@ public class ModelParser {
         if (descriptor instanceof PartDescriptor)
             result = (PartDescriptor) descriptor;
         else if (descriptor != null)
-            result = new PartDescriptor(descriptor.getName(), descriptor.getType());
+            result = new PartDescriptor(descriptor.getName(), descriptorProvider, descriptor.getType());
         else {
             String type = StringUtil.emptyToNull(element.getAttribute("type"));
-            result = new PartDescriptor(element.getAttribute("name"), type);
+            result = new PartDescriptor(element.getAttribute("name"), descriptorProvider, type);
         }
         mapInstanceDetails(element, complex, result);
         if (result.getDeclaredDetailValue("minCount") == null)
@@ -138,7 +140,7 @@ public class ModelParser {
 
     public SimpleTypeDescriptor parseSimpleType(Element element) {
         assertElementName(element, "type");
-        return parseSimpleType(element, new SimpleTypeDescriptor(null, (String) null));
+        return parseSimpleType(element, new SimpleTypeDescriptor(null, descriptorProvider, (String) null));
     }
 
     public SimpleTypeDescriptor parseSimpleType(Element element, SimpleTypeDescriptor descriptor) {
@@ -149,14 +151,14 @@ public class ModelParser {
     public InstanceDescriptor parseVariable(Element varElement, VariableHolder owner) {
         assertElementName(varElement, "variable");
         String type = StringUtil.emptyToNull(varElement.getAttribute("type"));
-        VariableDescriptor descriptor = new VariableDescriptor(varElement.getAttribute("name"), type);
+        VariableDescriptor descriptor = new VariableDescriptor(varElement.getAttribute("name"), descriptorProvider, type);
         VariableDescriptor variable = mapInstanceDetails(varElement, false, descriptor);
         owner.addVariable(variable);
         return variable;
     }
 
 	public ArrayElementDescriptor parseSimpleTypeArrayElement(Element element, ArrayTypeDescriptor owner, int index) {
-		ArrayElementDescriptor descriptor = new ArrayElementDescriptor(index, element.getAttribute("name"));
+		ArrayElementDescriptor descriptor = new ArrayElementDescriptor(index, descriptorProvider, element.getAttribute("name"));
 		mapInstanceDetails(element, false, descriptor);
 		owner.addElement(descriptor);
 		return descriptor;
@@ -209,10 +211,10 @@ public class ModelParser {
                     	}
                     }
                     if (partType != null) {
-                        TypeDescriptor localTypeParent = DataModel.getDefaultInstance().getTypeDescriptor(partType);
+                        TypeDescriptor localTypeParent = context.getDataModel().getTypeDescriptor(partType);
                         localType = (localTypeParent instanceof ComplexTypeDescriptor ? 
-                        		new ComplexTypeDescriptor(partType, partType) : 
-                        			new SimpleTypeDescriptor(partType, partType));
+                        		new ComplexTypeDescriptor(partType, descriptorProvider, partType) : 
+                        			new SimpleTypeDescriptor(partType, descriptorProvider, partType));
                     }
                     descriptor.setLocalType(localType);
                 }
@@ -244,9 +246,9 @@ public class ModelParser {
         if (descriptor instanceof IdDescriptor)
             result = (IdDescriptor) descriptor;
         else if (descriptor != null)
-            result = new IdDescriptor(descriptor.getName(), descriptor.getType());
+            result = new IdDescriptor(descriptor.getName(), descriptorProvider, descriptor.getType());
         else
-            result = new IdDescriptor(element.getAttribute("name"), element.getAttribute("type"));
+            result = new IdDescriptor(element.getAttribute("name"), descriptorProvider, element.getAttribute("type"));
         result = mapInstanceDetails(element, false, result);
         if (owner != null) {
             ComponentDescriptor parentComponent = owner.getComponent(result.getName());
@@ -264,9 +266,9 @@ public class ModelParser {
         if (component instanceof ReferenceDescriptor)
             result = (ReferenceDescriptor) component;
         else if (component != null)
-            result = new ReferenceDescriptor(component.getName(), component.getType());
+            result = new ReferenceDescriptor(component.getName(), descriptorProvider, component.getType());
         else
-            result = new ReferenceDescriptor(element.getAttribute("name"), StringUtil.emptyToNull(element.getAttribute("type")));
+            result = new ReferenceDescriptor(element.getAttribute("name"), descriptorProvider, StringUtil.emptyToNull(element.getAttribute("type")));
         if (owner != null) {
             ComponentDescriptor parentComponent = owner.getComponent(result.getName());
             if (parentComponent != null) {

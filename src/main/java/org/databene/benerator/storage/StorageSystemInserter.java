@@ -23,7 +23,8 @@ package org.databene.benerator.storage;
 
 import org.databene.benerator.Consumer;
 import org.databene.benerator.StorageSystem;
-import org.databene.benerator.composite.EntityRenamer;
+import org.databene.benerator.composite.EntityTypeChanger;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
 /**
@@ -34,24 +35,24 @@ import org.databene.model.data.Entity;
  */
 public class StorageSystemInserter extends StorageSystemConsumer {
 
-    private String tableName;
+    private ComplexTypeDescriptor targetType;
 
     public StorageSystemInserter(StorageSystem system) {
         this(system, null);
     }
 
-    public StorageSystemInserter(StorageSystem system, String tableName) {
+    public StorageSystemInserter(StorageSystem system, ComplexTypeDescriptor targetType) {
     	super(system);
-        this.tableName = tableName;
+        this.targetType = targetType;
     }
 
     @Override
 	public void startProductConsumption(Object object) {
     	Entity entity = (Entity) object;
-    	if (tableName == null)
+    	if (targetType == null)
     		system.store(entity);
     	else
-    		system.store(EntityRenamer.rename(entity, tableName));
+    		system.store(EntityTypeChanger.changeType(entity, targetType));
     }
 
 }

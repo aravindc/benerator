@@ -28,6 +28,7 @@
 package org.databene.benerator.storage;
 
 import org.databene.benerator.StorageSystem;
+import org.databene.model.data.DataModel;
 
 /**
  * Abstract implementation of the StorageSystem interface.
@@ -41,6 +42,20 @@ import org.databene.benerator.StorageSystem;
  * @author Volker Bergmann
  */
 public abstract class AbstractStorageSystem implements StorageSystem {
+	
+	protected DataModel dataModel;
+	
+	public AbstractStorageSystem() {
+		this.dataModel = null;
+	}
+
+	public DataModel getDataModel() {
+		return dataModel;
+	}
+	
+	public void setDataModel(DataModel dataModel) {
+		this.dataModel = dataModel;
+	}
 	
 	public Object execute(String command) {
 		return null;

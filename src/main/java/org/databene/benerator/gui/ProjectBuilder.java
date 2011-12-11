@@ -101,6 +101,7 @@ public class ProjectBuilder implements Runnable {
     private List<Exception> errors;
     private ProgressMonitor monitor;
     private FolderLayout folderLayout;
+    private DataModel dataModel;
 	
 	public ProjectBuilder(Setup setup, FolderLayout folderLayout, ProgressMonitor monitor) {
 		this.setup = setup;
@@ -108,6 +109,7 @@ public class ProjectBuilder implements Runnable {
 		this.monitor = monitor;
 		this.descriptors = new TypeDescriptor[0];
 		this.folderLayout = folderLayout;
+		this.dataModel = new DataModel();
 	}
 
 	public void run() {
@@ -163,7 +165,7 @@ public class ProjectBuilder implements Runnable {
 	    	monitor.setProgress(0);
 	    db = new DBSystem("db", setup.getDbUrl(), setup.getDbDriver(), setup.getDbUser(), setup.getDbPassword());
 	    db.setSchema(setup.getDbSchema());
-	    DataModel.getDefaultInstance().addDescriptorProvider(db);
+	    dataModel.addDescriptorProvider(db);
 	    if (setup.getDbSchema() != null)
 	        db.setSchema(setup.getDbSchema());
 	    descriptors = db.getTypeDescriptors();
@@ -300,7 +302,7 @@ public class ProjectBuilder implements Runnable {
     	monitor.advance();
     }
 
-    private static void processToken(Setup setup, 
+    private void processToken(Setup setup, 
     		DefaultHTMLTokenizer tokenizer, LFNormalizingStringBuilder writer) 
     			throws FileNotFoundException, IOException, ParseException {
 
@@ -436,13 +438,13 @@ public class ProjectBuilder implements Runnable {
 		}
     }
 	
-    private static void generateTables(Setup setup, LFNormalizingStringBuilder writer) {
+    private void generateTables(Setup setup, LFNormalizingStringBuilder writer) {
     	final DBSystem db = getDBSystem(setup);
     	TypeDescriptor[] descriptors = db.getTypeDescriptors();
 		for (TypeDescriptor descriptor : descriptors) {
           	ComplexTypeDescriptor complexType = (ComplexTypeDescriptor) descriptor;
           	final String name = complexType.getName();
-          	InstanceDescriptor iDesc = new InstanceDescriptor(name, name);
+          	InstanceDescriptor iDesc = new InstanceDescriptor(name, db, complexType);
           	if (setup.getDbSnapshot() != null)
           		iDesc.setCount(ExpressionUtil.constant(0L));
           	else
@@ -451,15 +453,15 @@ public class ProjectBuilder implements Runnable {
        }
 	}
 
-    private static DBSystem getDBSystem(Setup setup) {
+    private DBSystem getDBSystem(Setup setup) {
 		DBSystem db = new DBSystem("db", setup.getDbUrl(), setup.getDbDriver(), setup.getDbUser(), setup.getDbPassword());
 		if (setup.getDbSchema() != null)
 			db.setSchema(setup.getDbSchema());
-		DataModel.getDefaultInstance().addDescriptorProvider(db);
+		dataModel.addDescriptorProvider(db);
 		return db;
     }
 	
-    private static void generateTable(InstanceDescriptor descriptor, LFNormalizingStringBuilder writer) {
+    private void generateTable(InstanceDescriptor descriptor, LFNormalizingStringBuilder writer) {
         ComplexTypeDescriptor type = (ComplexTypeDescriptor) descriptor.getTypeDescriptor();
         Map<String, String> attributes = new OrderedMap<String, String>();
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
@@ -492,7 +494,7 @@ public class ProjectBuilder implements Runnable {
 	    writer.append("</").append(nodeName).append(">");
     }
 
-	private static void addAttribute(ComponentDescriptor component, LFNormalizingStringBuilder writer) {
+	private void addAttribute(ComponentDescriptor component, LFNormalizingStringBuilder writer) {
     	// normalize
     	boolean nullable = (component.isNullable() == null || component.isNullable());
 		if (component.getMaxCount() != null && component.getMaxCount().evaluate(null) == 1)
@@ -516,7 +518,7 @@ public class ProjectBuilder implements Runnable {
         Map<String, String> attributes = new OrderedMap<String, String>();
         attributes.put(ATT_NAME, component.getName());
         SimpleTypeDescriptor type = (SimpleTypeDescriptor) (component.getType() != null ? 
-        		DataModel.getDefaultInstance().getTypeDescriptor(component.getType()) : 
+        		dataModel.getTypeDescriptor(component.getType()) : 
         		component.getLocalType());
         if (type != null) {
 			for (FeatureDetail<? extends Object> detail : type.getDetails())

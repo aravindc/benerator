@@ -48,7 +48,6 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.MessageConverter;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
@@ -69,14 +68,12 @@ public class XMLFileGenerator extends UnsafeGenerator<File> {
     private String filenamePattern;
     private Generator<String> fileNameGenerator;
     private Generator<?> contentGenerator;
-    private DataModel dataModel;
     
     public XMLFileGenerator(String schemaUri, String root, String filenamePattern, String... propertiesFiles) {
     	this.schemaUri = schemaUri;
         this.encoding = SystemInfo.getFileEncoding();
         this.filenamePattern = filenamePattern;
         this.propertiesFiles = propertiesFiles;
-        this.dataModel = DataModel.getDefaultInstance();
         this.root = root;
     }
 
@@ -89,7 +86,7 @@ public class XMLFileGenerator extends UnsafeGenerator<File> {
     	BeneratorContext beneratorContext = (BeneratorContext) context; 
         // parse schema
         XMLSchemaDescriptorProvider xsdProvider = new XMLSchemaDescriptorProvider(schemaUri, beneratorContext);
-		dataModel.addDescriptorProvider(xsdProvider);
+		beneratorContext.getDataModel().addDescriptorProvider(xsdProvider);
         // set up file name generator
         this.fileNameGenerator = WrapperFactory.applyConverter(
                 new IncrementGenerator(), 
@@ -102,7 +99,7 @@ public class XMLFileGenerator extends UnsafeGenerator<File> {
         	throw new InvalidGeneratorSetupException(e);
         }
         // set up content generator
-        TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
+        TypeDescriptor rootDescriptor = beneratorContext.getDataModel().getTypeDescriptor(root);
         if (rootDescriptor == null)
             throw new ConfigurationError("Type '" + root + "' not found in schema: " + schemaUri);
 		contentGenerator = MetaGeneratorFactory.createTypeGenerator(
