@@ -26,7 +26,6 @@
 
 package org.databene.benerator.test;
 
-import org.junit.Before;
 import static junit.framework.Assert.*;
 
 import java.util.HashSet;
@@ -36,8 +35,6 @@ import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ArrayFormat;
@@ -51,8 +48,6 @@ import org.databene.commons.Validator;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.validator.UniqueValidator;
 import org.databene.measure.count.ObjectCounter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides methods for testing generators.<br/>
@@ -60,18 +55,9 @@ import org.slf4j.LoggerFactory;
  * Created: 15.11.2007 14:46:31
  * @author Volker Bergmann
  */
-public abstract class GeneratorTest {
+public abstract class GeneratorTest extends ModelTest {
 
-    public final Logger logger = LoggerFactory.getLogger(getClass());
-    
-    public BeneratorContext context;
     private Converter<Object, String> formatter = new ToStringConverter();
-
-    @Before
-    public void setUp() throws Exception {
-        context = new DefaultBeneratorContext();
-        context.importDefaults();
-    }
 
     // helper methods for this and child classes -----------------------------------------------------------------------
 

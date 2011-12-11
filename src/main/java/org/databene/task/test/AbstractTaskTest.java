@@ -21,6 +21,7 @@
 
 package org.databene.task.test;
 
+import org.databene.benerator.test.ModelTest;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Level;
@@ -35,7 +36,7 @@ import static org.junit.Assert.*;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class AbstractTaskTest {
+public class AbstractTaskTest extends ModelTest {
 
 	protected static void executeStepAndAssertAvailability(Task task, Context context) {
 		assertEquals("Task is expected to be available", TaskResult.EXECUTING, task.execute(context, errorHandler()));
