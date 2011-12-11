@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,12 +34,12 @@ package org.databene.model.data;
  */
 public class UnresolvedTypeDescriptor extends TypeDescriptor {
 
-	public UnresolvedTypeDescriptor(String name) {
-		this(name, null);
+	public UnresolvedTypeDescriptor(String name, DescriptorProvider provider) {
+		this(name, provider, null);
 	}
 
-	public UnresolvedTypeDescriptor(String name, String parentName) {
-		super(name, parentName);
+	public UnresolvedTypeDescriptor(String name, DescriptorProvider provider, String parentName) {
+		super(name, provider, parentName);
 	}
 
 }

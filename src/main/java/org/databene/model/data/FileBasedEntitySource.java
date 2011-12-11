@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,8 +22,6 @@
 package org.databene.model.data;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.Context;
-import org.databene.commons.context.ContextAware;
 
 /**
  * Parent class for {@link EntitySource}s that import entities from files.<br/><br/>
@@ -31,10 +29,9 @@ import org.databene.commons.context.ContextAware;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class FileBasedEntitySource extends AbstractEntitySource implements ContextAware {
+public abstract class FileBasedEntitySource extends AbstractEntitySource {
 	
 	protected String uri;
-	protected BeneratorContext context;
 	
 	public FileBasedEntitySource(String uri) {
 	    this(uri, null);
@@ -55,10 +52,6 @@ public abstract class FileBasedEntitySource extends AbstractEntitySource impleme
         this.uri = uri;
     }
     
-    public void setContext(Context context) {
-    	this.context = (BeneratorContext) context;
-    }
-
     protected String resolveUri() {
     	return context.resolveRelativeUri(uri);
     }

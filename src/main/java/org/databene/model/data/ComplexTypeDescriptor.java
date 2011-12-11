@@ -52,17 +52,17 @@ public class ComplexTypeDescriptor extends TypeDescriptor implements VariableHol
     
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public ComplexTypeDescriptor(String name) {
-        this(name, (String) null);
+    public ComplexTypeDescriptor(String name, DescriptorProvider owner) {
+        this(name, owner, (String) null);
     }
 
-    public ComplexTypeDescriptor(String name, ComplexTypeDescriptor parent) {
-    	super(name, parent);
+    public ComplexTypeDescriptor(String name, DescriptorProvider owner, ComplexTypeDescriptor parent) {
+    	super(name, owner, parent);
         init();
     }
     
-    public ComplexTypeDescriptor(String name, String parentName) {
-        super(name, parentName);
+    public ComplexTypeDescriptor(String name, DescriptorProvider owner, String parentName) {
+        super(name, owner, parentName);
         init();
     }
     

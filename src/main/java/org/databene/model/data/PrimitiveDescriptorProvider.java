@@ -36,13 +36,13 @@ import org.databene.script.PrimitiveType;
  */
 public class PrimitiveDescriptorProvider extends DefaultDescriptorProvider {
 
-	public static final PrimitiveDescriptorProvider INSTANCE = new PrimitiveDescriptorProvider();
-	
-    private PrimitiveDescriptorProvider() {
-        super("ben");
+    public static final String NAMESPACE = "ben";
+
+	public PrimitiveDescriptorProvider(DataModel dataModel) {
+        super(NAMESPACE, dataModel);
         for (PrimitiveType type : PrimitiveType.getInstances())
-            addDescriptor(new SimpleTypeDescriptor(type.getName(), type.getName()));
-        addDescriptor(new ComplexTypeDescriptor("entity"));
+            addTypeDescriptor(new SimpleTypeDescriptor(type.getName(), this, type.getName()));
+        new ComplexTypeDescriptor("entity", this);
     }
 
 	public SimpleTypeDescriptor getPrimitiveTypeDescriptor(Class<? extends Object> javaType) {

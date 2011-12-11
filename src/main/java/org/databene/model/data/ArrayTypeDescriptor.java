@@ -35,12 +35,12 @@ public class ArrayTypeDescriptor extends TypeDescriptor {
 
 	private Map<Integer, ArrayElementDescriptor> elements;
     
-	public ArrayTypeDescriptor(String name) {
-		this(name, null);
+	public ArrayTypeDescriptor(String name, DescriptorProvider provider) {
+		this(name, provider, null);
 	}
 	
-    public ArrayTypeDescriptor(String name, ArrayTypeDescriptor parent) {
-	    super(name, parent);
+    public ArrayTypeDescriptor(String name, DescriptorProvider provider, ArrayTypeDescriptor parent) {
+	    super(name, provider, parent);
 	    this.elements = new TreeMap<Integer, ArrayElementDescriptor>();
     }
 

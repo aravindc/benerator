@@ -44,26 +44,37 @@ public class DefaultDescriptorProvider implements DescriptorProvider {
     
     private static Logger logger = LoggerFactory.getLogger(DefaultDescriptorProvider.class);
     
+    protected DataModel dataModel;
     protected Map<String, TypeDescriptor> typeMap;
     protected String id;
     private boolean redefinable;
     
-    public DefaultDescriptorProvider(String id) {
-        this(id, false);
+    public DefaultDescriptorProvider(String id, DataModel dataModel) {
+        this(id, dataModel, false);
     }
 
-    public DefaultDescriptorProvider(String id, boolean redefinable) {
+    public DefaultDescriptorProvider(String id, DataModel dataModel, boolean redefinable) {
         this.typeMap = new OrderedNameMap<TypeDescriptor>();
         this.id = id;
         this.redefinable = redefinable;
+        if (dataModel != null)
+        	dataModel.addDescriptorProvider(this);
     }
 
-    public void addDescriptor(TypeDescriptor descriptor) {
+    public void addTypeDescriptor(TypeDescriptor descriptor) {
         if (!redefinable && typeMap.get(descriptor.getName()) != null)
             throw new ConfigurationError("Type has already been defined: " + descriptor.getName());
         typeMap.put(descriptor.getName(), descriptor);
         logger.debug("added " + descriptor.getClass().getSimpleName() + ": " + descriptor);
     }
+    
+    public DataModel getDataModel() {
+    	return dataModel;
+    }
+    
+	public void setDataModel(DataModel dataModel) {
+		this.dataModel = dataModel;
+	}
     
     public String getId() {
         return id;
@@ -77,7 +88,7 @@ public class DefaultDescriptorProvider implements DescriptorProvider {
     public TypeDescriptor[] getTypeDescriptors() {
         return CollectionUtil.toArray(typeMap.values(), TypeDescriptor.class);
     }
-
+    
     @Override
     public String toString() {
         return getClass().getSimpleName() + '(' + id + ')';

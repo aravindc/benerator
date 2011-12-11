@@ -26,6 +26,9 @@
 
 package org.databene.model.data;
 
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.Context;
+import org.databene.commons.context.ContextAware;
 import org.databene.webdecs.util.AbstractDataSource;
 
 /**
@@ -37,10 +40,16 @@ import org.databene.webdecs.util.AbstractDataSource;
  * @author Volker Bergmann
  */
 
-public abstract class AbstractEntitySource extends AbstractDataSource<Entity> implements EntitySource {
+public abstract class AbstractEntitySource extends AbstractDataSource<Entity> implements EntitySource, ContextAware {
 
+	protected BeneratorContext context;
+	
     public AbstractEntitySource() {
 		super(Entity.class);
 	}
 
+	public void setContext(Context ctx) {
+		this.context = (BeneratorContext) ctx;
+	}
+	
 }

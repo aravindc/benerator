@@ -27,13 +27,17 @@ public class FeatureDescriptor implements Named {
     }
 
     protected OrderedNameMap<FeatureDetail<?>> details;
+    protected DescriptorProvider owner;
 
     // constructor -----------------------------------------------------------------------------------------------------
 
-    public FeatureDescriptor(String name) {
+    public FeatureDescriptor(String name, DescriptorProvider owner) {
+    	if (owner == null)
+    		throw new IllegalArgumentException("owner is null");
         this.details = new OrderedNameMap<FeatureDetail<?>>();
-        addConstraint(NAME, String.class, null);
-        setName(name);
+        this.owner = owner;
+        this.addConstraint(NAME, String.class, null);
+        this.setName(name);
     }
     
     // typed interface -------------------------------------------------------------------------------------------------
@@ -48,6 +52,14 @@ public class FeatureDescriptor implements Named {
 
     public void setName(String name) {
         setDetailValue(NAME, name);
+    }
+    
+    public DescriptorProvider getOwner() {
+    	return owner;
+    }
+    
+    public DataModel getDataModel() {
+    	return owner.getDataModel();
     }
 
     // generic detail access -------------------------------------------------------------------------------------------

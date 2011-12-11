@@ -73,17 +73,13 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     
     // constructors ----------------------------------------------------------------------------------------------------
     
-    public TypeDescriptor(String name) {
-        this(name, (String) null);
-    }
-
-    public TypeDescriptor(String name, TypeDescriptor parent) {
-    	this(name, (parent != null ? parent.getName() : null));
+    public TypeDescriptor(String name, DescriptorProvider owner, TypeDescriptor parent) {
+    	this(name, owner, (parent != null ? parent.getName() : null));
     	this.parent = parent;
     }
 
-    public TypeDescriptor(String name, String parentName) {
-        super(name);
+    public TypeDescriptor(String name, DescriptorProvider owner, String parentName) {
+        super(name, owner);
         this.parentName = parentName;
         init();
     }
@@ -302,7 +298,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         if (parentName == null)
             return null;
         // TODO v0.7.1 the following is a workaround for name conflicts with types of same name in different name spaces, e.g. xs:string <-> ben.string
-        TypeDescriptor candidate = DataModel.getDefaultInstance().getTypeDescriptor(parentName);
+        TypeDescriptor candidate = getDataModel().getTypeDescriptor(parentName);
         if (candidate != this)
         	parent = candidate;
 		return parent;

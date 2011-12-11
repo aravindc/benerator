@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,16 +29,16 @@ package org.databene.model.data;
  */
 public class ArrayElementDescriptor extends ComponentDescriptor {
 
-	public ArrayElementDescriptor(int index, String typeName, TypeDescriptor localType) {
-	    super(String.valueOf(index), typeName, localType);
+	public ArrayElementDescriptor(int index, DescriptorProvider owner, String typeName, TypeDescriptor localType) {
+	    super(String.valueOf(index), owner, typeName, localType);
     }
 
-	public ArrayElementDescriptor(int index, String typeName) {
-	    super(String.valueOf(index), typeName);
+	public ArrayElementDescriptor(int index, DescriptorProvider owner, String typeName) {
+	    super(String.valueOf(index), owner, typeName);
     }
 
-	public ArrayElementDescriptor(int index, TypeDescriptor localType) {
-	    super(String.valueOf(index), localType);
+	public ArrayElementDescriptor(int index, DescriptorProvider owner, TypeDescriptor localType) {
+	    super(String.valueOf(index), owner, localType);
     }
 
 	public int getIndex() {

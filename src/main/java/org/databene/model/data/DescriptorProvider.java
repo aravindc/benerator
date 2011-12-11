@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,7 +33,13 @@ package org.databene.model.data;
  * @author Volker Bergmann
  */
 public interface DescriptorProvider {
+	
+	DataModel getDataModel();
+	void setDataModel(DataModel dataModel);
+	
     String getId();
+
     TypeDescriptor[] getTypeDescriptors();
     TypeDescriptor getTypeDescriptor(String typeName);
+    
 }

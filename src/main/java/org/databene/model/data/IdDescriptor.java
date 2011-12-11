@@ -2,16 +2,16 @@ package org.databene.model.data;
 
 public class IdDescriptor extends ComponentDescriptor {
 
-    public IdDescriptor(String name) {
-        this(name, (String) null);
+    public IdDescriptor(String name, DescriptorProvider owner) {
+        this(name, owner, (String) null);
     }
 
-    public IdDescriptor(String name, String type) {
-        super(name, type);
+    public IdDescriptor(String name, DescriptorProvider owner, String type) {
+        super(name, owner, type);
     }
 
-    public IdDescriptor(String name, TypeDescriptor type) {
-        super(name, type);
+    public IdDescriptor(String name, DescriptorProvider owner, TypeDescriptor type) {
+        super(name, owner, type);
     }
 
     @Override

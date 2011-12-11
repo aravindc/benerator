@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,7 +51,7 @@ public class ComponentNameMapper extends ThreadSafeConverter<Entity, Entity> {
 	}
 
 	public Entity convert(Entity input) throws ConversionException {
-		Entity output = new Entity(input.type());
+		Entity output = new Entity(input.descriptor());
 		for (Map.Entry<String, Object> component : input.getComponents().entrySet()) {
 			String inCptName = component.getKey();
 			String outCptName = (String) nameMapper.convert(inCptName);

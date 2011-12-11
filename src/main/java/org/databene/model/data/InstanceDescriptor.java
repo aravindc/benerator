@@ -63,20 +63,20 @@ public class InstanceDescriptor extends FeatureDescriptor {
     
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public InstanceDescriptor(String name) {
-        this(name, null, null);
+    public InstanceDescriptor(String name, DescriptorProvider owner) {
+        this(name, owner, null, null);
     }
 
-    public InstanceDescriptor(String name, String typeName) {
-        this(name, typeName, null);
+    public InstanceDescriptor(String name, DescriptorProvider owner, String typeName) {
+        this(name, owner, typeName, null);
     }
 
-    public InstanceDescriptor(String name, TypeDescriptor localType) {
-        this(name, null, localType);
+    public InstanceDescriptor(String name, DescriptorProvider owner, TypeDescriptor localType) {
+        this(name, owner, null, localType);
     }
 
-    protected InstanceDescriptor(String name, String typeName, TypeDescriptor localType) {
-        super(name);
+    protected InstanceDescriptor(String name, DescriptorProvider owner, String typeName, TypeDescriptor localType) {
+        super(name, owner);
         this.localType = localType;
 
         addConstraint(TYPE,        String.class, null);
@@ -122,7 +122,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
             return getLocalType();
         TypeDescriptor type = null;
         if (getType() != null)
-            type = DataModel.getDefaultInstance().getTypeDescriptor(getType());
+            type = getDataModel().getTypeDescriptor(getType());
         return type;
     }
     
@@ -136,9 +136,9 @@ public class InstanceDescriptor extends FeatureDescriptor {
         if (localType != null)
             return localType;
         if (complexType)
-            localType = new ComplexTypeDescriptor(getName(), getType());
+            localType = new ComplexTypeDescriptor(getName(), owner, getType());
         else
-            localType = new SimpleTypeDescriptor(getName(), getType());
+            localType = new SimpleTypeDescriptor(getName(), owner, getType());
         setType(null);
         return localType;
     }

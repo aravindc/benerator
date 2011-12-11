@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,16 +35,16 @@ package org.databene.model.data;
  */
 public abstract class ComponentDescriptor extends InstanceDescriptor {
     
-    public ComponentDescriptor(String name, String typeName) {
-        this(name, typeName, null);
+    public ComponentDescriptor(String name, DescriptorProvider owner, String typeName) {
+        this(name, owner, typeName, null);
     }
     
-    public ComponentDescriptor(String name, TypeDescriptor localType) {
-        this(name, null, localType);
+    public ComponentDescriptor(String name, DescriptorProvider owner, TypeDescriptor localType) {
+        this(name, owner, null, localType);
     }
     
-    protected ComponentDescriptor(String name, String typeName, TypeDescriptor localType) {
-        super(name, typeName, localType);
+    protected ComponentDescriptor(String name, DescriptorProvider owner, String typeName, TypeDescriptor localType) {
+        super(name, owner, typeName, localType);
     }
     
 }

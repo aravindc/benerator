@@ -42,20 +42,18 @@ import org.databene.script.PrimitiveType;
  * @author Volker Bergmann
  */
 public class Entity implements Composite {
-
-	private static final BeanDescriptorProvider BEAN_DESCRIPTOR_PROVIDER = new BeanDescriptorProvider();
 	
     private ComplexTypeDescriptor descriptor;
     private OrderedNameMap<Object> components;
     
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public Entity(String name) {
-        this(new ComplexTypeDescriptor(name));
+    public Entity(String name, DescriptorProvider descriptorProvider) {
+        this(new ComplexTypeDescriptor(name, descriptorProvider));
     }
 
-    public Entity(String name, Object ... componentKeyValuePairs) {
-        this(new ComplexTypeDescriptor(name), componentKeyValuePairs);
+    public Entity(String name, DescriptorProvider descriptorProvider, Object ... componentKeyValuePairs) {
+        this(new ComplexTypeDescriptor(name, descriptorProvider), componentKeyValuePairs);
     }
 
     /**
@@ -123,7 +121,8 @@ public class Entity implements Composite {
     		PrimitiveType primitiveType = componentType.getPrimitiveType();
     		if (primitiveType == null)
     			primitiveType = PrimitiveType.STRING;
-			Class<?> javaType = BEAN_DESCRIPTOR_PROVIDER.concreteType(primitiveType.getName());
+    		BeanDescriptorProvider beanProvider = descriptor.getDataModel().getBeanDescriptorProvider();
+			Class<?> javaType = beanProvider.concreteType(primitiveType.getName());
 			component = AnyConverter.convert(component, javaType);
     	}
         String internalComponentName = componentDescriptor != null ? componentDescriptor.getName() : componentName;
@@ -174,7 +173,7 @@ public class Entity implements Composite {
 
     @Override
     public int hashCode() {
-        return descriptor.hashCode() * 29 + components.hashCode();
+        return descriptor.getName().hashCode() * 29 + components.hashCode();
     }
 
     @Override

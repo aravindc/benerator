@@ -36,24 +36,24 @@ import org.databene.script.Expression;
  */
 public class PartDescriptor extends ComponentDescriptor {
 
-    public PartDescriptor(String name) {
-        this(name, (TypeDescriptor) null);
+    public PartDescriptor(String name, DescriptorProvider owner) {
+        this(name, owner, (TypeDescriptor) null);
     }
     
-    public PartDescriptor(String name, String type) {
-        this(name, type, null, null, null);
+    public PartDescriptor(String name, DescriptorProvider owner, String type) {
+        this(name, owner, type, null, null, null);
     }
     
-    public PartDescriptor(String name, TypeDescriptor localType) {
-        this(name, localType, null, null);
+    public PartDescriptor(String name, DescriptorProvider owner, TypeDescriptor localType) {
+        this(name, owner, localType, null, null);
     }
     
-    public PartDescriptor(String name, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
-    	this(name, null, localType, minCount, maxCount);
+    public PartDescriptor(String name, DescriptorProvider owner, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
+    	this(name, owner, null, localType, minCount, maxCount);
     }
     	
-    public PartDescriptor(String name, String type, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
-        super(name, type, localType);
+    public PartDescriptor(String name, DescriptorProvider owner, String type, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
+        super(name, owner, type, localType);
         setMinCount(minCount);
         setMaxCount(maxCount);
     }

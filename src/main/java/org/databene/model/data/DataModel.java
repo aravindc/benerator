@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.databene.commons.ConfigurationError;
+import org.databene.platform.java.BeanDescriptorProvider;
 import org.databene.script.PrimitiveType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,16 +45,15 @@ public class DataModel {
 	
 	private Logger logger = LoggerFactory.getLogger(DataModel.class);
     
-    private static final DataModel defaultInstance = new DataModel();
-
     private Map<String, DescriptorProvider> providers;
 
 	private boolean acceptUnknownPrimitives;
 
     public DataModel() {
-        this.providers = new HashMap<String, DescriptorProvider>();
         this.acceptUnknownPrimitives = false;
-        clear();
+        this.providers = new HashMap<String, DescriptorProvider>();
+        new PrimitiveDescriptorProvider(this);
+        new BeanDescriptorProvider(this);
     }
 
     public void setAcceptUnknownPrimitives(boolean acceptUnknownPrimitives) {
@@ -66,6 +66,7 @@ public class DataModel {
     
     public void addDescriptorProvider(DescriptorProvider provider, boolean validate) {
         providers.put(provider.getId(), provider);
+        provider.setDataModel(this);
         if (validate)
             validate();
     }
@@ -129,10 +130,6 @@ public class DataModel {
         }
     }
     
-    public static DataModel getDefaultInstance() {
-        return defaultInstance;
-    }
-    
     // private helpers -------------------------------------------------------------------------------------------------
 
     private TypeDescriptor searchCaseInsensitive(DescriptorProvider provider, String name) {
@@ -163,7 +160,9 @@ public class DataModel {
     private void validate(ComplexTypeDescriptor desc) {
         for (ComponentDescriptor component : desc.getComponents()) {
             TypeDescriptor type = component.getTypeDescriptor();
-            if (!(type instanceof ComplexTypeDescriptor))
+            if (type == null)
+            	throw new ConfigurationError("Type of component is not defined: " + desc.getName());
+            else if (!(type instanceof ComplexTypeDescriptor))
                 validate(type);
         }
     }
@@ -176,9 +175,13 @@ public class DataModel {
         }
     }
 
-    public void clear() {
-        providers.clear();
-        addDescriptorProvider(PrimitiveDescriptorProvider.INSTANCE, false);
-    }
+	public SimpleTypeDescriptor getPrimitiveTypeDescriptor(Class<?> javaType) {
+		PrimitiveDescriptorProvider primitiveProvider = (PrimitiveDescriptorProvider) providers.get(PrimitiveDescriptorProvider.NAMESPACE);
+		return primitiveProvider.getPrimitiveTypeDescriptor(javaType);
+	}
+
+	public BeanDescriptorProvider getBeanDescriptorProvider() {
+		return (BeanDescriptorProvider) providers.get(BeanDescriptorProvider.NAMESPACE);
+	}
 
 }

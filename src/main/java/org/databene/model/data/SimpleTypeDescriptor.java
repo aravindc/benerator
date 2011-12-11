@@ -60,17 +60,17 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
 
     private PrimitiveType primitiveType = null;
 
-    public SimpleTypeDescriptor(String name) {
-    	this(name, (String) null);
+    public SimpleTypeDescriptor(String name, DescriptorProvider owner) {
+    	this(name, owner, (String) null);
     }
     
-    public SimpleTypeDescriptor(String name, SimpleTypeDescriptor parent) {
-    	this(name, parent.getName());
+    public SimpleTypeDescriptor(String name, DescriptorProvider owner, SimpleTypeDescriptor parent) {
+    	this(name, owner, parent.getName());
     	this.parent = parent;
     }
     
-    public SimpleTypeDescriptor(String name, String parentName) {
-        super(name, parentName);
+    public SimpleTypeDescriptor(String name, DescriptorProvider owner, String parentName) {
+        super(name, owner, parentName);
         // number setup
         addConstraint(MIN,             String.class,  new MaxNumberStringOperation());
         addConstraint(MAX,             String.class,  new MinNumberStringOperation());
