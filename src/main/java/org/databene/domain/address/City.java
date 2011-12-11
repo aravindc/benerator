@@ -135,9 +135,9 @@ public class City {
     	if (language != null)
     		return language;
     	if (state != null)
-    		return state.getDefaultLanguage();
+    		return state.getDefaultLanguageLocale();
     	Country country = getCountry();
-    	return (country != null ? country.getDefaultLanguage() : null);
+    	return (country != null ? country.getDefaultLanguageLocale() : null);
     }
 
     public void setLanguage(Locale language) {
