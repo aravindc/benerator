@@ -121,15 +121,17 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 
 	private DataModel dataModel;
 	private GeneratorFactory defaultFactory;
+	private PathResolver pathResolver;
 
 	private ArrayTypeGeneratorFactory arrayTypeGeneratorFactory;
 	
-	public AnnotationMapper(GeneratorFactory defaultFactory, DataModel dataModel) {
+	public AnnotationMapper(GeneratorFactory defaultFactory, DataModel dataModel, PathResolver pathResolver) {
 		super("anno", dataModel);
 		this.dataModel = dataModel;
 		this.dataModel.addDescriptorProvider(this);
 		this.defaultFactory = defaultFactory;
 		this.arrayTypeGeneratorFactory = new ArrayTypeGeneratorFactory();
+		this.pathResolver = pathResolver;
 	}
 	
 	// interface -------------------------------------------------------------------------------------------------------
@@ -186,7 +188,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 			Method testMethod, ArrayTypeDescriptor type) {
 		InstanceDescriptor instance = new InstanceDescriptor(testMethod.getName(), this, type);
 		for (Annotation annotation : testMethod.getAnnotations())
-			mapParamAnnotation(annotation, instance);
+			mapParamAnnotation(annotation, instance, testMethod.getDeclaringClass());
 		return instance;
 	}
 
@@ -226,7 +228,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 				ArrayElementDescriptor element = new ArrayElementDescriptor(i, this, elementType);
 				element.setParent(parentElement);
 			    for (Annotation annotation : paramAnnos[i])
-		            mapParamAnnotation(annotation, element);
+		            mapParamAnnotation(annotation, element, testMethod.getDeclaringClass());
 				type.addElement(element);
 			}
 		}
@@ -316,10 +318,11 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		String attName = attribute.getName();
 		TypeDescriptor typeDescriptor = createTypeDescriptor(attribute.getType());
 		InstanceDescriptor descriptor = new InstanceDescriptor(attName, this, typeDescriptor);
-		mapParamAnnotation(source, descriptor);
+		Class<?> testClass = attribute.getDeclaringClass();
+		mapParamAnnotation(source, descriptor, testClass);
 		Offset offset = attribute.getAnnotation(Offset.class);
 		if (offset != null)
-			mapParamAnnotation(offset, descriptor);
+			mapParamAnnotation(offset, descriptor, testClass);
 		Generator generator = InstanceGeneratorFactory.createSingleInstanceGenerator(
 				descriptor, Uniqueness.NONE, context);
 		generator = WrapperFactory.applyConverter(generator, new Entity2JavaConverter());
@@ -467,15 +470,15 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		return generator;
     }
 */
-	private static <T> void mapParamAnnotation(Annotation annotation, InstanceDescriptor descriptor) {
+	private <T> void mapParamAnnotation(Annotation annotation, InstanceDescriptor descriptor, Class<?> testClass) {
 	    Package annoPackage = annotation.annotationType().getPackage();
 	    if (BENERATOR_ANNO_PACKAGE.equals(annoPackage))
-	    	mapBeneratorParamAnnotation(annotation, descriptor);
+	    	mapBeneratorParamAnnotation(annotation, descriptor, testClass);
 	    else if (BEANVAL_ANNO_PACKAGE.equals(annoPackage))
 	    	mapBeanValidationParameter(annotation, descriptor);
     }
 
-	private static void mapBeneratorParamAnnotation(Annotation annotation, InstanceDescriptor instanceDescriptor) {
+	private void mapBeneratorParamAnnotation(Annotation annotation, InstanceDescriptor instanceDescriptor, Class<?> testClass) {
 		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("mapDetails(" + annotation + ", " + instanceDescriptor + ")");
 	    try {
@@ -493,7 +496,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 			else if (annotationType == Size.class)
 				mapSizeAnnotation((Size) annotation, instanceDescriptor);
 			else if (annotationType == Source.class)
-				mapSourceAnnotation((Source) annotation, instanceDescriptor);
+				mapSourceAnnotation((Source) annotation, instanceDescriptor, testClass);
 			else if (annotationType == Values.class)
 				mapValuesAnnotation((Values) annotation, instanceDescriptor);
 			else if (annotationType == Offset.class)
@@ -521,10 +524,10 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	    	setDetail("pattern", pattern.regexp(), instanceDescriptor);
     }
 
-	private static void mapSourceAnnotation(Source source, InstanceDescriptor instanceDescriptor) throws Exception {
-		mapSourceSetting(source.value(),     "source",    instanceDescriptor);
+	private void mapSourceAnnotation(Source source, InstanceDescriptor instanceDescriptor, Class<?> testClass) throws Exception {
+		mapSourceUriOrValue(source.value(),  instanceDescriptor, testClass);
+		mapSourceUriOrValue(source.uri(),    instanceDescriptor, testClass);
 		mapSourceSetting(source.id(),        "source",    instanceDescriptor);
-		mapSourceSetting(source.uri(),       "source",    instanceDescriptor);
 		mapSourceSetting(source.dataset(),   "dataset",   instanceDescriptor);
 		mapSourceSetting(source.nesting(),   "nesting",   instanceDescriptor);
 		mapSourceSetting(source.encoding(),  "encoding",  instanceDescriptor);
@@ -534,6 +537,12 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		mapSourceSetting(source.emptyMarker(), "emptyMarker", instanceDescriptor);
     	setDetail("rowBased", source.rowBased(), instanceDescriptor);
     }
+
+	private void mapSourceUriOrValue(String value, InstanceDescriptor instanceDescriptor, Class<?> testClass) {
+		if (value.toLowerCase().endsWith(".xls") || value.toLowerCase().endsWith(".csv"))
+			value = pathResolver.getPathFor(value, testClass);
+		mapSourceSetting(value, "source", instanceDescriptor);
+	}
 
 	private static void mapSourceSetting(String value, String detailName, InstanceDescriptor instanceDescriptor) {
 	    if (!StringUtil.isEmpty(value))
