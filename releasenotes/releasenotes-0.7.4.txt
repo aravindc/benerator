@@ -13,4 +13,10 @@ changes
 
 enhancements
 ------------
+- supporting column-wise iteration of CSV files and Excel sheets
+- introduced 'emptyMarker' setting
 - introduced platform descriptor concept
+
+bug fixes
+---------
+- Empty cell support for Excel Sheets (')
