@@ -41,7 +41,7 @@ import org.databene.webdecs.DataIterator;
  * @since 0.7.2
  * @author Volker Bergmann
  */
-public class NestedDbUnitEntityIterator extends AbstractDbUnitEntityIterator { // TODO class name?
+public class NestedDbUnitEntityIterator extends AbstractDbUnitEntityIterator {
 	
 	private Table currentTable;
 
