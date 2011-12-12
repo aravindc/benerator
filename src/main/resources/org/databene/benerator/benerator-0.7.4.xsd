@@ -612,6 +612,8 @@
 	<xs:attributeGroup name="iterator-only-attrs">
 		<xs:attribute name="source"       type="xs:string"/>
         <xs:attribute name="separator"    type="xs:string"/>
+        <xs:attribute name="rowBased"     type="xs:string"/>
+        <xs:attribute name="emptyMarker"  type="xs:string"/>
 		<xs:attribute name="encoding"     type="xs:string"/>
 		<xs:attribute name="selector"     type="xs:string"/>
 		<xs:attribute name="subSelector"  type="xs:string"/>
