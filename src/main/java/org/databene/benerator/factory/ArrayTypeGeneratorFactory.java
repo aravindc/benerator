@@ -156,7 +156,8 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
             String sourceName) {
 		logger.debug("createXLSSourceGenerator({})", arrayType);
 		boolean rowBased = (arrayType.isRowBased() != null ? arrayType.isRowBased() : true);
-		DataSourceProvider<Object[]> factory = new XLSArraySourceProvider(new ScriptConverterForObjects(context), rowBased);
+		String emptyMarker = arrayType.getEmptyMarker();
+		DataSourceProvider<Object[]> factory = new XLSArraySourceProvider(new ScriptConverterForObjects(context), emptyMarker, rowBased);
 		Generator<Object[]> generator = SourceFactory.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
 		generator = WrapperFactory.applyConverter(generator, new ArrayElementTypeConverter(arrayType));
 		return generator;

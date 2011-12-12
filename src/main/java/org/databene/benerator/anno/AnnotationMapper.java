@@ -531,6 +531,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		mapSourceSetting(source.filter(),    "filter",    instanceDescriptor);
 		mapSourceSetting(source.selector(),  "selector",  instanceDescriptor);
 		mapSourceSetting(source.separator(), "separator", instanceDescriptor);
+		mapSourceSetting(source.emptyMarker(), "emptyMarker", instanceDescriptor);
     	setDetail("rowBased", source.rowBased(), instanceDescriptor);
     }
 

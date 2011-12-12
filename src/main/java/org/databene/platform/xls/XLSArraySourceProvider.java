@@ -39,16 +39,18 @@ import org.databene.webdecs.util.OffsetDataSource;
 public class XLSArraySourceProvider implements DataSourceProvider<Object[]> {
 	
 	private Converter<?, ?> scriptConverter;
+	private String emptyMarker;
 	private boolean rowBased;
 	
-	public XLSArraySourceProvider(Converter<?, ?> scriptConverter, boolean rowBased) {
+	public XLSArraySourceProvider(Converter<?, ?> scriptConverter, String emptyMarker, boolean rowBased) {
 	    this.scriptConverter = scriptConverter;
+	    this.emptyMarker = emptyMarker;
 	    this.rowBased = rowBased;
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public DataSource<Object[]> create(String uri, BeneratorContext context) {
-		DataSource<Object[]> source = new XLSSource(uri, rowBased);
+		DataSource<Object[]> source = new XLSSource(uri, emptyMarker, rowBased);
 		source = new OffsetDataSource<Object[]>(source, 1); // skip header row
         Converter<Object[], Object[]> converter = new ArrayConverter(Object.class, Object.class, scriptConverter); 
 		return new ConvertingDataSource<Object[], Object[]>(source, converter);

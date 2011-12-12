@@ -67,6 +67,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 
 	private int sheetNo;
 	private boolean rowBased;
+	protected String emptyMarker;
 	
 	private Converter<String, ?> preprocessor;
 	private DataIterator<Entity> source;
@@ -86,6 +87,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 		this.preprocessor = preprocessor;
 		this.entityDescriptor = entityDescriptor;
 		this.rowBased = (entityDescriptor != null && entityDescriptor.isRowBased() != null ? entityDescriptor.isRowBased() : true);
+		this.emptyMarker = (entityDescriptor != null && entityDescriptor.getEmptyMarker() != null ? entityDescriptor.getEmptyMarker() : null);
 		this.workbook = new HSSFWorkbook(IOUtil.getInputStreamForURI(uri));
 		this.sheetNo = -1;
 	}
@@ -196,11 +198,13 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 		public SheetIterator(HSSFSheet sheet, ComplexTypeDescriptor complexTypeDescriptor, boolean rowBased, Converter<String, ?> preprocessor, 
 				String defaultProviderId) {
 	        this.source = createRawIterator(sheet, rowBased, preprocessor);
+	        // parse headers
 			String[] headers = parseHeaders();
 			if (headers == null) {
 				this.source = null; // empty sheet
 				return;
 			}
+			// parse first data row
 			DataContainer<Object[]> tmp = this.source.next(sourceContainer.get());
 			if (tmp == null) {
 				this.source = null; // no data in sheet
@@ -220,9 +224,11 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 
 		private DataIterator<Object[]> createRawIterator(HSSFSheet sheet, boolean rowBased,
 				Converter<String, ?> preprocessor) {
-			DataIterator<Object[]> iterator = new XLSLineIterator(sheet, preprocessor);
+			XLSLineIterator iterator = new XLSLineIterator(sheet, preprocessor);
+			if (emptyMarker != null)
+				iterator.setEmptyMarker(emptyMarker);
 	        if (!rowBased)
-	        	iterator = new OrthogonalArrayIterator<Object>(iterator);
+	        	return new OrthogonalArrayIterator<Object>(iterator);
 	        return iterator;
 		}
 		

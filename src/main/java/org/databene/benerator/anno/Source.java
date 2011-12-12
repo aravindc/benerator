@@ -46,5 +46,6 @@ public @interface Source {
 	String dataset() default "";
 	String nesting() default "";
 	String encoding() default "";
+	String emptyMarker() default "";
 	boolean rowBased() default true;
 }

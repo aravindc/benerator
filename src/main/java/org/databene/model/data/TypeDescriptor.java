@@ -57,6 +57,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     public static final String SUB_SELECTOR = "subSelector";
     public static final String ENCODING     = "encoding";
     public static final String SEPARATOR    = "separator";
+    public static final String EMPTY_MARKER = "emptyMarker";
     
     public static final String CYCLIC       = "cyclic";
 
@@ -101,6 +102,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         addConfig(SELECTOR,       String.class);
         addConfig(SUB_SELECTOR,   String.class);
         addConfig(SEPARATOR,      String.class);
+        addConfig(EMPTY_MARKER,   String.class);
         addConfig(ENCODING,       String.class);
         addConfig(CYCLIC,         Boolean.class);
         // i18n config
@@ -223,6 +225,14 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     public void setSeparator(String separator) {
         setDetailValue(SEPARATOR, separator);
+    }
+
+    public String getEmptyMarker() {
+        return (String) getDetailValue(EMPTY_MARKER);
+    }
+
+    public void setEmptyMarker(String emptyMarker) {
+        setDetailValue(EMPTY_MARKER, emptyMarker);
     }
 
     public String getEncoding() {

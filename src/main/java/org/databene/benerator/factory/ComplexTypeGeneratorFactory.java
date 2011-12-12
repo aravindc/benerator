@@ -220,7 +220,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
     
     private static Generator<Entity> createXLSSourceGenerator(
 			ComplexTypeDescriptor complexType, BeneratorContext context, String sourceName) {
-	    DataSourceProvider<Entity> fileProvider = new XLSEntitySourceProvider(
+    	XLSEntitySourceProvider fileProvider = new XLSEntitySourceProvider(
 	    		complexType, new ScriptConverterForStrings(context));
 		return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
