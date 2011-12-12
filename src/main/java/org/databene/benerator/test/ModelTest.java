@@ -40,12 +40,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO Document class.<br/><br/>
+ * Abstract parent class for all tests which rely on a {@link DataModel}.<br/><br/>
  * Created: 09.12.2011 22:21:24
- * @since TODO version
+ * @since 0.7.4
  * @author Volker Bergmann
  */
-public class ModelTest {
+public abstract class ModelTest {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     

@@ -24,9 +24,10 @@ package org.databene.benerator.anno;
 import java.io.File;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link PathResolver} implementation which is based on a base path and appends the test classes' package name 
+ * and finally the resource name (or path) itself to construct the resolved path.<br/><br/>
  * Created: 12.12.2011 13:16:56
- * @since TODO version
+ * @since 0.7.4
  * @author Volker Bergmann
  */
 public class RelativePathResolver implements PathResolver {
