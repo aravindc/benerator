@@ -27,6 +27,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.IOUtil;
 import org.databene.jdbacl.dialect.HSQLUtil;
+import org.databene.model.data.DataModel;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -44,7 +45,7 @@ public class QueryGeneratorTest extends GeneratorTest {
 
 	@BeforeClass
 	public static void setupDB() {
-	    db = new DBSystem("db", HSQLUtil.getInMemoryURL(QueryGeneratorTest.class.getSimpleName()), HSQLUtil.DRIVER, "sa", null);
+	    db = new DBSystem("db", HSQLUtil.getInMemoryURL(QueryGeneratorTest.class.getSimpleName()), HSQLUtil.DRIVER, "sa", null, new DataModel());
 		db.execute("create table TT ( id int, value int )");
 		db.execute("insert into TT (id, value) values (1, 1000)");
     }

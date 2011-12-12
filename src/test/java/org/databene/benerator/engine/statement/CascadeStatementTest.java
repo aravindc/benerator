@@ -53,7 +53,7 @@ public class CascadeStatementTest extends GeneratorTest {
 		context.set("cons", consumer);
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
 		db = new DBSystem("db", dbUrl, HSQLUtil.DRIVER, 
-				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD);
+				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, context.getDataModel());
 		db.setSchema("PUBLIC");
 		// drop tables if they already exist
 		db.execute("drop table referer if exists");

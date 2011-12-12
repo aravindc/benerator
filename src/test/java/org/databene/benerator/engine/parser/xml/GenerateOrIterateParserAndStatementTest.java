@@ -374,7 +374,8 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	@Test
 	public void testDBUpdate() throws Exception {
 		// create DB
-        DBSystem db = new DBSystem("db", HSQLUtil.getInMemoryURL("benetest"), HSQLUtil.DRIVER, HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD);
+        DBSystem db = new DBSystem("db", HSQLUtil.getInMemoryURL("benetest"), 
+        		HSQLUtil.DRIVER, HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, context.getDataModel());
         try {
     		// prepare DB
         	db.execute(

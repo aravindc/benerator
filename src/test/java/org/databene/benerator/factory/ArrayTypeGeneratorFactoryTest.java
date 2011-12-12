@@ -144,7 +144,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testDatabaseSource() throws Exception {
 		// prepare DB
-		DBSystem db = new DBSystem("db", HSQLUtil.getInMemoryURL("benerator"), HSQLUtil.DRIVER, "sa", null);
+		DBSystem db = new DBSystem("db", HSQLUtil.getInMemoryURL("benerator"), HSQLUtil.DRIVER, "sa", null, context.getDataModel());
 		context.set("db", db);
 		try {
 			db.execute(

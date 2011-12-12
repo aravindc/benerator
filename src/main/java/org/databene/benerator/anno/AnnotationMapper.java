@@ -404,10 +404,10 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	private static void parseDatabase(Database annotation, BeneratorContext context) {
 		DBSystem db;
 		if (!StringUtil.isEmpty(annotation.environment()))
-			db = new DBSystem(annotation.id(), annotation.environment());
+			db = new DBSystem(annotation.id(), annotation.environment(), context.getDataModel());
 		else 
 			db = new DBSystem(annotation.id(), annotation.url(), annotation.driver(), 
-					annotation.user(), annotation.password());
+					annotation.user(), annotation.password(), context.getDataModel());
 		if (!StringUtil.isEmpty(annotation.catalog()))
 			db.setCatalog(annotation.catalog());
 		if (!StringUtil.isEmpty(annotation.schema()))

@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.databene.benerator.StorageSystem;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityExporter;
 import org.databene.platform.db.DBSystem;
@@ -25,7 +26,7 @@ public class CSVTableExporterDemo {
     
     public static void main(String[] args) throws IOException {
     	// first we create a table with some data to export
-        DBSystem db = new DBSystem(null, JDBC_URL, JDBC_DRIVER, USER, PASSWORD);
+        DBSystem db = new DBSystem(null, JDBC_URL, JDBC_DRIVER, USER, PASSWORD, new DataModel());
         try {
 	        db.execute("create table db_data (" + 
 	        			"    id   int," +

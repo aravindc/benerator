@@ -55,7 +55,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		context.set("cons", consumer);
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
 		db = new DBSystem("db", dbUrl, HSQLUtil.DRIVER, 
-				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD);
+				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, context.getDataModel());
 		db.setSchema("PUBLIC");
 		db.execute("drop table referer if exists");
 		db.execute("drop table referee if exists");

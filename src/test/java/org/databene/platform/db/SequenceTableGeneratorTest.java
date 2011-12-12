@@ -30,6 +30,7 @@ import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.IOUtil;
 import org.databene.jdbacl.dialect.HSQLUtil;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -48,7 +49,7 @@ public class SequenceTableGeneratorTest extends GeneratorTest {
 
 	@BeforeClass
 	public static void setupDB() {
-	    db = new DBSystem("db", HSQLUtil.getInMemoryURL(SequenceTableGeneratorTest.class.getSimpleName()), HSQLUtil.DRIVER, "sa", null);
+	    db = new DBSystem("db", HSQLUtil.getInMemoryURL(SequenceTableGeneratorTest.class.getSimpleName()), HSQLUtil.DRIVER, "sa", null, new DataModel());
 		db.execute("create table TT ( id1 int, id2 int, value int )");
 		db.execute("insert into TT (id1, id2, value) values (1, 2, 1000)");
 		db.execute("insert into TT (id1, id2, value) values (2, 3, 2000)");

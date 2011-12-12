@@ -34,6 +34,8 @@ public class FeatureDescriptor implements Named {
     public FeatureDescriptor(String name, DescriptorProvider owner) {
     	if (owner == null)
     		throw new IllegalArgumentException("owner is null");
+    	if (owner.getDataModel() == null)
+    		throw new IllegalArgumentException("owner's data model is null");
         this.details = new OrderedNameMap<FeatureDetail<?>>();
         this.owner = owner;
         this.addConstraint(NAME, String.class, null);

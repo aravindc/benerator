@@ -52,7 +52,7 @@ public class MemStoreStatement implements Statement {
 
     public boolean execute(BeneratorContext context) {
 	    logger.debug("Instantiating store with id '" + id + "'");
-		MemStore store = new MemStore(id);
+		MemStore store = new MemStore(id, context.getDataModel());
 	    // register this object on all relevant managers and in the context
 	    context.set(id, store);
 	    context.getDataModel().addDescriptorProvider(store);

@@ -54,7 +54,7 @@ public class DBSeqHiLoGeneratorTest extends GeneratorTest {
     @Before
     public void setUpDatabase() throws Exception {
     	String url = HSQLUtil.getInMemoryURL("beneratortest");
-    	db = new DBSystem("db", url, DRIVER, DEFAULT_USER, DEFAULT_PASSWORD);
+    	db = new DBSystem("db", url, DRIVER, DEFAULT_USER, DEFAULT_PASSWORD, context.getDataModel());
     	dropSequence();
     	db.createSequence(SEQUENCE_NAME);
     }

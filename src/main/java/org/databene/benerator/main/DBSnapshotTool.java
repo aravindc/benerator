@@ -37,6 +37,7 @@ import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.ui.ProgressMonitor;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.db.DBSystem;
@@ -133,7 +134,7 @@ public class DBSnapshotTool {
         int count = 0;
         try {
         	// connect DB
-            db = new DBSystem("db", dbUrl, dbDriver, dbUser, dbPassword);
+            db = new DBSystem("db", dbUrl, dbDriver, dbUser, dbPassword, new DataModel());
             if (dbSchema != null)
                 db.setSchema(dbSchema);
             db.setDynamicQuerySupported(false);

@@ -101,7 +101,7 @@ public class DefineDatabaseStatement implements Statement {
 	    String idValue = id.evaluate(context);
 	    
 	    // DB config is based on the (optional) environment setting
-		DBSystem db = new DBSystem(idValue, ExpressionUtil.evaluate(environment, context));
+		DBSystem db = new DBSystem(idValue, ExpressionUtil.evaluate(environment, context), context.getDataModel());
 		
 		// The user may override single or all settings from the environment configuration
 		String urlValue = ExpressionUtil.evaluate(url, context);

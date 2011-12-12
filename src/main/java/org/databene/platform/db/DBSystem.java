@@ -138,9 +138,8 @@ public class DBSystem extends AbstractStorageSystem {
 	
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public DBSystem(String id, String url, String driver, String user, String password) {
-    	this();
-        setId(id);
+    public DBSystem(String id, String url, String driver, String user, String password, DataModel dataModel) {
+    	this(id, dataModel);
         setUrl(url);
         setUser(user);
         setPassword(password);
@@ -148,13 +147,14 @@ public class DBSystem extends AbstractStorageSystem {
         checkOracleDriverVersion(driver);
     }
 
-    public DBSystem(String id, String environment) {
-    	this();
-    	setId(id);
+    public DBSystem(String id, String environment, DataModel dataModel) {
+    	this(id, dataModel);
         setEnvironment(environment);
     }
 
-	private DBSystem() {
+	private DBSystem(String id, DataModel dataModel) {
+        setId(id);
+        setDataModel(dataModel);
         setSchema(null);
         setIncludeTables(".*");
         setExcludeTables(null);

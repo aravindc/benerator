@@ -39,6 +39,7 @@ import java.util.Set;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.databene.benerator.archetype.FolderLayout;
+
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import org.databene.benerator.main.DBSnapshotTool;
 import org.databene.commons.CollectionUtil;
@@ -163,11 +164,7 @@ public class ProjectBuilder implements Runnable {
 	    noteMonitor("scanning database");
 	    if (monitor != null)
 	    	monitor.setProgress(0);
-	    db = new DBSystem("db", setup.getDbUrl(), setup.getDbDriver(), setup.getDbUser(), setup.getDbPassword());
-	    db.setSchema(setup.getDbSchema());
-	    dataModel.addDescriptorProvider(db);
-	    if (setup.getDbSchema() != null)
-	        db.setSchema(setup.getDbSchema());
+	    db = getDBSystem(setup);
 	    descriptors = db.getTypeDescriptors();
     }
 
@@ -454,7 +451,7 @@ public class ProjectBuilder implements Runnable {
 	}
 
     private DBSystem getDBSystem(Setup setup) {
-		DBSystem db = new DBSystem("db", setup.getDbUrl(), setup.getDbDriver(), setup.getDbUser(), setup.getDbPassword());
+		DBSystem db = new DBSystem("db", setup.getDbUrl(), setup.getDbDriver(), setup.getDbUser(), setup.getDbPassword(), dataModel);
 		if (setup.getDbSchema() != null)
 			db.setSchema(setup.getDbSchema());
 		dataModel.addDescriptorProvider(db);

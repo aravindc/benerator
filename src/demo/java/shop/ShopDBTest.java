@@ -106,10 +106,11 @@ public class ShopDBTest {
             runAsClass(BENERATOR_FILE, database, "test");
         // connect to database
         Map<String, String> dbCfg = IOUtil.readProperties("demo/shop/" + database + "/shop." + database + ".properties");
-        DBSystem db = new DBSystem("db", dbCfg.get("dbUri"), dbCfg.get("dbDriver"), dbCfg.get("dbUser"), dbCfg.get("dbPassword"));
+        DefaultBeneratorContext context = new DefaultBeneratorContext();
+        DBSystem db = new DBSystem("db", dbCfg.get("dbUri"), dbCfg.get("dbDriver"), dbCfg.get("dbUser"), dbCfg.get("dbPassword"), context.getDataModel());
         // check generation results
-        Map<String, Object> genCfg = IOUtil.readProperties("demo/shop/shop." + stage + ".properties", 
-        		new DefaultEntryConverter(new DefaultBeneratorContext(null)));
+		Map<String, Object> genCfg = IOUtil.readProperties("demo/shop/shop." + stage + ".properties", 
+        		new DefaultEntryConverter(context));
         int expectedProductCount = 6 + (Integer) genCfg.get("product_count");
         int expectedCustomerCount = 1 + (Integer) genCfg.get("customer_count");
         int expectedUserCount = 3 + expectedCustomerCount;

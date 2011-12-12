@@ -33,6 +33,7 @@ import org.databene.commons.OrderedMap;
 import org.databene.commons.StringUtil;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.script.Expression;
@@ -55,7 +56,8 @@ public class MemStore extends AbstractStorageSystem {
 	private OrderedNameMap<ComplexTypeDescriptor> types;
 	private Map<String, Map<Object, Entity>> typeMap;
 	
-	public MemStore(String id) {
+	public MemStore(String id, DataModel dataModel) {
+		this.setDataModel(dataModel);
 		this.types = OrderedNameMap.createCaseInsensitiveMap();
 		typeMap = OrderedNameMap.createCaseInsensitiveMap();
 		this.id = id;

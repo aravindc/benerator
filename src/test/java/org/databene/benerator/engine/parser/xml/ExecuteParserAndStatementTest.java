@@ -75,7 +75,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testEmptyResultSet() throws Exception {
 		String url = HSQLUtil.getInMemoryURL("benerator");
-		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null);
+		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
 		BeneratorContext context = new DefaultBeneratorContext();
 		context.set("db", db);
 		try {
@@ -91,7 +91,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testDbInvalidationDefault() throws Exception {
 		String url = HSQLUtil.getInMemoryURL("benerator");
-		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null);
+		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
 		BeneratorContext context = new DefaultBeneratorContext();
 		context.set("db", db);
 		assertEquals(0, db.invalidationCount());
@@ -112,7 +112,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testDbInvalidationOverride() throws Exception {
 		String url = HSQLUtil.getInMemoryURL("benerator");
-		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null);
+		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
 		BeneratorContext context = new DefaultBeneratorContext();
 		context.set("db", db);
 		assertEquals(0, db.invalidationCount());

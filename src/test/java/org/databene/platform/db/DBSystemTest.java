@@ -34,6 +34,7 @@ import org.databene.benerator.Consumer;
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.jdbacl.DBUtil;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
@@ -180,7 +181,7 @@ public class DBSystemTest {
 	public void setUp() throws Exception {
 		Connection connection = null;
 		try {
-			db = new DBSystem("db", IN_MEMORY_URL_PREFIX + "benerator", DRIVER, DEFAULT_USER, DEFAULT_PASSWORD);
+			db = new DBSystem("db", IN_MEMORY_URL_PREFIX + "benerator", DRIVER, DEFAULT_USER, DEFAULT_PASSWORD, new DataModel());
 			db.setSchema("public");
 			connection = db.createConnection();
 			try {

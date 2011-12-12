@@ -52,7 +52,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 		context.set("cons", consumer);
 
 		// create source store and prefill it
-		src = new MemStore("src");
+		src = new MemStore("src", context.getDataModel());
 		context.set("src", src);
 		ComplexTypeDescriptor descriptor = createComplexType("product");
 		descriptor.addComponent(createId("id", "int"));
@@ -61,7 +61,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 		context.getDataModel().addDescriptorProvider(src);
 
 		// create dest store
-		dst = new MemStore("dst");
+		dst = new MemStore("dst", context.getDataModel());
 		context.set("dst", dst);
 	}
 

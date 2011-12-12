@@ -45,7 +45,7 @@ public class DBSequenceGeneratorTest extends GeneratorTest {
 	public void setUpDB() throws SQLException {
 		db = new DBSystem("db", 
 				HSQLUtil.IN_MEMORY_URL_PREFIX + "benerator", 
-				HSQLUtil.DRIVER, HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD);
+				HSQLUtil.DRIVER, HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, context.getDataModel());
 		// create sequence and read its value
 		db.createSequence(seq);
 	}
