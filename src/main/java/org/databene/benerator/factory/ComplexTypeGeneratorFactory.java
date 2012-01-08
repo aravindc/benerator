@@ -198,7 +198,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 		String pattern = descriptor.getPattern();
 		if (pattern == null)
 		    throw new ConfigurationError("No pattern specified for FCW file import: " + sourceName);
-		FixedWidthColumnDescriptor[] ffcd = FixedWidthUtil.parseProperties(pattern);
+		FixedWidthColumnDescriptor[] ffcd = FixedWidthUtil.parseColumnsSpec(pattern);
 		Converter<String, String> scriptConverter = DescriptorUtil.createStringScriptConverter(context);
 		FixedWidthEntitySource iterable = new FixedWidthEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);
 		iterable.setContext(context);

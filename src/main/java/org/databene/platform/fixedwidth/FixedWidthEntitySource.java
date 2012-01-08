@@ -105,14 +105,18 @@ public class FixedWidthEntitySource extends FileBasedEntitySource {
         this.entityTypeName = entity;
     }
 
-    public void setProperties(String properties) {
+    /**
+     * @deprecated use {@link #setColumns(String)}
+     */
+    @Deprecated
+	public void setProperties(String properties) {
     	escalator.escalate("The property 'properties' of class " + getClass() + "' has been renamed to 'columns'. " +
     			"Please fix the property name in your configuration", this.getClass(), "setProperties()");
         setColumns(properties);
     }
 
     public void setColumns(String columns) {
-        this.descriptors = FixedWidthUtil.parseProperties(columns);
+        this.descriptors = FixedWidthUtil.parseColumnsSpec(columns);
     }
     
     // Iterable interface ----------------------------------------------------------------------------------------------
