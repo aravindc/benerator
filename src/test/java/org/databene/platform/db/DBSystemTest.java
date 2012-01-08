@@ -29,6 +29,7 @@ package org.databene.platform.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import org.databene.benerator.Consumer;
 import org.databene.benerator.engine.DefaultBeneratorContext;
@@ -42,8 +43,8 @@ import org.databene.webdecs.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
-import static junit.framework.Assert.*;
 import static org.databene.jdbacl.dialect.HSQLUtil.*;
+import static org.junit.Assert.*;
 
 /**
  * Tests {@link DBSystem}.<br/>
@@ -135,10 +136,22 @@ public class DBSystemTest {
 	@Test
 	public void testQueryEntities() throws Exception {
 		db.execute("insert into TEST (ID, NAME) values (1, 'Alice')");
-		DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
-        DataIterator<Entity> iterator = entities.iterator();
-        assertEquals(new Entity("TEST", db, "ID", 1, "NAME", "Alice"), 
-        		iterator.next(new DataContainer<Entity>()).getData());
+		db.execute("insert into TEST (ID, NAME) values (2, 'Bob')");
+		DefaultBeneratorContext context = new DefaultBeneratorContext();
+        DataContainer<Entity> container = new DataContainer<Entity>();
+        
+		// test without selector
+		DataIterator<Entity> iterator = db.queryEntities("TEST", "ID = 1", context).iterator();
+		assertEquals(new Entity("TEST", db, "ID", 1, "NAME", "Alice"), iterator.next(container).getData());
+		assertNull(iterator.next(container));
+        iterator.close();
+        
+		// test with selector
+		DataIterator<Entity> iterator2 = db.queryEntities("TEST", null, context).iterator();
+        assertEquals(new Entity("TEST", db, "ID", 1, "NAME", "Alice"), iterator2.next(container).getData());
+        assertEquals(new Entity("TEST", db, "ID", 2, "NAME", "Bob"), iterator2.next(container).getData());
+		assertNull(iterator2.next(container));
+        iterator2.close();
 	}
 	
 	@Test
@@ -168,15 +181,22 @@ public class DBSystemTest {
 	@Test
 	public void testUpdater() throws Exception {
 		db.execute("insert into TEST (ID, NAME) values (1, 'Alice')");
+		db.execute("insert into TEST (ID, NAME) values (2, 'Bob')");
 		Consumer updater = db.updater();
-        Entity entity = new Entity("TEST", db, "ID", 1, "NAME", "Bob");
+		// update (1, Alice) to (1, Charly)
+        Entity entity1 = new Entity("TEST", db, "ID", 1, "NAME", "Charly");
         ProductWrapper<Entity> wrapper = new ProductWrapper<Entity>();
-		updater.startConsuming(wrapper.wrap(entity));
-        updater.finishConsuming(wrapper.wrap(entity));
-        DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
-        DataIterator<Entity> iterator = entities.iterator();
-        assertEquals(new Entity("TEST", db, "ID", 1, "NAME", "Bob"), 
-        		iterator.next(new DataContainer<Entity>()).getData());
+		updater.startConsuming(wrapper.wrap(entity1));
+        updater.finishConsuming(wrapper.wrap(entity1));
+		// update (2, Bob) to (2, Otto)
+        Entity entity2 = new Entity("TEST", db, "ID", 2, "NAME", "Otto");
+		updater.startConsuming(wrapper.wrap(entity2));
+        updater.finishConsuming(wrapper.wrap(entity2));
+        // check database content
+		List<Object[]> storedData = DBUtil.query("select ID, NAME from TEST", db.getConnection());
+		assertEquals(2, storedData.size());
+		assertArrayEquals(new Object[] { 1, "Charly" }, storedData.get(0));
+		assertArrayEquals(new Object[] { 2, "Otto"   }, storedData.get(1));
 	}
 	
 	@Test
