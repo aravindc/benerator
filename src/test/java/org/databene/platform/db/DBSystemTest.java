@@ -133,7 +133,7 @@ public class DBSystemTest {
 	}
 	
 	@Test
-	public void testUpdater() throws Exception {
+	public void testQueryEntities() throws Exception {
 		db.execute("insert into TEST (ID, NAME) values (1, 'Alice')");
 		DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
@@ -162,6 +162,20 @@ public class DBSystemTest {
         DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
         DataIterator<Entity> iterator = entities.iterator();
         assertEquals(new Entity("TEST", db, "ID", 1, "NAME", "Alice"), 
+        		iterator.next(new DataContainer<Entity>()).getData());
+	}
+	
+	@Test
+	public void testUpdater() throws Exception {
+		db.execute("insert into TEST (ID, NAME) values (1, 'Alice')");
+		Consumer updater = db.updater();
+        Entity entity = new Entity("TEST", db, "ID", 1, "NAME", "Bob");
+        ProductWrapper<Entity> wrapper = new ProductWrapper<Entity>();
+		updater.startConsuming(wrapper.wrap(entity));
+        updater.finishConsuming(wrapper.wrap(entity));
+        DataSource<Entity> entities = db.queryEntities("TEST", "ID = 1", new DefaultBeneratorContext());
+        DataIterator<Entity> iterator = entities.iterator();
+        assertEquals(new Entity("TEST", db, "ID", 1, "NAME", "Bob"), 
         		iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
