@@ -92,7 +92,8 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			ATT_TEMPLATE, ATT_CONSUMER, 
 			ATT_NAME, ATT_TYPE, ATT_GENERATOR, ATT_VALIDATOR, 
 			ATT_CONVERTER, ATT_NULL_QUOTA, ATT_UNIQUE, ATT_DISTRIBUTION, ATT_CYCLIC,
-			ATT_SOURCE, ATT_SEPARATOR, ATT_ENCODING, ATT_SELECTOR, ATT_SUB_SELECTOR, ATT_DATASET, ATT_NESTING, ATT_LOCALE, ATT_FILTER
+			ATT_SOURCE, ATT_SEPARATOR, ATT_ENCODING, ATT_SELECTOR, ATT_SUB_SELECTOR, 
+			ATT_DATASET, ATT_NESTING, ATT_LOCALE, ATT_FILTER
 		);
 	
 	//private static final Set<String> PART_ELEMENTS = CollectionUtil.toSet(
@@ -223,32 +224,34 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 				GeneratorComponent<?> componentGenerator = GeneratorComponentFactory.createGeneratorComponent(
 						componentDescriptor, Uniqueness.NONE, context);
 				statements.add(componentGenerator);
-			} else if (!"consumer".equals(childName)) {
+			} else if (!EL_CONSUMER.equals(childName)) {
 				Statement[] subPath = parseContext.createSubPath(parentPath, statement);
 				Statement subStatement = parseContext.parseChildElement(child, subPath);
 				statements.add(subStatement);
 			}
 		}
-		// add missing members defined in parent descriptors
-		TypeDescriptor pType = type.getParent();
-		if (pType instanceof ComplexTypeDescriptor) {
-			// calculate insertion index
-			int insertionIndex = statements.size() - 1;
-			for (; insertionIndex >= 0; insertionIndex--) {
-				Statement tmp = statements.get(insertionIndex);
-				if (tmp instanceof GeneratorComponent || tmp instanceof CurrentProductGeneration)
-					break;
-			}
-			insertionIndex++;
-			// insert generators from parent;
-			ComplexTypeDescriptor parentType = (ComplexTypeDescriptor) pType;
-			for (ComponentDescriptor component : parentType.getComponents()) {
-				String componentName = component.getName();
-				if (handledMembers.contains(componentName.toLowerCase()))
-					continue;
-				GeneratorComponent<?> componentGenerator = GeneratorComponentFactory.createGeneratorComponent(
-						component, Uniqueness.NONE, context);
-				statements.add(insertionIndex++, componentGenerator);
+		// if element is a <generate> then add missing members defined in parent descriptors
+		if (EL_GENERATE.equals(element.getNodeName())) {
+			TypeDescriptor pType = type.getParent();
+			if (pType instanceof ComplexTypeDescriptor) {
+				// calculate insertion index
+				int insertionIndex = statements.size() - 1;
+				for (; insertionIndex >= 0; insertionIndex--) {
+					Statement tmp = statements.get(insertionIndex);
+					if (tmp instanceof GeneratorComponent || tmp instanceof CurrentProductGeneration)
+						break;
+				}
+				insertionIndex++;
+				// insert generators from parent
+				ComplexTypeDescriptor parentType = (ComplexTypeDescriptor) pType;
+				for (ComponentDescriptor component : parentType.getComponents()) {
+					String componentName = component.getName();
+					if (handledMembers.contains(componentName.toLowerCase()))
+						continue;
+					GeneratorComponent<?> componentGenerator = GeneratorComponentFactory.createGeneratorComponent(
+							component, Uniqueness.NONE, context);
+					statements.add(insertionIndex++, componentGenerator);
+				}
 			}
 		}
 		
