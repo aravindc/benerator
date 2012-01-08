@@ -145,6 +145,7 @@
             <unpack>false</unpack>
             <scope>provided</scope>
             <includes>
+                <include>org.slf4j:slf4j-log4j12:jar</include>
                 <include>net.sourceforge.jtds:jtds:jar</include>
                 <include>mysql:mysql-connector-java:jar</include>
                 <include>hsqldb:hsqldb:jar</include>
