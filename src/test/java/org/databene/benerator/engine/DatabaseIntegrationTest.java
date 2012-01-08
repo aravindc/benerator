@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -96,11 +96,6 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	}
 
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected List<Entity> getConsumedEntities() {
-		return (List) consumer.getProducts();
-	}
-
 	@Test
 	public void testDbRef_default_not_null_defaultOneToOne() {
 		context.setDefaultOneToOne(true);
@@ -158,9 +153,8 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
         	"</generate>");
 		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
-		for (Entity product : products) {
+		for (Entity product : products)
 			assertEquals(1, product.get("referee_id"));
-		}
 		closeAndCheckCleanup();
 	}
 
@@ -202,9 +196,8 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
         	"</generate>");
 		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
-		for (Entity product : products) {
+		for (Entity product : products)
 			assertEquals(2, product.get("referee_id"));
-		}
 		closeAndCheckCleanup();
 	}
 
@@ -217,9 +210,8 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
         	"</generate>");
 		List<Entity> products = getConsumedEntities();
 		assertEquals(3, products.size());
-		for (Entity product : products) {
+		for (Entity product : products)
 			assertEquals(3, product.get("referee_id"));
-		}
 		closeAndCheckCleanup();
 	}
 
@@ -574,10 +566,34 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		closeAndCheckCleanup();
 	}
 	
+	@Test
+	public void testUpdater() throws Exception {
+		parseAndExecute(
+			"<iterate type='referee' source='db' consumer='db.updater(), cons'>" +
+        	"  <attribute name='n' constant='9' />" +
+        	"</iterate>");
+		// check entities sent to consumers
+		List<Entity> products = getConsumedEntities();
+		assertEquals(2, products.size());
+		assertEquals(9, products.get(0).get("n"));
+		assertEquals(9, products.get(1).get("n"));
+		// check entities in database
+		List<Object[]> storedData = DBUtil.query("select id, n from referee order by id", db.getConnection());
+		assertEquals(2, storedData.size());
+		assertEqualArrays(new Object[] { 2, 9 }, storedData.get(0));
+		assertEqualArrays(new Object[] { 3, 9 }, storedData.get(1));
+		closeAndCheckCleanup();
+	}
+	
 	
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected List<Entity> getConsumedEntities() {
+		return (List) consumer.getProducts();
+	}
+
 	private void closeAndCheckCleanup() {
 		context.close();
 		db.close();
