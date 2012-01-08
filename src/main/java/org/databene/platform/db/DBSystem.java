@@ -90,6 +90,8 @@ import java.sql.Types;
 public class DBSystem extends AbstractStorageSystem {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DBSystem.class);
+	static final Logger JDBC_LOGGER = LoggerFactory.getLogger(LogCategories.JDBC);
+
     
     private static final int DEFAULT_FETCH_SIZE = 100;
 
@@ -323,8 +325,7 @@ public class DBSystem extends AbstractStorageSystem {
     // DescriptorProvider interface ------------------------------------------------------------------------------------
 
 	public TypeDescriptor[] getTypeDescriptors() {
-        if (logger.isDebugEnabled())
-            logger.debug("getTypeDescriptors()");
+        LOGGER.debug("getTypeDescriptors()");
         parseMetadataIfNecessary();
         if (typeDescriptors == null)
         	return EMPTY_TYPE_DESCRIPTOR_ARRAY;
@@ -333,8 +334,7 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     public TypeDescriptor getTypeDescriptor(String tableName) {
-        if (logger.isDebugEnabled())
-            logger.debug("getTypeDescriptor(" + tableName + ")");
+        LOGGER.debug("getTypeDescriptor({})", tableName);
         parseMetadataIfNecessary();
         TypeDescriptor entityDescriptor = typeDescriptors.get(tableName);
         if (entityDescriptor == null)
@@ -352,8 +352,7 @@ public class DBSystem extends AbstractStorageSystem {
 		if (readOnly)
 			throw new IllegalStateException("Tried to insert rows into table '" + entity.type() + "' " +
 					"though database '" + id + "' is read-only");
-        if (logger.isDebugEnabled())
-            logger.debug("Storing " + entity);
+        LOGGER.debug("Storing {}", entity);
         persistOrUpdate(entity, true);
     }
 
@@ -361,21 +360,18 @@ public class DBSystem extends AbstractStorageSystem {
 		if (readOnly)
 			throw new IllegalStateException("Tried to update table '" + entity.type() + "' " +
 					"though database '" + id + "' is read-only");
-        if (logger.isDebugEnabled())
-            logger.debug("Updating " + entity);
+        LOGGER.debug("Updating {}", entity);
         persistOrUpdate(entity, false);
 	}
 
 	public void flush() {
-        if (logger.isDebugEnabled())
-            logger.debug("flush()");
+        LOGGER.debug("flush()");
     	for (ThreadContext threadContext : threadContexts.values())
     		threadContext.commit();
     }
 
     public void close() {
-        if (logger.isDebugEnabled())
-            logger.debug("close()");
+        LOGGER.debug("close()");
         flush();
         Iterator<ThreadContext> iterator = threadContexts.values().iterator();
         while (iterator.hasNext()) {
@@ -387,7 +383,7 @@ public class DBSystem extends AbstractStorageSystem {
 
 	public Entity queryEntityById(String tableName, Object id) {
         try {
-	        logger.debug("queryEntityById({}, {})", tableName, id);
+	        LOGGER.debug("queryEntityById({}, {})", tableName, id);
 	        ComplexTypeDescriptor descriptor = (ComplexTypeDescriptor) getTypeDescriptor(tableName);
 	        PreparedStatement query = getThreadContext().getSelectByPKStatement(descriptor);
 	        query.setObject(1, id); // TODO v0.7.1 support composite keys
@@ -403,8 +399,7 @@ public class DBSystem extends AbstractStorageSystem {
 
     @SuppressWarnings("null")
     public DataSource<Entity> queryEntities(String type, String selector, Context context) {
-        if (logger.isDebugEnabled())
-            logger.debug("queryEntities(" + type + ")");
+        LOGGER.debug("queryEntities({})", type);
     	Connection connection = getThreadContext().connection;
         boolean script = false;
     	if (selector != null && selector.startsWith("{") && selector.endsWith("}")) {
@@ -427,14 +422,13 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     public long countEntities(String tableName) {
-        if (logger.isDebugEnabled())
-            logger.debug("countEntities(" + tableName + ")");
+        LOGGER.debug("countEntities({})", tableName);
         String query = "select count(*) from " + tableName;
         return DBUtil.queryLong(query, getThreadContext().connection);
     }
 
     public DataSource<?> queryEntityIds(String tableName, String selector, Context context) {
-        logger.debug("queryEntityIds({}, {})", tableName, selector);
+        LOGGER.debug("queryEntityIds({}, {})", tableName, selector);
         
         // check for script
         boolean script = false;
@@ -462,8 +456,7 @@ public class DBSystem extends AbstractStorageSystem {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public DataSource<?> query(String query, boolean simplify, Context context) {
-        if (logger.isDebugEnabled())
-            logger.debug("query(" + query + ")");
+        LOGGER.debug("query({})", query);
         Connection connection = getThreadContext().connection;
         QueryDataSource resultSetIterable = createQuery(query, context, connection);
         ResultSetConverter converter = new ResultSetConverter(Object.class, simplify);
@@ -485,8 +478,7 @@ public class DBSystem extends AbstractStorageSystem {
     // database-specific interface -------------------------------------------------------------------------------------
 
     public boolean tableExists(String tableName) {
-        if (logger.isDebugEnabled())
-            logger.debug("tableExists(" + tableName + ")");
+        LOGGER.debug("tableExists({})", tableName);
         return (getTypeDescriptor(tableName) != null);
     }
 
@@ -564,9 +556,9 @@ public class DBSystem extends AbstractStorageSystem {
         getDialect(); // make sure dialect is initialized
         database = getDbMetaData();
         if (lazy)
-        	logger.info("Fetching table details and ordering tables by dependency");
+        	LOGGER.info("Fetching table details and ordering tables by dependency");
         else
-        	logger.info("Ordering tables by dependency");
+        	LOGGER.info("Ordering tables by dependency");
         List<DBTable> tables = DBUtil.dependencyOrderedTables(database);
         for (DBTable table : tables)
             parseTable(table);
@@ -614,7 +606,7 @@ public class DBSystem extends AbstractStorageSystem {
 				DatabaseMetaData metaData = connection.getMetaData();
 				VersionNumber driverVersion = VersionNumber.valueOf(metaData.getDriverVersion());
 				if (driverVersion.compareTo(MIN_ORACLE_VERSION) < 0)
-					logger.warn("Your Oracle driver has a bug in metadata support. Please update to 10.2.0.4 or newer. " +
+					LOGGER.warn("Your Oracle driver has a bug in metadata support. Please update to 10.2.0.4 or newer. " +
 							"You can use that driver for accessing an Oracle 9 server as well.");
 			} catch (SQLException e) {
 				throw new ConfigurationError(e);
@@ -659,8 +651,7 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     private void parseTable(DBTable table) {
-        if (logger.isDebugEnabled())
-            logger.debug("Parsing table " + table);
+        LOGGER.debug("Parsing table {}" + table);
         String tableName = table.getName();
         tables.put(tableName.toUpperCase(), table);
         ComplexTypeDescriptor complexType;
@@ -707,21 +698,20 @@ public class DBSystem extends AbstractStorageSystem {
                 boolean nullable = fkColumn.isNullable();
 				descriptor.setNullable(nullable);
                 complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
-                logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
+                LOGGER.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
                 // TODO v0.7.2 handle composite keys
             }
         }
         // process normal columns
         for (DBColumn column : table.getColumns()) {
-            if (logger.isDebugEnabled())
-                logger.debug("parsing column: " + column);
+            LOGGER.debug("parsing column: {}", column);
             String columnName = column.getName();
             if (complexType.getComponent(columnName) != null)
                 continue; // skip columns that were already parsed (fk)
             String columnId = table.getName() + '.' + columnName;
             if (column.isVersionColumn()) {
-                logger.debug("Leaving out version column " + columnId);
+                LOGGER.debug("Leaving out version column {}", columnId);
                 continue;
             }
             DBDataType columnType = column.getType();
@@ -749,11 +739,11 @@ public class DBSystem extends AbstractStorageSystem {
                 if (constraint.getColumnNames().length == 1) {
                     descriptor.setUnique(true);
                 } else {
-                    logger.warn("Automated uniqueness assurance on multiple columns is not provided yet: " + constraint);
+                    LOGGER.warn("Automated uniqueness assurance on multiple columns is not provided yet: " + constraint);
                     // TODO v0.7.1 support uniqueness constraints on combination of columns
                 }
             }
-            logger.debug("parsed attribute " + columnId + ": " + descriptor);
+            LOGGER.debug("parsed attribute " + columnId + ": " + descriptor);
             complexType.addComponent(descriptor);
         }
 		return complexType;
@@ -872,7 +862,7 @@ public class DBSystem extends AbstractStorageSystem {
                     if (jdbcValue != null || (dialect instanceof OracleDialect && (info.sqlType == Types.NCLOB || info.sqlType == Types.OTHER))) // the second expression causes a workaround for Oracle's unability to perform a setNull() for NCLOBs and NVARCHAR2
                         statement.setObject(i + 1, jdbcValue);
                     else
-                        statement.setNull(i + 1, info.sqlType);
+                        statement.setNull(i + 1, info.sqlType); // TODO this sets any non-null NCLOB component to null
                 } catch (SQLException e) {
                     throw new RuntimeException("error setting column " + tableName + '.' + info.name, e);
                 }
@@ -910,8 +900,7 @@ public class DBSystem extends AbstractStorageSystem {
             try {
 				flushStatements(insertStatements);
 				flushStatements(updateStatements);
-                if (jdbcLogger.isDebugEnabled())
-                    jdbcLogger.debug("Committing connection: " + connection);
+                JDBC_LOGGER.debug("Committing connection: {}" + connection);
                 connection.commit();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -925,8 +914,7 @@ public class DBSystem extends AbstractStorageSystem {
 			        // need to finish old statement
 		            if (batch)
 		                statement.executeBatch();
-			        if (jdbcLogger.isDebugEnabled())
-			            jdbcLogger.debug("Closing statement: " + statement);
+		            JDBC_LOGGER.debug("Closing statement: {}", statement);
 			        DBUtil.close(statement);
 			    }
 			    entry.setValue(null);
@@ -983,8 +971,7 @@ public class DBSystem extends AbstractStorageSystem {
 	        String sql = (insert ? 
 	        		dialect.insert(table, columnInfos) : 
 	        		dialect.update(table, getTable(tableName).getPKColumnNames(), columnInfos));
-	        if (jdbcLogger.isDebugEnabled())
-	            jdbcLogger.debug("Creating prepared statement: " + sql);
+            JDBC_LOGGER.debug("Creating prepared statement: {}", sql);
 	        statement = DBUtil.prepareStatement(connection, sql, readOnly);
 	        if (insert)
 	        	insertStatements.put(descriptor, statement);
@@ -1034,8 +1021,5 @@ public class DBSystem extends AbstractStorageSystem {
                 
         );
     }
-
-    static final Logger logger = LoggerFactory.getLogger(DBSystem.class);
-    static final Logger jdbcLogger = LoggerFactory.getLogger("org.databene.benerator.JDBC");
 
 }
