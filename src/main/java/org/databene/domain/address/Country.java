@@ -91,7 +91,7 @@ public class Country {
         instances.put(isoCode, this);
     }
 
-    private void importStates() { // TODO merge with CityManager.parseStateFile(Country) ?
+    private void importStates() {
         this.states = new OrderedNameMap<State>();
         String filename = "/org/databene/domain/address/state_" + isoCode + ".csv";
         if (!IOUtil.isURIAvailable(filename)) {
