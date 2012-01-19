@@ -34,7 +34,6 @@ import org.databene.benerator.WeightedGenerator;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.WeightedLongGenerator;
-import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Assert;
 
