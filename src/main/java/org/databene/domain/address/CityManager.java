@@ -79,11 +79,9 @@ public class CityManager {
             if (cells.length == 1)
                 continue;
             Map<String, String> instance = new HashMap<String, String>();
-            for (int i = 0; i < cells.length; i++) {
+            for (int i = 0; i < cells.length; i++)
                 instance.put(header[i], cells[i]);
-            }
-            if (LOGGER.isDebugEnabled()) // TODO adopt slf4j
-                LOGGER.debug(instance.toString());
+            LOGGER.debug("{}", instance);
 
             // create/setup state
             String stateId = instance.get("state.id");
