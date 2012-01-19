@@ -124,7 +124,7 @@ public class IndividualWeightSampleGenerator<E> extends AbstractSampleGenerator<
         assertInitialized();
         if (samples.size() == 0)
             return null;
-        int index = GeneratorUtil.generateNonNull(indexGenerator).intValue();
+        int index = indexGenerator.generate().intValue();
         return wrapper.wrap(samples.get(index));
     }
 
