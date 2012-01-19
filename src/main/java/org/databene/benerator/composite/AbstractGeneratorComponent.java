@@ -23,7 +23,9 @@ package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.Assert;
 
 /**
  * Abstract implementation of the GeneratorComponent interface which manages a source Generator
@@ -50,9 +52,15 @@ public abstract class AbstractGeneratorComponent<E> implements GeneratorComponen
 		return message;
 	}
 	
+	protected void assertInitialized() {
+		if (!source.wasInitialized())
+			throw new IllegalGeneratorStateException("Generator component was not initialized: " + this);
+	}
+
     // GeneratorComponent interface implementation ---------------------------------------------------------------------
 
 	public void prepare(BeneratorContext context) {
+		Assert.notNull(context, "context");
 		if (source.wasInitialized())
 			reset();
 		else
@@ -60,8 +68,8 @@ public abstract class AbstractGeneratorComponent<E> implements GeneratorComponen
 	}
 	
 	public void init(BeneratorContext context) {
-		source.init(context);
 		this.context = context;
+		source.init(context);
 	}
 
 	public void reset() {
