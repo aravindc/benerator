@@ -43,6 +43,7 @@ import org.databene.model.data.Entity;
 public class ConsoleExporter extends FormattingConsumer {
 	
 	private Long limit;
+	
 	private CompositeFormatter compositeFormatter;
 	private PrintStream out = System.out;
 	private Map<String, AtomicLong> counters;
@@ -74,7 +75,11 @@ public class ConsoleExporter extends FormattingConsumer {
 	public void setLimit(Long limit) {
     	this.limit = limit;
     }
-
+	
+	public void setFlat(boolean flat) {
+		this.compositeFormatter.setFlat(flat);
+	}
+	
 	public void setOut(PrintStream out) {
 		this.out = out;
 	}
