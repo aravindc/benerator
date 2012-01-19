@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,21 +28,12 @@ package org.databene.domain.address;
 
 import org.databene.document.csv.BeanCSVWriter;
 import org.databene.document.csv.CSVLineIterator;
-import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.Entity;
-import org.databene.platform.csv.CSVEntityIterator;
-import org.databene.platform.java.BeanDescriptorProvider;
-import org.databene.platform.java.Entity2JavaConverter;
 import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.util.ConvertingDataIterator;
 import org.databene.commons.*;
-import org.databene.commons.converter.NoOpConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.FileWriter;
 
@@ -66,7 +57,6 @@ public class CityManager {
 
     public static void readCities(Country country, String filename, Map<String, String> defaults) {
     	try {
-	    	parseStateFile(country);
 	        int warnCount = parseCityFile(country, filename, defaults);
 	        if (warnCount > 0)
 	            LOGGER.warn(warnCount + " warnings");
@@ -74,22 +64,6 @@ public class CityManager {
     		throw new ConfigurationError("Error reading cities file: " + filename, e);
     	}
     }
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    private static void parseStateFile(Country country) {
-		try {
-			String uri = "/org/databene/domain/address/state_" + country.getIsoCode() + ".csv";
-			ComplexTypeDescriptor stateDescriptor = (ComplexTypeDescriptor) new BeanDescriptorProvider().getTypeDescriptor(State.class.getName());
-			DataIterator<State> iterator = new ConvertingDataIterator<Entity, State>(
-					new CSVEntityIterator(uri, stateDescriptor, new NoOpConverter<String>(), ',', Encodings.UTF_8),
-					(Converter) new Entity2JavaConverter());
-			DataContainer<State> state = new DataContainer<State>();
-			while ((state = iterator.next(state)) != null)
-				country.addState(state.getData());
-		} catch (FileNotFoundException e) {
-			LOGGER.warn("No state definition file found: " + e.getMessage());
-		}
-	}
 
 	private static int parseCityFile(Country country, String filename, Map<String, String> defaults) throws IOException {
 		CSVLineIterator iterator = new CSVLineIterator(filename, ';', Encodings.UTF_8);
@@ -108,7 +82,7 @@ public class CityManager {
             for (int i = 0; i < cells.length; i++) {
                 instance.put(header[i], cells[i]);
             }
-            if (LOGGER.isDebugEnabled())
+            if (LOGGER.isDebugEnabled()) // TODO adopt slf4j
                 LOGGER.debug(instance.toString());
 
             // create/setup state
@@ -151,7 +125,6 @@ public class CityManager {
                 if (!StringUtil.isEmpty(lang))
                 	city.setLanguage(LocaleUtil.getLocale(lang));
                 state.addCity(cityId, city);
-                city.setState(state);
             } else
                 city.addPostalCode(postalCode);
         }
@@ -194,8 +167,8 @@ public class CityManager {
             return postalCode;
         }
 
-        public void setPostalCode(String zipCode) {
-            this.postalCode = zipCode;
+        public void setPostalCode(String postalCode) {
+            this.postalCode = postalCode;
         }
     }
 
