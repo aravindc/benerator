@@ -118,6 +118,8 @@ public class AddressGeneratorTest extends GeneratorClassTest {
             	assertEquals(cityAreaCode, address.getMobilePhone().getAreaCode());
         	assertEquals(cityAreaCode, address.getOfficePhone().getAreaCode());
         	assertEquals(cityAreaCode, address.getFax().getAreaCode());
+            assertNotNull(address.getState());
+            assertNotNull(address.getCountry());
         	// check country
             if (supported)
             	assertEquals(country, address.getCountry());
