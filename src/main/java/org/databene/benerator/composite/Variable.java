@@ -40,8 +40,9 @@ public class Variable<E> extends AbstractGeneratorComponent<E> {
 		this.name = name;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked" }) 
 	public boolean execute(BeneratorContext context) {
+		assertInitialized(); 
 		ProductWrapper<?> productWrapper = source.generate(new ProductWrapper());
 		if (productWrapper == null) {
 			context.remove(name);
@@ -51,12 +52,17 @@ public class Variable<E> extends AbstractGeneratorComponent<E> {
         return true;
 	}
 	
+	// Closeable interface implementation ------------------------------------------------------------------------------
+	
 	@Override
 	public void close() {
-		context.remove(name);
+		if (context != null) // if the variable has not been used (count="0"), it has not been initialized
+			context.remove(name);
 		super.close();
 	}
 
+	// java.lang.Object overrides --------------------------------------------------------------------------------------
+	
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[" + name + ":" + source + "]";
