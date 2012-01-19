@@ -1,4 +1,4 @@
-state;city;county;postalCode;areaCode
+state.id;city;county;postalCode;areaCode
 NH;PORTSMOUTH;Rockingham;210;603
 NH;PORTSMOUTH;Rockingham;211;603
 NH;PORTSMOUTH;Rockingham;212;603
