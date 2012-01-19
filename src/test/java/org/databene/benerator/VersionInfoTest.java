@@ -53,7 +53,7 @@ public class VersionInfoTest {
 	public void testDependencies() {
 		VersionInfo version = getVersionInfo();
 		Map<String, String> dependencies = version.getDependencies();
-		assertEquals(5, dependencies.size());
+		assertEquals(4, dependencies.size());
 		checkDependency("jdbacl", dependencies);
 		checkDependency("webdecs", dependencies);
 		checkDependency("commons", dependencies);
