@@ -101,22 +101,24 @@
 		    <version>${contiperf_version}</version>
         </dependency>
         
-        <dependency>
+        <dependency> <!-- TODO which Benerator version should depend on JUnit in which scope? -->
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.7</version>
+            <version>4.9</version>
             <!-- NOT in test scope because Benerator provides test helper classes -->
         </dependency>
 
         <!-- test dependencies -->
+        <!-- TODO remove 
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
             <version>2.0</version>
             <scope>test</scope>
         </dependency>
-        
+        -->
         <!-- Open source JDBC driver dependencies -->
+        <!-- TODO include DB drivers only in Community Edition -->
 		<dependency>
 		    <groupId>net.sourceforge.jtds</groupId> <!-- MS SQL server and Sybase -->
 		    <artifactId>jtds</artifactId>
@@ -159,7 +161,7 @@
 		    <version>2.1.6</version>
 		    <scope>provided</scope>
 		</dependency>
-		<dependency>
+		<dependency> <!-- Needed by Jaybird -->
 		    <groupId>javax.resource</groupId>
 		    <artifactId>connector-api</artifactId>
 		    <version>1.5</version>
@@ -173,6 +175,7 @@
         </dependency>
 
         <dependency>
+        	<!-- TODO refer to this only in community edition -->
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>2.3.9</version>
@@ -194,6 +197,7 @@
 		</dependency>
 	-->
 		<!-- logging -->
+		<!-- TODO use log4j only in CE -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
