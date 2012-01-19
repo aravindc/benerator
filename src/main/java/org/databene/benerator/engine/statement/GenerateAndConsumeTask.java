@@ -106,15 +106,15 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
 	public void init(BeneratorContext context) {
 	    synchronized (initialized) {
 	    	if (!initialized.get()) {
-	    		configureConsumptionStart();
-	    		configureConsumptionEnd();
+	    		injectConsumptionStart();
+	    		injectConsumptionEnd();
 	    		initialized.set(true);
 	        	prepareStatements(context);
 	    	}
 	    }
     }
 
-    private void configureConsumptionStart() {
+    private void injectConsumptionStart() {
 		// find last sub member generation...
 		int lastMemberIndex = - 1;
 		for (int i = statements.size() - 1; i >= 0; i--) {
@@ -130,7 +130,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
 		statements.add(lastMemberIndex + 1, consumption);
 	}
 
-	protected void configureConsumptionEnd() {
+	protected void injectConsumptionEnd() {
 		// find last sub generation statement...
 		int lastSubGenIndex = statements.size() - 1;
 		for (int i = statements.size() - 1; i >= 0; i--) {
@@ -175,7 +175,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
         	for (int i = 0; i < statements.size(); i++) {
         		Statement statement = statements.get(i);
         		// get root statement
-        		Statement rootStatement = StatementUtil.getRootStatement(statement, context);
+        		Statement rootStatement = StatementUtil.getRealStatement(statement, context);
         		if (rootStatement instanceof GenerateOrIterateStatement)
         			((GenerateOrIterateStatement) rootStatement).prepare(context);
 				success &= statement.execute(context);
@@ -202,7 +202,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
     
     public void reset() {
         for (Statement statement : statements) {
-			statement = StatementUtil.getRootStatement(statement, context);
+			statement = StatementUtil.getRealStatement(statement, context);
 		    if (statement instanceof Resettable)
 		    	((Resettable) statement).reset();
 		}
@@ -211,7 +211,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
     public void close() {
         // close sub statements
         for (Statement statement : statements) {
-			statement = StatementUtil.getRootStatement(statement, context);
+			statement = StatementUtil.getRealStatement(statement, context);
 		    if (statement instanceof Closeable)
 		    	IOUtil.close((Closeable) statement);
 		}
@@ -255,7 +255,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
 	private void prepareStatements(BeneratorContext context2) {
     	for (Statement statement : statements) {
     		// initialize statements
-			statement = StatementUtil.getRootStatement(statement, context);
+			statement = StatementUtil.getRealStatement(statement, context);
 			if (statement instanceof Preparable)
 			    ((Preparable) statement).prepare(context);
 		}

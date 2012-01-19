@@ -33,7 +33,7 @@ public class StatementUtil {
 	
 	private StatementUtil() { }
 
-	public static Statement getRootStatement(Statement statement, BeneratorContext context) {
+	public static Statement getRealStatement(Statement statement, BeneratorContext context) {
 		while (statement instanceof StatementProxy) 
 			statement = ((StatementProxy) statement).getRealStatement(context);
 		return statement;
