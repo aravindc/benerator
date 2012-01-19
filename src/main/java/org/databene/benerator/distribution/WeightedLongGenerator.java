@@ -126,6 +126,7 @@ public class WeightedLongGenerator extends AbstractNonNullNumberGenerator<Long> 
                 probSum[i] = (float) sum;
             }
             if (sum == 0) {
+            	sum = 1;
                 float avgProp = (float)1./sampleCount;
                 for (int i = 0; i < sampleCount; i++)
                     probSum[i] = (i + 1) * avgProp;
