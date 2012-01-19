@@ -107,7 +107,7 @@ public class AddressGenerator extends CompositeGenerator<Address> implements Non
         PhoneNumber officePhone = generatePhoneNumber(city);
         PhoneNumber mobilePhone = country.generateMobileNumber(city);
         PhoneNumber fax = generatePhoneNumber(city);
-        return new Address(street.getName(), houseNumber, postalCode, city, city.getState().getId(), country, 
+        return new Address(street.getName(), houseNumber, postalCode, city, city.getState(), country, 
         		privatePhone, officePhone, mobilePhone, fax);
     }
 

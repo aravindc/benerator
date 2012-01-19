@@ -45,7 +45,7 @@ public class Address {
     public String houseNumber;
     public String postalCode;
     public City city;
-    public String state;
+    public State state;
     public Country country;
     
     public PhoneNumber privatePhone;
@@ -64,7 +64,7 @@ public class Address {
         this(null, null, null, null, null, null, null, null, null, null);
     }
 
-    public Address(String street, String houseNumber, String postalCode, City city, String state, Country country, PhoneNumber privatePhone, PhoneNumber officePhone, PhoneNumber mobilePhone, PhoneNumber fax) {
+    public Address(String street, String houseNumber, String postalCode, City city, State state, Country country, PhoneNumber privatePhone, PhoneNumber officePhone, PhoneNumber mobilePhone, PhoneNumber fax) {
         this.street = street;
         this.houseNumber = houseNumber;
         this.postalCode = postalCode;
@@ -129,11 +129,11 @@ public class Address {
         this.city = city;
     }
 
-    public String getState() {
+    public State getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(State state) {
         this.state = state;
     }
 
