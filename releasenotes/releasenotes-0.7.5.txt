@@ -1,0 +1,24 @@
+release notes benerator 0.7.5
+=============================
+
+summary
+-------
+
+
+changes
+-------
+- Address.state resolves to a state obejct instead of the state id string. 
+  Use address.state.name and address.state.id to access state details
+
+
+enhancements
+------------
+- new ConsoleExporter{ flat = false }
+
+
+bug fixes
+---------
+- variable causes NPE in empty loop
+- WeightedLongGenerator always generates 0
+- AddressGenerator always uses the same city 
+- US cities do not have a state assigned
