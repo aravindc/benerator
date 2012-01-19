@@ -37,6 +37,7 @@ import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.commons.IOUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.converter.ConverterManager;
+import org.databene.commons.time.ElapsedTimeFormatter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.profile.Profiler;
 import org.databene.profile.Profiling;
@@ -133,8 +134,11 @@ public class DescriptorRunner implements ResourceManager {
 				.append(BeneratorMonitor.INSTANCE.getTotalGenerationCount()).append(" entities ");
 			if (elapsedTime != 0) {
 	            long throughput = BeneratorMonitor.INSTANCE.getTotalGenerationCount() * 3600000L / elapsedTime;
-	            message.append("in ").append(elapsedTime).append(" ms (~")
-					.append(RoundedNumberFormat.format(throughput, 0)).append(" p.h.)");
+	            message.append("in ")
+	            	.append(ElapsedTimeFormatter.format(elapsedTime))
+	            	.append(" (~")
+					.append(RoundedNumberFormat.format(throughput, 0))
+					.append(" p.h.)");
             }
 			logger.info(message.toString());
 			if (Profiling.isEnabled())
