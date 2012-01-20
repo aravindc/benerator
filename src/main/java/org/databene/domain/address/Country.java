@@ -106,17 +106,19 @@ public class Country {
         while ((container = iterator.next(container)) != null) {
         	Entity entity = container.getData();
         	State state = new State();
-        	mapProperty("id", entity, state);
-        	mapProperty("name", entity, state);
+        	mapProperty("id", entity, state, true);
+        	mapProperty("name", entity, state, true);
+        	mapProperty("defaultLanguage", entity, state, false);
         	state.setCountry(this);
         	addState(state);
         }
         IOUtil.close(iterator);
     }
 
-    private void mapProperty(String propertyName, Entity source, State target) {
+    private void mapProperty(String propertyName, Entity source, State target, boolean required) {
     	String propertyValue = String.valueOf(source.get(propertyName));
-    	Assert.notNull(propertyValue, propertyName);
+    	if (required)
+    		Assert.notNull(propertyValue, propertyName);
     	BeanUtil.setPropertyValue(target, propertyName, propertyValue);
     }
 
