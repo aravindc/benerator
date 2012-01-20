@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,6 +25,8 @@
  */
 
 package org.databene.domain.address;
+
+import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
@@ -75,6 +77,34 @@ public class AddressGeneratorTest extends GeneratorClassTest {
     @Test
     public void testSwitzerland() {
         check(Country.SWITZERLAND, true);
+    }
+
+    @Test
+    public void testSwissLocale() {
+        AddressGenerator generator = new AddressGenerator("CH");
+        generator.init(context);
+        for (int i = 0; i < 100; i++) {
+            Address address = generator.generate();
+            LOGGER.debug("{}", address);
+            Locale language = address.getCity().getLanguage();
+            String languageCode = language.getLanguage();
+            String street = address.getStreet();
+            if ("de".equals(languageCode)) {
+            	assertFalse(street.startsWith("Chaussée "));
+            	assertFalse(street.startsWith("Route "));
+            	assertFalse(street.startsWith("Rue "));
+            	assertFalse(street.startsWith("Via "));
+            } else if ("fr".equals(languageCode)) {
+            	assertFalse(street.endsWith("strasse"));
+            	assertFalse(street.startsWith("Via "));
+            } else if ("it".equals(languageCode)) {
+            	assertFalse(street.startsWith("Chaussée "));
+            	assertFalse(street.startsWith("Route "));
+            	assertFalse(street.startsWith("Rue "));
+            	assertFalse(street.endsWith("strasse"));
+            } else
+            	fail("Illegal language for Switzerland: " + language);
+        }
     }
 
     @Test
