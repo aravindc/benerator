@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.domain.person;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.dataset.DatasetBasedGenerator;
@@ -36,8 +37,6 @@ import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Converter;
 import org.databene.domain.address.Country;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -53,8 +52,6 @@ import java.util.Map;
 public class PersonGenerator extends CompositeGenerator<Person> 
 		implements DatasetBasedGenerator<Person>, NonNullGenerator<Person> {
 
-	private static Logger logger = LoggerFactory.getLogger(PersonGenerator.class);
-	
     private static final String REGION_NESTING = "org/databene/dataset/region";
 
 	private String datasetName;
@@ -82,6 +79,7 @@ public class PersonGenerator extends CompositeGenerator<Person>
 
     public PersonGenerator(String datasetName, Locale locale) {
     	super(Person.class);
+		logger.debug("Instantiating PersonGenerator with dataset '{}' and locale '{}'", datasetName, locale);
         this.datasetName = datasetName;
         this.locale = locale;
 		genderGen = registerComponent(new GenderGenerator(0.5));
@@ -123,62 +121,21 @@ public class PersonGenerator extends CompositeGenerator<Person>
 	public void setLocale(Locale locale) {
 		this.locale = locale;
     }
+	
+    public void setDataset(String datasetName) {
+    	this.datasetName = datasetName;
+    }
+
+	// DatasetBasedGenerator interface implementation ------------------------------------------------------------------
+
+	public String getDataset() {
+		return datasetName;
+	}
 
 	public String getNesting() {
 		return REGION_NESTING;
 	}
 	
-	public String getDataset() {
-		return datasetName;
-	}
-
-    public void setDataset(String datasetName) {
-    	this.datasetName = datasetName;
-    }
-
-    // Generator interface ---------------------------------------------------------------------------------------------
-
-    @Override
-    public synchronized void init(GeneratorContext context) {
-		secondNameTest = registerComponent(new BooleanGenerator(0.2));
-		secondNameTest.init(context);
-		genderGen.init(context);
-        birthDateGenerator.init(context);
-        acadTitleGen = registerComponent(new AcademicTitleGenerator(locale));
-        acadTitleGen.init(context);
-        acadTitleGen.setLocale(locale);
-        maleNobilityTitleGen = registerComponent(new NobilityTitleGenerator(Gender.MALE, locale));
-        maleNobilityTitleGen.init(context);
-        femaleNobilityTitleGen = registerComponent(new NobilityTitleGenerator(Gender.FEMALE, locale));
-        femaleNobilityTitleGen.init(context);
-        salutationProvider = new SalutationProvider(locale);
-        salutationProvider.setLocale(locale);
-
-		try {
-	        initMembersWithDataset(context);
-		} catch (RuntimeException e) {
-			Country fallBackCountry = Country.getFallback();
-			if (!fallBackCountry.getIsoCode().equals(datasetName)) {
-				logger.error("Error initializing " + getClass().getSimpleName(), e);
-				logger.error("Cannot generate persons for " + datasetName + ", falling back to " + fallBackCountry);
-				this.datasetName = fallBackCountry.getIsoCode();
-				initMembersWithDataset(context);
-			} else
-				throw e;
-		}
-        super.init(context);
-    }
-    
-	public ProductWrapper<Person> generate(ProductWrapper<Person> wrapper) {
-		String usedDataset = randomDataset();
-	    Person person = generateForDataset(usedDataset);
-        return wrapper.wrap(person).setTag(REGION_NESTING, usedDataset);
-    }
-
-	public Person generate() {
-		return generateForDataset(randomDataset());
-	}
-
 	public Person generateForDataset(String datasetToUse) {
     	assertInitialized();
         Person person = new Person(acadTitleGen.getLocale());
@@ -206,6 +163,50 @@ public class PersonGenerator extends CompositeGenerator<Person>
         return person;
 	}
 	
+    // Generator interface ---------------------------------------------------------------------------------------------
+
+    @Override
+    public synchronized void init(GeneratorContext context) {
+		secondNameTest = registerAndInitComponent(new BooleanGenerator(0.2));
+		genderGen.init(context);
+        birthDateGenerator.init(context);
+        acadTitleGen = registerAndInitComponent(new AcademicTitleGenerator(locale));
+        acadTitleGen.setLocale(locale);
+        maleNobilityTitleGen = registerAndInitComponent(new NobilityTitleGenerator(Gender.MALE, locale));
+        femaleNobilityTitleGen = registerAndInitComponent(new NobilityTitleGenerator(Gender.FEMALE, locale));
+        salutationProvider = new SalutationProvider(locale);
+
+		try {
+	        initMembersWithDataset(context);
+		} catch (RuntimeException e) {
+			Country fallBackCountry = Country.getFallback();
+			if (!fallBackCountry.getIsoCode().equals(datasetName)) {
+				logger.error("Error initializing " + getClass().getSimpleName(), e);
+				logger.error("Cannot generate persons for " + datasetName + ", falling back to " + fallBackCountry);
+				this.datasetName = fallBackCountry.getIsoCode();
+				initMembersWithDataset(context);
+			} else
+				throw e;
+		}
+        super.init(context);
+    }
+    
+	protected <T extends Generator<U>, U> T registerAndInitComponent(T generator) {
+		registerComponent(generator);
+		generator.init(context);
+		return generator;
+	}
+
+	public ProductWrapper<Person> generate(ProductWrapper<Person> wrapper) {
+		String usedDataset = randomDataset();
+	    Person person = generateForDataset(usedDataset);
+        return wrapper.wrap(person).setTag(REGION_NESTING, usedDataset);
+    }
+
+	public Person generate() {
+		return generateForDataset(randomDataset());
+	}
+
 	// private helpers -------------------------------------------------------------------------------------------------
 
     private String randomDataset() {
@@ -222,12 +223,9 @@ public class PersonGenerator extends CompositeGenerator<Person>
 	}
 
 	private void initMembersWithDataset(GeneratorContext context) {
-	    maleGivenNameGen = registerComponent(new GivenNameGenerator(datasetName, Gender.MALE));
-	    maleGivenNameGen.init(context);
-	    femaleGivenNameGen = registerComponent(new GivenNameGenerator(datasetName, Gender.FEMALE));
-	    femaleGivenNameGen.init(context);
-	    familyNameGen = registerComponent(new FamilyNameGenerator(datasetName));
-	    familyNameGen.init(context);
+	    maleGivenNameGen = registerAndInitComponent(new GivenNameGenerator(datasetName, Gender.MALE));
+	    femaleGivenNameGen = registerAndInitComponent(new GivenNameGenerator(datasetName, Gender.FEMALE));
+	    familyNameGen = registerAndInitComponent(new FamilyNameGenerator(datasetName));
 	    emailGenerator = new EMailAddressBuilder(datasetName);
 	    emailGenerator.init(context);
     }
