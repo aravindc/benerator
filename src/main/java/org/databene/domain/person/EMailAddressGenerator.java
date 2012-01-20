@@ -50,7 +50,7 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements NonNul
 	}
 	
 	public EMailAddressGenerator(String dataset) {
-		super(dataset);
+		super(dataset); // creation log is done in parent class constructor
 		this.personGenerator = new PersonGenerator(dataset, LocaleUtil.getFallbackLocale());
 	}
 	
@@ -80,6 +80,15 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements NonNul
 		super.init(context);
     }
 	
+	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
+		return wrapper.wrap(generate());
+	}
+
+	public String generate() {
+		Person person = personGenerator.generate();
+		return generate(person.getGivenName(), person.getFamilyName());
+	}
+	
 	public boolean wasInitialized() {
 	    return personGenerator.wasInitialized();
 	}
@@ -90,14 +99,7 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements NonNul
 	public void close() {
     }
 
-	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
-		return wrapper.wrap(generate());
-	}
-
-	public String generate() {
-		Person person = personGenerator.generate();
-		return generate(person.getGivenName(), person.getFamilyName());
-	}
+	// ThreadAware interface implementation ----------------------------------------------------------------------------
 
 	@Override
 	public boolean isThreadSafe() {
@@ -108,6 +110,8 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements NonNul
 	public boolean isParallelizable() {
 	    return super.isParallelizable() && personGenerator.isParallelizable();
 	}
+	
+	// java.lang.Object override ---------------------------------------------------------------------------------------
 	
 	@Override
 	public String toString() {

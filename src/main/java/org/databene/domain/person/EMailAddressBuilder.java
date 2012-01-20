@@ -38,19 +38,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Generates email addresses of random domain for a given person name.<br/><br/>
+ * Generates email addresses for a random domain by a given person name.<br/><br/>
  * Created: 22.02.2010 12:16:11
  * @since 0.6.0
  * @author Volker Bergmann
  */
 public class EMailAddressBuilder implements ThreadAware {
 	
-	private Logger logger = LoggerFactory.getLogger(getClass());
-
+	private Logger logger = LoggerFactory.getLogger(getClass()); // Logger is not static in order to adopt sub classes
+	
 	private DomainGenerator domainGenerator;
 	private CaseConverter caseConverter;  
 	private Converter<String, String> nameConverter;
 	private NonNullSampleGenerator<Character> joinGenerator;
+	
+	// constructor -----------------------------------------------------------------------------------------------------
 
 	public EMailAddressBuilder(String dataset) {
 		logger.debug("Creating instance of {} for dataset {}", getClass(), dataset);
@@ -65,7 +67,24 @@ public class EMailAddressBuilder implements ThreadAware {
 		}
 		this.joinGenerator = new NonNullSampleGenerator<Character>(Character.class, '_', '.', '0', '1');
     }
+	
+	// properties ------------------------------------------------------------------------------------------------------
 
+	public void setDataset(String datasetName) {
+		domainGenerator.setDataset(datasetName);
+	}
+	
+	public void setLocale(Locale locale) {
+		caseConverter.setLocale(locale);
+	}
+	
+	// generator-like interface ----------------------------------------------------------------------------------------
+	
+	public void init(GeneratorContext context) {
+		domainGenerator.init(context);
+		joinGenerator.init(context);
+	}
+	
 	public String generate(String givenName, String familyName) {
 		String given = nameConverter.convert(givenName);
 		String family = nameConverter.convert(familyName);
@@ -80,32 +99,27 @@ public class EMailAddressBuilder implements ThreadAware {
 		}
     } 
 	
-	public void setDataset(String datasetName) {
-		domainGenerator.setDataset(datasetName);
-	}
+	// ThreadAware interface implementation ----------------------------------------------------------------------------
 	
-	public void setLocale(Locale locale) {
-		caseConverter.setLocale(locale);
-	}
+	public boolean isParallelizable() {
+		return domainGenerator.isParallelizable() 
+			&& caseConverter.isParallelizable() 
+			&& nameConverter.isParallelizable() 
+			&& joinGenerator.isParallelizable();
+    }
+
+	public boolean isThreadSafe() {
+		return domainGenerator.isThreadSafe() 
+			&& caseConverter.isThreadSafe() 
+			&& nameConverter.isThreadSafe() 
+			&& joinGenerator.isThreadSafe();
+    }
 	
-	public void init(GeneratorContext context) {
-		domainGenerator.init(context);
-		joinGenerator.init(context);
-	}
+	// java.lang.Object overrides --------------------------------------------------------------------------------------
 	
 	@Override
 	public String toString() {
 	    return BeanUtil.toString(this);
 	}
 
-	public boolean isParallelizable() {
-		return domainGenerator.isParallelizable() && caseConverter.isParallelizable() && 
-			nameConverter.isParallelizable() && joinGenerator.isParallelizable();
-    }
-
-	public boolean isThreadSafe() {
-		return domainGenerator.isThreadSafe() && caseConverter.isThreadSafe() && 
-			nameConverter.isThreadSafe() && joinGenerator.isThreadSafe();
-    }
-	
 }
