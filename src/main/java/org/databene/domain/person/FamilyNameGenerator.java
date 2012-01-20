@@ -26,11 +26,15 @@
 
 package org.databene.domain.person;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.util.GeneratorUtil;
+import org.databene.benerator.util.SharedGenerator;
 import org.databene.commons.Encodings;
 import org.databene.domain.address.Country;
 
@@ -42,6 +46,20 @@ import org.databene.domain.address.Country;
  * @author Volker Bergmann
  */
 public class FamilyNameGenerator extends WeightedDatasetCSVGenerator<String> implements NonNullGenerator<String> {
+	
+	// default instance management -------------------------------------------------------------------------------------
+	
+	private static Map<String, Generator<String>> defaultInstances = new HashMap<String, Generator<String>>();
+	
+	public static Generator<String> sharedInstance(String datasetName) {
+		String key = datasetName;
+		Generator<String> instance = defaultInstances.get(key);
+		if (instance == null) {
+			instance = new SharedGenerator<String>(new FamilyNameGenerator(datasetName));
+			defaultInstances.put(key, instance);
+		}
+		return instance;
+	}
 	
 	// Constructors ----------------------------------------------------------------------------------------------------
 	
@@ -57,6 +75,7 @@ public class FamilyNameGenerator extends WeightedDatasetCSVGenerator<String> imp
 
     public FamilyNameGenerator(String datasetName, String nesting, String fileNamePattern) {
         super(String.class, fileNamePattern, datasetName, nesting, Encodings.UTF_8);
+        logger.debug("Instantiated FamilyNameGenerator for dataset '{}'", datasetName);
     }
     
     @Override

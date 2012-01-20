@@ -233,8 +233,8 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 		private MessageGenerator createPersonNameGenerator(String datasetToUse) {
 		    try {
 		        return new MessageGenerator("{0} {1}", 
-		                new GivenNameGenerator(datasetToUse, Gender.MALE),
-		                new FamilyNameGenerator(datasetToUse)
+		                GivenNameGenerator.sharedInstance(datasetToUse, Gender.MALE),
+		                FamilyNameGenerator.sharedInstance(datasetToUse)
 		            );
 	        } catch (Exception e) {
 	        	LOGGER.info("Cannot create person-based company name generator: " + e.getMessage());
