@@ -27,6 +27,8 @@ import org.databene.benerator.GeneratorState;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.BeanUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract {@link Generator} implementation which holds a state and state management methods.<br/><br/>
@@ -36,6 +38,8 @@ import org.databene.commons.BeanUtil;
  */
 public abstract class AbstractGenerator<E> implements Generator<E> {
 
+	protected Logger logger = LoggerFactory.getLogger(getClass());
+	
 	protected GeneratorState state;
 
 	protected GeneratorContext context;
