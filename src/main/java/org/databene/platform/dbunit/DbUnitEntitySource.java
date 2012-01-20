@@ -51,12 +51,13 @@ public class DbUnitEntitySource extends FileBasedEntitySource {
     }
     
     public DataIterator<Entity> iterator() {
+		String resolvedUri = resolveUri();
     	if (flat == null)
-    		flat = isFlat(uri);
+    		flat = isFlat(resolvedUri);
     	if (flat)
-    		return new FlatDbUnitEntityIterator(resolveUri(), context);
-    	else
-    		return new NestedDbUnitEntityIterator(uri, context);
+			return new FlatDbUnitEntityIterator(resolvedUri, context);
+		else
+    		return new NestedDbUnitEntityIterator(resolvedUri, context);
     }
     
     private Boolean isFlat(String uri) {
