@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,8 +31,6 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.primitive.RandomVarLengthStringGenerator;
 import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Generates {@link Address} objects.<br/>
@@ -43,8 +41,6 @@ import org.slf4j.LoggerFactory;
  */
 public class AddressGenerator extends CompositeGenerator<Address> implements NonNullGenerator<Address> {
 	
-	private static Logger LOGGER = LoggerFactory.getLogger(AddressGenerator.class);
-
     private String dataset;
     private CountryGenerator countryGenerator;
     private CityGenerator cityGenerator;
@@ -59,8 +55,11 @@ public class AddressGenerator extends CompositeGenerator<Address> implements Non
 
     public AddressGenerator(String dataset) {
     	super(Address.class);
+    	logger.debug("Instantiated AddressGenerator with dataset '{}'", dataset);
         setDataset(dataset);
     }
+    
+    // properties ------------------------------------------------------------------------------------------------------
 
     public void setCountry(Country country) {
     	setDataset(country.getIsoCode());
@@ -78,10 +77,10 @@ public class AddressGenerator extends CompositeGenerator<Address> implements Non
 		try {
 	        initMembers(context);
 		} catch (RuntimeException e) {
-			LOGGER.error("", e);
+			logger.error("Error initializing members", e);
 			Country fallBackCountry = Country.getFallback();
 			if (!fallBackCountry.getIsoCode().equals(this.dataset)) {
-				LOGGER.error("Cannot generate addresses for " + dataset + ", falling back to " + fallBackCountry);
+				logger.error("Cannot generate addresses for " + dataset + ", falling back to " + fallBackCountry);
 				setCountry(fallBackCountry);
 				initMembers(context);
 			} else

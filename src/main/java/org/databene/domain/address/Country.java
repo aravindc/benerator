@@ -424,7 +424,7 @@ public class Country {
                 String name = (cells.length > 4 ? cells[4].trim() : null);
                 int population = (cells.length > 5 ? Integer.parseInt(cells[5].trim()) : 1000000);
                 Country country = new Country(isoCode, defaultLocale, population, phoneCode, mobilCodePattern, name);
-                LOGGER.debug("Parsed country {}" + country);
+                LOGGER.debug("Parsed country {}", country);
             }
         } catch (IOException e) {
             throw new ConfigurationError("Country definition file could not be processed. ", e);

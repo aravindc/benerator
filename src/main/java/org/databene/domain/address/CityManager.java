@@ -66,6 +66,7 @@ public class CityManager {
     }
 
 	private static int parseCityFile(Country country, String filename, Map<String, String> defaults) throws IOException {
+		LOGGER.debug("Parsing city definitions in file {}", filename);
 		CSVLineIterator iterator = new CSVLineIterator(filename, ';', Encodings.UTF_8);
 		DataContainer<String[]> container = new DataContainer<String[]>();
         String[] header = iterator.next(container).getData();
