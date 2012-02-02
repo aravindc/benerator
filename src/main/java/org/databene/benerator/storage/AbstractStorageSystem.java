@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 
 package org.databene.benerator.storage;
 
+import org.databene.benerator.Consumer;
 import org.databene.benerator.StorageSystem;
 import org.databene.model.data.DataModel;
 
@@ -58,7 +59,11 @@ public abstract class AbstractStorageSystem implements StorageSystem {
 	}
 	
 	public Object execute(String command) {
-		return null;
+		throw new UnsupportedOperationException("execute() not supported by " + this);
+	}
+	
+	public Consumer updater() {
+		return new StorageSystemUpdater(this); 
 	}
 	
 }
