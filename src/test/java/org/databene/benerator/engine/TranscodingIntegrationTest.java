@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import java.io.Closeable;
 
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
 import org.databene.webdecs.DataContainer;
@@ -96,6 +97,7 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 	public void testTargetWithCountries() throws Exception {
 		// run descriptor file
 		DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR2_FILE_NAME, context);
+		runner.setClosingResources(false);
 		runner.run();
 		DBSystem t = (DBSystem) context.get("t");
 		// check countries
@@ -199,7 +201,8 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 
 	private void assertNextCountry(int id, String name, DataIterator<Entity> iterator) {
 		Entity expectedCountry = createEntity("COUNTRY", "ID", id, "NAME", name);
-		assertEquals(expectedCountry, iterator.next(new DataContainer<Entity>()).getData());
+		Entity actualCountry = iterator.next(new DataContainer<Entity>()).getData();
+		assertEquals(expectedCountry, actualCountry);
 	}
 	
 	private void assertNextState(int id, Integer countryId, String name, DataIterator<Entity> iterator) {
