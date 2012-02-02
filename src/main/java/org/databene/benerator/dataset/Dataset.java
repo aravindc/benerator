@@ -31,13 +31,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.databene.commons.Named;
+
 /**
  * Defines a data set that may be nested.<br/><br/>
  * Created: 21.03.2008 12:31:13
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class Dataset {
+public class Dataset implements Named {
 	
 	// attributes ------------------------------------------------------------------------------------------------------
 	
@@ -102,6 +104,17 @@ public class Dataset {
         }
         return atomicSubSets;
     }
+    
+	public boolean contains(String searchedChildName) {
+        for (Dataset subSet : subSets) {
+        	if (searchedChildName.equals(subSet.getName()))
+        		return true;
+        	return subSet.contains(searchedChildName);
+        }
+        return false;
+	}
+	
+
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
