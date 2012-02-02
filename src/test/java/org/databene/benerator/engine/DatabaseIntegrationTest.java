@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.databene.benerator.primitive.datetime.CurrentDateTimeGenerator;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.TimeUtil;
@@ -583,6 +584,14 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		assertEqualArrays(new Object[] { 2, 9 }, storedData.get(0));
 		assertEqualArrays(new Object[] { 3, 9 }, storedData.get(1));
 		closeAndCheckCleanup();
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void testUpdateOnNonExistingPK() throws Exception {
+		parseAndExecute(
+			"<iterate type='referee' source='db' selector='id=2' consumer='db.updater(), cons'>" +
+        	"  <attribute name='id' constant='11' />" +
+        	"</iterate>");
 	}
 	
 	

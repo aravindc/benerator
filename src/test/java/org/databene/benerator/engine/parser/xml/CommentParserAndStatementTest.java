@@ -23,8 +23,8 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
-import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.statement.CommentStatement;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.commons.xml.XMLUtil;
 import org.junit.Test;
 import org.w3c.dom.Element;

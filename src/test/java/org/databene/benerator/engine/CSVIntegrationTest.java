@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.commons.IOUtil;
 import org.junit.Test;
 

@@ -29,10 +29,10 @@ import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.factory.EquivalenceGeneratorFactory;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;

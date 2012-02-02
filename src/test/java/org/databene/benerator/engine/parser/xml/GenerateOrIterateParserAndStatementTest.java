@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,10 +25,10 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.primitive.IncrementGenerator;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonSource;
 import org.databene.commons.CollectionUtil;

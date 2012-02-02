@@ -23,9 +23,9 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
-import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.IncludeStatement;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.commons.SyntaxError;
 import org.junit.Test;
 

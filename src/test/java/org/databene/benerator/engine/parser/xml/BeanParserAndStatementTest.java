@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,8 +24,8 @@ package org.databene.benerator.engine.parser.xml;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.parser.xml.BeanParser;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.junit.Test;
 
 /**

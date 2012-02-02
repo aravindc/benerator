@@ -24,6 +24,7 @@ package org.databene.benerator.engine;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.statement.EvaluateStatement;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.junit.Test;
 
 /**

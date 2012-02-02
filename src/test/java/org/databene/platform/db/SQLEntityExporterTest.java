@@ -71,9 +71,9 @@ public class SQLEntityExporterTest extends ModelTest {
 			BufferedReader reader = IOUtil.getReaderForURI(FILENAME);
 			ReaderLineIterator iterator = new ReaderLineIterator(reader);
 			assertTrue(iterator.hasNext());
-			assertEquals("insert into Person (name, birthDate, score) values ('Alice', '1987-12-31', 23);", iterator.next());
+			assertEquals("insert into \"Person\" (name, birthDate, score) values ('Alice', '1987-12-31', 23);", iterator.next());
 			assertTrue(iterator.hasNext());
-			assertEquals("insert into Person (name, birthDate, score) values ('Bob', '1977-12-31', 34);", iterator.next());
+			assertEquals("insert into \"Person\" (name, birthDate, score) values ('Bob', '1977-12-31', 34);", iterator.next());
 			assertFalse(iterator.hasNext());
 		} finally {
 			FileUtil.deleteIfExists(new File(FILENAME));

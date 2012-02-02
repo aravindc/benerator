@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonSource;
 import org.databene.model.data.Entity;

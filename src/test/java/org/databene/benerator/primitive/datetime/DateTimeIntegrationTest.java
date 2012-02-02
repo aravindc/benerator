@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import org.databene.benerator.engine.BeneratorIntegrationTest;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.commons.TimeUtil;
 import org.junit.Before;

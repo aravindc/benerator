@@ -22,10 +22,10 @@
 package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.ImportStatement;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.SyntaxError;
 import org.junit.Test;

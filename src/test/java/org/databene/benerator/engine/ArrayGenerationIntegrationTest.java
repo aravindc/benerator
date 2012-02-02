@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
 import org.junit.Before;
 import org.junit.Test;

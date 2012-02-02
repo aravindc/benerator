@@ -23,8 +23,8 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.assertEquals;
 
-import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.statement.WhileStatement;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.junit.Test;
 
 /**

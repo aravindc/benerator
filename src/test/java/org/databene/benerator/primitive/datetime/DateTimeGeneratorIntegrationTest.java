@@ -25,9 +25,9 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.parser.String2DistributionConverter;
 import org.databene.benerator.engine.statement.BeanStatement;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.ConverterManager;

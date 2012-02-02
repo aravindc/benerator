@@ -19,13 +19,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine;
+package org.databene.benerator.test;
 
 import java.io.IOException;
 
 import org.databene.benerator.BeneratorFactory;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DefaultBeneratorContext;
+import org.databene.benerator.engine.ResourceManagerSupport;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
-import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.IOUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.junit.After;

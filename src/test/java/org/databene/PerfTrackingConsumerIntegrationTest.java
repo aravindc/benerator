@@ -24,12 +24,12 @@ package org.databene;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.consumer.ConsumerChain;
-import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
 import org.databene.benerator.engine.statement.TimedGeneratorStatement;
+import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.platform.contiperf.PerfTrackingConsumer;
 import org.databene.stat.LatencyCounter;
