@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,6 @@ import org.databene.benerator.Consumer;
 import org.databene.benerator.StorageSystem;
 import org.databene.benerator.storage.AbstractStorageSystem;
 import org.databene.benerator.storage.StorageSystemInserter;
-import org.databene.benerator.storage.StorageSystemUpdater;
 import org.databene.commons.*;
 import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
@@ -54,7 +53,7 @@ import org.databene.jdbacl.model.DBTable;
 import org.databene.jdbacl.model.DBUniqueConstraint;
 import org.databene.jdbacl.model.Database;
 import org.databene.jdbacl.model.cache.CachingDBImporter;
-import org.databene.jdbacl.model.jdbc.JDBCDBImporter;
+import org.databene.jdbacl.model.jdbc.JDBCMetaDataUtil;
 import org.databene.model.data.*;
 import org.databene.script.expression.ConstantExpression;
 import org.databene.script.PrimitiveType;
@@ -386,7 +385,7 @@ public class DBSystem extends AbstractStorageSystem {
 	        LOGGER.debug("queryEntityById({}, {})", tableName, id);
 	        ComplexTypeDescriptor descriptor = (ComplexTypeDescriptor) getTypeDescriptor(tableName);
 	        PreparedStatement query = getThreadContext().getSelectByPKStatement(descriptor);
-	        query.setObject(1, id); // TODO v0.7.1 support composite keys
+	        query.setObject(1, id); // TODO v0.7.6 support composite keys
 	        ResultSet resultSet = query.executeQuery();
 	        if (resultSet.next())
 	        	return ResultSet2EntityConverter.convert(resultSet, descriptor);
@@ -471,10 +470,6 @@ public class DBSystem extends AbstractStorageSystem {
     	return new StorageSystemInserter(this, (ComplexTypeDescriptor) getTypeDescriptor(tableName));
     }
     
-    public Consumer updater() {
-    	return new StorageSystemUpdater(this);
-    }
-    
     // database-specific interface -------------------------------------------------------------------------------------
 
     public boolean tableExists(String tableName) {
@@ -551,7 +546,7 @@ public class DBSystem extends AbstractStorageSystem {
 	
 	public void parseMetaData() {
         this.tables = new HashMap<String, DBTable>();
-        this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
+        this.typeDescriptors = OrderedNameMap.<TypeDescriptor>createCaseIgnorantMap();
         //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
         getDialect(); // make sure dialect is initialized
         database = getDbMetaData();
@@ -629,14 +624,9 @@ public class DBSystem extends AbstractStorageSystem {
 		}
 	}
 
-	private JDBCDBImporter createJDBCImporter() {
-		JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, catalogName, schemaName);
-		importer.setIncludeTables(includeTables);
-		importer.setExcludeTables(excludeTables);
-		importer.setImportingIndexes(false);
-		importer.setImportingUKs(true);
-		importer.setFaultTolerant(true);
-		importer.setLazy(lazy);
+	private DBMetaDataImporter createJDBCImporter() {
+		DBMetaDataImporter importer = JDBCMetaDataUtil.getJDBCDBImporter(getConnection(), user, schemaName, 
+				true, false, false, false, includeTables, excludeTables, lazy);
 		return importer;
 	}
 
@@ -667,7 +657,7 @@ public class DBSystem extends AbstractStorageSystem {
         DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
         if (pkConstraint != null) {
 	        String[] pkColumnNames = pkConstraint.getColumnNames();
-	        if (pkColumnNames.length == 1) { // TODO v0.7.1 support composite primary keys
+	        if (pkColumnNames.length == 1) { // TODO v0.7.6 support composite primary keys
 	        	String columnName = pkColumnNames[0];
 	        	DBColumn column = table.getColumn(columnName);
 				table.getColumn(columnName);
@@ -700,7 +690,7 @@ public class DBSystem extends AbstractStorageSystem {
                 complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
                 LOGGER.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
-                // TODO v0.7.2 handle composite keys
+                // TODO v0.7.6 handle composite keys
             }
         }
         // process normal columns
@@ -740,7 +730,7 @@ public class DBSystem extends AbstractStorageSystem {
                     descriptor.setUnique(true);
                 } else {
                     LOGGER.warn("Automated uniqueness assurance on multiple columns is not provided yet: " + constraint);
-                    // TODO v0.7.1 support uniqueness constraints on combination of columns
+                    // TODO v0.7.6 support uniqueness constraints on combination of columns
                 }
             }
             LOGGER.debug("parsed attribute " + columnId + ": " + descriptor);
@@ -859,18 +849,22 @@ public class DBSystem extends AbstractStorageSystem {
                 if (info.type != null)
                 	jdbcValue = AnyConverter.convert(jdbcValue, info.type);
                 try {
-                    if (jdbcValue != null || (dialect instanceof OracleDialect && (info.sqlType == Types.NCLOB || info.sqlType == Types.OTHER))) // the second expression causes a workaround for Oracle's unability to perform a setNull() for NCLOBs and NVARCHAR2
+                    boolean criticalOracleType = (dialect instanceof OracleDialect && (info.sqlType == Types.NCLOB || info.sqlType == Types.OTHER));
+					if (jdbcValue != null || criticalOracleType) // Oracle is not able to perform setNull() on NCLOBs and NVARCHAR2
                         statement.setObject(i + 1, jdbcValue);
                     else
-                        statement.setNull(i + 1, info.sqlType); // TODO this sets any non-null NCLOB component to null
+                        statement.setNull(i + 1, info.sqlType);
                 } catch (SQLException e) {
                     throw new RuntimeException("error setting column " + tableName + '.' + info.name, e);
                 }
             }
-            if (batch)
+            if (batch) {
                 statement.addBatch();
-            else
-                statement.executeUpdate();
+            } else {
+                int rowCount = statement.executeUpdate();
+                if (rowCount == 0)
+                	throw new RuntimeException("Update failed because, since there is no database entry with the PK of " + entity);
+            }
         } catch (Exception e) {
             throw new RuntimeException("Error in persisting " + entity, e);
         }
