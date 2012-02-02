@@ -9,6 +9,7 @@ changes
 -------
 - Address.state resolves to a state object instead of the state id string. 
   Use address.state.name and address.state.id to access state details
+- dataset based generators support a fallback to other datasets belonging to the same superset 
 
 
 enhancements
@@ -24,4 +25,5 @@ bug fixes
 - US cities do not have a state assigned
 - Brazil cities do not have a state assigned
 - Swiss addresses do not have a street name that matches the canton's language - all are German
-- Some french street names in Switzerland have typos
+- Some French street names in Switzerland have typos
+- No error message if an update fails because of non-existent PK
