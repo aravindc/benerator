@@ -94,7 +94,7 @@ public class ComplexTypeDescriptor extends TypeDescriptor implements VariableHol
     		if (StringUtil.equalsIgnoreCase(part.getName(), name) && part instanceof ComponentDescriptor)
     			return (ComponentDescriptor) part;
         if (getParent() != null)
-            return ((ComplexTypeDescriptor)getParent()).getComponent(name);
+            return ((ComplexTypeDescriptor) getParent()).getComponent(name);
         return null;
     }
 
