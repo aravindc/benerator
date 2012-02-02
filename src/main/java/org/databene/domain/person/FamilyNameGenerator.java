@@ -74,7 +74,7 @@ public class FamilyNameGenerator extends WeightedDatasetCSVGenerator<String> imp
     }
 
     public FamilyNameGenerator(String datasetName, String nesting, String fileNamePattern) {
-        super(String.class, fileNamePattern, datasetName, nesting, Encodings.UTF_8);
+        super(String.class, fileNamePattern, datasetName, nesting, true, Encodings.UTF_8);
         logger.debug("Instantiated FamilyNameGenerator for dataset '{}'", datasetName);
     }
     

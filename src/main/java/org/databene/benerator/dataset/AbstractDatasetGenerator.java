@@ -52,13 +52,15 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
     protected String datasetName;
     protected Set<String> supportedDatasets;
     protected double totalWeight;
+    protected boolean fallback;
     
     // constructor -----------------------------------------------------------------------------------------------------
     
-    public AbstractDatasetGenerator(Class<E> generatedType, String nesting, String datasetName) {
+    public AbstractDatasetGenerator(Class<E> generatedType, String nesting, String datasetName, boolean fallback) {
         super(generatedType);
         this.nesting = nesting;
         this.datasetName = datasetName;
+        this.fallback = fallback;
         this.supportedDatasets = new HashSet<String>();
         this.supportedDatasets.add(datasetName);
         this.totalWeight = 0;
@@ -95,7 +97,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 	@Override
 	public synchronized void init(GeneratorContext context) {
 		Dataset dataset = DatasetUtil.getDataset(nesting, datasetName);
-		setSource(createDatasetGenerator(dataset, true));
+		setSource(createDatasetGenerator(dataset, true, fallback));
 		super.init(context);
 	}
 	
@@ -120,12 +122,12 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 
 	// helper methods --------------------------------------------------------------------------------------------------
 	
-    protected WeightedDatasetGenerator<E> createDatasetGenerator(Dataset dataset, boolean required) {
+    protected WeightedDatasetGenerator<E> createDatasetGenerator(Dataset dataset, boolean required, boolean fallback) {
     	WeightedDatasetGenerator<E> generator;
     	if (isAtomic(dataset))
 			generator = createAtomicDatasetGenerator(dataset, required);
 		else 
-    		generator = createCompositeDatasetGenerator(dataset, required);
+    		generator = createCompositeDatasetGenerator(dataset, required, fallback);
     	if (generator != null)
         	supportedDatasets.add(dataset.getName());
 		return generator;
@@ -135,10 +137,10 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		return dataset.isAtomic();
 	}
 
-    protected CompositeDatasetGenerator<E> createCompositeDatasetGenerator(Dataset dataset, boolean required) {
-		CompositeDatasetGenerator<E> generator = new CompositeDatasetGenerator<E>(nesting, dataset.getName());
+    protected CompositeDatasetGenerator<E> createCompositeDatasetGenerator(Dataset dataset, boolean required, boolean fallback) {
+		CompositeDatasetGenerator<E> generator = new CompositeDatasetGenerator<E>(nesting, dataset.getName(), fallback);
 		for (Dataset subSet : dataset.getSubSets()) {
-			WeightedDatasetGenerator<E> subGenerator = createDatasetGenerator(subSet, false);
+			WeightedDatasetGenerator<E> subGenerator = createDatasetGenerator(subSet, false, fallback);
 			if (subGenerator != null)
 				generator.addSubDataset(subGenerator, subGenerator.getWeight());
 		}

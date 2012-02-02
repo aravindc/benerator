@@ -135,7 +135,7 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
 	private static Generator<String> createSource(String datasetName) {
-	    return new WeightedDatasetCSVGenerator<String>(String.class, FILENAME_PATTERN, datasetName, REGION_NESTING, Encodings.UTF_8);
+	    return new WeightedDatasetCSVGenerator<String>(String.class, FILENAME_PATTERN, datasetName, REGION_NESTING, true, Encodings.UTF_8);
     }
 
 }

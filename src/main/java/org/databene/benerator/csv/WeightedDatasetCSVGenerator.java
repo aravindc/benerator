@@ -63,23 +63,23 @@ public class WeightedDatasetCSVGenerator<E> extends AbstractDatasetGenerator<E> 
     
     // constructors ----------------------------------------------------------------------------------------------------
     
-    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, String datasetName, String nesting) {
-        this(generatedType, filenamePattern, ',', datasetName, nesting, SystemInfo.getFileEncoding());
+    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, String datasetName, String nesting, boolean fallback) {
+        this(generatedType, filenamePattern, ',', datasetName, nesting, fallback, SystemInfo.getFileEncoding());
     }
 
     @SuppressWarnings({ "unchecked", "cast", "rawtypes" })
-    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, char separator, String datasetName, String nesting, String encoding) {
-        this(generatedType, filenamePattern, separator, datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
+    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, char separator, String datasetName, String nesting, boolean fallback, String encoding) {
+        this(generatedType, filenamePattern, separator, datasetName, nesting, fallback, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
     @SuppressWarnings({ "cast", "unchecked", "rawtypes" })
-    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, String datasetName, String nesting, String encoding) {
-        this(generatedType, filenamePattern, ',', datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
+    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, String datasetName, String nesting, boolean fallback, String encoding) {
+        this(generatedType, filenamePattern, ',', datasetName, nesting, fallback, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
-    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, char separator, String datasetName, String nesting, 
+    public WeightedDatasetCSVGenerator(Class<E> generatedType, String filenamePattern, char separator, String datasetName, String nesting, boolean fallback, 
     		String encoding, Converter<String, E> converter) {
-        super(generatedType, nesting, datasetName);
+        super(generatedType, nesting, datasetName, fallback);
         this.filenamePattern = filenamePattern;
         this.separator = separator;
         this.encoding = encoding;

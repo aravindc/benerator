@@ -53,7 +53,7 @@ public class CountryGenerator extends AbstractDatasetGenerator<Country> implemen
 	}
 	
 	public CountryGenerator(String datasetName) {
-        super(Country.class, REGION, datasetName);
+        super(Country.class, REGION, datasetName, true);
     }
 
 	@Override

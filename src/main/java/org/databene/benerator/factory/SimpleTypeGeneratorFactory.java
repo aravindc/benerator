@@ -242,7 +242,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
 			    generator = new SequencedDatasetCSVGenerator(sourceName, separator, dataset, nesting, 
 			    		distribution, encoding, new ScriptConverterForStrings(context));
 			} else {
-			    generator = new WeightedDatasetCSVGenerator(Object.class, sourceName, separator, dataset, nesting, 
+			    generator = new WeightedDatasetCSVGenerator(Object.class, sourceName, separator, dataset, nesting, false, 
 			    		encoding, new ScriptConverterForStrings(context));
 			}
 		} else if (sourceName.toLowerCase().endsWith(".wgt.csv") || distribution instanceof IndividualWeight) {

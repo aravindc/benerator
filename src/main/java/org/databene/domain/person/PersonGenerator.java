@@ -77,6 +77,10 @@ public class PersonGenerator extends CompositeGenerator<Person>
         this(Country.getDefault().getIsoCode(), Locale.getDefault());
     }
 
+    public PersonGenerator(String datasetName) {
+    	this(datasetName, DatasetUtil.defaultLanguageForRegion(datasetName));
+    }
+
     public PersonGenerator(String datasetName, Locale locale) {
     	super(Person.class);
 		logger.debug("Instantiating PersonGenerator with dataset '{}' and locale '{}'", datasetName, locale);

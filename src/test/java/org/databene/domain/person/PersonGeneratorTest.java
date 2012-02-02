@@ -116,6 +116,39 @@ public class PersonGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
+    public void testGenerateForDataset_DE() {
+        PersonGenerator generator = new PersonGenerator("dach");
+        generator.init(context);
+        for (int i = 0; i < 10; i++) {
+            Person person = generator.generateForDataset("DE");
+            assertNotNull(person);
+            logger.debug(person.toString());
+        }
+    }
+
+    @Test
+    public void testGenerateForDataset_fallback_LI_to_DE() {
+        PersonGenerator generator = new PersonGenerator("dach");
+        generator.init(context);
+        // test fallback for requested LI data in dach region
+        generator.generateForDataset("LI");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGenerateForDataset_fallbackForInvalidSet() {
+        PersonGenerator generator = new PersonGenerator("dach");
+        generator.init(context);
+        generator.generateForDataset("US");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGenerateForDataset_fallbackForIllegalSet() {
+        PersonGenerator generator = new PersonGenerator("dach");
+        generator.init(context);
+        generator.generateForDataset("xx");
+    }
+
+    @Test
     public void testMinMaxAgeYears() {
         PersonGenerator generator = new PersonGenerator();
         generator.setMinAgeYears(18);

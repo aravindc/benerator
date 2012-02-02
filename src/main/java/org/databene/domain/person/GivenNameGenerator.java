@@ -75,7 +75,7 @@ public class GivenNameGenerator extends WeightedDatasetCSVGenerator<String> impl
     }
 
     public GivenNameGenerator(String datasetName, String nesting, String baseName, Gender gender) {
-        super(String.class, genderBaseName(baseName, gender) + "_{0}.csv", datasetName, nesting, Encodings.UTF_8);
+        super(String.class, genderBaseName(baseName, gender) + "_{0}.csv", datasetName, nesting, true, Encodings.UTF_8);
         logger.debug("Instantiated GivenNameGenerator for dataset '{}' and gender '{}'", datasetName, gender);
     }
     
@@ -103,5 +103,10 @@ public class GivenNameGenerator extends WeightedDatasetCSVGenerator<String> impl
         else
             throw new IllegalArgumentException("Gender: " + gender);
     }
-
+    
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + "[" + datasetName + "]";
+    }
+    
 }

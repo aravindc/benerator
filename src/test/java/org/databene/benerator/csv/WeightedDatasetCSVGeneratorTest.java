@@ -47,7 +47,7 @@ public class WeightedDatasetCSVGeneratorTest extends GeneratorTest {
     @Test
     public void testDE() {
         WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(
-        		String.class, FAMILY_NAME + "_{0}.csv", "DE", REGION, Encodings.UTF_8);
+        		String.class, FAMILY_NAME + "_{0}.csv", "DE", REGION, false, Encodings.UTF_8);
         NonNullGenerator<String> generator = WrapperFactory.asNonNullGenerator(source);
         generator.init(context);
         boolean mueller = false;
@@ -61,7 +61,7 @@ public class WeightedDatasetCSVGeneratorTest extends GeneratorTest {
     @Test
     public void testEurope() {
         WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(
-        		String.class, FAMILY_NAME + "_{0}.csv", "europe", REGION, Encodings.UTF_8);
+        		String.class, FAMILY_NAME + "_{0}.csv", "europe", REGION, false, Encodings.UTF_8);
         NonNullGenerator<String> generator = WrapperFactory.asNonNullGenerator(source);
         generator.init(context);
         boolean mueller = false; // German name

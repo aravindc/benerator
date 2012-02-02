@@ -46,7 +46,7 @@ public class CityGenerator extends AbstractDatasetGenerator<City> implements Non
 	private static final String REGION = "/org/databene/dataset/region";
 	
     public CityGenerator(String dataset) {
-    	super(City.class, REGION, dataset);
+    	super(City.class, REGION, dataset, true);
     }
 
     @Override

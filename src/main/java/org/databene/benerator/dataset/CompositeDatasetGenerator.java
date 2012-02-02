@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,12 +35,15 @@ import org.databene.benerator.wrapper.WeightedGeneratorGenerator;
 public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>, E> implements WeightedDatasetGenerator<E> {
 
 	private String nesting;
-	private String dataset;
+	private String datasetName;
+	private boolean performFallback;
+	private DatasetBasedGenerator<E> fallbackGenerator;
 	
-	public CompositeDatasetGenerator(String nesting, String dataset) {
+	public CompositeDatasetGenerator(String nesting, String datasetName, boolean fallback) {
 		super(new WeightedGeneratorGenerator<E>());
 		this.nesting = nesting;
-		this.dataset = dataset;
+		this.datasetName = datasetName;
+		this.performFallback = fallback;
 	}
 	
 	// properties ------------------------------------------------------------------------------------------------------
@@ -81,7 +84,7 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 	}
 	
 	public String getDataset() {
-		return dataset;
+		return datasetName;
 	}
 	
 	public double getWeight() {
@@ -89,7 +92,10 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 	}
 
 	public E generateForDataset(String dataset) {
-		return getGeneratorForDataset(dataset, true).generate(getResultWrapper()).unwrap();
+		ProductWrapper<E> wrapper = getGeneratorForDataset(dataset, true).generate(getResultWrapper());
+		if (wrapper == null)
+			return null;
+		return wrapper.unwrap();
 	}
 
 	// helper methods --------------------------------------------------------------------------------------------------
@@ -100,30 +106,69 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 
 	private DatasetBasedGenerator<E> randomAtomicGenerator() {
 		DatasetBasedGenerator<E> generator = this;
-		while (generator instanceof CompositeDatasetGenerator) {
+		while (generator instanceof CompositeDatasetGenerator)
 			generator = ((CompositeDatasetGenerator<E>) generator).randomGenerator();
-		}
 		return generator;
 	}
 
 	@SuppressWarnings("unchecked")
-	private DatasetBasedGenerator<E> getGeneratorForDataset(String sourceDataset, boolean required) {
-		if (dataset.equals(sourceDataset))
+	private DatasetBasedGenerator<E> getGeneratorForDataset(String requestedDataset, boolean required) {
+		if (datasetName.equals(requestedDataset))
 			return this;
 		for (Generator<? extends E> generator : getSource().getSources()) {
 			DatasetBasedGenerator<E> dbGenerator = (DatasetBasedGenerator<E>) generator;
-			if (dbGenerator.getDataset().equals(sourceDataset))
+			if (dbGenerator.getDataset().equals(requestedDataset))
 				return dbGenerator;
 			if (generator instanceof CompositeDatasetGenerator) {
-				DatasetBasedGenerator<E> tmp = ((CompositeDatasetGenerator<E>) generator).getGeneratorForDataset(sourceDataset, false);
+				DatasetBasedGenerator<E> tmp = ((CompositeDatasetGenerator<E>) generator).getGeneratorForDataset(requestedDataset, false);
 				if (tmp != null)
 					return tmp;
 			}
 		}
-		if (required)
-			throw new IllegalArgumentException(getClass() + " did not find a sub generator for dataset '" + 
-					sourceDataset + "'");
-		return null;
+		if (required) {
+			if (performFallback) {
+				if (fallbackGenerator == null) { // create fallback generator lazily
+					logger.warn("requested dataset not found: {}", requestedDataset);
+					Dataset datasetInstance = DatasetUtil.getDataset(DatasetUtil.REGION_NESTING, requestedDataset);
+					// try each atomic data subset (this makes the first atomic subset the main one)
+					createFallbackGeneratorFor(datasetInstance);
+					if (fallbackGenerator == null && required)
+						throw new IllegalArgumentException("Unable to find sub generator for data subset " + 
+								requestedDataset + " in " + this);
+					logger.warn("Falling back to data set '{}'", fallbackGenerator.getDataset());
+				}
+				return fallbackGenerator;
+			} else {
+				throw new IllegalArgumentException(getClass() + " did not find a sub generator for dataset '" + 
+					requestedDataset + "'");
+			}
+		} else {
+			return null;
+		}
+	}
+
+	private void createFallbackGeneratorFor(Dataset failedSet) {
+		for (Dataset parent : failedSet.getParents()) {
+			for (Dataset sibling : parent.getSubSets()) {
+				if (sibling.equals(failedSet))
+					continue;
+				createFallbackGeneratorForAtomicSubset(sibling);
+				if (fallbackGenerator != null)
+					break;
+			}
+		}	
+	}
+
+	private void createFallbackGeneratorForAtomicSubset(Dataset set) {
+		if (set.isAtomic())
+			fallbackGenerator = getGeneratorForDataset(set.getName(), false);
+		else {
+			for (Dataset subset : set.getSubSets()) {
+				createFallbackGeneratorForAtomicSubset(subset);
+				if (fallbackGenerator != null)
+					return;
+			}
+		}
 	}
 
 }

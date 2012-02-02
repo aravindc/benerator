@@ -63,16 +63,16 @@ public class CompositeDatasetGeneratorTest extends GeneratorTest {
 		one = new AtomicDatasetGenerator<Integer>(new ConstantGenerator<Integer>(1), "num", "one", 1); 
 		two = new AtomicDatasetGenerator<Integer>(new ConstantGenerator<Integer>(2), "num", "two", 1);
 		
-		small = new CompositeDatasetGenerator<Integer>("num", "small");
+		small = new CompositeDatasetGenerator<Integer>("num", "small", false);
 		small.addSubDataset(one, 1);
 		small.addSubDataset(two, 2);
 		
 		ten = new AtomicDatasetGenerator<Integer>(new ConstantGenerator<Integer>(10), "num", "ten", 1);
 		
-		large = new CompositeDatasetGenerator<Integer>("num", "large");
+		large = new CompositeDatasetGenerator<Integer>("num", "large", false);
 		large.addSubDataset(ten, 1);
 
-		any = new CompositeDatasetGenerator<Integer>("num", "any");
+		any = new CompositeDatasetGenerator<Integer>("num", "any", false);
 		any.addSubDataset(small, 1);
 		any.addSubDataset(large, 1);	
 		any.init(context);
