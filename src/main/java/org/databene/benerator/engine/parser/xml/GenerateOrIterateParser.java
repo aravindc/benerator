@@ -232,6 +232,8 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		}
 		// if element is a <generate> then add missing members defined in parent descriptors
 		if (EL_GENERATE.equals(element.getNodeName())) {
+			if (!StringUtil.isEmpty(element.getAttribute(ATT_SOURCE)))
+				syntaxError("'source' not allowed in <generate>", element);
 			TypeDescriptor pType = type.getParent();
 			if (pType instanceof ComplexTypeDescriptor) {
 				// calculate insertion index
@@ -253,6 +255,9 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 					statements.add(insertionIndex++, componentGenerator);
 				}
 			}
+		} else { // make sure the <iterate> does not miss a 'source'
+			if (StringUtil.isEmpty(element.getAttribute(ATT_SOURCE)))
+				syntaxError("'source' mising in <iterate>", element);
 		}
 		
 		// create task
