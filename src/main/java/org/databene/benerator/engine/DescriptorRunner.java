@@ -72,6 +72,8 @@ public class DescriptorRunner implements ResourceManager {
 	private ResourceManagerSupport resourceManager = new ResourceManagerSupport();
 	long startTime = 0;
 
+	private boolean closingResources;
+
 	
 	// constructor -----------------------------------------------------------------------------------------------------
 	
@@ -85,6 +87,7 @@ public class DescriptorRunner implements ResourceManager {
 		this.context = context;
 		this.factory = BeneratorFactory.getInstance();
 		this.generatedFiles = new ArrayList<String>();
+		this.closingResources = true;
 		ConverterManager.getInstance().setContext(context);
 	}
 	
@@ -92,6 +95,10 @@ public class DescriptorRunner implements ResourceManager {
 	
 	public BeneratorContext getContext() {
 		return context;
+	}
+	
+	public void setClosingResources(boolean closingResources) {
+		this.closingResources = closingResources;
 	}
 
     public void run() throws IOException {
@@ -129,7 +136,8 @@ public class DescriptorRunner implements ResourceManager {
 			
 			// calculate and print statistics
 			long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
-			resourceManager.close();
+			if (closingResources)
+				resourceManager.close();
 			StringBuilder message = new StringBuilder("Created a total of ")
 				.append(BeneratorMonitor.INSTANCE.getTotalGenerationCount()).append(" entities ");
 			if (elapsedTime != 0) {
