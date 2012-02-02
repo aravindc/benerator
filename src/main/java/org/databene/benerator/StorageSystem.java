@@ -50,7 +50,7 @@ public interface StorageSystem extends DescriptorProvider, Closeable, Flushable 
     DataSource<Entity> queryEntities(String type, String selector, Context context);
     
     /** Queries for entity ids */
-    DataSource<?> queryEntityIds(String entityName, String selector, Context context);
+    DataSource<?> queryEntityIds(String type, String selector, Context context);
 
     /** Creates an Iterable for repetitive iteration through the results of the specified query. */
     DataSource<?> query(String selector, boolean simplify, Context context);
