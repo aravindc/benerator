@@ -29,6 +29,7 @@ package org.databene.benerator.dataset;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -159,4 +160,18 @@ public class DatasetUtil {
             throw new ConfigurationError("Setup for Dataset type failed: " + nesting, e);
         }
     }
+
+	public static Locale defaultLanguageForRegion(String datasetName) {
+		if (StringUtil.isEmpty(datasetName))
+			return Locale.getDefault();
+		if ("dach".equals(datasetName))
+			return Locale.GERMAN;
+		if (datasetName.length() == 2) {
+			Country country = Country.getInstance(datasetName, false);
+			if (country != null)
+				return country.getDefaultLanguageLocale();
+		}
+		return Locale.ENGLISH;
+	}
+
 }
