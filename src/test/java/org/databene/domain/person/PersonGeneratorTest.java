@@ -134,14 +134,14 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         generator.generateForDataset("LI");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGenerateForDataset_fallbackForInvalidSet() {
         PersonGenerator generator = new PersonGenerator("dach");
         generator.init(context);
         generator.generateForDataset("US");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGenerateForDataset_fallbackForIllegalSet() {
         PersonGenerator generator = new PersonGenerator("dach");
         generator.init(context);
