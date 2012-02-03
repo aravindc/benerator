@@ -148,23 +148,28 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 	}
 
 	private void createFallbackGeneratorFor(Dataset failedSet) {
+		Dataset rootSet = DatasetUtil.getDataset(nesting, datasetName);
+		if (!rootSet.contains(failedSet.getName())) {
+			createFallbackGeneratorForFirstAtomicSubsetOf(rootSet);
+			return;
+		}
 		for (Dataset parent : failedSet.getParents()) {
 			for (Dataset sibling : parent.getSubSets()) {
 				if (sibling.equals(failedSet))
 					continue;
-				createFallbackGeneratorForAtomicSubset(sibling);
+				createFallbackGeneratorForFirstAtomicSubsetOf(sibling);
 				if (fallbackGenerator != null)
 					break;
 			}
 		}	
 	}
 
-	private void createFallbackGeneratorForAtomicSubset(Dataset set) {
+	private void createFallbackGeneratorForFirstAtomicSubsetOf(Dataset set) {
 		if (set.isAtomic())
 			fallbackGenerator = getGeneratorForDataset(set.getName(), false);
 		else {
 			for (Dataset subset : set.getSubSets()) {
-				createFallbackGeneratorForAtomicSubset(subset);
+				createFallbackGeneratorForFirstAtomicSubsetOf(subset);
 				if (fallbackGenerator != null)
 					return;
 			}
