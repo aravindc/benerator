@@ -74,11 +74,11 @@ public class DatasetUtil {
 	    return Country.getFallback().getIsoCode();
     }
 
-    public static Dataset getDataset(String type, String name) {
-        Map<String, Dataset> sets = types.get(type);
+    public static Dataset getDataset(String nesting, String name) {
+        Map<String, Dataset> sets = types.get(nesting);
         if (sets == null)
-            sets = parseDatasetTypeConfig(type);
-        return getDataset(type, name, sets);
+            sets = parseDatasetTypeConfig(nesting);
+        return getDataset(nesting, name, sets);
     }
     
     public static String[] getDataFiles(String filenamePattern, String datasetName, String nesting) {
