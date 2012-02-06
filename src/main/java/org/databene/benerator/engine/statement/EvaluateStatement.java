@@ -254,9 +254,9 @@ public class EvaluateStatement implements Statement {
         try {
             connection = db.getConnection();
             if (text != null)
-            	result = DBUtil.runScript(text, separator, connection, optimize, errorHandler);
+            	result = DBUtil.executeScript(text, separator, connection, optimize, errorHandler);
             else
-            	result = DBUtil.runScript(uri, encoding, separator, connection, optimize, errorHandler);
+            	result = DBUtil.executeScriptFile(uri, encoding, separator, connection, optimize, errorHandler);
             if (Boolean.TRUE.equals(invalidate) || (invalidate == null && !evaluate && result.changedStructure))
             	db.invalidate(); // possibly we changed the database structure
 		} catch (Exception sqle) { 

@@ -626,7 +626,7 @@ public class DBSystem extends AbstractStorageSystem {
 
 	private DBMetaDataImporter createJDBCImporter() {
 		DBMetaDataImporter importer = JDBCMetaDataUtil.getJDBCDBImporter(getConnection(), user, schemaName, 
-				true, false, false, false, includeTables, excludeTables, lazy);
+				true, false, false, false, includeTables, excludeTables);
 		return importer;
 	}
 

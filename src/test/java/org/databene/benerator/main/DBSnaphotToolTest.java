@@ -75,7 +75,7 @@ public class DBSnaphotToolTest {
 		// prepare DB
 		String db = getClass().getSimpleName();
 		Connection connection = HSQLUtil.connectInMemoryDB(db);
-		DBUtil.runScript(CREATION_SCRIPT, ENCODING, connection, true, new ErrorHandler(getClass()));
+		DBUtil.executeScriptFile(CREATION_SCRIPT, ENCODING, connection, true, new ErrorHandler(getClass()));
 		// prepare snapshot
 		setSystemProperties(HSQLUtil.IN_MEMORY_URL_PREFIX + db, HSQLUtil.DRIVER,
 				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, HSQLUtil.DEFAULT_SCHEMA, 
@@ -99,7 +99,7 @@ public class DBSnaphotToolTest {
 		// prepare DB
 		String db = getClass().getSimpleName();
 		Connection connection = HSQLUtil.connectInMemoryDB(db);
-		DBUtil.runScript(CREATION_SCRIPT, ENCODING, connection, true, new ErrorHandler(getClass()));
+		DBUtil.executeScriptFile(CREATION_SCRIPT, ENCODING, connection, true, new ErrorHandler(getClass()));
 		// prepare snapshot
 		setSystemProperties(HSQLUtil.IN_MEMORY_URL_PREFIX + db, HSQLUtil.DRIVER,
 				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, HSQLUtil.DEFAULT_SCHEMA, 
