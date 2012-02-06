@@ -27,3 +27,4 @@ bug fixes
 - Swiss addresses do not have a street name that matches the canton's language - all are German
 - Some French street names in Switzerland have typos
 - No error message if an update fails because of non-existent PK
+- #3483733: PhoneNumberGenerator produces NPE
