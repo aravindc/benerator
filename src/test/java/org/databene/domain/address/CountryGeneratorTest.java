@@ -65,8 +65,8 @@ public class CountryGeneratorTest extends GeneratorClassTest {
         WeightedGeneratorGenerator<Country> genGen = compGen.getSource();
         List<Double> sourceWeights = genGen.getSourceWeights();
         assertEquals(81000000., sourceWeights.get(0)); // DE
-        assertEquals(8000000., sourceWeights.get(1));  // AT
-        assertEquals(7000000., sourceWeights.get(2));  // CH
+        assertEquals( 8000000., sourceWeights.get(2)); // CH
+        assertEquals( 7000000., sourceWeights.get(1)); // AT
     }
     
 }
