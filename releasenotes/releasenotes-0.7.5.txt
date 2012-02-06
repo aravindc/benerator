@@ -3,6 +3,8 @@ release notes benerator 0.7.5
 
 summary
 -------
+Benerator 0.7.5 provides major bug fixes and some minor improvements in fallback strategies, 
+error handling and database metadata access performance.
 
 
 changes
