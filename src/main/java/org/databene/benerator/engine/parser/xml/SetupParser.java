@@ -34,6 +34,7 @@ import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.StringUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.webdecs.xml.XMLElementParser;
 import org.w3c.dom.Element;
@@ -86,12 +87,12 @@ public class SetupParser extends AbstractBeneratorDescriptorParser {
 		Iterator<Entry<String, String>> iterator = attributes.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Entry<String, String> attribute = iterator.next();
-			if (!BENERATOR_PROPERTIES.contains(attribute.getKey())) {
-				if (isStandardXmlRootAttribute(attribute.getKey()))
-					iterator.remove();
-				else
-					throw new ConfigurationError("Not a supported attribute in <" + EL_SETUP + ">: " + attribute.getKey());
-			}
+			if (BENERATOR_PROPERTIES.contains(attribute.getKey()))
+				attribute.setValue(StringUtil.unescape(attribute.getValue()));
+			else if (isStandardXmlRootAttribute(attribute.getKey()))
+				iterator.remove();
+			else
+				throw new ConfigurationError("Not a supported attribute in <" + EL_SETUP + ">: " + attribute.getKey());
 		}
 		// create root statement and configure its children
 	    BeneratorRootStatement rootStatement = new BeneratorRootStatement(attributes);
