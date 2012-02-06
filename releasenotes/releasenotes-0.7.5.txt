@@ -28,3 +28,6 @@ bug fixes
 - Some French street names in Switzerland have typos
 - No error message if an update fails because of non-existent PK
 - #3483733: PhoneNumberGenerator produces NPE
+- #3483708: benerator fails to parse benerator.xml out of the box
+- #3483739: Suffix .ben.xml is not respected
+- #3429438: Wrong lineSeparator using SQLEntityExporter
