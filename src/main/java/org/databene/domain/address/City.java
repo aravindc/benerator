@@ -53,8 +53,12 @@ public class City {
     private Locale language;
     private int population;
     
-    private static RandomVarLengthStringGenerator localNumberGenerator = 
-    	new RandomVarLengthStringGenerator("\\d", 7, 8, 1);
+    private static RandomVarLengthStringGenerator localNumberGenerator;
+    
+    static {
+    	localNumberGenerator = new RandomVarLengthStringGenerator("\\d", 7, 8, 1);
+    	localNumberGenerator.init(null);
+    }
 
     public City(State state, String name, String addition, String[] postalCodes, String areaCode) {
         if (areaCode == null)
