@@ -112,7 +112,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         if (scriptText == null)
         	return null;
         Script script = ScriptUtil.parseScriptText(scriptText);
-        Generator<?> generator = new ScriptGenerator(script, context);
+        Generator<?> generator = new ScriptGenerator(script);
         generator = DescriptorUtil.createConvertingGenerator(component.getTypeDescriptor(), generator, context);
 		return builderFromGenerator(generator, component, context);
 
@@ -154,7 +154,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         Generator<?> generator = null;
 		generator = DescriptorUtil.getGeneratorByName(typeDescriptor, context);
         if (generator == null)
-            generator = SimpleTypeGeneratorFactory.createScriptGenerator(typeDescriptor, context);
+            generator = SimpleTypeGeneratorFactory.createScriptGenerator(typeDescriptor);
         if (generator == null)
         	generator = SimpleTypeGeneratorFactory.createConstantGenerator(typeDescriptor, context);
         if (generator == null)
