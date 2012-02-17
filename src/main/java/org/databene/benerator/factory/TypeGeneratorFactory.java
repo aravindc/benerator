@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,7 +35,6 @@ import org.databene.benerator.primitive.ValueMapper;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
@@ -91,7 +90,7 @@ public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
         if (generator == null)
         	generator = createSourceGenerator(type, uniqueness, context);
         if (generator == null)
-        	generator = createScriptGenerator(type, context);
+        	generator = createScriptGenerator(type);
     	return generator;
 	}
 
@@ -125,10 +124,10 @@ public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
 		return generator;
 	}
 	
-    protected static Generator<?> createScriptGenerator(TypeDescriptor descriptor, Context context) {
+    protected static Generator<?> createScriptGenerator(TypeDescriptor descriptor) {
         String scriptText = descriptor.getScript();
         if (scriptText != null)
-            return FactoryUtil.createScriptGenerator(scriptText, context);
+            return FactoryUtil.createScriptGenerator(scriptText);
         return null;
     }
 
