@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,24 +23,24 @@ package org.databene.benerator.engine;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.engine.statement.GeneratorStatement;
+import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ErrorHandler;
 
 /**
- * Wraps a {@link GeneratorStatement} with a {@link Generator} interface.<br/><br/>
+ * Wraps a {@link GenerateAndConsumeTask} with a {@link Generator} interface.<br/><br/>
  * Created: 01.09.2011 15:33:34
  * @since 0.7.0
  * @author Volker Bergmann
  */
 public class TaskBasedGenerator implements Generator<Object> {
 	
-	private GeneratorTask task;
+	private GenerateAndConsumeTask task;
 	private GeneratorContext context;
 	private ErrorHandler errorHandler;
 	private boolean initialized;
 
-	public TaskBasedGenerator(GeneratorTask task) {
+	public TaskBasedGenerator(GenerateAndConsumeTask task) {
 		this.task = task;
 		this.errorHandler = ErrorHandler.getDefault();
 	}
@@ -69,7 +69,7 @@ public class TaskBasedGenerator implements Generator<Object> {
 
 	public ProductWrapper<Object> generate(ProductWrapper<Object> wrapper) {
 		task.execute(context, errorHandler);
-		ProductWrapper<?> currentProduct = context.getCurrentProduct();
+		ProductWrapper<?> currentProduct = task.getRecentProduct();
 		if (currentProduct == null)
 			return null;
 		return new ProductWrapper<Object>().wrap(currentProduct.unwrap());
