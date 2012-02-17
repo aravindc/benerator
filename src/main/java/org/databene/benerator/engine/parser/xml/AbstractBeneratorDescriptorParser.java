@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,7 @@ import java.util.Set;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ErrorHandlerExpression;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
-import org.databene.benerator.engine.statement.GeneratorStatement;
+import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.benerator.engine.statement.WhileStatement;
 import org.databene.commons.ErrorHandler;
@@ -74,7 +74,7 @@ public abstract class AbstractBeneratorDescriptorParser extends AbstractXMLEleme
 
 	public static boolean isLoop(Statement statement) {
 	    return (statement instanceof RunTaskStatement) 
-	    	|| (statement instanceof GeneratorStatement)
+	    	|| (statement instanceof GenerateOrIterateStatement)
 	    	|| (statement instanceof WhileStatement);
     }
 	
@@ -82,7 +82,7 @@ public abstract class AbstractBeneratorDescriptorParser extends AbstractXMLEleme
 		if (parentPath == null)
 			return false;
 		for (Statement statement : parentPath)
-			if (statement instanceof GeneratorStatement)
+			if (statement instanceof GenerateOrIterateStatement)
 				return true;
 		return false;
     }
