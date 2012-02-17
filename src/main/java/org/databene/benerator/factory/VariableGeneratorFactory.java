@@ -53,7 +53,7 @@ public class VariableGeneratorFactory {
 		
 		// check for script
 		TypeDescriptor type = descriptor.getTypeDescriptor();
-		generator = TypeGeneratorFactory.createScriptGenerator(type, context);
+		generator = TypeGeneratorFactory.createScriptGenerator(type);
 		if (generator != null) {
 	        generator = wrapWithPostprocessors(generator, type, context);
 	        generator = wrapWithProxy(generator, type);
