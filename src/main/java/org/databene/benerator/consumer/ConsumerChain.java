@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -97,6 +97,11 @@ public class ConsumerChain implements Consumer {
 
     public List<Consumer> getComponents() {
     	return components;
+    }
+    
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + components;
     }
     
 }

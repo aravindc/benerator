@@ -43,4 +43,9 @@ public class NonClosingConsumerProxy extends ConsumerProxy {
 		// don't close the target here, that's the job of the target's originator
 	}
 	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + target + ']';
+	}
+	
 }
