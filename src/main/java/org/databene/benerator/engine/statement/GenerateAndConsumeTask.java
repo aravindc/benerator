@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,12 +36,12 @@ import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.CurrentProductGeneration;
-import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.Preparable;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.StatementUtil;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
@@ -50,6 +50,7 @@ import org.databene.commons.Resettable;
 import org.databene.script.Expression;
 import org.databene.script.expression.ExpressionUtil;
 import org.databene.task.PageListener;
+import org.databene.task.Task;
 import org.databene.task.TaskResult;
 
 /**
@@ -57,7 +58,7 @@ import org.databene.task.TaskResult;
  * Created: 01.02.2008 14:39:11
  * @author Volker Bergmann
  */
-public class GenerateAndConsumeTask implements GeneratorTask, PageListener, ResourceManager, MessageHolder {
+public class GenerateAndConsumeTask implements Task, PageListener, ResourceManager, MessageHolder {
 
 	private String taskName;
     private BeneratorContext context;
@@ -70,9 +71,8 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
     private Consumer consumer;
     private String message;
     
-    public GenerateAndConsumeTask(String taskName, BeneratorContext context) {
+    public GenerateAndConsumeTask(String taskName) {
     	this.taskName = taskName;
-        this.context = context;
         this.resourceManager = new ResourceManagerSupport();
         this.initialized = new AtomicBoolean(false);
     	this.statements = new ArrayList<Statement>();
@@ -98,14 +98,15 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
 	}
     
     public Consumer getConsumer() {
-    	if (consumer == null)
-    		consumer = ExpressionUtil.evaluate(consumerExpr, context);
     	return consumer;
     }
-
+	
 	public void init(BeneratorContext context) {
 	    synchronized (initialized) {
 	    	if (!initialized.get()) {
+	    		this.context = context;
+	    		this.consumer = ExpressionUtil.evaluate(consumerExpr, context);
+    			resourceManager.addResource(consumer);
 	    		injectConsumptionStart();
 	    		injectConsumptionEnd();
 	    		initialized.set(true);
@@ -126,7 +127,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
 			}
 		}
 		// ...and insert consumption start statement immediately after that one
-		ConsumptionStatement consumption = new ConsumptionStatement(getConsumer(), true, false);
+		ConsumptionStatement consumption = new ConsumptionStatement(consumer, true, false);
 		statements.add(lastMemberIndex + 1, consumption);
 	}
 
@@ -141,7 +142,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
 			}
 		}
 		// ...and insert consumption finish statement immediately after that one
-		ConsumptionStatement consumption = new ConsumptionStatement(getConsumer(), false, true);
+		ConsumptionStatement consumption = new ConsumptionStatement(consumer, false, true);
 		statements.add(lastSubGenIndex + 1, consumption);
 	}
 
@@ -151,6 +152,10 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
     	else
     		reset();
     }
+	
+	public ProductWrapper<?> getRecentProduct() {
+		return context.getCurrentProduct();
+	}
 
     // Task interface implementation -----------------------------------------------------------------------------------
     
@@ -169,15 +174,11 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
     public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
     	message = null;
     	if (!initialized.get())
-    		init(context);
+    		init((BeneratorContext) ctx);
     	try {
     		boolean success = true;
         	for (int i = 0; i < statements.size(); i++) {
         		Statement statement = statements.get(i);
-        		// get root statement
-        		Statement rootStatement = StatementUtil.getRealStatement(statement, context);
-        		if (rootStatement instanceof GenerateOrIterateStatement)
-        			((GenerateOrIterateStatement) rootStatement).prepare(context);
 				success &= statement.execute(context);
 				if (!success && (statement instanceof ValidationStatement)) {
 					i = -1; // if the product is not valid, restart with the first statement
@@ -252,7 +253,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, PageListener, Reso
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-	private void prepareStatements(BeneratorContext context2) {
+	private void prepareStatements(BeneratorContext context) {
     	for (Statement statement : statements) {
     		// initialize statements
 			statement = StatementUtil.getRealStatement(statement, context);
