@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
@@ -49,10 +48,9 @@ import org.databene.task.runner.PagedTaskRunner;
  * Created: 01.02.2008 14:43:15
  * @author Volker Bergmann
  */
-public class GenerateOrIterateStatement extends AbstractStatement 
-		implements GeneratorStatement, PageListener {
+public class GenerateOrIterateStatement extends AbstractStatement implements Closeable, PageListener {
 
-	protected GeneratorTask task;
+	protected GenerateAndConsumeTask task;
 	protected Generator<Long> countGenerator;
 	protected Expression<Long> minCount;
 	protected Expression<Long> pageSize;
@@ -62,11 +60,11 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	protected PerformanceTracker tracker;
 	protected boolean infoLog;
 	protected boolean isSubCreator;
-	protected boolean initialized;
+	protected BeneratorContext childContext;
 	
 	public GenerateOrIterateStatement(Generator<Long> countGenerator, Expression<Long> minCount, 
 			Expression<Long> pageSize, Expression<PageListener> pageListenerEx, Expression<Integer> threads, 
-			Expression<ErrorHandler> errorHandler, boolean infoLog, boolean isSubCreator) {
+			Expression<ErrorHandler> errorHandler, boolean infoLog, boolean isSubCreator, BeneratorContext childContext) {
 	    this.task = null;
 	    this.countGenerator = countGenerator;
 	    this.minCount = minCount;
@@ -75,44 +73,51 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    this.pageListenerEx = pageListenerEx;
 	    this.infoLog = infoLog;
 	    this.isSubCreator = isSubCreator;
-	    this.initialized = false;
+	    this.childContext = childContext;
     }
 
-	public void setTask(GeneratorTask task) {
+	public void setTask(GenerateAndConsumeTask task) {
 		this.task = task;
 	}
 	
-	// PagedTask interface ---------------------------------------------------------------------------------------------
+	public GenerateAndConsumeTask getTarget() {
+	    return task;
+    }
+
+    public PerformanceTracker getTracker() {
+	    return tracker;
+    }
+    
+	// Statement interface ---------------------------------------------------------------------------------------------
 	
-    public boolean execute(BeneratorContext context) {
+    public boolean execute(BeneratorContext ctx) {
+    	beInitialized(ctx);
+	    task.prepare(childContext);
     	Task taskToUse = this.task;
-    	int threadCount = threads.evaluate(context);
+    	int threadCount = threads.evaluate(childContext);
 		if (threadCount > 1 && !taskToUse.isParallelizable() && !task.isThreadSafe())
 			taskToUse = new SynchronizedTask(taskToUse);
-	    this.tracker = PagedTaskRunner.execute(taskToUse, context, 
-	    		generateCount(context), 
-	    		minCount.evaluate(context),
-	    		evaluatePageListeners(context), 
-	    		pageSize.evaluate(context),
+	    this.tracker = PagedTaskRunner.execute(taskToUse, childContext, 
+	    		generateCount(childContext), 
+	    		minCount.evaluate(childContext),
+	    		evaluatePageListeners(childContext), 
+	    		pageSize.evaluate(childContext),
 	    		threadCount,
 	    		false, 
-	    		context.getExecutorService(),
-	    		getErrorHandler(context),
+	    		childContext.getExecutorService(),
+	    		getErrorHandler(childContext),
 	    		infoLog);
 	    if (!isSubCreator)
 	    	close();
     	return true;
     }
 
-	public void prepare(BeneratorContext context) {
-	    task.prepare(context);
-	    if (!countGenerator.wasInitialized()) {
-	    	countGenerator.init(context);
-	    	initialized = true;
-	    } else
-	    	countGenerator.reset();
+	public Long generateCount(BeneratorContext context) {
+		beInitialized(context);
+	    ProductWrapper<Long> count = countGenerator.generate(new ProductWrapper<Long>());
+	    return (count != null ? count.unwrap() : null);
     }
-	
+
 	public void close() {
 	    task.close();
 	    countGenerator.close();
@@ -120,21 +125,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    	IOUtil.close((Closeable) pageListener);
     }
 
-	public Long generateCount(BeneratorContext context) {
-    	if (!initialized) {
-    		countGenerator.init(context);
-    		initialized = true;
-    	}
-	    return countGenerator.generate(new ProductWrapper<Long>()).unwrap(); // TODO if no count was defined, null is returned and causes a NPE
-    }
-
-	public GeneratorTask getTarget() {
-	    return task;
-    }
-
-    public PerformanceTracker getTracker() {
-	    return tracker;
-    }
+    // PageListener interface implementation ---------------------------------------------------------------------------
     
 	public void pageStarting() {
 	}
@@ -143,7 +134,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
 		getTarget().pageFinished();
 	}
 
-	// private helper --------------------------------------------------------------------------------------------------
+	// private helpers -------------------------------------------------------------------------------------------------
 
 	private List<PageListener> evaluatePageListeners(Context context) {
 		List<PageListener> listeners = new ArrayList<PageListener>();
@@ -154,5 +145,10 @@ public class GenerateOrIterateStatement extends AbstractStatement
         }
 	    return listeners;
     }
+
+	private void beInitialized(BeneratorContext context) {
+		if (!countGenerator.wasInitialized())
+	    	countGenerator.init(childContext);
+	}
 
 }
