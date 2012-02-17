@@ -66,11 +66,13 @@ public class CurrentProductGeneration implements Statement, Preparable, Resettab
 	public boolean execute(BeneratorContext context) {
 		ProductWrapper<Object> wrapper = source.generate(provider.get());
 		context.setCurrentProduct(wrapper);
-		if (instanceName != null)
-			if (wrapper != null)
-				context.set(instanceName, wrapper.unwrap());
-			else
-				context.remove(instanceName);
+		if (instanceName != null && wrapper != null) {
+			// in normal descriptor execution, a BeneratorSubContext is used, 
+			// in tests and generators exported from descriptor files, it may be a DefaultBeneratorContext
+			BeneratorContext contextToUse = (context instanceof BeneratorSubContext ? 
+					((BeneratorSubContext) context).getParent() : context);
+			contextToUse.set(instanceName, wrapper.unwrap());
+		}
 		return (wrapper != null);
 	}
 
