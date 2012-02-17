@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,6 @@ import java.util.Set;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DefaultBeneratorContext;
-import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.test.GeneratorTest;
@@ -56,7 +55,7 @@ public class GenerateOrIterateStatementTest extends GeneratorTest {
 		EntityGenerationStatement entityGenerationStatement = new EntityGenerationStatement();
 		
 		DefaultBeneratorContext context = new DefaultBeneratorContext();
-		GeneratorTask task = new GenerateAndConsumeTask("myTask", context);
+		GenerateAndConsumeTask task = new GenerateAndConsumeTask("myTask");
 		task.addStatement(entityGenerationStatement);
 		
 		Generator<Long> countGenerator = new ConstantGenerator<Long>(INVOCATION_COUNT);
@@ -65,7 +64,7 @@ public class GenerateOrIterateStatementTest extends GeneratorTest {
 		Expression<Long> minCount = new ConstantExpression<Long>(INVOCATION_COUNT);
 		ConstantExpression<ErrorHandler> errorHandler = new ConstantExpression<ErrorHandler>(ErrorHandler.getDefault());
 		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(
-				countGenerator, minCount, pageSize, null, threads, errorHandler, true, false);
+				countGenerator, minCount, pageSize, null, threads, errorHandler, true, false, context.createSubContext());
 		statement.setTask(task);
 		
 		statement.execute(context);

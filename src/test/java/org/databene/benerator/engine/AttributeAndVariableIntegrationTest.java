@@ -134,26 +134,29 @@ public class AttributeAndVariableIntegrationTest extends BeneratorIntegrationTes
 	@Test
 	public void testVarAfterSubGen() {
 		parseAndExecute(
-				"<generate count='1'>" +
+				"<generate name='e' type='entity' count='1'>" +
 				"	<generate name='sub' count='3'>" +
 				"		<attribute name='x' type='int' generator='IncrementGenerator' />" +
 				"	</generate>" +
 				"	<variable name='y' type='int' script='sub.x'/>" +
 				"	<evaluate id='res' assert='result==3'>{y}</evaluate>" +
+				"	<attribute name='val' type='int' script='res'/>" +
 				"</generate>");
-		assertEquals(3, context.get("res"));
+		Entity e = (Entity) context.get("e");
+		assertEquals(3, e.get("val"));
 	}
 	
 	@Test
 	public void testEvaluateBetweenAttributes() {
 		parseAndExecute(
-				"<generate count='1'>" +
+				"<generate name='e' type='entity' count='1'>" +
 				"	<evaluate id='val1' assert='result==null'>this.id</evaluate>" + 
 				"	<id name='id' type='int'/>" +
-				"	<evaluate id='val2' assert='result==1'>this.id</evaluate>" + 
+				"	<evaluate id='val2' assert='result==1'>this.id</evaluate>" +
+				"	<attribute name='x' type='int' script='val2' />" + 
 				"</generate>");
-		assertEquals(null, context.get("val1"));
-		assertEquals(1, context.get("val2"));
+		Entity e = (Entity) context.get("e");
+		assertEquals(1, e.get("x"));
 	}
 	
 	@Test
