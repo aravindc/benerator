@@ -46,6 +46,7 @@ public class ConsumerMock extends AbstractConsumer {
 
 	public static Map<Integer, ConsumerMock> instances = new HashMap<Integer, ConsumerMock>();
 	
+	private int id;
 	private final int minDelay;
 	private final int delayDelta;
 	
@@ -70,6 +71,7 @@ public class ConsumerMock extends AbstractConsumer {
 
 	public ConsumerMock(boolean storeProducts, int id, int minDelay, int maxDelay) {
 	    this.storeProducts = storeProducts;
+	    this.id = id;
 	    this.minDelay = minDelay;
 	    if (maxDelay > 0) {
 	    	this.delayDelta = maxDelay - minDelay;
@@ -121,5 +123,10 @@ public class ConsumerMock extends AbstractConsumer {
 		invocations.add(CLOSE);
 	    closeCount.incrementAndGet();
     }
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + id + ']';
+	}
 
 }
