@@ -52,6 +52,10 @@ public class BeneratorSubContext implements BeneratorContext {
 	public BeneratorSubContext(BeneratorContext parent) {
 		this.parent = parent;
 	}
+	
+	public BeneratorContext getParent() {
+		return parent;
+	}
 
 	public String getDefaultEncoding() {
 		return parent.getDefaultEncoding();
@@ -74,6 +78,10 @@ public class BeneratorSubContext implements BeneratorContext {
 
 	public void setCurrentProduct(ProductWrapper<?> currentProduct) {
 		this.currentProduct = currentProduct;
+		if (currentProduct != null)
+			set("this", currentProduct.unwrap());
+		else
+			remove("this");
 	}
 	
 	public Set<String> keySet() {
@@ -120,7 +128,7 @@ public class BeneratorSubContext implements BeneratorContext {
 	}
 
 	public boolean contains(String key) {
-		return parent.contains(key);
+		return localContext.contains(key) || parent.contains(key);
 	}
 
 	public char getDefaultSeparator() {
@@ -144,7 +152,7 @@ public class BeneratorSubContext implements BeneratorContext {
 	}
 
 	public BeneratorContext createSubContext() {
-		return parent.createSubContext();
+		return new BeneratorSubContext(this);
 	}
 
 	public GeneratorFactory getGeneratorFactory() {
