@@ -27,7 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.statement.GeneratorStatement;
+import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
+import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.SequentialStatement;
@@ -65,15 +66,15 @@ public class BeneratorRootStatement extends SequentialStatement {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public Generator<?> getGenerator(String name, BeneratorContext context) {
-    	GeneratorStatement statement = getGeneratorStatement(name, context);
+    	GenerateOrIterateStatement statement = getGeneratorStatement(name, context);
     	Generator<?> generator = new TaskBasedGenerator(statement.getTarget());
 		return new NShotGeneratorProxy(generator, statement.generateCount(context));
 	}
 
-    public GeneratorStatement getGeneratorStatement(String name, BeneratorContext context) {
+    public GenerateOrIterateStatement getGeneratorStatement(String name, BeneratorContext context) {
     	BeneratorVisitor visitor = new BeneratorVisitor(name, context);
     	accept(visitor);
-    	GeneratorStatement statement = visitor.getResult();
+    	GenerateOrIterateStatement statement = visitor.getResult();
 		if (statement == null)
     		throw new IllegalArgumentException("Generator not found: " + name);
     	return statement;
@@ -96,23 +97,23 @@ public class BeneratorRootStatement extends SequentialStatement {
 		
 		private String name;
 		private BeneratorContext context;
-		private GeneratorStatement result;
+		private GenerateOrIterateStatement result;
 		
 		public BeneratorVisitor(String name, BeneratorContext context) {
 	        this.name = name;
 	        this.context = context;
         }
 
-		public GeneratorStatement getResult() {
+		public GenerateOrIterateStatement getResult() {
         	return result;
         }
 
 		public void visit(Statement statement) {
 			if (result != null)
 				return;
-			if (statement instanceof GeneratorStatement) {
-				GeneratorStatement generatorStatement = (GeneratorStatement) statement;
-				GeneratorTask target = generatorStatement.getTarget();
+			if (statement instanceof GenerateOrIterateStatement) {
+				GenerateOrIterateStatement generatorStatement = (GenerateOrIterateStatement) statement;
+				GenerateAndConsumeTask target = generatorStatement.getTarget();
 				if (name.equals(target.getTaskName())) {
 					result = generatorStatement;
 					return;
