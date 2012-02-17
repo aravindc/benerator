@@ -182,9 +182,9 @@ public class FactoryUtil {
 		return values;
 	}
 
-    public static Generator<?> createScriptGenerator(String scriptText, Context context) {
+    public static Generator<?> createScriptGenerator(String scriptText) {
         Script script = ScriptUtil.parseScriptText(scriptText);
-        return new ScriptGenerator(script, context);
+        return new ScriptGenerator(script);
     }
 
 }
