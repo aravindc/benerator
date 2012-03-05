@@ -348,14 +348,12 @@ public class DescriptorUtil {
 		int valueCount = 0;
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childType = XMLUtil.localName(child);
-			if (EL_VARIABLE.equals(childType)) {
+			if (EL_VARIABLE.equals(childType))
 				parser.parseVariable(child, (VariableHolder) type);
-			} else if (COMPONENT_TYPES.contains(childType)) {
-				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, (ComplexTypeDescriptor) type);
-				((ComplexTypeDescriptor) type).addComponent(component);
-			} else if (EL_VALUE.equals(childType)) {
+			else if (COMPONENT_TYPES.contains(childType))
+				parser.parseComponent(child, (ComplexTypeDescriptor) type);
+			else if (EL_VALUE.equals(childType))
 				parser.parseSimpleTypeArrayElement(child, (ArrayTypeDescriptor) type, valueCount++);
-			}
 		}
 	}
 

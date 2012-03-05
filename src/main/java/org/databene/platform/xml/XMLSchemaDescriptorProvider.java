@@ -557,9 +557,9 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
             else if ("variable".equals(childName))
                 parser.parseVariable(info, (ComplexTypeDescriptor) descriptor);
             else if (ATTRIBUTE.equals(childName))
-                descriptor = (T) parser.parsePart(info, null, false, (PartDescriptor) descriptor);
+                descriptor = (T) parser.parseAttribute(info, null, (PartDescriptor) descriptor);
             else if ("part".equals(childName))
-                descriptor = (T) parser.parsePart(info, null, true, (PartDescriptor) descriptor);
+                descriptor = (T) parser.parsePart(info, null, (PartDescriptor) descriptor);
             else if (descriptor instanceof ComplexTypeDescriptor)
                 descriptor = (T) parser.parseComplexType(info, (ComplexTypeDescriptor) descriptor);
             else if (descriptor instanceof SimpleTypeDescriptor)

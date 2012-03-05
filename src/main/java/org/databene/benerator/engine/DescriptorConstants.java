@@ -117,6 +117,7 @@ public interface DescriptorConstants {
     
     static final String ATT_ASSERT = "assert";
     static final String ATT_TYPE = "type";
+    static final String ATT_CONTAINER = "container";
     static final String ATT_OPTIMIZE = "optimize";
     static final String ATT_INVALIDATE = "invalidate";
     static final String ATT_ENCODING = "encoding";
@@ -177,6 +178,6 @@ public interface DescriptorConstants {
     static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil
 		.toSet(ATT_PAGESIZE, ATT_THREADS, ATT_CONSUMER, ATT_ON_ERROR);
 
-	static final Collection<String> COMPONENT_TYPES = CollectionUtil.toSet(EL_ATTRIBUTE, EL_PART, EL_ID, EL_REFERENCE);
+	static final Collection<String> COMPONENT_TYPES = CollectionUtil.toSet(EL_ATTRIBUTE, EL_ID, EL_REFERENCE, EL_PART);
 
 }

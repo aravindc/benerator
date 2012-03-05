@@ -29,7 +29,9 @@ package org.databene.benerator.factory;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ArrayElementDescriptor;
@@ -62,9 +64,12 @@ import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.wrapper.AsIntegerGeneratorWrapper;
 import org.databene.benerator.wrapper.DataSourceGenerator;
+import org.databene.benerator.wrapper.SingleSourceArrayGenerator;
+import org.databene.benerator.wrapper.SingleSourceCollectionGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
+import org.databene.commons.SyntaxError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -280,7 +285,17 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     	Generator<Long> source = DescriptorUtil.createDynamicCountGenerator(instance, true, context);
     	NonNullGenerator<Integer> countGenerator = WrapperFactory.asNonNullGenerator(
     			new AsIntegerGeneratorWrapper<Number>((Generator) source));
-    	return new SimplifyingSingleSourceArrayGenerator(generator, countGenerator);
+    	String container = instance.getContainer();
+    	if (container == null)
+    		return new SimplifyingSingleSourceArrayGenerator(generator, countGenerator);
+    	if ("array".equals(container))
+    		return new SingleSourceArrayGenerator(generator, generator.getGeneratedType(), countGenerator);
+    	else if ("list".equals(container))
+    		return new SingleSourceCollectionGenerator(generator, ArrayList.class, countGenerator);
+    	else if ("set".equals(container))
+    		return new SingleSourceCollectionGenerator(generator, HashSet.class, countGenerator);
+    	else
+    		throw new SyntaxError("Not a supported container", container);
     }
 
 }

@@ -49,6 +49,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public static final String NULLABLE           = "nullable";
     public static final String MIN_COUNT          = "minCount";
     public static final String MAX_COUNT          = "maxCount";
+    public static final String CONTAINER          = "container";
     
     // configs
     public static final String COUNT_GRANULARITY    = "countGranularity";
@@ -87,6 +88,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
         addConstraint(NULLABLE,      Boolean.class, new AndOperation());
         addConstraint(MIN_COUNT,     Expression.class, null);
         addConstraint(MAX_COUNT,     Expression.class, null);
+        addConstraint(CONTAINER,     String.class, null);
         
         // configs
         addConfig(COUNT,              Expression.class);
@@ -192,6 +194,14 @@ public class InstanceDescriptor extends FeatureDescriptor {
     
     public void setMaxCount(Expression<Long> maxCount) {
         setDetailValue(MAX_COUNT, maxCount);
+    }
+
+    public String getContainer() {
+        return (String) getDetailValue(CONTAINER);
+    }
+    
+    public void setContainer(String container) {
+        setDetailValue(CONTAINER, container);
     }
 
     @SuppressWarnings("unchecked")

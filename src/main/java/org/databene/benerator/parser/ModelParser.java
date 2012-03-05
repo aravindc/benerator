@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,11 +27,13 @@
 package org.databene.benerator.parser;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import org.databene.commons.ArrayFormat;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ToStringConverter;
@@ -67,7 +69,9 @@ import org.w3c.dom.NamedNodeMap;
  */
 public class ModelParser {
 	
-    private BeneratorContext context;
+    private static final Set<String> SIMPLE_TYPE_COMPONENTS = CollectionUtil.toSet(EL_ATTRIBUTE, EL_REFERENCE, EL_ID);
+    
+	private BeneratorContext context;
     private DescriptorProvider descriptorProvider;
 	
     public ModelParser(BeneratorContext context) {
@@ -75,26 +79,32 @@ public class ModelParser {
 		this.descriptorProvider = context.getLocalDescriptorProvider();
 	}
 
-    public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner) {
-        return parseSimpleTypeComponent(element, owner, null);
-    }
+	public ComponentDescriptor parseComponent(Element element, ComplexTypeDescriptor owner) {
+        String elementName = XMLUtil.localName(element);
+		if (EL_PART.equals(elementName))
+			return parsePart(element, owner, null);
+		else if (SIMPLE_TYPE_COMPONENTS.contains(elementName))
+			return parseSimpleTypeComponent(element, owner, null);
+		else
+            throw new ConfigurationError("Expected one of these element names: " +
+            		EL_ATTRIBUTE + ", " + EL_ID + ", " + EL_REFERENCE + ", or " + EL_PART + ". Found: " + elementName);
+	}
 
     public ComponentDescriptor parseSimpleTypeComponent(
     		Element element, ComplexTypeDescriptor owner, ComponentDescriptor component) {
         String name = XMLUtil.localName(element);
-        if ("part".equals(name) || EL_ATTRIBUTE.equals(name))
-            return parsePart(element, owner, false, component);
+        if (EL_ATTRIBUTE.equals(name))
+            return parseAttribute(element, owner, component);
         else if (EL_ID.equals(name))
             return parseId(element, owner, component);
         else if (EL_REFERENCE.equals(name))
             return parseReference(element, owner, component);
         else
             throw new ConfigurationError("Expected one of these element names: " +
-            		EL_ATTRIBUTE + ", " + EL_ID + ", " + EL_REFERENCE + ", or part. Found: " + name);
+            		EL_ATTRIBUTE + ", " + EL_ID + " or " + EL_REFERENCE + ". Found: " + name);
     }
 
     public ComplexTypeDescriptor parseComplexType(Element ctElement, ComplexTypeDescriptor descriptor) {
-    	// TODO v0.7.x called from XMLSchemaDescriptorProvider
         assertElementName(ctElement, "entity", "type");
         descriptor = new ComplexTypeDescriptor(descriptor.getName(), descriptorProvider, descriptor);
         mapTypeDetails(ctElement, descriptor);
@@ -111,32 +121,67 @@ public class ModelParser {
             throw new UnsupportedOperationException("element type not supported here: " + childName);
     }
 
-    public PartDescriptor parsePart(Element element, ComplexTypeDescriptor owner, 
-            boolean complex, ComponentDescriptor descriptor) {
-        assertElementName(element, "part", "attribute");
+    public PartDescriptor parseAttribute(Element element, ComplexTypeDescriptor owner, ComponentDescriptor descriptor) {
+        assertElementName(element, "attribute");
         PartDescriptor result;
-        if (descriptor instanceof PartDescriptor)
-            result = (PartDescriptor) descriptor;
-        else if (descriptor != null)
+        if (descriptor != null)
             result = new PartDescriptor(descriptor.getName(), descriptorProvider, descriptor.getType());
         else {
-            String type = StringUtil.emptyToNull(element.getAttribute("type"));
-            result = new PartDescriptor(element.getAttribute("name"), descriptorProvider, type);
+            String typeName = StringUtil.emptyToNull(element.getAttribute("type"));
+            result = new PartDescriptor(element.getAttribute("name"), descriptorProvider, typeName);
         }
-        mapInstanceDetails(element, complex, result);
-        if (result.getDeclaredDetailValue("minCount") == null)
-            result.setMinCount(new ConstantExpression<Long>(1L));
-        if (result.getDeclaredDetailValue("maxCount") == null)
-            result.setMaxCount(new ConstantExpression<Long>(1L));
+        mapInstanceDetails(element, false, result);
+        applyDefaultCounts(result);
         if (owner != null) {
             ComponentDescriptor parentComponent = owner.getComponent(result.getName());
             if (parentComponent != null) {
                 TypeDescriptor parentType = parentComponent.getTypeDescriptor();
                 result.getLocalType(false).setParent(parentType);
             }
+        	owner.addComponent(result);
         }
         return result;
     }
+
+    public PartDescriptor parsePart(Element element, ComplexTypeDescriptor owner, ComponentDescriptor descriptor) {
+        assertElementName(element, "part");
+        PartDescriptor result;
+        if (descriptor instanceof PartDescriptor)
+            result = (PartDescriptor) descriptor;
+        else if (descriptor != null)
+            result = new PartDescriptor(descriptor.getName(), descriptorProvider, descriptor.getType());
+        else {
+            String typeName = StringUtil.emptyToNull(element.getAttribute("type"));
+            String partName = element.getAttribute("name");
+			String localTypeName = owner.getName() + "." + partName + "_type";
+			if (typeName != null)
+            	result = new PartDescriptor(partName, descriptorProvider, typeName);
+            else if (element.getNodeName().equals("part"))
+				result = new PartDescriptor(partName, descriptorProvider, new ComplexTypeDescriptor(localTypeName, descriptorProvider, (ComplexTypeDescriptor) null));
+			else
+            	result = new PartDescriptor(partName, descriptorProvider, new SimpleTypeDescriptor(localTypeName, descriptorProvider, (SimpleTypeDescriptor) null));
+        }
+        mapInstanceDetails(element, true, result);
+        applyDefaultCounts(result);
+        if (owner != null) {
+            ComponentDescriptor parentComponent = owner.getComponent(result.getName());
+            if (parentComponent != null) {
+                TypeDescriptor parentType = parentComponent.getTypeDescriptor();
+                result.getLocalType(false).setParent(parentType);
+            }
+            owner.addComponent(result);
+        }
+        for (Element childElement : XMLUtil.getChildElements(element))
+        	parseComponent(childElement, (ComplexTypeDescriptor) result.getLocalType(true));
+        return result;
+    }
+
+	public void applyDefaultCounts(PartDescriptor descriptor) {
+		if (descriptor.getDeclaredDetailValue("minCount") == null)
+            descriptor.setMinCount(new ConstantExpression<Long>(1L));
+        if (descriptor.getDeclaredDetailValue("maxCount") == null)
+            descriptor.setMaxCount(new ConstantExpression<Long>(1L));
+	}
 
     public SimpleTypeDescriptor parseSimpleType(Element element) {
         assertElementName(element, "type");
@@ -260,6 +305,7 @@ public class ModelParser {
                 TypeDescriptor parentType = parentComponent.getTypeDescriptor();
                 result.getLocalType(false).setParent(parentType);
             }
+        	owner.addComponent(result);
         }
         return result;
     }
@@ -279,8 +325,10 @@ public class ModelParser {
                 TypeDescriptor parentType = parentComponent.getTypeDescriptor();
                 result.getLocalType(false).setParent(parentType);
             }
+        	owner.addComponent(result);
         }
         return mapInstanceDetails(element, false, result);
     }
+
 
 }

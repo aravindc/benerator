@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,7 +35,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.composite.GeneratorComponent;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.CurrentProductGeneration;
-import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.CachedExpression;
@@ -43,7 +42,6 @@ import org.databene.benerator.engine.expression.xml.XMLConsumerExpression;
 import org.databene.benerator.engine.statement.ConversionStatement;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
-import org.databene.benerator.engine.statement.GeneratorStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.TimedGeneratorStatement;
 import org.databene.benerator.engine.statement.ValidationStatement;
@@ -90,7 +88,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			ATT_COUNT, ATT_MIN_COUNT, ATT_MAX_COUNT, ATT_COUNT_DISTRIBUTION, 
 			ATT_PAGESIZE, /*ATT_THREADS,*/ ATT_STATS, ATT_ON_ERROR,
 			ATT_TEMPLATE, ATT_CONSUMER, 
-			ATT_NAME, ATT_TYPE, ATT_GENERATOR, ATT_VALIDATOR, 
+			ATT_NAME, ATT_TYPE, ATT_CONTAINER, ATT_GENERATOR, ATT_VALIDATOR, 
 			ATT_CONVERTER, ATT_NULL_QUOTA, ATT_UNIQUE, ATT_DISTRIBUTION, ATT_CYCLIC,
 			ATT_SOURCE, ATT_SEPARATOR, ATT_ENCODING, ATT_SELECTOR, ATT_SUB_SELECTOR, 
 			ATT_DATASET, ATT_NESTING, ATT_LOCALE, ATT_FILTER
@@ -154,7 +152,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	}
 	
     @SuppressWarnings("unchecked")
-    public GeneratorStatement parseGenerate(Element element, Statement[] parentPath, 
+    public GenerateOrIterateStatement parseGenerate(Element element, Statement[] parentPath, 
     		BeneratorParseContext parsingContext, BeneratorContext context, boolean infoLog, boolean nested) {
     	// parse descriptor
 	    InstanceDescriptor descriptor = mapDescriptorElement(element, context);
@@ -167,18 +165,19 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 				element.getAttribute(ATT_PAGER));
 		Expression<ErrorHandler> errorHandler = parseOnErrorAttribute(element, element.getAttribute(ATT_NAME));
 		Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor, 0);
+		BeneratorContext childContext = context.createSubContext();
 		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(
 				countGenerator, minCount, pageSize, pager, /*threads*/ new ConstantExpression<Integer>(1), 
-				errorHandler, infoLog, nested);
+				errorHandler, infoLog, nested, childContext);
 		
 		// parse task and sub statements
-		GeneratorTask task = parseTask(element, parentPath, statement, parsingContext, descriptor, context, infoLog);
+		GenerateAndConsumeTask task = parseTask(element, parentPath, statement, parsingContext, descriptor, childContext, infoLog);
 		statement.setTask(task);
 		return statement;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-    private GeneratorTask parseTask(Element element, Statement[] parentPath, GenerateOrIterateStatement statement, 
+    private GenerateAndConsumeTask parseTask(Element element, Statement[] parentPath, GenerateOrIterateStatement statement, 
     		BeneratorParseContext parseContext, InstanceDescriptor descriptor, BeneratorContext context, 
     		boolean infoLog) {
 		descriptor.setNullable(false);
@@ -213,8 +212,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			if (EL_VARIABLE.equals(childName)) {
 				componentDescriptor = parser.parseVariable(child, (VariableHolder) type);
 			} else if (COMPONENT_TYPES.contains(childName)) {
-				componentDescriptor = parser.parseSimpleTypeComponent(child, (ComplexTypeDescriptor) type);
-				((ComplexTypeDescriptor) type).addComponent((ComponentDescriptor) componentDescriptor);
+				componentDescriptor = parser.parseComponent(child, (ComplexTypeDescriptor) type);
 				handledMembers.add(componentDescriptor.getName().toLowerCase());
 			} else if (EL_VALUE.equals(childName)) {
 				componentDescriptor = parser.parseSimpleTypeArrayElement(child, (ArrayTypeDescriptor) type, arrayIndex++);
@@ -261,7 +259,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		}
 		
 		// create task
-		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, context);
+		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName);
 		task.setStatements(statements);
 
 		// parse converter

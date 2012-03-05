@@ -68,7 +68,7 @@ public class DefaultComponentParser extends AbstractBeneratorDescriptorParser {
 				String childType = XMLUtil.localName(child);
 				if (COMPONENT_TYPES.contains(childType)) {
 					ModelParser parser = new ModelParser(context);
-					ComponentDescriptor component = parser.parseSimpleTypeComponent(child, null);
+					ComponentDescriptor component = parser.parseSimpleTypeComponent(child, null, null);
 					context.setDefaultComponentConfig(component);
 				} else
 					throw new ConfigurationError("Unexpected element: " + childType);
