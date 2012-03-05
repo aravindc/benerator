@@ -21,6 +21,7 @@
 
 package org.databene.benerator.engine;
 
+import java.io.File;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,6 +32,7 @@ import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.factory.StochasticGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
@@ -42,6 +44,7 @@ import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.converter.ConverterManager;
+import org.databene.commons.file.FileSuffixFilter;
 import org.databene.domain.address.Country;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -109,6 +112,8 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 		push(settings);
 		push(new CaseInsensitiveContext(true));
 		set("context", this);
+		if (IOUtil.isFileUri(contextUri))
+			addLibFolderToClassLoader();
 		classCache = new ClassCache();
 	}
 	
@@ -364,4 +369,13 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 		this.dataModel = dataModel;
 	}
 	
+	private void addLibFolderToClassLoader() {
+		File libFolder = new File(contextUri, "lib");
+		if (libFolder.exists()) {
+			Thread.currentThread().setContextClassLoader(BeanUtil.createDirectoryClassLoader(libFolder));
+			for (File jarFile : libFolder.listFiles(new FileSuffixFilter("jar", false)))
+				Thread.currentThread().setContextClassLoader(BeanUtil.createJarClassLoader(jarFile));
+		}
+	}
+
 }
