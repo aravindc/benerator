@@ -29,13 +29,16 @@ package org.databene.benerator;
 import java.io.Closeable;
 import java.io.Flushable;
 
+import org.databene.benerator.storage.AbstractStorageSystem;
 import org.databene.commons.Context;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.webdecs.DataSource;
 
 /**
- * Abstraction of an Entity storage system.<br/><br/>
+ * Abstract interface characterizing an Entity storage system. 
+ * An implementation of this interface must inherit the class {@link AbstractStorageSystem}
+ * if it is needs to be forward compatible.<br/><br/>
  * <br/>
  * Created: 27.06.2007 23:02:21
  * @since 0.4.0
