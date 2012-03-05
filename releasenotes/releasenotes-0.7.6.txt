@@ -1,0 +1,19 @@
+release notes benerator 0.7.6
+=============================
+
+summary
+-------
+
+
+changes
+-------
+
+
+enhancements
+------------
+- supporting jars and class files in project/lib folder
+- <part> descriptor
+ 
+
+bug fixes
+---------
