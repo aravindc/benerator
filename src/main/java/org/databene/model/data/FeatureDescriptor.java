@@ -27,7 +27,7 @@ public class FeatureDescriptor implements Named {
     }
 
     protected OrderedNameMap<FeatureDetail<?>> details;
-    protected DescriptorProvider owner;
+    protected DescriptorProvider owner; // TODO rename to provider
 
     // constructor -----------------------------------------------------------------------------------------------------
 
