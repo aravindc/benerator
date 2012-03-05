@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import java.util.Locale;
 
+import org.databene.commons.BeanUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.domain.address.Country;
 import org.databene.script.ScriptUtil;
@@ -36,7 +37,9 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class BeneratorContextTest {
+public class DefaultBeneratorContextTest {
+
+	private static final String OFF_CLASSPATH_RESOURCES_FOLDER = "src/test/offCpResources";
 
 	@Test
 	public void testDefaults() {
@@ -57,6 +60,24 @@ public class BeneratorContextTest {
 	public void testSysPropAccess() {
 		BeneratorContext context = new DefaultBeneratorContext();
 		assertEquals(System.getProperty("user.name"), context.get("user.name"));
+	}
+	
+	@Test
+	public void testJarInLibFolder() {
+		BeneratorContext context = new DefaultBeneratorContext(OFF_CLASSPATH_RESOURCES_FOLDER);
+		Class<?> testClassInJar = context.forName("com.my.TestClassInJar");
+		Object o = BeanUtil.newInstance(testClassInJar);
+		assertEquals("staticMethodInJar called", BeanUtil.invoke(testClassInJar, "staticMethodInJar"));
+		assertEquals("instanceMethodInJar called", BeanUtil.invoke(o, "instanceMethodInJar"));
+	}
+	
+	@Test
+	public void testClassFileInLibFolder() {
+		BeneratorContext context = new DefaultBeneratorContext(OFF_CLASSPATH_RESOURCES_FOLDER);
+		Class<?> testClassInJar = context.forName("com.my.TestClassInPath");
+		Object o = BeanUtil.newInstance(testClassInJar);
+		assertEquals("staticMethodInPath called", BeanUtil.invoke(testClassInJar, "staticMethodInPath"));
+		assertEquals("instanceMethodInPath called", BeanUtil.invoke(o, "instanceMethodInPath"));
 	}
 	
 }
