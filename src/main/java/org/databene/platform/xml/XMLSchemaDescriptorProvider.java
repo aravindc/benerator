@@ -537,7 +537,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     		complexType.addComponent(new PartDescriptor(ComplexTypeDescriptor.__SIMPLE_CONTENT, this, refName));
             descriptor = new PartDescriptor(refName, this, complexType);
         } else {
-        	descriptor = new PartDescriptor(refName, this, refName);
+        	descriptor = new PartDescriptor(refName, this, type);
         }
         return descriptor;
     }

@@ -87,6 +87,8 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 
 	private DataModel dataModel;
 	private DefaultDescriptorProvider localDescriptorProvider;
+	
+	private String currentCreator;
 
     static {
     	ScriptUtil.addFactory("ben", new BeneratorScriptFactory());
@@ -376,6 +378,14 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 			for (File jarFile : libFolder.listFiles(new FileSuffixFilter("jar", false)))
 				Thread.currentThread().setContextClassLoader(BeanUtil.createJarClassLoader(jarFile));
 		}
+	}
+
+	public void setCurrentProductName(String currentCreator) {
+		this.currentCreator = currentCreator;
+	}
+
+	public boolean hasProductNameInScope(String currentCreator) {
+		return (this.currentCreator != null && this.currentCreator.equals(currentCreator));
 	}
 
 }

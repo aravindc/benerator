@@ -54,15 +54,22 @@ public class SingleSourceCollectionGenerator<I, C extends Collection<I>> extends
     }
 
 	public C generate() {
-    	Integer size = generateCardinal();
-    	if (size == null)
+    	ProductWrapper<Integer> sizeWrapper = generateCardinalWrapper();
+    	if (sizeWrapper == null)
     		return null;
+    	Integer size = sizeWrapper.unwrap();
     	// the following works for primitive types as well as for objects
-		C collection = BeanUtil.newInstance(collectionType, size.intValue());
-        for (int i = 0; i < size; i++) {
+		C collection;
+		if (size != null)
+			collection = BeanUtil.newInstance(collectionType, size.intValue());
+		else
+			collection = BeanUtil.newInstance(collectionType);
+        for (int i = 0; size == null || i < size; i++) {
             ProductWrapper<I> component = generateFromSource();
-            if (component == null)
-            	return null;
+            if (component == null) {
+            	getSource().reset();
+            	break;
+            }
 			collection.add(component.unwrap());
         } 
         return collection;

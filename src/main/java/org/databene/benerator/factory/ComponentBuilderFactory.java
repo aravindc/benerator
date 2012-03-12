@@ -282,12 +282,21 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<?> generator, BeneratorContext context) {
-    	Generator<Long> source = DescriptorUtil.createDynamicCountGenerator(instance, true, context);
-    	NonNullGenerator<Integer> countGenerator = WrapperFactory.asNonNullGenerator(
-    			new AsIntegerGeneratorWrapper<Number>((Generator) source));
     	String container = instance.getContainer();
-    	if (container == null)
+    	if (container == null) {
+        	Generator<Long> longCountGenerator = DescriptorUtil.createDynamicCountGenerator(instance, 1L, 1L, true, context);
+        	NonNullGenerator<Integer> countGenerator = WrapperFactory.asNonNullGenerator(
+        			new AsIntegerGeneratorWrapper<Number>((Generator) longCountGenerator));
     		return new SimplifyingSingleSourceArrayGenerator(generator, countGenerator);
+    	}
+    	// handle container
+    	Generator<Long> longCountGenerator;
+    	if (instance.getLocalType().getSource() != null)
+    		longCountGenerator = DescriptorUtil.createDynamicCountGenerator(instance, null, null, true, context);
+    	else
+        	longCountGenerator = DescriptorUtil.createDynamicCountGenerator(instance, 1L, 1L, true, context);
+    	NonNullGenerator<Integer> countGenerator = WrapperFactory.asNonNullGenerator(
+    			new AsIntegerGeneratorWrapper<Number>((Generator) longCountGenerator));
     	if ("array".equals(container))
     		return new SingleSourceArrayGenerator(generator, generator.getGeneratedType(), countGenerator);
     	else if ("list".equals(container))

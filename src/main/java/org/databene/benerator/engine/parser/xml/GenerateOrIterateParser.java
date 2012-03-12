@@ -90,7 +90,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			ATT_TEMPLATE, ATT_CONSUMER, 
 			ATT_NAME, ATT_TYPE, ATT_CONTAINER, ATT_GENERATOR, ATT_VALIDATOR, 
 			ATT_CONVERTER, ATT_NULL_QUOTA, ATT_UNIQUE, ATT_DISTRIBUTION, ATT_CYCLIC,
-			ATT_SOURCE, ATT_SEPARATOR, ATT_ENCODING, ATT_SELECTOR, ATT_SUB_SELECTOR, 
+			ATT_SOURCE, ATT_OFFSET, ATT_SEPARATOR, ATT_ENCODING, ATT_SELECTOR, ATT_SUB_SELECTOR, 
 			ATT_DATASET, ATT_NESTING, ATT_LOCALE, ATT_FILTER
 		);
 	
@@ -154,17 +154,18 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
     @SuppressWarnings("unchecked")
     public GenerateOrIterateStatement parseGenerate(Element element, Statement[] parentPath, 
     		BeneratorParseContext parsingContext, BeneratorContext context, boolean infoLog, boolean nested) {
+    	context.setCurrentProductName(getNameOrType(element));
     	// parse descriptor
 	    InstanceDescriptor descriptor = mapDescriptorElement(element, context);
 	    
 		// parse statement
-		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
+		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, 1L, 1L, false, context);
 		Expression<Long> pageSize = parsePageSize(element);
 		//Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
 		Expression<PageListener> pager = (Expression<PageListener>) DatabeneScriptParser.parseBeanSpec(
 				element.getAttribute(ATT_PAGER));
 		Expression<ErrorHandler> errorHandler = parseOnErrorAttribute(element, element.getAttribute(ATT_NAME));
-		Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor, 0);
+		Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor, 0L);
 		BeneratorContext childContext = context.createSubContext();
 		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(
 				countGenerator, minCount, pageSize, pager, /*threads*/ new ConstantExpression<Integer>(1), 
@@ -173,6 +174,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		// parse task and sub statements
 		GenerateAndConsumeTask task = parseTask(element, parentPath, statement, parsingContext, descriptor, childContext, infoLog);
 		statement.setTask(task);
+    	context.setCurrentProductName(null);
 		return statement;
 	}
 
@@ -259,7 +261,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		}
 		
 		// create task
-		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName);
+		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, getNameOrType(element));
 		task.setStatements(statements);
 
 		// parse converter

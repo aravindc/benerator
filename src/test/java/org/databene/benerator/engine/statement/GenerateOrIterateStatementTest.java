@@ -55,7 +55,7 @@ public class GenerateOrIterateStatementTest extends GeneratorTest {
 		EntityGenerationStatement entityGenerationStatement = new EntityGenerationStatement();
 		
 		DefaultBeneratorContext context = new DefaultBeneratorContext();
-		GenerateAndConsumeTask task = new GenerateAndConsumeTask("myTask");
+		GenerateAndConsumeTask task = new GenerateAndConsumeTask("myTask", "myTask");
 		task.addStatement(entityGenerationStatement);
 		
 		Generator<Long> countGenerator = new ConstantGenerator<Long>(INVOCATION_COUNT);

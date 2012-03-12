@@ -153,7 +153,7 @@ public class ModelParser {
         else {
             String typeName = StringUtil.emptyToNull(element.getAttribute("type"));
             String partName = element.getAttribute("name");
-			String localTypeName = owner.getName() + "." + partName + "_type";
+			String localTypeName = owner.getName() + "." + partName;
 			if (typeName != null)
             	result = new PartDescriptor(partName, descriptorProvider, typeName);
             else if (element.getNodeName().equals("part"))
@@ -162,7 +162,8 @@ public class ModelParser {
             	result = new PartDescriptor(partName, descriptorProvider, new SimpleTypeDescriptor(localTypeName, descriptorProvider, (SimpleTypeDescriptor) null));
         }
         mapInstanceDetails(element, true, result);
-        applyDefaultCounts(result);
+		if (result.getLocalType().getSource() == null)
+			applyDefaultCounts(result);
         if (owner != null) {
             ComponentDescriptor parentComponent = owner.getComponent(result.getName());
             if (parentComponent != null) {

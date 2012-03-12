@@ -48,9 +48,11 @@ public class BeneratorSubContext implements BeneratorContext {
 	private BeneratorContext parent;
 	private Context localContext = new CaseInsensitiveContext(true);
 	private ProductWrapper<?> currentProduct;
+	private String currentProductName;
 
 	public BeneratorSubContext(BeneratorContext parent) {
 		this.parent = parent;
+		this.currentProductName = null;
 	}
 	
 	public BeneratorContext getParent() {
@@ -305,6 +307,15 @@ public class BeneratorSubContext implements BeneratorContext {
 	
 	public void addLocalType(TypeDescriptor type) {
 		parent.addLocalType(type);
+	}
+
+	public void setCurrentProductName(String currentProductName) {
+		this.currentProductName = currentProductName;
+	}
+
+	public boolean hasProductNameInScope(String currentProductName) {
+		return (this.currentProductName != null && this.currentProductName.equals(currentProductName))
+			|| (parent != null && parent.hasProductNameInScope(currentProductName));
 	}
 
 }

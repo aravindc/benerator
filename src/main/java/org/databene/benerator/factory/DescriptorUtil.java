@@ -50,6 +50,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
+import org.databene.commons.NullSafeComparator;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
@@ -258,18 +259,20 @@ public class DescriptorUtil {
 	}
 
     public static Expression<Long> getMinCount(InstanceDescriptor descriptor) {
-    	return getMinCount(descriptor, 1);
+    	return getMinCount(descriptor, 1L);
     }
     
     @SuppressWarnings("unchecked")
-    public static Expression<Long> getMinCount(InstanceDescriptor descriptor, long defaultMin) {
+    public static Expression<Long> getMinCount(InstanceDescriptor descriptor, Long defaultMin) {
     	Expression<Long> result = null;
 		if (descriptor.getCount() != null)
 			result = descriptor.getCount();
 		else if (descriptor.getMinCount() != null)
         	result = descriptor.getMinCount();
-		else
+		else if (defaultMin != null)
 			result = new ConstantExpression<Long>(defaultMin);
+		else
+			return new ConstantExpression<Long>(null);
 		Expression<Long> globalMaxCount = getGlobalMaxCount();
 		if (!ExpressionUtil.isNull(globalMaxCount))
 			result = new MinExpression<Long>(result, globalMaxCount);
@@ -277,14 +280,14 @@ public class DescriptorUtil {
 	}
 
     @SuppressWarnings("unchecked")
-    public static Expression<Long> getMaxCount(InstanceDescriptor descriptor) {
+    public static Expression<Long> getMaxCount(InstanceDescriptor descriptor, Long defaultMax) {
     	Expression<Long> result = null;
 		if (descriptor.getCount() != null)
 			result = descriptor.getCount();
 		else if (descriptor.getMaxCount() != null)
         	result = descriptor.getMaxCount();
-		else if (descriptor instanceof ComponentDescriptor)			
-			result = new ConstantExpression<Long>(1L);
+		else if (descriptor instanceof ComponentDescriptor && defaultMax != null)			
+			result = new ConstantExpression<Long>(defaultMax);
 		else
 			return getGlobalMaxCount();
 		Expression<Long> globalMaxCount = getGlobalMaxCount();
@@ -311,18 +314,18 @@ public class DescriptorUtil {
 		return scriptConverter;
 	}
 
-	public static Generator<Long> createDynamicCountGenerator(final InstanceDescriptor descriptor, boolean resetToMin, 
-			BeneratorContext context) {
+	public static Generator<Long> createDynamicCountGenerator(final InstanceDescriptor descriptor, 
+			Long defaultMin, Long defaultMax, boolean resetToMin, BeneratorContext context) {
     	Expression<Long> count = DescriptorUtil.getCount(descriptor);
     	if (count != null)
     		return new ExpressionBasedGenerator<Long>(count, Long.class);
     	else {
-			final Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor);
-			final Expression<Long> maxCount = DescriptorUtil.getMaxCount(descriptor);
+			final Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor, defaultMin);
+			final Expression<Long> maxCount = DescriptorUtil.getMaxCount(descriptor, defaultMax);
 			if (minCount.isConstant() && maxCount.isConstant() && descriptor.getCountDistribution() == null) {
 				Long minCountValue = minCount.evaluate(context);
 				Long maxCountValue = maxCount.evaluate(context);
-				if (minCountValue.equals(maxCountValue))
+				if (NullSafeComparator.equals(minCountValue, maxCountValue))
 					return new ConstantGenerator<Long>(minCountValue);
 			}
 			final Expression<Long> countGranularity = DescriptorUtil.getCountGranularity(descriptor);

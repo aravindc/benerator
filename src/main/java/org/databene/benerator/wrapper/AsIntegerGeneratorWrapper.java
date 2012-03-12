@@ -51,7 +51,8 @@ public class AsIntegerGeneratorWrapper<E extends Number> extends GeneratorWrappe
     	ProductWrapper<E> tmp = generateFromSource();
     	if (tmp == null)
     		return null;
-	    return wrapper.wrap(tmp.unwrap().intValue());
+	    E unwrappedValue = tmp.unwrap();
+		return wrapper.wrap(unwrappedValue != null ? unwrappedValue.intValue() : null);
     }
 
 }

@@ -72,7 +72,7 @@ public class FactoryUtilTest extends GeneratorTest {
 		// given an instance descriptor without limits defined
 		InstanceDescriptor descriptor = createInstance("inst");
 		// when creating a count generator for this
-		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
+		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, 1L, 1L, false, context);
 		countGenerator.init(context);
 		// then it is supposed to only generate null values for indicating an unlimited count
 		expectGeneratedSet(countGenerator, 100, new Long[] { null });
@@ -81,7 +81,7 @@ public class FactoryUtilTest extends GeneratorTest {
 	@Test
 	public void testCreateDynamicCountGenerator_distributed() {
 		InstanceDescriptor descriptor = createInstance("inst").withMinCount(2).withMaxCount(4);
-		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
+		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, 1L, 1L, false, context);
 		countGenerator.init(context);
 		expectGeneratedSet(countGenerator, 100, 2L, 3L, 4L).withContinuedAvailability();
 	}
@@ -89,7 +89,7 @@ public class FactoryUtilTest extends GeneratorTest {
 	@Test
 	public void testCreateDynamicCountGenerator_minMax() {
 		InstanceDescriptor descriptor = createInstance("inst").withMinCount(2).withMaxCount(3);
-		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
+		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, 1L, 1L, false, context);
 		countGenerator.init(context);
 		expectGeneratedSet(countGenerator, 20, 2L, 3L).withContinuedAvailability();
 	}
@@ -99,7 +99,7 @@ public class FactoryUtilTest extends GeneratorTest {
 		// given an instance descriptor with just a lower limit defined
 		InstanceDescriptor descriptor = createInstance("inst").withMinCount(6);
 		// when creating a count generator for this
-		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, false, context);
+		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, 1L, 1L, false, context);
 		countGenerator.init(context);
 		// then it is supposed to only generate null values for indicating an unlimited count
 		expectGeneratedSet(countGenerator, 100, new Long[] { null });

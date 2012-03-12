@@ -94,8 +94,12 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
         		sourceObject = context.get(sourceSpec);
         	} else
         		sourceObject = tmp;
-        } else
+        } else if (context.hasProductNameInScope(sourceSpec)) {
+        	String partName = StringUtil.lastToken(descriptor.getName(), '.');
+			sourceObject = new EntityPartSource(sourceSpec, partName, context);
+        } else {
     		sourceObject = context.get(sourceSpec);
+        }
 
         // create sourceObject generator
         

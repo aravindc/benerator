@@ -91,6 +91,7 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 	// Statement interface ---------------------------------------------------------------------------------------------
 	
     public boolean execute(BeneratorContext ctx) {
+    	ctx.setCurrentProductName(task.getProductName());
     	beInitialized(ctx);
 	    task.prepare(childContext);
     	Task taskToUse = this.task;
@@ -109,6 +110,7 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 	    		infoLog);
 	    if (!isSubCreator)
 	    	close();
+    	ctx.setCurrentProductName(null);
     	return true;
     }
 

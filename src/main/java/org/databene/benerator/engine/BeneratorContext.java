@@ -90,4 +90,7 @@ public interface BeneratorContext extends GeneratorContext, ScriptContext {
 
 	DescriptorProvider getLocalDescriptorProvider();
 	void addLocalType(TypeDescriptor type);
+
+	void setCurrentProductName(String currentProductName);
+	boolean hasProductNameInScope(String currentProductName);
 }

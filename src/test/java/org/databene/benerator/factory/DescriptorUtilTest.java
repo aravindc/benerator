@@ -279,15 +279,15 @@ public class DescriptorUtilTest extends ModelTest {
 	@Test
 	public void testGetMaxCount() {
 		// default
-		assertNull(DescriptorUtil.getMaxCount(createInstance("x")).evaluate(context));
+		assertNull(DescriptorUtil.getMaxCount(createInstance("x"), 1L).evaluate(context));
 		// explicit setting
-		assertEquals(2L, DescriptorUtil.getMaxCount(createInstance("x").withMaxCount(2)).evaluate(context).longValue());
+		assertEquals(2L, DescriptorUtil.getMaxCount(createInstance("x").withMaxCount(2), 1L).evaluate(context).longValue());
 		// override by global maxCount
 		context.setMaxCount(3L);
-		assertEquals(3L, DescriptorUtil.getMaxCount(createInstance("x").withMaxCount(4)).evaluate(context).longValue());
+		assertEquals(3L, DescriptorUtil.getMaxCount(createInstance("x").withMaxCount(4), 1L).evaluate(context).longValue());
 		// global maxCount overrides default
 		context.setMaxCount(null);
-		assertEquals(null, DescriptorUtil.getMaxCount(createInstance("x")).evaluate(context));
+		assertEquals(null, DescriptorUtil.getMaxCount(createInstance("x"), 1L).evaluate(context));
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------

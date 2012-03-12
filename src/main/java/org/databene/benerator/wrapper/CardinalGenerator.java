@@ -93,11 +93,14 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
     // helpers ---------------------------------------------------------------------------------------------------------
     
     protected Integer generateCardinal() {
-    	ProductWrapper<Integer> wrapper = cardinalWrapperProvider.get();
-    	wrapper = cardinalGenerator.generate(wrapper);
+    	ProductWrapper<Integer> wrapper = generateCardinalWrapper();
     	if (wrapper == null)
     		return null;
     	return wrapper.unwrap();
     }
+
+	protected ProductWrapper<Integer> generateCardinalWrapper() {
+		return cardinalGenerator.generate(cardinalWrapperProvider.get());
+	}
     
 }

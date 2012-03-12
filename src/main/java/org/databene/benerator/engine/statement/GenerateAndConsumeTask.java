@@ -70,9 +70,11 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
     private volatile AtomicBoolean initialized;
     private Consumer consumer;
     private String message;
+	private String productName;
     
-    public GenerateAndConsumeTask(String taskName) {
+    public GenerateAndConsumeTask(String taskName, String productName) {
     	this.taskName = taskName;
+    	this.productName = productName;
         this.resourceManager = new ResourceManagerSupport();
         this.initialized = new AtomicBoolean(false);
     	this.statements = new ArrayList<Statement>();
@@ -153,6 +155,10 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
     		reset();
     }
 	
+	public String getProductName() {
+		return productName;
+	}
+
 	public ProductWrapper<?> getRecentProduct() {
 		return context.getCurrentProduct();
 	}
