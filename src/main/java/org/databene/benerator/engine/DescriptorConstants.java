@@ -99,7 +99,8 @@ public interface DescriptorConstants {
 	static final String ATT_ID = EL_ID;
 	static final String ATT_MESSAGE = "message";
 	static final String ATT_SELECTOR = "selector";
-    static final String ATT_SOURCE = "source";
+	static final String ATT_SOURCE = "source";
+	static final String ATT_OFFSET = "offset";
     static final String ATT_REF = "ref";
     static final String ATT_VALUE = "value";
     static final String ATT_DEFAULT = "default";
