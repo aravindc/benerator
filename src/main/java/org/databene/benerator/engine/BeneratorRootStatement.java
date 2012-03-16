@@ -67,7 +67,7 @@ public class BeneratorRootStatement extends SequentialStatement {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public Generator<?> getGenerator(String name, BeneratorContext context) {
     	GenerateOrIterateStatement statement = getGeneratorStatement(name, context);
-    	Generator<?> generator = new TaskBasedGenerator(statement.getTarget());
+    	Generator<?> generator = new TaskBasedGenerator(statement.getTask());
 		return new NShotGeneratorProxy(generator, statement.generateCount(context));
 	}
 
@@ -113,7 +113,7 @@ public class BeneratorRootStatement extends SequentialStatement {
 				return;
 			if (statement instanceof GenerateOrIterateStatement) {
 				GenerateOrIterateStatement generatorStatement = (GenerateOrIterateStatement) statement;
-				GenerateAndConsumeTask target = generatorStatement.getTarget();
+				GenerateAndConsumeTask target = generatorStatement.getTask();
 				if (name.equals(target.getTaskName())) {
 					result = generatorStatement;
 					return;

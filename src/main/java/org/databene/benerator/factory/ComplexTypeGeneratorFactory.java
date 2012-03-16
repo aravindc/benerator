@@ -73,10 +73,10 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
     public ComplexTypeGeneratorFactory() { }
     
 	@Override
-	protected Generator<?> applyWrappers(Generator<?> generator, ComplexTypeDescriptor descriptor, 
+	protected Generator<?> applyComponentBuilders(Generator<?> generator, ComplexTypeDescriptor descriptor, 
 			String instanceName, Uniqueness uniqueness, BeneratorContext context) {
 		generator = createMutatingEntityGenerator(instanceName, descriptor, uniqueness, context, generator);
-        return super.applyWrappers(generator, descriptor, instanceName, uniqueness, context);
+        return super.applyComponentBuilders(generator, descriptor, instanceName, uniqueness, context);
 	}
     
     @Override

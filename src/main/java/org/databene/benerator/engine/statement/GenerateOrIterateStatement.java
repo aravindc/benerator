@@ -60,11 +60,12 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 	protected PerformanceTracker tracker;
 	protected boolean infoLog;
 	protected boolean isSubCreator;
+	protected BeneratorContext context;
 	protected BeneratorContext childContext;
 	
 	public GenerateOrIterateStatement(Generator<Long> countGenerator, Expression<Long> minCount, 
 			Expression<Long> pageSize, Expression<PageListener> pageListenerEx, Expression<Integer> threads, 
-			Expression<ErrorHandler> errorHandler, boolean infoLog, boolean isSubCreator, BeneratorContext childContext) {
+			Expression<ErrorHandler> errorHandler, boolean infoLog, boolean isSubCreator, BeneratorContext context) {
 	    this.task = null;
 	    this.countGenerator = countGenerator;
 	    this.minCount = minCount;
@@ -73,16 +74,26 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 	    this.pageListenerEx = pageListenerEx;
 	    this.infoLog = infoLog;
 	    this.isSubCreator = isSubCreator;
-	    this.childContext = childContext;
+	    this.context = context;
+	    this.childContext = context.createSubContext();
+
     }
 
 	public void setTask(GenerateAndConsumeTask task) {
 		this.task = task;
 	}
 	
-	public GenerateAndConsumeTask getTarget() {
+	public GenerateAndConsumeTask getTask() {
 	    return task;
     }
+	
+	public BeneratorContext getContext() {
+		return context;
+	}
+
+	public BeneratorContext getChildContext() {
+		return childContext;
+	}
 
     public PerformanceTracker getTracker() {
 	    return tracker;
@@ -133,7 +144,7 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 	}
 
 	public void pageFinished() {
-		getTarget().pageFinished();
+		getTask().pageFinished();
 	}
 
 	// private helpers -------------------------------------------------------------------------------------------------

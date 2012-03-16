@@ -394,14 +394,25 @@ public class DescriptorUtil {
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
 	protected static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor) {
+		generator = processOffset(generator, descriptor);
+		generator = processCyclic(generator, descriptor);
+		return generator;
+    }
+
+	public static <T> Generator<T> processCyclic(Generator<T> generator,
+			TypeDescriptor descriptor) {
 		boolean cyclic = descriptor.isCyclic() != null && descriptor.isCyclic().booleanValue();
 		if (cyclic)
 			generator = WrapperFactory.applyCycler(generator);
+		return generator;
+	}
+
+	public static <T> Generator<T> processOffset(Generator<T> generator, TypeDescriptor descriptor) {
 		int offset = getOffset(descriptor);
 		if (offset > 0)
 			generator = WrapperFactory.applyOffset(generator, offset);
 		return generator;
-    }
+	}
 
 	protected static int getOffset(TypeDescriptor descriptor) {
 		Integer offset = descriptor.getOffset();

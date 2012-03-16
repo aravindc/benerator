@@ -118,7 +118,7 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	protected Generator<?> applyWrappers(Generator<?> generator, ArrayTypeDescriptor descriptor, String instanceName,
+	protected Generator<?> applyComponentBuilders(Generator<?> generator, ArrayTypeDescriptor descriptor, String instanceName,
 			Uniqueness uniqueness, BeneratorContext context) {
 		Generator[] generators;
 		// create synthetic element generators if necessary
@@ -128,7 +128,7 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
         			Object.class, generators, uniqueness);
 		}
 		// ... and don't forget to support the parent class' functionality
-		generator = super.applyWrappers(generator, descriptor, instanceName, uniqueness, context);
+		generator = super.applyComponentBuilders(generator, descriptor, instanceName, uniqueness, context);
 		return generator;
 	}
 

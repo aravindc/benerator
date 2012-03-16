@@ -166,13 +166,12 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 				element.getAttribute(ATT_PAGER));
 		Expression<ErrorHandler> errorHandler = parseOnErrorAttribute(element, element.getAttribute(ATT_NAME));
 		Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor, 0L);
-		BeneratorContext childContext = context.createSubContext();
 		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(
 				countGenerator, minCount, pageSize, pager, /*threads*/ new ConstantExpression<Integer>(1), 
-				errorHandler, infoLog, nested, childContext);
+				errorHandler, infoLog, nested, context);
 		
 		// parse task and sub statements
-		GenerateAndConsumeTask task = parseTask(element, parentPath, statement, parsingContext, descriptor, childContext, infoLog);
+		GenerateAndConsumeTask task = parseTask(element, parentPath, statement, parsingContext, descriptor, infoLog);
 		statement.setTask(task);
     	context.setCurrentProductName(null);
 		return statement;
@@ -180,8 +179,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     private GenerateAndConsumeTask parseTask(Element element, Statement[] parentPath, GenerateOrIterateStatement statement, 
-    		BeneratorParseContext parseContext, InstanceDescriptor descriptor, BeneratorContext context, 
-    		boolean infoLog) {
+    		BeneratorParseContext parseContext, InstanceDescriptor descriptor, boolean infoLog) {
 		descriptor.setNullable(false);
 		if (infoLog)
 			logger.debug("{}", descriptor);
@@ -189,6 +187,8 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		String taskName = descriptor.getName();
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
+		BeneratorContext context = statement.getContext();
+		BeneratorContext childContext = statement.getChildContext();
 		
 		// calculate statements
 		List<Statement> statements = new ArrayList<Statement>();
@@ -201,7 +201,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		statements.add(new CurrentProductGeneration(instanceName, base));
 
 		// handle sub elements
-		ModelParser parser = new ModelParser(context);
+		ModelParser parser = new ModelParser(childContext);
 		TypeDescriptor type = descriptor.getTypeDescriptor();
 		int arrayIndex = 0;
 		Element[] childElements = XMLUtil.getChildElements(element);
@@ -222,7 +222,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			// handle non-member/variable child elements
 			if (componentDescriptor != null) {
 				GeneratorComponent<?> componentGenerator = GeneratorComponentFactory.createGeneratorComponent(
-						componentDescriptor, Uniqueness.NONE, context);
+						componentDescriptor, Uniqueness.NONE, childContext);
 				statements.add(componentGenerator);
 			} else if (!EL_CONSUMER.equals(childName)) {
 				Statement[] subPath = parseContext.createSubPath(parentPath, statement);
@@ -251,7 +251,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 					if (handledMembers.contains(componentName.toLowerCase()))
 						continue;
 					GeneratorComponent<?> componentGenerator = GeneratorComponentFactory.createGeneratorComponent(
-							component, Uniqueness.NONE, context);
+							component, Uniqueness.NONE, childContext);
 					statements.add(insertionIndex++, componentGenerator);
 				}
 			}

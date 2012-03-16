@@ -25,6 +25,8 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.databene.benerator.Generator;
+import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.primitive.IncrementGenerator;
@@ -408,4 +410,38 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
         }
 	}
 
+	@Test
+	public void testGenerateWithOffset() throws Exception {
+		Statement statement = parse(
+				"<generate name='array' count='3' consumer='cons'>" +
+				"    <value type='int' distribution='step' offset='2'/>" +
+        		"</generate>");
+		ConsumerMock consumer = new ConsumerMock(true, 1);
+		context.set("cons", consumer);
+		statement.execute(context);
+		assertEquals(3, consumer.startConsumingCount.get());
+		assertArrayEquals(new Object[] { 3 }, (Object[]) consumer.products.get(0));
+		assertArrayEquals(new Object[] { 4 }, (Object[]) consumer.products.get(1));
+		assertArrayEquals(new Object[] { 5 }, (Object[]) consumer.products.get(2));
+	}
+	
+	@Test
+	public void testIterateWithOffset() throws Exception {
+		Generator<Integer[]> source = new SequenceTestGenerator<Integer[]>(
+				new Integer[] { 1 }, 
+				new Integer[] { 2 }, 
+				new Integer[] { 3 }, 
+				new Integer[] { 4 }, 
+				new Integer[] { 5 });
+		context.set("source", source);
+		Statement statement = parse("<iterate source='source' offset='2' type='array' count='3' consumer='cons' />");
+		ConsumerMock consumer = new ConsumerMock(true, 1);
+		context.set("cons", consumer);
+		statement.execute(context);
+		assertEquals(3, consumer.startConsumingCount.get());
+		assertArrayEquals(new Object[] { 3 }, (Object[]) consumer.products.get(0));
+		assertArrayEquals(new Object[] { 4 }, (Object[]) consumer.products.get(1));
+		assertArrayEquals(new Object[] { 5 }, (Object[]) consumer.products.get(2));
+	}
+	
 }
