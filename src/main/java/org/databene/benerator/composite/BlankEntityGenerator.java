@@ -54,5 +54,10 @@ public class BlankEntityGenerator extends ThreadSafeGenerator<Entity> {
 	public ProductWrapper<Entity> generate(ProductWrapper<Entity> wrapper) {
         return wrapper.wrap(new Entity(descriptor));
 	}
-    
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[" + descriptor.getName() + "]";
+	}
+	
 }
