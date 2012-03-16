@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,7 +25,6 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.consumer.ConsumerChain;
 import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
 import org.databene.benerator.engine.statement.TimedGeneratorStatement;
@@ -76,7 +75,7 @@ public class PerfTrackingConsumerIntegrationTest extends BeneratorIntegrationTes
 		while (tmp instanceof StatementProxy)
 			tmp = ((StatementProxy) tmp).getRealStatement(context);
 	    GenerateOrIterateStatement realStatement = (GenerateOrIterateStatement) tmp;
-		ConsumerChain chain = (ConsumerChain) ((GenerateAndConsumeTask) realStatement.getTarget()).getConsumer();
+		ConsumerChain chain = (ConsumerChain) (realStatement.getTask()).getConsumer();
 		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
 		LatencyCounter counter = tracker.getTracker().getCounter();
 		assertEquals(10, counter.sampleCount());
