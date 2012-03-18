@@ -17,3 +17,4 @@ enhancements
 
 bug fixes
 ---------
+- Benerator does not write log file
