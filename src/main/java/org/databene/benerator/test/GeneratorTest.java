@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.test;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -48,6 +48,7 @@ import org.databene.commons.Validator;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.validator.UniqueValidator;
 import org.databene.measure.count.ObjectCounter;
+import org.databene.model.data.Entity;
 
 /**
  * Provides methods for testing generators.<br/>
@@ -407,5 +408,13 @@ public abstract class GeneratorTest extends ModelTest {
     		assertTrue("Generated value (" + product + ") is greater than the configured maximum (" + max + ")",  max.compareTo(product) >= 0);
     	}
     }
-
+    
+	public static void assertComponents(Entity entity, Object... nameValuePairs) {
+		for (int i = 0; i < nameValuePairs.length; i+= 2) {
+			String name = (String) nameValuePairs[i];
+			Object value = nameValuePairs[i + 1];
+			assertEquals(value, entity.getComponent(name));
+		}
+	}
+	
 }
