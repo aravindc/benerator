@@ -64,7 +64,7 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
     private BeneratorContext context;
     private ResourceManager resourceManager;
     
-    private List<Statement> statements = new ArrayList<Statement>();
+    private List<Statement> statements;
     private Expression<Consumer> consumerExpr;
 
     private volatile AtomicBoolean initialized;

@@ -189,16 +189,14 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			taskName = descriptor.getLocalType().getSource();
 		BeneratorContext context = statement.getContext();
 		BeneratorContext childContext = statement.getChildContext();
+		String productName = getNameOrType(element);
 		
 		// calculate statements
 		List<Statement> statements = new ArrayList<Statement>();
 		
 		// create base generator
     	Generator<?> base = MetaGeneratorFactory.createRootGenerator(descriptor, Uniqueness.NONE, context);
-    	String instanceName = descriptor.getName();
-    	if (instanceName == null)
-    		instanceName = descriptor.getType();
-		statements.add(new CurrentProductGeneration(instanceName, base));
+		statements.add(new CurrentProductGeneration(productName, base));
 
 		// handle sub elements
 		ModelParser parser = new ModelParser(childContext);
@@ -261,7 +259,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		}
 		
 		// create task
-		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, getNameOrType(element));
+		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, productName);
 		task.setStatements(statements);
 
 		// parse converter
