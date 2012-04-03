@@ -646,6 +646,7 @@
 		<!-- elementary definitions -->
 		<xs:attribute name="name"         type="xs:string"/>
 		<xs:attribute name="type"         type="data-type"/>
+		<xs:attribute name="scope"        type="xs:string"/>
 
 		<!-- wrappers -->
 		<xs:attribute name="converter"    type="xs:string"/>
