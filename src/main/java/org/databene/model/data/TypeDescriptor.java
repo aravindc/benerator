@@ -61,6 +61,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     public static final String NULL_MARKER  = "nullMarker";
     
     public static final String CYCLIC       = "cyclic";
+    public static final String SCOPE        = "scope";
 
     public static final String LOCALE       = "locale";
     public static final String DATASET      = "dataset";
@@ -106,6 +107,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         addConfig(EMPTY_MARKER,   String.class);
         addConfig(NULL_MARKER,    String.class);
         addConfig(ENCODING,       String.class);
+        addConfig(SCOPE,          String.class);
         addConfig(CYCLIC,         Boolean.class);
         // i18n config
         addConfig(LOCALE,         Locale.class);
@@ -251,6 +253,14 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     public void setEncoding(String encoding) {
         setDetailValue(ENCODING, encoding);
+    }
+
+    public String getScope() {
+        return (String) getDetailValue(SCOPE);
+    }
+
+    public void setScope(String scope) {
+        setDetailValue(SCOPE, scope);
     }
 
     public Boolean isCyclic() {
