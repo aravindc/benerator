@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,35 +19,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.composite;
+package org.databene.benerator.engine;
 
-import org.databene.benerator.Generator;
-import org.databene.commons.Mutator;
-import org.databene.commons.UpdateFailedException;
+import java.io.Closeable;
+
+import org.databene.commons.Resettable;
 
 /**
- * {@link ComponentBuilder} implementation which builds array elements.<br/><br/>
- * Created: 30.04.2010 09:57:50
- * @since 0.6.1
+ * TODO Document class.<br/><br/>
+ * Created: 04.04.2012 10:18:25
+ * @since TODO version
  * @author Volker Bergmann
  */
-public class ArrayElementBuilder extends AbstractComponentBuilder<Object[]> {
-
-	public ArrayElementBuilder(int index, Generator<?> source, String scope) {
-	    super(source, new Mutator_(index), scope);
-    }
-
-	private static class Mutator_ implements Mutator {
-		
-		int index;
-		
-		public Mutator_(int index) {
-	        this.index = index;
-        }
-
-		public void setValue(Object target, Object value) throws UpdateFailedException {
-	        ((Object[]) target)[index] = value;
-        }
-	}
-
+public interface LifeCycleHolder extends Resettable, Closeable {
+	void init(BeneratorContext context);
 }

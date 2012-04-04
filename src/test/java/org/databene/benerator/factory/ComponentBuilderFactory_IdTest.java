@@ -123,7 +123,7 @@ public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFact
 	private ComponentBuilder<Entity> createAndInitBuilder(IdDescriptor id) {
 		ComponentBuilder<Entity> builder = (ComponentBuilder<Entity>) ComponentBuilderFactory.createComponentBuilder(
 				id, Uniqueness.NONE, context);
-		builder.prepare(context);
+		builder.init(context);
 		return builder;
 	}
 

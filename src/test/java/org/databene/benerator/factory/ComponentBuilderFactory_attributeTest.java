@@ -268,7 +268,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 	public void testCSVStringAttributeEmptyWeighted() {
 		PartDescriptor name = createCSVStringAttributeDescriptor(EMPTY_WGT_CSV, ",");
 		ComponentBuilder<Entity> builder = createComponentBuilder(name);
-		builder.prepare(context);
+		builder.init(context);
     	setCurrentProduct(createEntity("E"));
 		assertFalse(builder.execute(context));
 	}
@@ -323,7 +323,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 		alternativeType.addComponent(createPart("b", typeB));
 		PartDescriptor part = createPart(null, alternativeType);
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.SIMPLE, context);
-		builder.prepare(context);
+		builder.init(context);
 		Entity entity = createEntity();
 		setCurrentProduct(entity);
 		builder.execute(context);
@@ -340,7 +340,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 		((SimpleTypeDescriptor) part.getLocalType(false)).setMap("1->'A',2->'B'");
 		part.getLocalType(false).setGenerator("org.databene.benerator.primitive.IncrementGenerator");
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.NONE, context);
-		builder.prepare(context);
+		builder.init(context);
 		Entity entity = createEntity();
 		setCurrentProduct(entity);
 		builder.execute(context);

@@ -59,7 +59,7 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	
     public void init(BeneratorContext context) {
     	for (GeneratorComponent<?> component : components)
-    		component.prepare(context);
+    		component.init(context);
 	}
 
     public boolean apply(E target, BeneratorContext context) {

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,8 +38,8 @@ public abstract class AbstractComponentBuilder<E> extends AbstractGeneratorCompo
 	protected Mutator mutator;
 	private WrapperProvider<Object> productWrapper = new WrapperProvider<Object>();
 	
-    public AbstractComponentBuilder(Generator<?> source, Mutator mutator) {
-		super(source);
+    public AbstractComponentBuilder(Generator<?> source, Mutator mutator, String scope) {
+		super(source, scope);
 		this.mutator = mutator;
 	}
 

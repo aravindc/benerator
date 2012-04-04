@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,8 +24,8 @@ package org.databene.benerator.composite;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.engine.AbstractScopedLifeCycleHolder;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.Assert;
 
 /**
  * Abstract implementation of the GeneratorComponent interface which manages a source Generator
@@ -34,13 +34,14 @@ import org.databene.commons.Assert;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public abstract class AbstractGeneratorComponent<E> implements GeneratorComponent<E> {
+public abstract class AbstractGeneratorComponent<E> extends AbstractScopedLifeCycleHolder implements GeneratorComponent<E> {
 
 	protected Generator<?> source;
 	protected GeneratorContext context;
 	protected String message;
 
-	public AbstractGeneratorComponent(Generator<?> source) {
+	public AbstractGeneratorComponent(Generator<?> source, String scope) {
+		super(scope);
 		this.source = source;
 	}
 
@@ -59,14 +60,6 @@ public abstract class AbstractGeneratorComponent<E> implements GeneratorComponen
 
     // GeneratorComponent interface implementation ---------------------------------------------------------------------
 
-	public void prepare(BeneratorContext context) {
-		Assert.notNull(context, "context");
-		if (source.wasInitialized())
-			reset();
-		else
-			init(context);
-	}
-	
 	public void init(BeneratorContext context) {
 		this.context = context;
 		source.init(context);

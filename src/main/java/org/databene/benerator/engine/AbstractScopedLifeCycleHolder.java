@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,11 +22,42 @@
 package org.databene.benerator.engine;
 
 /**
- * Common inerface of classes with a prepare method.<br/><br/>
- * Created: 02.09.2011 10:27:09
- * @since 0.7.0
+ * TODO Document class.<br/><br/>
+ * Created: 03.04.2012 19:28:48
+ * @since TODO version
  * @author Volker Bergmann
  */
-public interface Preparable {
-	void prepare(BeneratorContext context);
+public abstract class AbstractScopedLifeCycleHolder implements ScopedLifeCycleHolder {
+	
+	private String scope;
+	private boolean resetNeeded;
+	
+	public AbstractScopedLifeCycleHolder(String scope) {
+		this.scope = scope;
+		setResetNeeded(false);
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
+	public boolean isResetNeeded() {
+		return resetNeeded;
+	}
+
+	public void setResetNeeded(boolean resetNeeded) {
+		this.resetNeeded = resetNeeded;
+	}
+
+	public void resetIfNeeded() {
+		if (this.resetNeeded) {
+			reset();
+			setResetNeeded(false);
+		}
+	}
+
 }

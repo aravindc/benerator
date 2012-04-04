@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -43,7 +43,7 @@ public class GeneratorComponentFactory {
 		if (descriptor instanceof ComponentDescriptor)
 			return ComponentBuilderFactory.createComponentBuilder((ComponentDescriptor) descriptor, ownerUniqueness, context);
 		else if (descriptor instanceof VariableDescriptor)
-			return new Variable(descriptor.getName(), VariableGeneratorFactory.createGenerator((VariableDescriptor) descriptor, context));
+			return new Variable(descriptor.getName(), VariableGeneratorFactory.createGenerator((VariableDescriptor) descriptor, context), descriptor.getTypeDescriptor().getScope());
 		else if (descriptor instanceof ArrayElementDescriptor)
 			return ComponentBuilderFactory.createComponentBuilder((ArrayElementDescriptor) descriptor, ownerUniqueness, context);
 		else

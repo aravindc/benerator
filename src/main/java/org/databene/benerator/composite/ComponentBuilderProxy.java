@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,6 +22,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.AbstractScopedLifeCycleHolder;
 import org.databene.benerator.engine.BeneratorContext;
 
 /**
@@ -30,12 +31,13 @@ import org.databene.benerator.engine.BeneratorContext;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class ComponentBuilderProxy<E> implements ComponentBuilder<E> {
+public class ComponentBuilderProxy<E> extends AbstractScopedLifeCycleHolder implements ComponentBuilder<E> {
 	
 	protected ComponentBuilder<E> source;
 	protected GeneratorContext context;
 
 	public ComponentBuilderProxy(ComponentBuilder<E> source) {
+		super(source.getScope());
 	    this.source = source;
     }
 
@@ -47,15 +49,14 @@ public class ComponentBuilderProxy<E> implements ComponentBuilder<E> {
 	    return source.isThreadSafe();
     }
 
-	public void prepare(BeneratorContext context) {
-		this.context = context;
-	    source.prepare(context);
-    }
+	public void init(BeneratorContext context) {
+		source.init(context);
+	}
 
 	public boolean execute(BeneratorContext context) {
 	    return source.execute(context);
     }
-
+	
 	public void reset() {
 	    source.reset();
     }

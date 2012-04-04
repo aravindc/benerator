@@ -191,7 +191,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		context.getDataModel().addDescriptorProvider(storageSystem);
 		context.set(storageSystem.getId(), storageSystem);
 		ComponentBuilder<?> builder = ComponentBuilderFactory.createComponentBuilder(ref, Uniqueness.NONE, context);
-		builder.prepare(context);
+		builder.init(context);
 		return builder;
 	}
 	

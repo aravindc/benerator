@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,8 +37,8 @@ import org.databene.commons.ThreadUtil;
  */
 public class AlternativeComponentBuilder<E> extends MultiComponentBuilder<E> {
 	
-	public AlternativeComponentBuilder(ComponentBuilder<E>[] alternatives) {
-		super(alternatives);
+	public AlternativeComponentBuilder(ComponentBuilder<E>[] alternatives, String scope) {
+		super(alternatives, scope);
 	}
 
 	public boolean execute(BeneratorContext context) {

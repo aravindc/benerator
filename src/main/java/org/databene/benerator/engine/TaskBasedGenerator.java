@@ -58,7 +58,7 @@ public class TaskBasedGenerator implements Generator<Object> {
 	}
 
 	public void init(GeneratorContext context) {
-		task.prepare((BeneratorContext) context);
+		task.init((BeneratorContext) context);
 		this.context = context;
 		this.initialized = true;
 	}
@@ -76,7 +76,7 @@ public class TaskBasedGenerator implements Generator<Object> {
 	}
 
 	public void reset() {
-		task.prepare((BeneratorContext) context);
+		task.reset();
 	}
 
 	public void close() {

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,13 +21,9 @@
 
 package org.databene.benerator.engine;
 
-import java.io.Closeable;
-
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.commons.Resettable;
 
 /**
  * Uses a {@link Generator} to create the currently processed object.<br/><br/>
@@ -35,31 +31,20 @@ import org.databene.commons.Resettable;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class CurrentProductGeneration implements Statement, Preparable, Resettable, Closeable {
+public class CurrentProductGeneration implements Statement, LifeCycleHolder {
 	
 	private String instanceName;
 	private Generator<Object> source;
 	private WrapperProvider<Object> provider;
-	private boolean initialized;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CurrentProductGeneration(String instanceName, Generator<?> source) {
 		this.instanceName = instanceName;
 		this.source = (Generator) source;
 		this.provider = new WrapperProvider<Object>();
-		this.initialized = false;
 	}
 
-	public void prepare(BeneratorContext context) {
-		if (initialized)
-			reset();
-		else {
-			init(context);
-			initialized = true; 
-		}
-	}
-	
-	public void init(GeneratorContext context) {
+	public void init(BeneratorContext context) {
 		source.init(context);
 	}
 

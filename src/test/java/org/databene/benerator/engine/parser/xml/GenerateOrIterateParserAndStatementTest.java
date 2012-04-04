@@ -444,4 +444,68 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertArrayEquals(new Object[] { 5 }, (Object[]) consumer.products.get(2));
 	}
 	
+	@Test
+	public void testScopeWithAttributes() {
+		Statement statement = parse(
+				"<generate name='a' count='2' consumer='NoConsumer'>" +
+				"	<generate name='b' count='2' consumer='NoConsumer'>" +
+				"		<generate name='c' count='2' consumer='ConsoleExporter,cons'>" +
+				"			<attribute name='slash' type='int' distribution='increment' scope='/'/>" +
+				"			<attribute name='a' type='int' distribution='increment' scope='a'/>" +
+				"			<attribute name='b' type='int' distribution='increment' scope='b'/>" +
+				"			<attribute name='c' type='int' distribution='increment' scope='c'/>" +
+				"			<attribute name='def' type='int' distribution='increment'/>" +
+        		"		</generate>" + 
+        		"	</generate>" + 
+        		"</generate>"
+				);
+		ConsumerMock consumer = new ConsumerMock(true, 1);
+		context.set("cons", consumer);
+		statement.execute(context);
+		assertEquals(8, consumer.startConsumingCount.get());
+		assertComponents((Entity) consumer.products.get(0), "slash", 1, "a", 1, "b", 1, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(1), "slash", 2, "a", 2, "b", 2, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(2), "slash", 3, "a", 3, "b", 3, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(3), "slash", 4, "a", 4, "b", 4, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(4), "slash", 5, "a", 5, "b", 1, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(5), "slash", 6, "a", 6, "b", 2, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(6), "slash", 7, "a", 7, "b", 3, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(7), "slash", 8, "a", 8, "b", 4, "c", 2, "def", 2);
+	}
+
+	@Test
+	public void testScopeWithVariables() {
+		Statement statement = parse(
+				"<generate name='a' count='2' consumer='NoConsumer'>" +
+				"	<generate name='b' count='2' consumer='NoConsumer'>" +
+				"		<generate name='c' count='2' consumer='ConsoleExporter,cons'>" +
+				"			<variable name='slash'  type='int' distribution='increment' scope='/'/>" +
+				"			<variable name='a'      type='int' distribution='increment' scope='a'/>" +
+				"			<variable name='b'      type='int' distribution='increment' scope='b'/>" +
+				"			<variable name='c'      type='int' distribution='increment' scope='c'/>" +
+				"			<variable name='def'    type='int' distribution='increment'/>" +
+
+				"			<attribute name='slash' type='int' script='slash'/>" +
+				"			<attribute name='a'     type='int' script='a'/>" +
+				"			<attribute name='b'     type='int' script='b'/>" +
+				"			<attribute name='c'     type='int' script='c'/>" +
+				"			<attribute name='def'   type='int' script='def'/>" +
+        		"		</generate>" + 
+        		"	</generate>" + 
+        		"</generate>"
+				);
+		ConsumerMock consumer = new ConsumerMock(true, 1);
+		context.set("cons", consumer);
+		statement.execute(context);
+		assertEquals(8, consumer.startConsumingCount.get());
+		assertComponents((Entity) consumer.products.get(0), "slash", 1, "a", 1, "b", 1, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(1), "slash", 2, "a", 2, "b", 2, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(2), "slash", 3, "a", 3, "b", 3, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(3), "slash", 4, "a", 4, "b", 4, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(4), "slash", 5, "a", 5, "b", 1, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(5), "slash", 6, "a", 6, "b", 2, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(6), "slash", 7, "a", 7, "b", 3, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(7), "slash", 8, "a", 8, "b", 4, "c", 2, "def", 2);
+	}
+
 }

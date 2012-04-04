@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,7 @@ package org.databene.benerator.composite;
 
 import java.util.List;
 
+import org.databene.benerator.engine.AbstractScopedLifeCycleHolder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.ArrayFormat;
@@ -39,13 +40,14 @@ import org.databene.commons.CollectionUtil;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
+public abstract class MultiComponentBuilder<E> extends AbstractScopedLifeCycleHolder implements ComponentBuilder<E> {
 	
 	protected ComponentBuilder<E>[] builders;
 	private List<ComponentBuilder<E>> availableBuilders;
 	protected String message;
 
-	public MultiComponentBuilder(ComponentBuilder<E>[] builders) {
+	public MultiComponentBuilder(ComponentBuilder<E>[] builders, String scope) {
+		super(scope);
 		this.builders = builders;
 		this.availableBuilders = CollectionUtil.toList(builders);
 	}
@@ -56,9 +58,9 @@ public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
 	
 	// Generator interface ---------------------------------------------------------------------------------------------
 
-	public void prepare(BeneratorContext context) {
+	public void init(BeneratorContext context) {
 		for (ComponentBuilder<E> builder : builders)
-			builder.prepare(context);
+			builder.init(context);
 	}
 
 	public void reset() {

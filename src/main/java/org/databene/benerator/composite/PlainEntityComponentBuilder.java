@@ -39,8 +39,8 @@ import org.databene.model.data.Entity;
  */
 public class PlainEntityComponentBuilder extends AbstractComponentBuilder<Entity> {
 	
-    public PlainEntityComponentBuilder(String name, Generator<?> source) {
-    	super(source, new Mutator_(name));
+    public PlainEntityComponentBuilder(String name, Generator<?> source, String scope) {
+    	super(source, new Mutator_(name), scope);
 	}
     
     public String getName() {

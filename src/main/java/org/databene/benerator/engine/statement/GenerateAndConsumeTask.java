@@ -36,7 +36,8 @@ import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.CurrentProductGeneration;
-import org.databene.benerator.engine.Preparable;
+import org.databene.benerator.engine.LifeCycleHolder;
+import org.databene.benerator.engine.ScopedLifeCycleHolder;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.Statement;
@@ -65,6 +66,7 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
     private ResourceManager resourceManager;
     
     private List<Statement> statements;
+    private List<LifeCycleHolder> scopeds;
     private Expression<Consumer> consumerExpr;
 
     private volatile AtomicBoolean initialized;
@@ -78,6 +80,7 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
         this.resourceManager = new ResourceManagerSupport();
         this.initialized = new AtomicBoolean(false);
     	this.statements = new ArrayList<Statement>();
+    	this.scopeds = new ArrayList<LifeCycleHolder>();
     }
 
     // interface -------------------------------------------------------------------------------------------------------
@@ -88,7 +91,8 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
     
     public void setStatements(List<Statement> statements) {
     	this.statements.clear();
-    	this.statements.addAll(statements);
+    	for (Statement statement : statements)
+    		this.addStatement(statement);
     }
     
     public ResourceManager getResourceManager() {
@@ -112,49 +116,12 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
 	    		injectConsumptionStart();
 	    		injectConsumptionEnd();
 	    		initialized.set(true);
-	        	prepareStatements(context);
+	        	initStatements(context);
+	        	checkScopes(statements);
 	    	}
 	    }
     }
 
-    private void injectConsumptionStart() {
-		// find last sub member generation...
-		int lastMemberIndex = - 1;
-		for (int i = statements.size() - 1; i >= 0; i--) {
-			Statement statement = statements.get(i);
-			if (statement instanceof ComponentBuilder || statement instanceof CurrentProductGeneration 
-					|| statement instanceof ValidationStatement || statement instanceof ConversionStatement) {
-				lastMemberIndex = i;
-				break;
-			}
-		}
-		// ...and insert consumption start statement immediately after that one
-		ConsumptionStatement consumption = new ConsumptionStatement(consumer, true, false);
-		statements.add(lastMemberIndex + 1, consumption);
-	}
-
-	protected void injectConsumptionEnd() {
-		// find last sub generation statement...
-		int lastSubGenIndex = statements.size() - 1;
-		for (int i = statements.size() - 1; i >= 0; i--) {
-			Statement statement = statements.get(i);
-			if (statement instanceof GenerateOrIterateStatement) {
-				lastSubGenIndex = i;
-				break;
-			}
-		}
-		// ...and insert consumption finish statement immediately after that one
-		ConsumptionStatement consumption = new ConsumptionStatement(consumer, false, true);
-		statements.add(lastSubGenIndex + 1, consumption);
-	}
-
-	public void prepare(BeneratorContext context) {
-    	if (!initialized.get())
-    		init(context);
-    	else
-    		reset();
-    }
-	
 	public String getProductName() {
 		return productName;
 	}
@@ -208,14 +175,11 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
     }
     
     public void reset() {
-        for (Statement statement : statements) {
-			statement = StatementUtil.getRealStatement(statement, context);
-		    if (statement instanceof Resettable)
-		    	((Resettable) statement).reset();
-		}
+    	enqueueResets(statements);
+        performLocalResets();
     }
 
-    public void close() {
+	public void close() {
         // close sub statements
         for (Statement statement : statements) {
 			statement = StatementUtil.getRealStatement(statement, context);
@@ -259,13 +223,75 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-	private void prepareStatements(BeneratorContext context) {
-    	for (Statement statement : statements) {
-    		// initialize statements
+    private void injectConsumptionStart() {
+		// find last sub member generation...
+		int lastMemberIndex = - 1;
+		for (int i = statements.size() - 1; i >= 0; i--) {
+			Statement statement = statements.get(i);
+			if (statement instanceof ComponentBuilder || statement instanceof CurrentProductGeneration 
+					|| statement instanceof ValidationStatement || statement instanceof ConversionStatement) {
+				lastMemberIndex = i;
+				break;
+			}
+		}
+		// ...and insert consumption start statement immediately after that one
+		ConsumptionStatement consumption = new ConsumptionStatement(consumer, true, false);
+		statements.add(lastMemberIndex + 1, consumption);
+	}
+
+	private void injectConsumptionEnd() {
+		// find last sub generation statement...
+		int lastSubGenIndex = statements.size() - 1;
+		for (int i = statements.size() - 1; i >= 0; i--) {
+			Statement statement = statements.get(i);
+			if (statement instanceof GenerateOrIterateStatement) {
+				lastSubGenIndex = i;
+				break;
+			}
+		}
+		// ...and insert consumption finish statement immediately after that one
+		ConsumptionStatement consumption = new ConsumptionStatement(consumer, false, true);
+		statements.add(lastSubGenIndex + 1, consumption);
+	}
+
+	public void initStatements(BeneratorContext context) {
+		for (Statement statement : statements) {
 			statement = StatementUtil.getRealStatement(statement, context);
-			if (statement instanceof Preparable)
-			    ((Preparable) statement).prepare(context);
+			if (statement instanceof LifeCycleHolder)
+			    ((LifeCycleHolder) statement).init(context);
 		}
 	}
 
+    private void checkScopes(List<Statement> statements) {
+        for (Statement statement : statements) {
+			statement = StatementUtil.getRealStatement(statement, context);
+		    if (statement instanceof ScopedLifeCycleHolder) {
+		    	ScopedLifeCycleHolder holder = (ScopedLifeCycleHolder) statement;
+		    	String scope = holder.getScope();
+		    	if (scope == null || productName.equals(scope))
+		    		scopeds.add(holder);
+		    } else if (statement instanceof GenerateOrIterateStatement) {
+		    	GenerateOrIterateStatement subGenerate = (GenerateOrIterateStatement) statement;
+		    	checkScopes(subGenerate.getTask().statements);
+		    }
+		}
+    }
+
+    private void enqueueResets(List<Statement> statements) {
+    	for (LifeCycleHolder scoped : scopeds)
+    		scoped.reset();
+    }
+
+	private void performLocalResets() {
+		for (Statement statement : statements) {
+			statement = StatementUtil.getRealStatement(statement, context);
+		    if (statement instanceof ScopedLifeCycleHolder) {
+		    	ScopedLifeCycleHolder holder = (ScopedLifeCycleHolder) statement;
+				holder.resetIfNeeded();
+		    } else if (statement instanceof Resettable) {
+		    	((Resettable) statement).reset();
+		    }
+		}
+	}
+    
 }

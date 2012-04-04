@@ -35,8 +35,8 @@ public class Variable<E> extends AbstractGeneratorComponent<E> {
 	
 	private String name;
 	
-	public Variable(String name, Generator<?> source) {
-		super(source);
+	public Variable(String name, Generator<?> source, String scope) {
+		super(source, scope);
 		this.name = name;
 	}
 

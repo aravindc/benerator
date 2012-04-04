@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,12 +21,9 @@
 
 package org.databene.benerator.composite;
 
-import java.io.Closeable;
-
-import org.databene.benerator.engine.Preparable;
+import org.databene.benerator.engine.ScopedLifeCycleHolder;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.MessageHolder;
-import org.databene.commons.Resettable;
 import org.databene.commons.ThreadAware;
 
 /**
@@ -35,7 +32,6 @@ import org.databene.commons.ThreadAware;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public interface GeneratorComponent<E> 
-		extends Statement, MessageHolder, Preparable, ThreadAware, Resettable, Closeable {
+public interface GeneratorComponent<E> extends Statement, ScopedLifeCycleHolder, MessageHolder, ThreadAware {
 	void close();
 }

@@ -103,8 +103,8 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 	
     public boolean execute(BeneratorContext ctx) {
     	ctx.setCurrentProductName(task.getProductName());
-    	beInitialized(ctx);
-	    task.prepare(childContext);
+    	if (!beInitialized(ctx))
+    		task.reset();
     	Task taskToUse = this.task;
     	int threadCount = threads.evaluate(childContext);
 		if (threadCount > 1 && !taskToUse.isParallelizable() && !task.isThreadSafe())
@@ -159,9 +159,13 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 	    return listeners;
     }
 
-	private void beInitialized(BeneratorContext context) {
-		if (!countGenerator.wasInitialized())
+	private boolean beInitialized(BeneratorContext context) {
+		if (!countGenerator.wasInitialized()) {
 	    	countGenerator.init(childContext);
+		    task.init(childContext);
+		    return true;
+		}
+		return false;
 	}
 
 }

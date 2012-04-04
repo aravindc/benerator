@@ -129,10 +129,9 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     	int i = 0;
 		Collection<ComponentDescriptor> components = type.getComponents();
 		ComponentBuilder<?>[] builders = new ComponentBuilder[components.size()];
-		for (ComponentDescriptor component : components) {
+		for (ComponentDescriptor component : components)
 			builders[i++] = createComponentBuilder(component, ownerUniqueness, context);
-		}
-		return new AlternativeComponentBuilder(builders);
+		return new AlternativeComponentBuilder(builders, type.getScope());
 	}
 
     private static ComponentBuilder<?> createPartBuilder(
@@ -272,11 +271,13 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 		Double nullQuota = descriptor.getNullQuota();
 		if (nullQuota != null && nullQuota != 0)
 			source = context.getGeneratorFactory().applyNullSettings(source, nullability, nullQuota);
+		TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
+		String scope = (typeDescriptor != null ? typeDescriptor.getScope() : null);
     	if (descriptor instanceof ArrayElementDescriptor) {
     		int index = ((ArrayElementDescriptor) descriptor).getIndex();
-    		return new ArrayElementBuilder(index, source);
+    		return new ArrayElementBuilder(index, source, scope);
     	} else
-    		return new PlainEntityComponentBuilder(descriptor.getName(), source);
+    		return new PlainEntityComponentBuilder(descriptor.getName(), source, scope);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

@@ -72,7 +72,7 @@ public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest 
 
 		@Override
         public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
-	        builder.prepare((BeneratorContext) context);
+	        builder.init((BeneratorContext) context);
 	        super.init(context);
         }
 
