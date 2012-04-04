@@ -414,7 +414,7 @@ public abstract class GeneratorTest extends ModelTest {
 			String name = (String) nameValuePairs[i];
 			Object expected = nameValuePairs[i + 1];
 			Object actual = entity.getComponent(name);
-			assertEquals("Unepected value for component '" + name + "':", expected, actual);
+			assertEquals("Unexpected value for component '" + name + "':", expected, actual);
 		}
 	}
 	
