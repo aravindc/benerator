@@ -13,7 +13,8 @@ enhancements
 ------------
 - supporting jars and class files in project/lib folder
 - <part> descriptor
- 
+- Introduced generator scope
+
 
 bug fixes
 ---------
