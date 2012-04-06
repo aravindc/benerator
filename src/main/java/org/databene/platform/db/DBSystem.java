@@ -53,6 +53,7 @@ import org.databene.jdbacl.model.DBTable;
 import org.databene.jdbacl.model.DBUniqueConstraint;
 import org.databene.jdbacl.model.Database;
 import org.databene.jdbacl.model.cache.CachingDBImporter;
+import org.databene.jdbacl.model.jdbc.JDBCDBImporter;
 import org.databene.jdbacl.model.jdbc.JDBCMetaDataUtil;
 import org.databene.model.data.*;
 import org.databene.script.expression.ConstantExpression;
@@ -377,6 +378,7 @@ public class DBSystem extends AbstractStorageSystem {
             iterator.next().close();
             iterator.remove();
         }
+        CachingDBImporter.updateCacheFile(database);
         IOUtil.close(importer);
     }
 
@@ -615,7 +617,7 @@ public class DBSystem extends AbstractStorageSystem {
 		try {
 		    importer = createJDBCImporter();
 		    if (metaDataCache)
-		    	importer = new CachingDBImporter(importer, getEnvironment());
+		    	importer = new CachingDBImporter((JDBCDBImporter) importer, getEnvironment());
 		    database = importer.importDatabase();
 		} catch (ConnectFailedException e) {
 			throw new ConfigurationError("Database not available. ", e);
@@ -624,8 +626,8 @@ public class DBSystem extends AbstractStorageSystem {
 		}
 	}
 
-	private DBMetaDataImporter createJDBCImporter() {
-		DBMetaDataImporter importer = JDBCMetaDataUtil.getJDBCDBImporter(getConnection(), user, schemaName, 
+	private JDBCDBImporter createJDBCImporter() {
+		JDBCDBImporter importer = JDBCMetaDataUtil.getJDBCDBImporter(getConnection(), user, schemaName, 
 				true, false, false, false, includeTables, excludeTables);
 		return importer;
 	}
