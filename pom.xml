@@ -13,7 +13,7 @@
     	<webdecs_version>0.6.7</webdecs_version>
     	<script_version>0.7.6</script_version>
     	<commons_version>0.5.15</commons_version>
-    	<contiperf_version>2.0.1</contiperf_version>
+    	<contiperf_version>2.1.0</contiperf_version>
     </properties>
 
     <packaging>jar</packaging>
