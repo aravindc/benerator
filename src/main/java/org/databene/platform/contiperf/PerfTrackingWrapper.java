@@ -77,8 +77,8 @@ public abstract class PerfTrackingWrapper implements Closeable {
 	}
 
     public void close() {
-    	if (tracker.isStarted())
-    		tracker.stop();
+    	if (tracker.isCounterStarted())
+    		tracker.stopCounter();
     }
 
 }
