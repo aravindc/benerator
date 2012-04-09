@@ -76,13 +76,13 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     
     // constructors ----------------------------------------------------------------------------------------------------
     
-    public TypeDescriptor(String name, DescriptorProvider owner, TypeDescriptor parent) {
-    	this(name, owner, (parent != null ? parent.getName() : null));
+    public TypeDescriptor(String name, DescriptorProvider provider, TypeDescriptor parent) {
+    	this(name, provider, (parent != null ? parent.getName() : null));
     	this.parent = parent;
     }
 
-    public TypeDescriptor(String name, DescriptorProvider owner, String parentName) {
-        super(name, owner);
+    public TypeDescriptor(String name, DescriptorProvider provider, String parentName) {
+        super(name, provider);
         this.parentName = parentName;
         init();
     }

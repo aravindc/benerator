@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,24 +36,24 @@ import org.databene.script.Expression;
  */
 public class PartDescriptor extends ComponentDescriptor {
 
-    public PartDescriptor(String name, DescriptorProvider owner) {
-        this(name, owner, (TypeDescriptor) null);
+    public PartDescriptor(String name, DescriptorProvider provider) {
+        this(name, provider, (TypeDescriptor) null);
     }
     
-    public PartDescriptor(String name, DescriptorProvider owner, String type) {
-        this(name, owner, type, null, null, null);
+    public PartDescriptor(String name, DescriptorProvider provider, String type) {
+        this(name, provider, type, null, null, null);
     }
     
-    public PartDescriptor(String name, DescriptorProvider owner, TypeDescriptor localType) {
-        this(name, owner, localType, null, null);
+    public PartDescriptor(String name, DescriptorProvider provider, TypeDescriptor localType) {
+        this(name, provider, localType, null, null);
     }
     
-    public PartDescriptor(String name, DescriptorProvider owner, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
-    	this(name, owner, null, localType, minCount, maxCount);
+    public PartDescriptor(String name, DescriptorProvider provider, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
+    	this(name, provider, null, localType, minCount, maxCount);
     }
     	
-    public PartDescriptor(String name, DescriptorProvider owner, String type, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
-        super(name, owner, type, localType);
+    public PartDescriptor(String name, DescriptorProvider provider, String type, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
+        super(name, provider, type, localType);
         setMinCount(minCount);
         setMaxCount(maxCount);
     }

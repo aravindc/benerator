@@ -29,8 +29,8 @@ package org.databene.model.data;
  */
 public class VariableDescriptor extends InstanceDescriptor {
 
-	public VariableDescriptor(String name, DescriptorProvider owner, String typeName) {
-		super(name, owner, typeName);
+	public VariableDescriptor(String name, DescriptorProvider provider, String typeName) {
+		super(name, provider, typeName);
 	}
 
 }

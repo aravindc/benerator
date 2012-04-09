@@ -42,13 +42,13 @@ public class ReferenceDescriptor extends ComponentDescriptor {
     
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public ReferenceDescriptor(String name, DescriptorProvider owner, String typeName) {
-        this(name, owner, typeName, null, null);
+    public ReferenceDescriptor(String name, DescriptorProvider provider, String typeName) {
+        this(name, provider, typeName, null, null);
     }
 
-    public ReferenceDescriptor(String name, DescriptorProvider owner, String typeName, String targetType, String targetComponent) {
+    public ReferenceDescriptor(String name, DescriptorProvider provider, String typeName, String targetType, String targetComponent) {
     	// TODO v0.7.2 test non-PK reference
-        super(name, owner, typeName);
+        super(name, provider, typeName);
         addConstraint(TARGET_TYPE,      String.class, new FirstArgSelector<String>());
         addConstraint(TARGET_COMPONENT, String.class, new FirstArgSelector<String>());
         setTargetType(targetType);

@@ -64,20 +64,20 @@ public class InstanceDescriptor extends FeatureDescriptor {
     
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public InstanceDescriptor(String name, DescriptorProvider owner) {
-        this(name, owner, null, null);
+    public InstanceDescriptor(String name, DescriptorProvider provider) {
+        this(name, provider, null, null);
     }
 
-    public InstanceDescriptor(String name, DescriptorProvider owner, String typeName) {
-        this(name, owner, typeName, null);
+    public InstanceDescriptor(String name, DescriptorProvider provider, String typeName) {
+        this(name, provider, typeName, null);
     }
 
-    public InstanceDescriptor(String name, DescriptorProvider owner, TypeDescriptor localType) {
-        this(name, owner, null, localType);
+    public InstanceDescriptor(String name, DescriptorProvider provider, TypeDescriptor localType) {
+        this(name, provider, null, localType);
     }
 
-    protected InstanceDescriptor(String name, DescriptorProvider owner, String typeName, TypeDescriptor localType) {
-        super(name, owner);
+    protected InstanceDescriptor(String name, DescriptorProvider provider, String typeName, TypeDescriptor localType) {
+        super(name, provider);
         this.localType = localType;
 
         addConstraint(TYPE,        String.class, null);
@@ -138,9 +138,9 @@ public class InstanceDescriptor extends FeatureDescriptor {
         if (localType != null)
             return localType;
         if (complexType)
-            localType = new ComplexTypeDescriptor(getName(), owner, getType());
+            localType = new ComplexTypeDescriptor(getName(), provider, getType());
         else
-            localType = new SimpleTypeDescriptor(getName(), owner, getType());
+            localType = new SimpleTypeDescriptor(getName(), provider, getType());
         setType(null);
         return localType;
     }

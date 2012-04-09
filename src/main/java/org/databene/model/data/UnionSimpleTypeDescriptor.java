@@ -43,8 +43,8 @@ public class UnionSimpleTypeDescriptor extends SimpleTypeDescriptor {
     
     private List<SimpleTypeDescriptor> alternatives;
 
-    public UnionSimpleTypeDescriptor(String name, DescriptorProvider owner) {
-        super(name, owner, (String) null);
+    public UnionSimpleTypeDescriptor(String name, DescriptorProvider provider) {
+        super(name, provider, (String) null);
         this.alternatives = new ArrayList<SimpleTypeDescriptor>();
     }
     
