@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,9 +28,13 @@ import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.Assert;
 
 /**
- * TODO Document class.<br/><br/>
+ * Proxy for generators that are used by several clients. It forwards all calls to 
+ * the real generator except calls to {@link #reset()} and {@link #close()} to assure
+ * that clients do not interfere with each other. This class may only be applied to 
+ * {@link Generator}s of which behaviour does not change in case of a reset.<br/>
+ * <br/>
  * Created: 20.01.2012 16:28:14
- * @since TODO version
+ * @since 0.7.6
  * @author Volker Bergmann
  */
 public class SharedGenerator<E> extends GeneratorProxy<E> {

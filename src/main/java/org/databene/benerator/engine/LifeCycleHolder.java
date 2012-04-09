@@ -26,9 +26,9 @@ import java.io.Closeable;
 import org.databene.commons.Resettable;
 
 /**
- * TODO Document class.<br/><br/>
+ * Declares life cycle methods: {@link #init(BeneratorContext)}, {@link #reset()} and {@link #close()}.<br/><br/>
  * Created: 04.04.2012 10:18:25
- * @since TODO version
+ * @since 0.7.6
  * @author Volker Bergmann
  */
 public interface LifeCycleHolder extends Resettable, Closeable {

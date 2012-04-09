@@ -34,9 +34,11 @@ import org.databene.webdecs.util.AbstractDataIterator;
 import org.databene.webdecs.util.AbstractDataSource;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link EntitySource} implementation that looks up an entity by its name ({@link #productName}) in the context, 
+ * accesses a 'part' component of it (by its {@link #partName}), and provides the entities contained within 
+ * in the form of a {@link DataIterator}.<br/><br/>
  * Created: 06.03.2012 21:50:23
- * @since TODO version
+ * @since 0.7.6
  * @author Volker Bergmann
  */
 public class EntityPartSource extends AbstractDataSource<Entity> implements EntitySource {

@@ -28,7 +28,8 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.commons.BeanUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Generator} which takes one or more products from a source generator and wraps them with a {@link Collection}.
+ * <br/><br/>
  * Created: 24.02.2012 19:52:24
  * @since 0.7.6
  * @author Volker Bergmann
