@@ -1,6 +1,6 @@
 License
 =======
-Databene generator is released under a dual license, 
+Databene Benerator is released under a dual license, 
 1. GPL with exceptions
 2. Commercial 
 
