@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -43,6 +43,7 @@ import org.databene.model.data.Entity;
 public class ConsoleExporter extends FormattingConsumer {
 	
 	private Long limit;
+	private String indent;
 	
 	private CompositeFormatter compositeFormatter;
 	private PrintStream out = System.out;
@@ -53,7 +54,12 @@ public class ConsoleExporter extends FormattingConsumer {
 	}
 	
 	public ConsoleExporter(Long limit) {
+		this(limit, "");
+	}
+	
+	public ConsoleExporter(Long limit, String indent) {
 		this.limit = limit;
+		this.indent = indent;
 		this.counters = new HashMap<String, AtomicLong>();
 		this.compositeFormatter = new CompositeFormatter(true, true);
 		this.compositeFormatter.setDatePattern(getDatePattern());
@@ -76,6 +82,10 @@ public class ConsoleExporter extends FormattingConsumer {
     	this.limit = limit;
     }
 	
+	public void setIndent(String indent) {
+		this.indent = indent;
+	}
+	
 	public void setFlat(boolean flat) {
 		this.compositeFormatter.setFlat(flat);
 	}
@@ -94,8 +104,8 @@ public class ConsoleExporter extends FormattingConsumer {
 				counters.put(entityType, counter);
 			}
 			long counterValue = counter.incrementAndGet();
-			if (limit == null || counterValue <= limit)
-				out.println(compositeFormatter.render(entityType + '[', (Entity) object, "]"));
+			if (limit == null || limit < 0 || counterValue <= limit)
+				out.println(indent + compositeFormatter.render(entityType + '[', (Entity) object, "]"));
 			else
 				out.print(".");
 		} else {

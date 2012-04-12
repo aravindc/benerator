@@ -1,0 +1,18 @@
+release notes benerator 0.7.7
+=============================
+
+summary
+-------
+
+
+changes
+-------
+
+
+enhancements
+------------
+- Added indent property to ConsoleExporter
+
+
+bug fixes
+---------

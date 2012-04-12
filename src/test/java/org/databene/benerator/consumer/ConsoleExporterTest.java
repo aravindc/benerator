@@ -85,6 +85,12 @@ public class ConsoleExporterTest extends ModelTest {
 		check(new ConsoleExporter(1L), "e[i=3, d=5, s=sss]" + LF + '.', entity, entity);
 	}
 	
+	@Test
+	public void testIndent() {
+		Entity entity = createEntity("e", "i", 3, "d", 5., "s", "sss");
+		check(new ConsoleExporter(-1L, "xxx"), "xxxe[i=3, d=5, s=sss]" + LF, entity);
+	}
+	
 	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void check(String expectedOut, Object... ins) {
