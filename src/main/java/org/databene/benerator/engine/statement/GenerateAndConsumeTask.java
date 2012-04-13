@@ -66,7 +66,7 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
     private ResourceManager resourceManager;
     
     private List<Statement> statements;
-    private List<LifeCycleHolder> scopeds;
+    private List<ScopedLifeCycleHolder> scopeds;
     private Expression<Consumer> consumerExpr;
 
     private volatile AtomicBoolean initialized;
@@ -80,7 +80,7 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
         this.resourceManager = new ResourceManagerSupport();
         this.initialized = new AtomicBoolean(false);
     	this.statements = new ArrayList<Statement>();
-    	this.scopeds = new ArrayList<LifeCycleHolder>();
+    	this.scopeds = new ArrayList<ScopedLifeCycleHolder>();
     }
 
     // interface -------------------------------------------------------------------------------------------------------
@@ -166,6 +166,7 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
 			}
         	if (success)
         		BeneratorMonitor.INSTANCE.countGenerations(1);
+        	enqueueResets(statements);
 	        Thread.yield();
 	        return (success ? TaskResult.EXECUTING : TaskResult.UNAVAILABLE);
     	} catch (Exception e) {
@@ -175,8 +176,15 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
     }
     
     public void reset() {
-    	enqueueResets(statements);
-        performLocalResets();
+		for (Statement statement : statements) {
+			statement = StatementUtil.getRealStatement(statement, context);
+		    if (statement instanceof ScopedLifeCycleHolder) {
+		    	ScopedLifeCycleHolder holder = (ScopedLifeCycleHolder) statement;
+				holder.resetIfNeeded();
+		    } else if (statement instanceof Resettable) {
+		    	((Resettable) statement).reset();
+		    }
+		}
     }
 
 	public void close() {
@@ -278,20 +286,8 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
     }
 
     private void enqueueResets(List<Statement> statements) {
-    	for (LifeCycleHolder scoped : scopeds)
-    		scoped.reset();
+    	for (ScopedLifeCycleHolder scoped : scopeds)
+    		scoped.setResetNeeded(true);
     }
 
-	private void performLocalResets() {
-		for (Statement statement : statements) {
-			statement = StatementUtil.getRealStatement(statement, context);
-		    if (statement instanceof ScopedLifeCycleHolder) {
-		    	ScopedLifeCycleHolder holder = (ScopedLifeCycleHolder) statement;
-				holder.resetIfNeeded();
-		    } else if (statement instanceof Resettable) {
-		    	((Resettable) statement).reset();
-		    }
-		}
-	}
-    
 }

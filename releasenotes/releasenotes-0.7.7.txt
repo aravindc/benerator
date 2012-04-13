@@ -16,3 +16,4 @@ enhancements
 
 bug fixes
 ---------
+- scope relates to wrong element

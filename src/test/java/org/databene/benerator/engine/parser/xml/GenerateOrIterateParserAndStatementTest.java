@@ -465,12 +465,12 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertEquals(8, consumer.startConsumingCount.get());
 		assertComponents((Entity) consumer.products.get(0), "slash", 1, "a", 1, "b", 1, "c", 1, "def", 1);
 		assertComponents((Entity) consumer.products.get(1), "slash", 2, "a", 2, "b", 2, "c", 2, "def", 2);
-		assertComponents((Entity) consumer.products.get(2), "slash", 3, "a", 3, "b", 3, "c", 1, "def", 1);
-		assertComponents((Entity) consumer.products.get(3), "slash", 4, "a", 4, "b", 4, "c", 2, "def", 2);
-		assertComponents((Entity) consumer.products.get(4), "slash", 5, "a", 5, "b", 1, "c", 1, "def", 1);
-		assertComponents((Entity) consumer.products.get(5), "slash", 6, "a", 6, "b", 2, "c", 2, "def", 2);
-		assertComponents((Entity) consumer.products.get(6), "slash", 7, "a", 7, "b", 3, "c", 1, "def", 1);
-		assertComponents((Entity) consumer.products.get(7), "slash", 8, "a", 8, "b", 4, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(2), "slash", 3, "a", 3, "b", 1, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(3), "slash", 4, "a", 4, "b", 2, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(4), "slash", 5, "a", 1, "b", 1, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(5), "slash", 6, "a", 2, "b", 2, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(6), "slash", 7, "a", 3, "b", 1, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(7), "slash", 8, "a", 4, "b", 2, "c", 2, "def", 2);
 	}
 
 	@Test
@@ -500,12 +500,12 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertEquals(8, consumer.startConsumingCount.get());
 		assertComponents((Entity) consumer.products.get(0), "slash", 1, "a", 1, "b", 1, "c", 1, "def", 1);
 		assertComponents((Entity) consumer.products.get(1), "slash", 2, "a", 2, "b", 2, "c", 2, "def", 2);
-		assertComponents((Entity) consumer.products.get(2), "slash", 3, "a", 3, "b", 3, "c", 1, "def", 1);
-		assertComponents((Entity) consumer.products.get(3), "slash", 4, "a", 4, "b", 4, "c", 2, "def", 2);
-		assertComponents((Entity) consumer.products.get(4), "slash", 5, "a", 5, "b", 1, "c", 1, "def", 1);
-		assertComponents((Entity) consumer.products.get(5), "slash", 6, "a", 6, "b", 2, "c", 2, "def", 2);
-		assertComponents((Entity) consumer.products.get(6), "slash", 7, "a", 7, "b", 3, "c", 1, "def", 1);
-		assertComponents((Entity) consumer.products.get(7), "slash", 8, "a", 8, "b", 4, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(2), "slash", 3, "a", 3, "b", 1, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(3), "slash", 4, "a", 4, "b", 2, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(4), "slash", 5, "a", 1, "b", 1, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(5), "slash", 6, "a", 2, "b", 2, "c", 2, "def", 2);
+		assertComponents((Entity) consumer.products.get(6), "slash", 7, "a", 3, "b", 1, "c", 1, "def", 1);
+		assertComponents((Entity) consumer.products.get(7), "slash", 8, "a", 4, "b", 2, "c", 2, "def", 2);
 	}
 
 }
