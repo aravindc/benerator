@@ -74,6 +74,10 @@
        <priority value="info"/>
     </category>
 
+    <category name="org.databene.jdbacl.model.jdbc">
+       <priority value="info"/>
+    </category>
+
     <category name="org.databene.platform.db">
        <priority value="info"/>
     </category>
