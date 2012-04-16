@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,7 +37,6 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SyntaxError;
-import org.databene.jdbacl.SQLUtil;
 import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
 import org.databene.jdbacl.identity.KeyMapper;
@@ -259,7 +258,7 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 				if (selector.length() > 0)
 					selector.append(" and ");
 				Object refereeColumnValue = fromEntity.get(refereeColumnNames[i]);
-				selector.append(refererColumnNames[i]).append('=').append(SQLUtil.renderValue(refereeColumnValue));
+				selector.append(refererColumnNames[i]).append('=').append(db.getDialect().formatValue(refereeColumnValue));
 			}
 			return db.queryEntities(fk.getTable().getName(), selector.toString(), context).iterator();
 		}
@@ -273,7 +272,7 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 				if (selector.length() > 0)
 					selector.append(" and ");
 				Object refererColumnValue = fromEntity.get(refererColumnNames[i]);
-				selector.append(refereeColumnNames[i]).append('=').append(SQLUtil.renderValue(refererColumnValue));
+				selector.append(refereeColumnNames[i]).append('=').append(db.getDialect().formatValue(refererColumnValue));
 			}
 			return db.queryEntities(fk.getRefereeTable().getName(), selector.toString(), context).iterator();
 		}
