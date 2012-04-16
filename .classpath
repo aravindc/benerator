@@ -34,5 +34,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jdbacl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/contiperf"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/databene-script"/>
+	<classpathentry kind="var" path="M2_REPO/cubrid/cubrid-jdbc/8.4.1.2032/cubrid-jdbc-8.4.1.2032.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
