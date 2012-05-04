@@ -79,7 +79,7 @@ public class PerfTrackingConsumerIntegrationTest extends BeneratorIntegrationTes
 		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
 		LatencyCounter counter = tracker.getTracker().getCounter();
 		assertEquals(10, counter.sampleCount());
-		assertTrue("Expected latency greater than 29 ms, but measured " + counter.minLatency() + " ms", counter.minLatency() >= 30);
+		assertTrue("Expected latency greater than 29 ms, but measured " + counter.minLatency() + " ms", counter.minLatency() > 29);
 		assertTrue(counter.averageLatency() > 29);
 		assertTrue(counter.minLatency() < counter.maxLatency());
     }
