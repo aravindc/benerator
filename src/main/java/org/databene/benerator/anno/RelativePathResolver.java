@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,25 +30,29 @@ import java.io.File;
  * @since 0.7.4
  * @author Volker Bergmann
  */
-public class RelativePathResolver implements PathResolver {
+public class RelativePathResolver extends AbstractPathResolver {
 	
-	private String basePath;
-
+	// constructors ----------------------------------------------------------------------------------------------------
+	
 	public RelativePathResolver() {
-		this(".");
+		super();
 	}
 
 	public RelativePathResolver(String basePath) {
-		this.basePath = basePath;
+		super(basePath);
 	}
-
+	
+	// PathResolver interface implementation ---------------------------------------------------------------------------
+	
 	public String getPathFor(String uri, Class<?> testClass) {
 		char sep = File.separatorChar;
 		return basePath + sep + testClass.getPackage().getName().replace('.', sep) + sep + normalizePath(uri);
 	}
 	
+	// private helper --------------------------------------------------------------------------------------------------
+	
 	private String normalizePath(String path) {
 		return path.replace('/', File.separatorChar).replace('\\', File.separatorChar);
 	}
-	
+
 }

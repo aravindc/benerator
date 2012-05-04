@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,7 @@ package org.databene.benerator.anno;
  * @since 0.7.4
  * @author Volker Bergmann
  */
-public class DefaultPathResolver implements PathResolver {
+public class DefaultPathResolver extends AbstractPathResolver {
 
 	public String getPathFor(String uri, Class<?> testClass) {
 		return uri;

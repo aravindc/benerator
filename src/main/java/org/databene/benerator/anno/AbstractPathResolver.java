@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,12 +22,31 @@
 package org.databene.benerator.anno;
 
 /**
- * Interface for resolving resource paths for test case classes.<br/><br/>
- * Created: 12.12.2011 12:36:14
- * @since 0.7.4
+ * Abstract implementation of the {@link PathResolver} interface.<br/><br/>
+ * Created: 04.05.2012 08:56:44
+ * @since 0.7.7
  * @author Volker Bergmann
  */
-public interface PathResolver {
-	void setBasePath(String basePath);
-	String getPathFor(String locator, Class<?> testClass);
+public abstract class AbstractPathResolver implements PathResolver {
+	
+	protected String basePath;
+
+	protected AbstractPathResolver() {
+		this(".");
+	}
+	
+	protected AbstractPathResolver(String basePath) {
+		setBasePath(basePath);
+	}
+	
+	public String getBasePath() {
+		return basePath;
+	}
+	
+	// partial PathResolver interface implementation -------------------------------------------------------------------
+
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
+	}
+	
 }

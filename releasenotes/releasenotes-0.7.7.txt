@@ -7,6 +7,7 @@ summary
 
 changes
 -------
+- Changed PathResolver interface
 
 
 enhancements
