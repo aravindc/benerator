@@ -21,6 +21,8 @@
 
 package org.databene.benerator.anno;
 
+import java.io.File;
+
 /**
  * Abstract implementation of the {@link PathResolver} interface.<br/><br/>
  * Created: 04.05.2012 08:56:44
@@ -46,7 +48,11 @@ public abstract class AbstractPathResolver implements PathResolver {
 	// partial PathResolver interface implementation -------------------------------------------------------------------
 
 	public void setBasePath(String basePath) {
-		this.basePath = basePath;
+		this.basePath = normalizePath(basePath);
 	}
 	
+	protected String normalizePath(String path) {
+		return path.replace('/', File.separatorChar).replace('\\', File.separatorChar);
+	}
+
 }

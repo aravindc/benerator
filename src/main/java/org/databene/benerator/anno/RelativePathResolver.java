@@ -49,10 +49,4 @@ public class RelativePathResolver extends AbstractPathResolver {
 		return basePath + sep + testClass.getPackage().getName().replace('.', sep) + sep + normalizePath(uri);
 	}
 	
-	// private helper --------------------------------------------------------------------------------------------------
-	
-	private String normalizePath(String path) {
-		return path.replace('/', File.separatorChar).replace('\\', File.separatorChar);
-	}
-
 }
