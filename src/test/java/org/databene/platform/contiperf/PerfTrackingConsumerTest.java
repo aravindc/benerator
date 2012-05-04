@@ -38,8 +38,8 @@ import org.junit.Test;
  */
 public class PerfTrackingConsumerTest {
 
-	private static final int MAX_LATENCY = 40;
-	private static final int MIN_LATENCY = 20;
+	private static final int MAX_LATENCY = 80;
+	private static final int MIN_LATENCY = 40;
 
 	@Test
 	public void test() {
@@ -52,9 +52,9 @@ public class PerfTrackingConsumerTest {
 		}
 		LatencyCounter counter = tracker.getTracker().getCounter();
 		counter.printSummary(new PrintWriter(System.out), 90, 95);
-		assertTrue(counter.minLatency() >= MIN_LATENCY);
-		assertTrue(counter.averageLatency() > MIN_LATENCY);
-		assertTrue(counter.averageLatency() < MAX_LATENCY);
+		assertTrue(counter.minLatency() >= MIN_LATENCY - 10);
+		assertTrue(counter.averageLatency() > MIN_LATENCY - 10);
+		assertTrue(counter.averageLatency() < MAX_LATENCY + 10);
 	}
 	
 }
