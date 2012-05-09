@@ -13,7 +13,7 @@
     	<webdecs_version>0.6.8</webdecs_version>
     	<script_version>0.7.7</script_version>
     	<commons_version>0.5.16</commons_version>
-    	<contiperf_version>2.1.0</contiperf_version>
+    	<contiperf_version>2.1.1</contiperf_version>
     </properties>
 
     <packaging>jar</packaging>
@@ -104,7 +104,7 @@
         <dependency> <!-- TODO which Benerator version should depend on JUnit in which scope? -->
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.9</version>
+            <version>4.10</version>
             <!-- NOT in test scope because Benerator provides test helper classes -->
         </dependency>
 
@@ -206,7 +206,15 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.8</version>
+            <version>1.6.4</version>
+            <scope>provided</scope>
+        </dependency>
+    
+		<!-- TODO use log4j only in CE -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
             <scope>provided</scope>
         </dependency>
     

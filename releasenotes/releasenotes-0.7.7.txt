@@ -8,6 +8,11 @@ summary
 changes
 -------
 - Changed PathResolver interface
+- Using newer libraries
+  - slf4j 1.6.4
+  - log4j 1.2.16
+  - junit 4.10
+  - poi 3.8
 
 
 enhancements
