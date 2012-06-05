@@ -77,7 +77,7 @@ public class PerfTrackingConsumerIntegrationTest extends BeneratorIntegrationTes
 	    GenerateOrIterateStatement realStatement = (GenerateOrIterateStatement) tmp;
 		ConsumerChain chain = (ConsumerChain) (realStatement.getTask()).getConsumer();
 		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
-		LatencyCounter counter = tracker.getTracker().getCounter();
+		LatencyCounter counter = tracker.getTracker().getCounters()[0];
 		assertEquals(10, counter.sampleCount());
 		assertTrue("Expected latency greater than 29 ms, but measured " + counter.minLatency() + " ms", counter.minLatency() > 29);
 		assertTrue(counter.averageLatency() > 29);

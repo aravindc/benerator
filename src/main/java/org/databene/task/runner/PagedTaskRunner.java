@@ -103,7 +103,7 @@ public class PagedTaskRunner extends AbstractTaskRunner implements Thread.Uncaug
 		if (minInvocations != null && countValue < minInvocations)
 			throw new TaskUnavailableException(target, minInvocations, countValue);
 		if (tracker != null)
-			tracker.getCounter().printSummary(new PrintWriter(System.out), 90, 95);
+			tracker.getCounters()[0].printSummary(new PrintWriter(System.out), 90, 95);
 		return countValue;
     }
 
