@@ -9,11 +9,11 @@
 
     <properties>
     	<build_number>${buildNumber}</build_number>
-    	<jdbacl_version>0.8.2</jdbacl_version>
-    	<webdecs_version>0.6.8</webdecs_version>
+    	<jdbacl_version>0.8.3</jdbacl_version>
+    	<webdecs_version>0.6.9</webdecs_version>
     	<script_version>0.7.7</script_version>
     	<commons_version>0.5.16</commons_version>
-    	<contiperf_version>2.1.1</contiperf_version>
+    	<contiperf_version>2.2.0</contiperf_version>
     </properties>
 
     <packaging>jar</packaging>
@@ -159,6 +159,7 @@
 			<groupId>cubrid</groupId>
 			<artifactId>cubrid-jdbc</artifactId>
 			<version>8.4.1.2032</version>
+		    <scope>provided</scope>
 		</dependency>
 		<dependency>
 		    <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
