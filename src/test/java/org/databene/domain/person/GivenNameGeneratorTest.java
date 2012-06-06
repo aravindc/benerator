@@ -2,7 +2,7 @@ package org.databene.domain.person;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.test.GeneratorClassTest;
-import org.databene.measure.count.ObjectCounter;
+import org.databene.commons.collection.ObjectCounter;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 

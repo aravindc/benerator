@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.domain.person;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.test.GeneratorClassTest;
-import org.databene.measure.count.ObjectCounter;
+import org.databene.commons.collection.ObjectCounter;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.RandomUtil;
-import org.databene.measure.count.ObjectCounter;
+import org.databene.commons.collection.ObjectCounter;
 import org.junit.Test;
 
 import java.util.List;

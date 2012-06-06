@@ -45,9 +45,9 @@ import org.databene.commons.Converter;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Resettable;
 import org.databene.commons.Validator;
+import org.databene.commons.collection.ObjectCounter;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.validator.UniqueValidator;
-import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.Entity;
 
 /**

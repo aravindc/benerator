@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,7 +32,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.test.PersonSource;
 import org.databene.benerator.util.GeneratorUtil;
-import org.databene.measure.count.ObjectCounter;
+import org.databene.commons.collection.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
