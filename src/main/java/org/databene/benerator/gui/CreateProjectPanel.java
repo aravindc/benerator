@@ -161,7 +161,7 @@ public class CreateProjectPanel extends JPanel {
 		// project name
 		createTextField("projectName", pane);
 		folderField = new PropertyFileField(setup, "projectFolder", WIDE, 
-				FileTypeSupport.directoriesOnly, FileOperation.save);
+				FileTypeSupport.directoriesOnly, FileOperation.SAVE);
 		folderField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				File folder = CreateProjectPanel.this.folderField.getFile();
@@ -220,9 +220,9 @@ public class CreateProjectPanel extends JPanel {
 		pane.endRow();
 
 		// 'create/drop table' scripts
-		createTablesField = new PropertyFileField(setup, "createScriptFile", 20, FileTypeSupport.filesOnly, FileOperation.open);
+		createTablesField = new PropertyFileField(setup, "createScriptFile", 20, FileTypeSupport.filesOnly, FileOperation.OPEN);
 		pane.addElement(i18n.getString("createScriptFile"), createTablesField);
-		dropTablesField = new PropertyFileField(setup, "dropScriptFile", 20, FileTypeSupport.filesOnly, FileOperation.open);
+		dropTablesField = new PropertyFileField(setup, "dropScriptFile", 20, FileTypeSupport.filesOnly, FileOperation.OPEN);
 		pane.addElement(i18n.getString("dropScriptFile"), dropTablesField);
 		pane.addSeparator();
 

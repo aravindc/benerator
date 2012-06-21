@@ -173,6 +173,10 @@ public class BeneratorGUI {
 					"(c) 2011 by Volker Bergmann");
         }
 
+		public String iconPath() {
+			return null; // TODO
+		}
+
 	}
 	
 }
