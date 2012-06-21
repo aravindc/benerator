@@ -10,7 +10,7 @@
     <properties>
     	<build_number>${buildNumber}</build_number>
     	<jdbacl_version>0.8.3</jdbacl_version>
-    	<webdecs_version>0.6.9</webdecs_version>
+    	<webdecs_version>0.6.10</webdecs_version>
     	<script_version>0.7.7</script_version>
     	<commons_version>0.5.16</commons_version>
     	<contiperf_version>2.2.0</contiperf_version>
