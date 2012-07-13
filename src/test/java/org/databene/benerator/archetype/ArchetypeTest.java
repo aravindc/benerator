@@ -26,9 +26,10 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.net.URL;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.FileUtil;
-import org.databene.commons.version.VersionInfo;
+import org.databene.commons.StringUtil;
 import org.junit.Test;
 
 /**
@@ -54,7 +55,8 @@ public class ArchetypeTest {
 		// check that benerator.xml was copied from the archetype
 		assertTrue(ArrayUtil.contains("benerator.xml", createdFiles));
 		// check that benerator xsd was copied from the classpath
-		assertTrue(ArrayUtil.contains("benerator-" + VersionInfo.getInfo("benerator").getVersion() + ".xsd", createdFiles));
+		String schemaPath = StringUtil.splitOnLastSeparator(BeneratorFactory.schemaPathForCurrentVersion(), '/')[1];
+		assertTrue("File not found: " + schemaPath, ArrayUtil.contains(schemaPath, createdFiles));
 		// check that src/main/resources is mapped to src in Eclipse projects
 		File src = new File(targetFolder, "src");
 		assertTrue(src.exists());
