@@ -39,8 +39,8 @@ public abstract class BeneratorFactory {
 
 	public static final String BENERATOR_FACTORY_PROPERTY = "benerator.factory";
 
-	public static final String XML_SCHEMA_PATH = "org/databene/benerator/benerator-" + VersionInfo.getInfo("benerator").getVersion() + ".xsd";
-	
+	public static final String XML_SCHEMA_PATH = schemaPathForCurrentVersion();
+
     public abstract BeneratorParseContext createParseContext(ResourceManager resourceManager);
     
 	private static BeneratorFactory instance;
@@ -53,6 +53,13 @@ public abstract class BeneratorFactory {
 			instance = (BeneratorFactory) BeanUtil.newInstance(configuredClass);
 		}
 		return instance;
+	}
+	
+	public static String schemaPathForCurrentVersion() {
+		String version = VersionInfo.getInfo("benerator").getVersion();
+		if (version.endsWith("-SNAPSHOT"))
+			version = version.substring(0, version.length() - "-SNAPSHOT".length());
+		return "org/databene/benerator/benerator-" + version + ".xsd";
 	}
 	
 }
