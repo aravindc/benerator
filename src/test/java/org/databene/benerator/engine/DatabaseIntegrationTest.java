@@ -60,7 +60,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		db.setSchema("PUBLIC");
 		db.execute("drop table referer if exists");
 		db.execute("drop table referee if exists");
-		db.execute("create table referee (id int, n int, primary key (id))");
+		db.execute("create table referee (id int, n int default 1 not null, primary key (id))");
 		db.execute("insert into referee (id, n) values (2, 2)");
 		db.execute("insert into referee (id, n) values (3, 3)");
 		db.execute(
@@ -82,6 +82,17 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		context.set("tblName", "referee");
 		parseAndExecute("<evaluate id='refCount' target='db'>{'select count(*) from ' + tblName}</evaluate>");
 		assertEquals(2, ((Number) context.get("refCount")).intValue());
+		closeAndCheckCleanup();
+	}
+
+	@Test
+	public void testDefaultColumnValue() {
+		parseAndExecute("<generate type='referee' count='3' consumer='cons'/>");
+		List<Entity> products = getConsumedEntities();
+		assertEquals(3, products.size());
+		for (Entity product : products) {
+			assertEquals(1, product.get("n"));
+		}
 		closeAndCheckCleanup();
 	}
 
