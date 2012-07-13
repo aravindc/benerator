@@ -159,9 +159,11 @@ public class EvaluateStatement implements Statement {
 	            Character separator = ExpressionUtil.evaluate(separatorEx, context);
 	            if (separator == null)
 	            	separator = ';';
-	            result = runSql(uriValue, targetObject, onErrorValue, encoding, 
-	            		text, separator, 
-	            		optimizeEx.evaluate(context), invalidateEx.evaluate(context)).result;
+	            boolean optimize = (optimizeEx != null ? optimizeEx.evaluate(context) : false);
+				Boolean invalidate = (invalidateEx != null ? invalidateEx.evaluate(context) : null);
+				DBExecutionResult executionResult = runSql(uriValue, targetObject, onErrorValue, encoding, 
+	            		text, separator, optimize, invalidate);
+				result = (executionResult != null ? executionResult.result : null);
             } else if (SHELL.equals(typeValue)) {
 				result = runShell(uriValue, text, onErrorValue);
             } else if ("execute".equals(typeValue)) {
