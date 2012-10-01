@@ -421,8 +421,8 @@ public class Country {
                 String[] cells = container.getData();
                 String isoCode = cells[0];
                 String defaultLocale = (cells.length > 1 && !StringUtil.isEmpty(cells[1]) ? cells[1].trim() : "en");
-                String phoneCode = (cells.length > 2 ? cells[2].trim() : null);
-                String mobilCodePattern = (cells.length > 3 ? cells[3].trim() : DEFAULT_MOBILE_PHONE_PATTERN);
+                String phoneCode = (cells.length > 2 && !StringUtil.isEmpty(cells[2]) ? cells[2].trim() : null);
+                String mobilCodePattern = (cells.length > 3 && !StringUtil.isEmpty(cells[3]) ? cells[3].trim() : DEFAULT_MOBILE_PHONE_PATTERN);
                 String name = (cells.length > 4 ? cells[4].trim() : null);
                 int population = (cells.length > 5 ? Integer.parseInt(cells[5].trim()) : 1000000);
                 Country country = new Country(isoCode, defaultLocale, population, phoneCode, mobilCodePattern, name);
