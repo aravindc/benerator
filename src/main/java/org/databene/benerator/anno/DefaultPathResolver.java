@@ -32,5 +32,10 @@ public class DefaultPathResolver extends AbstractPathResolver {
 	public String getPathFor(String uri, Class<?> testClass) {
 		return uri;
 	}
-
+	
+	@Override
+	public String toString() {
+		return getClass().getName();
+	}
+	
 }

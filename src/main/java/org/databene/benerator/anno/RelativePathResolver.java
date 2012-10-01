@@ -49,4 +49,9 @@ public class RelativePathResolver extends AbstractPathResolver {
 		return basePath + sep + testClass.getPackage().getName().replace('.', sep) + sep + normalizePath(uri);
 	}
 	
+	@Override
+	public String toString() {
+ 		return getClass().getName() + '[' + basePath + ']';
+	}
+	
 }
