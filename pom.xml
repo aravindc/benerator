@@ -5,14 +5,14 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.7.8-SNAPSHOT</version>
+    <version>0.7.8</version>
 
     <properties>
     	<build_number>${buildNumber}</build_number>
-    	<jdbacl_version>0.8.4</jdbacl_version>
-    	<webdecs_version>0.6.11</webdecs_version>
-    	<script_version>0.7.8</script_version>
-    	<commons_version>0.5.17</commons_version>
+    	<jdbacl_version>0.8.5</jdbacl_version>
+    	<webdecs_version>0.6.12</webdecs_version>
+    	<script_version>0.7.9</script_version>
+    	<commons_version>0.5.18</commons_version>
     	<contiperf_version>2.2.0</contiperf_version>
     </properties>
 
@@ -425,7 +425,7 @@
 		<repository>
 			<id>databene.repo</id>
 			<name>databene Internal Repository</name>
-			<url>ftp://databene.org/databene/m2</url>
+			<url>ftp://databene.org</url>
 		</repository>
 	</distributionManagement>
   
