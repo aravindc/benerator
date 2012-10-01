@@ -62,7 +62,7 @@ public class SingleSourceCollectionGenerator<I, C extends Collection<I>> extends
     	// the following works for primitive types as well as for objects
 		C collection;
 		if (size != null)
-			collection = BeanUtil.newInstance(collectionType, size.intValue());
+			collection = BeanUtil.newInstance(collectionType, new Object[] { size.intValue() });
 		else
 			collection = BeanUtil.newInstance(collectionType);
         for (int i = 0; size == null || i < size; i++) {
