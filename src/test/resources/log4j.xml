@@ -54,6 +54,10 @@
        <priority value="info"/>
     </category>
 
+    <category name="org.databene.commons">
+       <priority value="info"/>
+    </category>
+
     <category name="org.databene.CONFIG">
        <priority value="debug"/>
     </category>
