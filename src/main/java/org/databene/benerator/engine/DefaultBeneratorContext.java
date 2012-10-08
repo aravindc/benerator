@@ -375,8 +375,10 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 		File libFolder = new File(contextUri, "lib");
 		if (libFolder.exists()) {
 			Thread.currentThread().setContextClassLoader(BeanUtil.createDirectoryClassLoader(libFolder));
-			for (File jarFile : libFolder.listFiles(new FileSuffixFilter("jar", false)))
-				Thread.currentThread().setContextClassLoader(BeanUtil.createJarClassLoader(jarFile));
+			for (File jarFile : libFolder.listFiles(new FileSuffixFilter("jar", false))) {
+				ClassLoader classLoader = BeanUtil.createJarClassLoader(jarFile);
+				Thread.currentThread().setContextClassLoader(classLoader);
+			}
 		}
 	}
 
