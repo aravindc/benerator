@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,12 +23,15 @@ package org.databene.benerator.engine;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Locale;
 
 import org.databene.commons.BeanUtil;
 import org.databene.commons.SystemInfo;
+import org.databene.document.xls.XLSLineIterator;
 import org.databene.domain.address.Country;
 import org.databene.script.ScriptUtil;
+import org.databene.webdecs.DataContainer;
 import org.junit.Test;
 
 /**
@@ -54,21 +57,37 @@ public class DefaultBeneratorContextTest {
 		assertEquals("ben", ScriptUtil.getDefaultScriptEngine());
 		assertEquals(',', context.getDefaultSeparator());
 		assertEquals(null, context.getMaxCount());
+		context.close();
 	}
 	
 	@Test
 	public void testSysPropAccess() {
 		BeneratorContext context = new DefaultBeneratorContext();
 		assertEquals(System.getProperty("user.name"), context.get("user.name"));
+		context.close();
 	}
 	
 	@Test
-	public void testJarInLibFolder() {
+	public void testClassInJarInLibFolder() {
 		BeneratorContext context = new DefaultBeneratorContext(OFF_CLASSPATH_RESOURCES_FOLDER);
 		Class<?> testClassInJar = context.forName("com.my.TestClassInJar");
 		Object o = BeanUtil.newInstance(testClassInJar);
 		assertEquals("staticMethodInJar called", BeanUtil.invoke(testClassInJar, "staticMethodInJar"));
 		assertEquals("instanceMethodInJar called", BeanUtil.invoke(o, "instanceMethodInJar"));
+		context.close();
+	}
+	
+	@Test
+	public void testResourceInJarInLibFolder() throws IOException {
+		String XLS_RESOURCE_NAME = "xls/xls_in_jar.xls";
+		BeneratorContext context = new DefaultBeneratorContext(OFF_CLASSPATH_RESOURCES_FOLDER);
+		String resourceUri = context.resolveRelativeUri(XLS_RESOURCE_NAME);
+		XLSLineIterator iterator = new XLSLineIterator(resourceUri);
+		assertArrayEquals(new Object[] { "name", "age" }, iterator.next(new DataContainer<Object[]>()).getData());
+		assertArrayEquals(new Object[] { "Alice", 23L }, iterator.next(new DataContainer<Object[]>()).getData());
+		assertArrayEquals(new Object[] { "Bob", 34L }, iterator.next(new DataContainer<Object[]>()).getData());
+		assertNull(iterator.next(new DataContainer<Object[]>()));
+		context.close();
 	}
 	
 	@Test
@@ -78,6 +97,7 @@ public class DefaultBeneratorContextTest {
 		Object o = BeanUtil.newInstance(testClassInJar);
 		assertEquals("staticMethodInPath called", BeanUtil.invoke(testClassInJar, "staticMethodInPath"));
 		assertEquals("instanceMethodInPath called", BeanUtil.invoke(o, "instanceMethodInPath"));
+		context.close();
 	}
 	
 }
