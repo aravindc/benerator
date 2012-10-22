@@ -698,46 +698,50 @@ public class DBSystem extends AbstractStorageSystem {
         }
         // process normal columns
         for (DBColumn column : table.getColumns()) {
-            LOGGER.debug("parsing column: {}", column);
-            String columnName = column.getName();
-            if (complexType.getComponent(columnName) != null)
-                continue; // skip columns that were already parsed (fk)
-            String columnId = table.getName() + '.' + columnName;
-            if (column.isVersionColumn()) {
-                LOGGER.debug("Leaving out version column {}", columnId);
-                continue;
-            }
-            DBDataType columnType = column.getType();
-            String type = JdbcMetaTypeMapper.abstractType(columnType, acceptUnknownColumnTypes);
-            String defaultValue = column.getDefaultValue();
-            SimpleTypeDescriptor typeDescriptor = new SimpleTypeDescriptor(columnId, this, type);
-            if (defaultValue != null)
-                typeDescriptor.setDetailValue("constant", defaultValue);
-            if (column.getSize() != null)
-                typeDescriptor.setMaxLength(column.getSize());
-            if (column.getFractionDigits() != null) {
-            	if ("timestamp".equals(type))
-            		typeDescriptor.setGranularity("1970-01-02");
-            	else
-            		typeDescriptor.setGranularity(decimalGranularity(column.getFractionDigits()));
-            }
-            //typeDescriptors.put(typeDescriptor.getName(), typeDescriptor);
-            PartDescriptor descriptor = new PartDescriptor(columnName, this);
-            descriptor.setLocalType(typeDescriptor);
-            descriptor.setMinCount(new ConstantExpression<Long>(1L));
-            descriptor.setMaxCount(new ConstantExpression<Long>(1L));
-            descriptor.setNullable(column.getNotNullConstraint() == null);
-            List<DBUniqueConstraint> ukConstraints = column.getUkConstraints();
-            for (DBUniqueConstraint constraint : ukConstraints) {
-                if (constraint.getColumnNames().length == 1) {
-                    descriptor.setUnique(true);
-                } else {
-                    LOGGER.warn("Automated uniqueness assurance on multiple columns is not provided yet: " + constraint);
-                    // TODO v0.7.6 support uniqueness constraints on combination of columns
-                }
-            }
-            LOGGER.debug("parsed attribute " + columnId + ": " + descriptor);
-            complexType.addComponent(descriptor);
+        	try {
+	            LOGGER.debug("parsing column: {}", column);
+	            String columnName = column.getName();
+	            if (complexType.getComponent(columnName) != null)
+	                continue; // skip columns that were already parsed (fk)
+	            String columnId = table.getName() + '.' + columnName;
+	            if (column.isVersionColumn()) {
+	                LOGGER.debug("Leaving out version column {}", columnId);
+	                continue;
+	            }
+	            DBDataType columnType = column.getType();
+	            String type = JdbcMetaTypeMapper.abstractType(columnType, acceptUnknownColumnTypes);
+	            String defaultValue = column.getDefaultValue();
+	            SimpleTypeDescriptor typeDescriptor = new SimpleTypeDescriptor(columnId, this, type);
+	            if (defaultValue != null)
+	                typeDescriptor.setDetailValue("constant", defaultValue);
+	            if (column.getSize() != null)
+	                typeDescriptor.setMaxLength(column.getSize());
+	            if (column.getFractionDigits() != null) {
+	            	if ("timestamp".equals(type))
+	            		typeDescriptor.setGranularity("1970-01-02");
+	            	else
+	            		typeDescriptor.setGranularity(decimalGranularity(column.getFractionDigits()));
+	            }
+	            //typeDescriptors.put(typeDescriptor.getName(), typeDescriptor);
+	            PartDescriptor descriptor = new PartDescriptor(columnName, this);
+	            descriptor.setLocalType(typeDescriptor);
+	            descriptor.setMinCount(new ConstantExpression<Long>(1L));
+	            descriptor.setMaxCount(new ConstantExpression<Long>(1L));
+	            descriptor.setNullable(column.getNotNullConstraint() == null);
+	            List<DBUniqueConstraint> ukConstraints = column.getUkConstraints();
+	            for (DBUniqueConstraint constraint : ukConstraints) {
+	                if (constraint.getColumnNames().length == 1) {
+	                    descriptor.setUnique(true);
+	                } else {
+	                    LOGGER.warn("Automated uniqueness assurance on multiple columns is not provided yet: " + constraint);
+	                    // TODO v0.7.6 support uniqueness constraints on combination of columns
+	                }
+	            }
+	            LOGGER.debug("parsed attribute " + columnId + ": " + descriptor);
+	            complexType.addComponent(descriptor);
+        	} catch (Exception e) {
+        		throw new ConfigurationError("Error processing column " + column.getName() + " of table " + table.getName(), e);
+        	}
         }
 		return complexType;
 	}
