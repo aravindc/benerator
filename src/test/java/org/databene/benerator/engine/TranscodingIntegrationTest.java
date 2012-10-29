@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import java.io.Closeable;
 
 import org.databene.benerator.test.BeneratorIntegrationTest;
+import org.databene.commons.IOUtil;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
 import org.databene.webdecs.DataContainer;
@@ -71,128 +72,153 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testEmptyTarget() throws Exception {
-		// run descriptor file
-		DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR1_FILE_NAME, context);
-		runner.run();
-		DBSystem t = (DBSystem) context.get("t");
-		// check countries
-		DataSource<Entity> iterable = t.queryEntities("country", null, context);
-		DataIterator<Entity> iterator = iterable.iterator();
-		assertNextCountry(1, "United States", iterator);
-		assertNextCountry(2, "Germany", iterator);
-		assertNull(iterator.next(new DataContainer<Entity>()));
-		((Closeable) iterator).close();
-		// check states
-		iterable = t.queryEntities("state", null, context);
-		iterator = iterable.iterator();
-		assertNextState(3, 1, "California", iterator);
-		assertNextState(4, 1, "Florida", iterator);
-		assertNextState(5, 2, "Bayern", iterator);
-		assertNextState(6, 2, "Hamburg", iterator);
-		assertNull(iterator.next(new DataContainer<Entity>()));
-		((Closeable) iterator).close();
+		DescriptorRunner runner = null;
+		try {
+			// run descriptor file
+			runner = new DescriptorRunner(DESCRIPTOR1_FILE_NAME, context);
+			runner.run();
+			DBSystem t = (DBSystem) context.get("t");
+			// check countries
+			DataSource<Entity> iterable = t.queryEntities("country", null, context);
+			DataIterator<Entity> iterator = iterable.iterator();
+			assertNextCountry(1, "United States", iterator);
+			assertNextCountry(2, "Germany", iterator);
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			((Closeable) iterator).close();
+			// check states
+			iterable = t.queryEntities("state", null, context);
+			iterator = iterable.iterator();
+			assertNextState(3, 1, "California", iterator);
+			assertNextState(4, 1, "Florida", iterator);
+			assertNextState(5, 2, "Bayern", iterator);
+			assertNextState(6, 2, "Hamburg", iterator);
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			((Closeable) iterator).close();
+		} finally {
+			IOUtil.close(runner);
+		}
 	}
 
 	@Test
 	public void testTargetWithCountries() throws Exception {
-		// run descriptor file
-		DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR2_FILE_NAME, context);
-		runner.setClosingResources(false);
-		runner.run();
-		DBSystem t = (DBSystem) context.get("t");
-		// check countries
-		DataSource<Entity> iterable = t.queryEntities("country", null, context);
-		DataIterator<Entity> iterator = iterable.iterator();
-		assertNextCountry(1000, "United States", iterator);
-		assertNextCountry(2000, "Germany", iterator);
-		assertNull(iterator.next(new DataContainer<Entity>()));
-		((Closeable) iterator).close();
-		// check states
-		iterable = t.queryEntities("state", null, context);
-		iterator = iterable.iterator();
-		assertNextState(1, 1000, "California", iterator);
-		assertNextState(2, 1000, "Florida", iterator);
-		assertNextState(3, 2000, "Bayern", iterator);
-		assertNextState(4, 2000, "Hamburg", iterator);
-		assertNull(iterator.next(new DataContainer<Entity>()));
-		((Closeable) iterator).close();
+		DescriptorRunner runner = null;
+		try {
+			// run descriptor file
+			runner = new DescriptorRunner(DESCRIPTOR2_FILE_NAME, context);
+			runner.setClosingResources(false);
+			runner.run();
+			DBSystem t = (DBSystem) context.get("t");
+			// check countries
+			DataSource<Entity> iterable = t.queryEntities("country", null, context);
+			DataIterator<Entity> iterator = iterable.iterator();
+			assertNextCountry(1000, "United States", iterator);
+			assertNextCountry(2000, "Germany", iterator);
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			((Closeable) iterator).close();
+			// check states
+			iterable = t.queryEntities("state", null, context);
+			iterator = iterable.iterator();
+			assertNextState(1, 1000, "California", iterator);
+			assertNextState(2, 1000, "Florida", iterator);
+			assertNextState(3, 2000, "Bayern", iterator);
+			assertNextState(4, 2000, "Hamburg", iterator);
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			((Closeable) iterator).close();
+		} finally {
+			IOUtil.close(runner);
+		}
 	}
 	
 	@Test
 	public void testPartialTranscode() throws Exception {
-		// run descriptor file
-		DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR3_FILE_NAME, context);
-		runner.run();
-		DBSystem t = (DBSystem) context.get("t");
-		// check countries
-		DataSource<Entity> iterable = t.queryEntities("country", null, context);
-		DataIterator<Entity> iterator = iterable.iterator();
-		assertNextCountry(1, "Germany", iterator);
-		assertNull(iterator.next(new DataContainer<Entity>()));
-		((Closeable) iterator).close();
-		// check states
-		iterable = t.queryEntities("state", null, context);
-		iterator = iterable.iterator();
-		assertNextState(2, 1, "Bayern", iterator);
-		assertNextState(3, 1, "Hamburg", iterator);
-		assertNextState(4, null, "No State", iterator); // checking transcoding of 'null' refs
-		assertNull(iterator.next(new DataContainer<Entity>()));
-		((Closeable) iterator).close();
+		DescriptorRunner runner = null;
+		try {
+			// run descriptor file
+			runner = new DescriptorRunner(DESCRIPTOR3_FILE_NAME, context);
+			runner.run();
+			DBSystem t = (DBSystem) context.get("t");
+			// check countries
+			DataSource<Entity> iterable = t.queryEntities("country", null, context);
+			DataIterator<Entity> iterator = iterable.iterator();
+			assertNextCountry(1, "Germany", iterator);
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			((Closeable) iterator).close();
+			// check states
+			iterable = t.queryEntities("state", null, context);
+			iterator = iterable.iterator();
+			assertNextState(2, 1, "Bayern", iterator);
+			assertNextState(3, 1, "Hamburg", iterator);
+			assertNextState(4, null, "No State", iterator); // checking transcoding of 'null' refs
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			((Closeable) iterator).close();
+		} finally {
+			IOUtil.close(runner);
+		}
 	}
 
 	@Test
 	public void testPartialTranscodeToNonEmptyTarget() throws Exception {
-		// run descriptor file
-		DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR4_FILE_NAME, context);
-		runner.run();
-		DBSystem t = (DBSystem) context.get("t");
-		// check countries
-		DataSource<Entity> iterable = t.queryEntities("country", null, context);
-		DataIterator<Entity> iterator = iterable.iterator();
-		assertNextCountry(1, "Germany", iterator);
-		assertNextCountry(10, "United States", iterator);
-		assertNull(iterator.next(new DataContainer<Entity>()));
-		((Closeable) iterator).close();
-		// check states
-		iterable = t.queryEntities("state", null, context);
-		iterator = iterable.iterator();
-		assertNextState(2, 1, "Bayern", iterator);
-		assertNextState(3, 1, "Hamburg", iterator);
-		assertNextState(110, 10, "California", iterator);
-		assertNextState(120, 10, "Florida", iterator);
-		assertNull(iterator.next(new DataContainer<Entity>()));
-		((Closeable) iterator).close();
+		DescriptorRunner runner = null;
+		try {
+			// run descriptor file
+			runner = new DescriptorRunner(DESCRIPTOR4_FILE_NAME, context);
+			runner.run();
+			DBSystem t = (DBSystem) context.get("t");
+			// check countries
+			DataSource<Entity> iterable = t.queryEntities("country", null, context);
+			DataIterator<Entity> iterator = iterable.iterator();
+			assertNextCountry(1, "Germany", iterator);
+			assertNextCountry(10, "United States", iterator);
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			((Closeable) iterator).close();
+			// check states
+			iterable = t.queryEntities("state", null, context);
+			iterator = iterable.iterator();
+			assertNextState(2, 1, "Bayern", iterator);
+			assertNextState(3, 1, "Hamburg", iterator);
+			assertNextState(110, 10, "California", iterator);
+			assertNextState(120, 10, "Florida", iterator);
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			((Closeable) iterator).close();
+		} finally {
+			IOUtil.close(runner);
+		}
 	}
 
 	@Test
 	public void testPartialTranscodeWithCascade() throws Exception {
-		// run descriptor file
-		DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR5_FILE_NAME, context);
-		runner.run();
-		DBSystem t = (DBSystem) context.get("t");
-		
-		// check countries
-		DataSource<Entity> iterable = t.queryEntities("country", null, context);
-		DataIterator<Entity> iterator = iterable.iterator();
-		assertNextCountry(1, "Germany", iterator);
-		assertNull(iterator.next(new DataContainer<Entity>()));
-		((Closeable) iterator).close();
-		
-		// check states
-		iterable = t.queryEntities("state", null, context);
-		iterator = iterable.iterator();
-		assertNextState(2, 1, "Bayern", iterator);
-		assertNextState(5, 1, "Hamburg", iterator);
-		assertNull(iterator.next(new DataContainer<Entity>()));
-		((Closeable) iterator).close();
-		
-		// check cities
-		iterable = t.queryEntities("city", null, context);
-		iterator = iterable.iterator();
-		assertNextCity(3, 2, "München", iterator);
-		assertNextCity(4, 2, "Ingolstadt", iterator);
-		assertNull(iterator.next(new DataContainer<Entity>()));
-		((Closeable) iterator).close();
+		DescriptorRunner runner = null;
+		try {
+			// run descriptor file
+			runner = new DescriptorRunner(DESCRIPTOR5_FILE_NAME, context);
+			runner.run();
+			DBSystem t = (DBSystem) context.get("t");
+			
+			// check countries
+			DataSource<Entity> iterable = t.queryEntities("country", null, context);
+			DataIterator<Entity> iterator = iterable.iterator();
+			assertNextCountry(1, "Germany", iterator);
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			((Closeable) iterator).close();
+			
+			// check states
+			iterable = t.queryEntities("state", null, context);
+			iterator = iterable.iterator();
+			assertNextState(2, 1, "Bayern", iterator);
+			assertNextState(5, 1, "Hamburg", iterator);
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			((Closeable) iterator).close();
+			
+			// check cities
+			iterable = t.queryEntities("city", null, context);
+			iterator = iterable.iterator();
+			assertNextCity(3, 2, "München", iterator);
+			assertNextCity(4, 2, "Ingolstadt", iterator);
+			assertNull(iterator.next(new DataContainer<Entity>()));
+			((Closeable) iterator).close();
+		} finally {
+			IOUtil.close(runner);
+		}
 	}
 
 	
