@@ -45,7 +45,7 @@ public class XLSEntitySourceProvider implements DataSourceProvider<Entity> {
     }
 
 	public EntitySource create(String uri, BeneratorContext context) {
-        XLSEntitySource source = new XLSEntitySource(uri, scriptConverter, entityType);
+        XLSEntitySource source = new XLSEntitySource(uri, scriptConverter, entityType, entityType.getSegment());
         source.setContext(context);
         return source;
 	}
