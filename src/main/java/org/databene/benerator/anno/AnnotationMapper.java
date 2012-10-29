@@ -527,6 +527,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	private void mapSourceAnnotation(Source source, InstanceDescriptor instanceDescriptor, Class<?> testClass) throws Exception {
 		mapSourceUriOrValue(source.value(),  instanceDescriptor, testClass);
 		mapSourceUriOrValue(source.uri(),    instanceDescriptor, testClass);
+		mapSourceSetting(source.segment(),   "segment",   instanceDescriptor);
 		mapSourceSetting(source.id(),        "source",    instanceDescriptor);
 		mapSourceSetting(source.dataset(),   "dataset",   instanceDescriptor);
 		mapSourceSetting(source.nesting(),   "nesting",   instanceDescriptor);

@@ -41,6 +41,8 @@ public @interface Source {
 	String selector() default "";
 	
 	String uri() default "";
+	String segment() default "";
+	
 	String filter() default "";
 	String separator() default "";
 	String dataset() default "";
