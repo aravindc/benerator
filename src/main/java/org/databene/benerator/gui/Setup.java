@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,6 @@ package org.databene.benerator.gui;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
-import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Locale;
 
@@ -53,7 +52,7 @@ import org.databene.jdbacl.JDBCDriverInfo;
  * @author Volker Bergmann
  */
 
-public class Setup implements ObservableBean, Serializable {
+public class Setup implements ObservableBean {
 	
 	private static final long serialVersionUID = 3353941855988168161L;
 	
