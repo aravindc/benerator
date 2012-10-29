@@ -93,12 +93,14 @@ public class IncludeStatement implements Statement {
 
 	public static void includeXmlSchema(String uri, BeneratorContext context) {
         logger.debug("Including XML Schema: " + uri);
-        new XMLSchemaDescriptorProvider(uri, context);
+        new XMLSchemaDescriptorProvider(uri, context).close();
     }
 
     private static void includeDescriptor(String uri, BeneratorContext context) throws IOException {
         logger.debug("Including Benerator descriptor file: " + uri);
-		new DescriptorRunner(uri, context).runWithoutShutdownHook();
+		DescriptorRunner runner = new DescriptorRunner(uri, context);
+		runner.runWithoutShutdownHook();
+		runner.close();
     }
 
 }
