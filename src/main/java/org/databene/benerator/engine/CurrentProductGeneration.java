@@ -54,6 +54,7 @@ public class CurrentProductGeneration implements Statement, LifeCycleHolder {
 		if (instanceName != null && wrapper != null) {
 			// in normal descriptor execution, a BeneratorSubContext is used, 
 			// in tests and generators exported from descriptor files, it may be a DefaultBeneratorContext
+			@SuppressWarnings("resource")
 			BeneratorContext contextToUse = (context instanceof BeneratorSubContext ? 
 					((BeneratorSubContext) context).getParent() : context);
 			contextToUse.set(instanceName, wrapper.unwrap());

@@ -157,7 +157,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
 	}
 
     @Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes", "resource" })
     protected Generator<?> createSourceGenerator(
     		SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         String source = descriptor.getSource();
@@ -201,7 +201,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
     	return generator;
     }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes", "resource" })
     private static Generator<?> createSourceGeneratorFromObject(SimpleTypeDescriptor descriptor,
             BeneratorContext context, BeanSpec sourceSpec) {
 		Object sourceObject = sourceSpec.getBean();

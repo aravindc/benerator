@@ -109,7 +109,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         return result;
     }
 
-    protected static ComponentBuilder<?> createScriptBuilder(ComponentDescriptor component, BeneratorContext context) {
+    @SuppressWarnings("resource")
+	protected static ComponentBuilder<?> createScriptBuilder(ComponentDescriptor component, BeneratorContext context) {
     	TypeDescriptor type = component.getTypeDescriptor();
         if (type == null)
         	return null;
@@ -185,7 +186,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	            throw new ConfigurationError("'source' is not set for " + descriptor);
 	        Object sourceObject = context.get(sourceName);
 	        if (sourceObject instanceof StorageSystem) {
-	            StorageSystem sourceSystem = (StorageSystem) sourceObject;
+	            @SuppressWarnings("resource")
+				StorageSystem sourceSystem = (StorageSystem) sourceObject;
 	            String selector = typeDescriptor.getSelector();
 	            String subSelector = typeDescriptor.getSubSelector();
 	            boolean subSelect = !StringUtil.isEmpty(subSelector);

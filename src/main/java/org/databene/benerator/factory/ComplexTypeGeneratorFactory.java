@@ -108,14 +108,15 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
             generator = createSourceGeneratorFromObject(descriptor, context, sourceObject);
         else {
         	String lcSourceName = sourceSpec.toLowerCase();
+        	String segment = descriptor.getSegment();
         	if (lcSourceName.endsWith(".xml"))
 	            generator = new DataSourceGenerator<Entity>(new DbUnitEntitySource(sourceSpec, context));
 	        else if (lcSourceName.endsWith(".csv"))
 	            generator = createCSVSourceGenerator(descriptor, context, sourceSpec);
 	        else if (lcSourceName.endsWith(".fcw"))
 	            generator = createFixedColumnWidthSourceGenerator(descriptor, context, sourceSpec);
-	        else if (lcSourceName.endsWith(".xls"))
-	            generator = createXLSSourceGenerator(descriptor, context, sourceSpec);
+	        else if (lcSourceName.endsWith(".xls")) 
+	            generator = createXLSSourceGenerator(descriptor, context, sourceSpec, segment);
 	        else {
 	        	try {
 		        	BeanSpec sourceBeanSpec = DatabeneScriptParser.resolveBeanSpec(sourceSpec, context);
@@ -223,9 +224,9 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 	}
     
     private static Generator<Entity> createXLSSourceGenerator(
-			ComplexTypeDescriptor complexType, BeneratorContext context, String sourceName) {
-    	XLSEntitySourceProvider fileProvider = new XLSEntitySourceProvider(
-	    		complexType, new ScriptConverterForStrings(context));
+			ComplexTypeDescriptor complexType, BeneratorContext context, String sourceName, String segment) {
+    	ScriptConverterForStrings converter = new ScriptConverterForStrings(context);
+		XLSEntitySourceProvider fileProvider = new XLSEntitySourceProvider(complexType, converter);
 		return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
 
