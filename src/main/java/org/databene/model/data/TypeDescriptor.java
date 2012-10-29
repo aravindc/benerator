@@ -52,6 +52,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     public static final String SOURCE       = "source";
     public static final String ROW_BASED    = "rowBased";
+    public static final String SEGMENT      = "segment";
     public static final String OFFSET       = "offset";
     public static final String SELECTOR     = "selector";
     public static final String SUB_SELECTOR = "subSelector";
@@ -100,6 +101,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         addConfig(SCRIPT,         String.class);
         addConfig(SOURCE,         String.class);
         addConfig(ROW_BASED,      Boolean.class);
+        addConfig(SEGMENT,        String.class);
         addConfig(OFFSET,         Integer.class);
         addConfig(SELECTOR,       String.class);
         addConfig(SUB_SELECTOR,   String.class);
@@ -197,6 +199,14 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     public void setSource(String source) {
         setDetailValue(SOURCE, source);
+    }
+
+    public String getSegment() {
+        return (String) getDetailValue(SEGMENT);
+    }
+
+    public void setSegment(String segment) {
+        setDetailValue(SEGMENT, segment);
     }
 
     public Integer getOffset() {
