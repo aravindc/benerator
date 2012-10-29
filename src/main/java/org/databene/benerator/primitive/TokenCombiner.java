@@ -96,6 +96,7 @@ public class TokenCombiner extends GeneratorProxy<String> implements NonNullGene
     	this.excludeSeed = excludeSeed;
     }
 	
+	@SuppressWarnings("resource")
 	@Override
 	public synchronized void init(GeneratorContext context) {
 		Generator<String> source = new SimpleTokenCombinator(unique);
@@ -115,6 +116,7 @@ public class TokenCombiner extends GeneratorProxy<String> implements NonNullGene
 	
 	protected class SimpleTokenCombinator extends CompositeStringGenerator {
 		
+		@SuppressWarnings("unchecked")
 		SimpleTokenCombinator(boolean unique) {
 	        super(unique);
         }
