@@ -121,6 +121,7 @@ public class DBSnapshotTool {
 				format, dialect, null);
 	}
 	
+	@SuppressWarnings("resource")
 	public static void export(String dbUrl, String dbDriver, String dbSchema,
 			String dbUser, String dbPassword, String filename, String encoding, String format, String dialect, 
 			ProgressMonitor monitor) {

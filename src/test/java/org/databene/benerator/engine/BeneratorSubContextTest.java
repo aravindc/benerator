@@ -32,6 +32,7 @@ import org.junit.Test;
  * @since 0.8.0
  * @author Volker Bergmann
  */
+@SuppressWarnings("resource")
 public class BeneratorSubContextTest {
 	
 	@Test

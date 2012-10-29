@@ -54,7 +54,8 @@ public class UniqueScrambledStringGenerator extends MultiGeneratorWrapper<String
         this(new CharSet('A', 'Z').getSet(), 4, 8);
     }
 
-    public UniqueScrambledStringGenerator(Set<Character> chars, int minLength, int maxLength) {
+    @SuppressWarnings("unchecked")
+	public UniqueScrambledStringGenerator(Set<Character> chars, int minLength, int maxLength) {
     	super(String.class);
         this.minLength = minLength;
         this.maxLength = maxLength;

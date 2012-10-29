@@ -85,7 +85,12 @@ public class Benerator {
 		printer.printLines("Running file " + filename);
 		checkSystem(printer);
 		BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(filename));
-		new DescriptorRunner(filename, context).run();
+		DescriptorRunner runner = new DescriptorRunner(filename, context);
+		try {
+			runner.run();
+		} finally {
+			IOUtil.close(runner);
+		}
 	}
 
 	private static void printVersionInfoAndExit() {

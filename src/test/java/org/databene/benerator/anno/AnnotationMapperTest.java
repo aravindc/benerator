@@ -99,7 +99,8 @@ public class AnnotationMapperTest {
 	@Test
 	public void testUniqueMethod() throws Exception {
 	    Method stringMethod = getClass().getDeclaredMethod("uniqueMethod", new Class[] { String.class });
-	    BeneratorContext context = new DefaultBeneratorContext();
+	    @SuppressWarnings("resource")
+		BeneratorContext context = new DefaultBeneratorContext();
 		AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory(), context.getDataModel(), new DefaultPathResolver());
 		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethod);
 		InstanceDescriptor arrayDescriptor = mapper.createMethodParamsInstanceDescriptor(stringMethod, type);
@@ -340,6 +341,7 @@ public class AnnotationMapperTest {
 	private void checkMethod(String methodName, Class<?> methodArgType, String expectedType, Object ... details)
             throws NoSuchMethodException {
 	    Method stringMethod = getClass().getDeclaredMethod(methodName, new Class[] { methodArgType });
+		@SuppressWarnings("resource")
 		DefaultBeneratorContext context = new DefaultBeneratorContext();
 	    AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory(), context.getDataModel(), new DefaultPathResolver());
 		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethod);
