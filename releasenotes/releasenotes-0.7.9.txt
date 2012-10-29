@@ -1,0 +1,6 @@
+release notes benerator 0.7.9
+=============================
+
+enhancements
+------------
+- Supporting data files in JAR archives
