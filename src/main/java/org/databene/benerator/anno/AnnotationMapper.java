@@ -108,9 +108,8 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 			Database.class, 
 			Descriptor.class, 
 			InvocationCount.class, 
-			Equivalence.class, 
-			Coverage.class, 
-			Serial.class, 
+			Factory.class, Equivalence.class, Coverage.class, Serial.class, 
+			Defaults.class, Gentle.class, Mean.class,
 			ThreadPoolSize.class);
 
 	static {
@@ -120,16 +119,14 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	}
 
 	private DataModel dataModel;
-	private GeneratorFactory defaultFactory;
 	private PathResolver pathResolver;
 
 	private ArrayTypeGeneratorFactory arrayTypeGeneratorFactory;
 	
-	public AnnotationMapper(GeneratorFactory defaultFactory, DataModel dataModel, PathResolver pathResolver) {
+	public AnnotationMapper(DataModel dataModel, PathResolver pathResolver) {
 		super("anno", dataModel);
 		this.dataModel = dataModel;
 		this.dataModel.addDescriptorProvider(this);
-		this.defaultFactory = defaultFactory;
 		this.arrayTypeGeneratorFactory = new ArrayTypeGeneratorFactory();
 		this.pathResolver = pathResolver;
 	}
@@ -259,13 +256,18 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	private void applyClassGeneratorFactory(Annotation[] annotations, BeneratorContext context) {
 		boolean configured = applyGeneratorFactory(annotations, context);
 		if (!configured)
-			context.setGeneratorFactory(defaultFactory);
+			context.setGeneratorFactory(context.getGeneratorFactory());
 	}
 
 	protected boolean applyGeneratorFactory(Annotation[] annotations, BeneratorContext context) {
 		boolean configured = false;
 		for (Annotation annotation : annotations) {
-			if (annotation instanceof Equivalence) {
+			if (annotation instanceof Factory) {
+				GeneratorFactory factory = BeanUtil.newInstance(((Factory) annotation).value());
+				factory.setDefaultsProvider(context.getDefaultsProvider());
+				context.setGeneratorFactory(factory);
+				return true;
+			} else if (annotation instanceof Equivalence) {
 				context.setGeneratorFactory(new EquivalenceGeneratorFactory());
 				return true;
 			} else if (annotation instanceof Coverage) {
@@ -293,7 +295,10 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 
 	private boolean applyDefaultsProvider(Annotation[] annotations, BeneratorContext context) {
 		for (Annotation annotation : annotations) {
-			if (annotation instanceof Gentle) {
+			if (annotation instanceof Defaults) {
+				context.setDefaultsProvider(BeanUtil.newInstance(((Defaults) annotation).value()));
+				return true;
+			} else if (annotation instanceof Gentle) {
 				context.setDefaultsProvider(new GentleDefaultsProvider());
 				return true;
 			} else if (annotation instanceof Mean) {

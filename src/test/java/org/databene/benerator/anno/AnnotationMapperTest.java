@@ -66,7 +66,7 @@ public class AnnotationMapperTest {
 		context = new DefaultBeneratorContext();
 		context.setDataModel(dataModel);
 		context.setGeneratorFactory(generatorFactory);
-		annotationMapper = new AnnotationMapper(generatorFactory, dataModel, new DefaultPathResolver());
+		annotationMapper = new AnnotationMapper(dataModel, new DefaultPathResolver());
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class AnnotationMapperTest {
 	    Method stringMethod = getClass().getDeclaredMethod("uniqueMethod", new Class[] { String.class });
 	    @SuppressWarnings("resource")
 		BeneratorContext context = new DefaultBeneratorContext();
-		AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory(), context.getDataModel(), new DefaultPathResolver());
+		AnnotationMapper mapper = new AnnotationMapper(context.getDataModel(), new DefaultPathResolver());
 		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethod);
 		InstanceDescriptor arrayDescriptor = mapper.createMethodParamsInstanceDescriptor(stringMethod, type);
 		assertEquals(true, arrayDescriptor.isUnique());
@@ -343,7 +343,7 @@ public class AnnotationMapperTest {
 	    Method stringMethod = getClass().getDeclaredMethod(methodName, new Class[] { methodArgType });
 		@SuppressWarnings("resource")
 		DefaultBeneratorContext context = new DefaultBeneratorContext();
-	    AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory(), context.getDataModel(), new DefaultPathResolver());
+	    AnnotationMapper mapper = new AnnotationMapper(context.getDataModel(), new DefaultPathResolver());
 		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethod);
 		InstanceDescriptor arrayDescriptor = mapper.createMethodParamsInstanceDescriptor(stringMethod, type);
 		ArrayTypeDescriptor typeDescriptor = (ArrayTypeDescriptor) arrayDescriptor.getTypeDescriptor();
