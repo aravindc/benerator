@@ -142,15 +142,20 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
             T granularity, Distribution distribution, Uniqueness uniqueness) {
         Assert.notNull(numberType, "numberType");
+        boolean quantization = true;
         if (distribution != null)
         	return super.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, 
         			granularity, distribution, uniqueness);
-        if (min == null)
+        if (min == null) {
+        	quantization = false;
         	min = (NumberUtil.isLimited(numberType) ? NumberUtil.minValue(numberType) : defaultsProvider.defaultMin(numberType));
+        }
         if (max == null)
         	max = (NumberUtil.isLimited(numberType) ? NumberUtil.maxValue(numberType) : defaultsProvider.defaultMax(numberType));
-        if (granularity == null)
+        if (granularity == null) {
+        	quantization = false;
         	granularity = defaultsProvider.defaultGranularity(numberType);
+        }
         if (((Comparable<T>) min).compareTo(max) == 0) // if min==max then return min once
             return WrapperFactory.asNonNullGenerator(new OneShotGenerator<T>(min));
         if (minInclusive == null)
@@ -160,7 +165,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 
         NumberToNumberConverter<Number, T> converter = new NumberToNumberConverter<Number, T>(Number.class, numberType);
         ArithmeticEngine engine = ArithmeticEngine.defaultInstance();
-        ValueSet<T> values = new ValueSet<T>(min, minInclusive, max, maxInclusive, granularity, numberType);
+        ValueSet<T> values = new ValueSet<T>(min, minInclusive, max, maxInclusive, (quantization ? granularity : null), numberType);
 
         // values to be tested for any range, duplicated are sieved out by ValueSet
         values.addIfViable(min);
@@ -170,7 +175,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 
         // Check the environment of zero
         T zeroExact = converter.convert(0);
-        T zeroApprox = converter.convert(NumberQuantizer.quantize(zeroExact, min, granularity, numberType));
+        T zeroApprox = converter.convert(NumberQuantizer.quantize(zeroExact, min, (quantization ? granularity : null), numberType));
         int minVsZero = ((Comparable<T>) min).compareTo(zeroApprox);
         int maxVsZero = ((Comparable<T>) max).compareTo(zeroApprox);
 
@@ -353,9 +358,11 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 		}
 
 		public void addIfViable(Number value) {
-			if (numberRange.contains(NumberToNumberConverter.convert(value, numberType))) {
-				T quantizedValue = NumberQuantizer.quantize(value, numberRange.getMin(), granularity, numberType);
-				set.add(quantizedValue);
+			T numberToAdd = NumberToNumberConverter.convert(value, numberType);
+			if (numberRange.contains(numberToAdd)) {
+				if (granularity != null)
+					numberToAdd = NumberQuantizer.quantize(value, numberRange.getMin(), granularity, numberType);
+				set.add(numberToAdd);
 			}
 		}
 	}

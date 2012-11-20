@@ -21,8 +21,10 @@
 
 package org.databene.benerator.factory;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
+import org.databene.commons.BeanUtil;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.NumberToNumberConverter;
@@ -36,8 +38,10 @@ import org.databene.commons.converter.NumberToNumberConverter;
  */
 public class MeanDefaultsProvider implements DefaultsProvider {
 
+	private static final BigDecimal DECIMAL_GRANULARITY = new BigDecimal("0.00001");
+
 	public <T extends Number> T defaultMin(Class<T> numberType) {
-		return NumberUtil.minValue(numberType); 
+		return NumberUtil.minValue(numberType);
 	}
 
 	public <T extends Number> T defaultMax(Class<T> numberType) {
@@ -45,7 +49,7 @@ public class MeanDefaultsProvider implements DefaultsProvider {
 	}
 
 	public <T extends Number> T defaultGranularity(Class<T> numberType) {
-		return NumberToNumberConverter.convert(1, numberType);
+		return NumberToNumberConverter.convert((BeanUtil.isDecimalNumberType(numberType) ? DECIMAL_GRANULARITY : 1), numberType);
 	}
 
 	public int defaultMinLength() {

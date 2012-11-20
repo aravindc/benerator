@@ -52,6 +52,10 @@ public abstract class GeneratorFactory {
 	
 	protected DefaultsProvider defaultsProvider;
 	
+	protected GeneratorFactory() {
+		this(null);
+	}
+
 	protected GeneratorFactory(DefaultsProvider defaultsProvider) {
 		this.defaultsProvider = defaultsProvider;
 	}
