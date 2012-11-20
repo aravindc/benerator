@@ -21,7 +21,11 @@
 
 package org.databene.benerator.primitive.number;
 
+import javax.validation.constraints.NotNull;
+
+import org.databene.commons.Assert;
 import org.databene.commons.ConversionException;
+import org.databene.commons.anno.Nullable;
 import org.databene.commons.converter.NumberToNumberConverter;
 import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.script.math.ArithmeticEngine;
@@ -38,8 +42,9 @@ public class NumberQuantizer<E extends Number> extends ThreadSafeConverter<Numbe
 	private E granularity;
 	private Class<E> numberType;
 
-	public NumberQuantizer(E min, E granularity, Class<E> numberType) {
+	public NumberQuantizer(@Nullable E min, @Nullable E granularity, @NotNull Class<E> numberType) {
 	    super(Number.class, numberType);
+	    Assert.notNull(numberType, "numberType");
 	    this.min = min;
 	    this.granularity = granularity;
 	    this.numberType = numberType;
@@ -49,11 +54,20 @@ public class NumberQuantizer<E extends Number> extends ThreadSafeConverter<Numbe
 		return quantize(sourceValue, min, granularity, numberType);
     }
 
+	@SuppressWarnings("unchecked")
 	public static <T extends Number> T quantize(Number sourceValue, T min, T granularity, Class<T> numberType) throws ConversionException {
 		T value = NumberToNumberConverter.convert(sourceValue, numberType);
+		if (granularity == null)
+			return value;
 		ArithmeticEngine engine = ArithmeticEngine.defaultInstance();
-		long ofs = ((Number) engine.divide(engine.subtract(value, min), granularity)).longValue();
-		return NumberToNumberConverter.convert((Number) engine.add(min, engine.multiply(ofs, granularity)), numberType);
+		T base = value;
+		if (min != null)
+			base = (T) engine.subtract(value, min);
+		long ofs = ((Number) engine.divide(base, granularity)).longValue();
+		Number result = (Number) engine.multiply(ofs, granularity);
+		if (min !=  null)
+			result = (Number) engine.add(result, min);
+		return NumberToNumberConverter.convert(result, numberType);
     }
 
 }
