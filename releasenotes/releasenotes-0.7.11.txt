@@ -1,0 +1,19 @@
+release notes benerator 0.7.11
+=============================
+
+summary
+-------
+
+
+changes
+-------
+
+
+enhancements
+------------
+
+
+bug fixes
+---------
+- Parsing empty CSV cells with non-default separator fails
+- Area code 'de' in german address generation
