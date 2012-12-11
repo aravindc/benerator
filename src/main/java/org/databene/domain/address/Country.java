@@ -169,7 +169,15 @@ public class Country {
     public boolean isMobilePhoneCityRelated() {
     	return mobilePhoneCityRelated;
     }
-
+    
+    public List<City> getCities() {
+    	List<City> cities = new ArrayList<City>();
+    	for (State state : states.values())
+    		for (City city : state.getCities())
+    			cities.add(city);
+    	return cities;
+    }
+    
 	public City generateCity() {
 	    return getCityGenerator().generate();
     }
