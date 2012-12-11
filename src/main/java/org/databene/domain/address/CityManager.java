@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.io.IOException;
 import java.io.FileWriter;
 
@@ -70,7 +71,7 @@ public class CityManager {
 		CSVLineIterator iterator = new CSVLineIterator(filename, ';', Encodings.UTF_8);
 		DataContainer<String[]> container = new DataContainer<String[]>();
         String[] header = iterator.next(container).getData();
-        int warnCount = 0;
+        AtomicInteger warnCount = new AtomicInteger();
         while ((container = iterator.next(container)) != null) {
             String[] cells = container.getData();
             if (cells.length == 0)
@@ -84,50 +85,64 @@ public class CityManager {
                 instance.put(header[i], cells[i]);
             LOGGER.debug("{}", instance);
 
-            // create/setup state
             String stateId = instance.get("state.id");
-            State state = country.getState(stateId);
-            if (state == null) {
-                state = new State(stateId);
-                String stateName = instance.get("state.name");
-				if (stateName != null) {
-					stateName = StringUtil.normalizeName(stateName);
-                	state.setName(stateName);
-				}
-				//logger.debug(state.getId() + "," + state.getName());
-                country.addState(state);
-            }
+            String stateName = instance.get("state.name");
+            State state = getOrCreateState(stateId, stateName, country);
 
-            CityId cityId;
-            if (!StringUtil.isEmpty(instance.get("municipality")))
-            	cityId = new CityId(instance.get("municipality"), null);
-            else if (!StringUtil.isEmpty(instance.get("city")))
-                cityId = new CityId(instance.get("city"), null);
-            else if (!StringUtil.isEmpty(instance.get("name"))) {
-                String cityName = instance.get("name");
-                String cityNameExtension = instance.get("nameExtension");
-                cityId = new CityId(cityName, cityNameExtension);
-            } else 
-            	throw new ParseException("Unable to parse city", instance.toString(), iterator.lineCount(), 1);
-
-            // create/setup city
-            CityHelper city = (CityHelper) state.getCity(cityId);
-            String postalCode = instance.get("postalCode");
-            String lang = getValue(instance, "language", defaults);
-            if (city == null) {
-                String areaCode = getValue(instance, "areaCode", defaults);
-                if (StringUtil.isEmpty(areaCode)) {
-                    warnCount++;
-                    LOGGER.warn("areaCode is not provided for city: '" + cityId);
-                }
-                city = new CityHelper(state, cityId, new String[] { postalCode }, areaCode);
-                if (!StringUtil.isEmpty(lang))
-                	city.setLanguage(LocaleUtil.getLocale(lang));
-                state.addCity(cityId, city);
-            } else
-                city.addPostalCode(postalCode);
+			int lineNumber = iterator.lineCount();
+            CityId cityId = createCityId(instance, lineNumber);
+            getOrCreateCity(cityId, state, instance, defaults, warnCount);
         }
-		return warnCount;
+		return warnCount.get();
+	}
+
+	private static State getOrCreateState(String stateId, String stateName,
+			Country country) {
+		State state = country.getState(stateId);
+		if (state == null) {
+		    state = new State(stateId);
+			if (stateName != null)
+		    	state.setName(StringUtil.normalizeName(stateName));
+			//logger.debug(state.getId() + "," + state.getName());
+		    country.addState(state);
+		}
+		return state;
+	}
+
+	protected static CityId createCityId(Map<String, String> instance,
+			int lineNumber) {
+		CityId cityId;
+		if (!StringUtil.isEmpty(instance.get("municipality")))
+			cityId = new CityId(instance.get("municipality"), null);
+		else if (!StringUtil.isEmpty(instance.get("city")))
+		    cityId = new CityId(instance.get("city"), null);
+		else if (!StringUtil.isEmpty(instance.get("name"))) {
+		    String cityName = instance.get("name");
+		    String cityNameExtension = instance.get("nameExtension");
+		    cityId = new CityId(cityName, cityNameExtension);
+		} else
+			throw new ParseException("Unable to parse city", instance.toString(), lineNumber, 1);
+		return cityId;
+	}
+
+	private static CityHelper getOrCreateCity(CityId cityId, State state, Map<String, String> instance, Map<String, String> defaults, AtomicInteger warnCount) {
+        // create/setup city
+        CityHelper city = (CityHelper) state.getCity(cityId);
+        String postalCode = instance.get("postalCode");
+        String lang = getValue(instance, "language", defaults);
+        if (city == null) {
+            String areaCode = getValue(instance, "areaCode", defaults);
+            if (StringUtil.isEmpty(areaCode)) {
+                warnCount.incrementAndGet();
+                LOGGER.warn("areaCode is not provided for city: '" + cityId);
+            }
+            city = new CityHelper(state, cityId, new String[] { postalCode }, areaCode);
+            if (!StringUtil.isEmpty(lang))
+            	city.setLanguage(LocaleUtil.getLocale(lang));
+            state.addCity(cityId, city);
+        } else
+            city.addPostalCode(postalCode);
+        return city;
 	}
 
     public static void persistCities(Country country, String filename) throws IOException {
