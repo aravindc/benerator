@@ -5,14 +5,14 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.7.10</version>
+    <version>0.7.11-SNAPSHOT</version>
 
     <properties>
     	<build_number>${buildNumber}</build_number>
-    	<jdbacl_version>0.8.7</jdbacl_version>
-    	<webdecs_version>0.6.14</webdecs_version>
-    	<script_version>0.7.11</script_version>
-    	<commons_version>0.5.20</commons_version>
+    	<jdbacl_version>0.8.8-SNAPSHOT</jdbacl_version>
+    	<webdecs_version>0.6.15-SNAPSHOT</webdecs_version>
+    	<script_version>0.7.12-SNAPSHOT</script_version>
+    	<commons_version>0.5.21-SNAPSHOT</commons_version>
     	<contiperf_version>2.3.0</contiperf_version>
     </properties>
 
