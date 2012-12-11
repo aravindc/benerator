@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,6 +23,8 @@ package org.databene.domain.address;
 
 import static org.junit.Assert.*;
 
+import java.util.regex.Pattern;
+
 import org.junit.Test;
 
 /**
@@ -34,9 +36,17 @@ import org.junit.Test;
 public class CityManagerTest {
 
 	@Test
-	public void testGermany() throws Exception {
-		CityManager.readCities(Country.GERMANY);
+	public void testGenerateGermanCity() throws Exception {
 		assertNotNull(Country.GERMANY.generateCity());
+	}
+	
+	@Test
+	public void testGermanAreaCodes() throws Exception {
+		Pattern pattern = Pattern.compile("\\d{2,5}");
+		for (City city : Country.GERMANY.getCities()) {
+			String areaCode = city.getAreaCode();
+			assertTrue("Illegal area code: " + areaCode, pattern.matcher(areaCode).matches());
+		}
 	}
 	
 }
