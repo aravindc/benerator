@@ -51,7 +51,11 @@ public class FeatureDescriptor implements Named {
     static {
         ConverterManager.getInstance().registerConverterClass(String2ConverterConverter.class);
     }
-
+    
+    /** The name of the feature. It is stored redundantly in the {@link #details} map and the copy in 
+     *  this attribute is used for high-performance retrieval of the name. */
+    private String name;
+    
     protected OrderedNameMap<FeatureDetail<?>> details;
     protected DescriptorProvider provider;
 
@@ -75,10 +79,11 @@ public class FeatureDescriptor implements Named {
     }
 */
     public String getName() {
-        return (String) getDetailValue(NAME);
+        return name;
     }
 
     public void setName(String name) {
+    	this.name = name; // name is stored redundantly for better performance
         setDetailValue(NAME, name);
     }
     
@@ -105,6 +110,8 @@ public class FeatureDescriptor implements Named {
     }
 
     public void setDetailValue(String detailName, Object detailValue) {
+    	if ("name".equals(detailName)) // name is stored redundantly for better performance
+    		this.name = (String) detailValue;
         FeatureDetail<Object> detail = getConfiguredDetail(detailName);
         detail.setValue(AnyConverter.convert(detailValue, detail.getType()));
     }
