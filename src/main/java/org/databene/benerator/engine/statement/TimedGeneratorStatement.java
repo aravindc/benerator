@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,7 @@ import java.util.List;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.Statement;
+import org.databene.commons.time.ElapsedTimeFormatter;
 import org.databene.profile.Profiler;
 import org.databene.profile.Profiling;
 import org.slf4j.Logger;
@@ -71,8 +72,8 @@ public class TimedGeneratorStatement extends StatementProxy {
 				logger.info("No data created for '" + name + "' setup");
 			else if (dt > 0)
 				logger.info("Created " + dc + " data sets from '"
-						+ name + "' setup in " + dt + " ms ("
-						+ (dc * 1000 / dt) + "/s)");
+						+ name + "' setup in " + ElapsedTimeFormatter.format(dt) 
+						+ " (" + (dc * 1000 / dt) + "/s)");
 			else
 				logger.info("Created " + dc + " '" + name + "' data set(s)");
 		}
