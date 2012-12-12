@@ -127,7 +127,7 @@ public class DBSystem extends AbstractStorageSystem {
     private Database database;
 
     private Map<Thread, ThreadContext> threadContexts;
-    private Map<String, TypeDescriptor> typeDescriptors;
+    private OrderedNameMap<TypeDescriptor> typeDescriptors;
     Map<String, DBTable> tables;
     
     private TypeMapper driverTypeMapper;
@@ -336,14 +336,7 @@ public class DBSystem extends AbstractStorageSystem {
     public TypeDescriptor getTypeDescriptor(String tableName) {
         LOGGER.debug("getTypeDescriptor({})", tableName);
         parseMetadataIfNecessary();
-        TypeDescriptor entityDescriptor = typeDescriptors.get(tableName);
-        if (entityDescriptor == null)
-            for (TypeDescriptor candidate : typeDescriptors.values())
-                if (candidate.getName().equalsIgnoreCase(tableName)) {
-                    entityDescriptor = candidate;
-                    break;
-                }
-        return entityDescriptor;
+        return typeDescriptors.get(tableName);
     }
 
     // StorageSystem interface -----------------------------------------------------------------------------------------
