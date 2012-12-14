@@ -24,6 +24,7 @@ package org.databene.benerator.composite;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.AbstractScopedLifeCycleHolder;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.Assert;
 
 /**
  * Proxy class for a {@link ComponentBuilder}.<br/><br/>
@@ -33,11 +34,12 @@ import org.databene.benerator.engine.BeneratorContext;
  */
 public class ComponentBuilderProxy<E> extends AbstractScopedLifeCycleHolder implements ComponentBuilder<E> {
 	
-	protected ComponentBuilder<E> source;
+	protected final ComponentBuilder<E> source;
 	protected GeneratorContext context;
 
 	public ComponentBuilderProxy(ComponentBuilder<E> source) {
 		super(source.getScope());
+		Assert.notNull(source, "source");
 	    this.source = source;
     }
 
