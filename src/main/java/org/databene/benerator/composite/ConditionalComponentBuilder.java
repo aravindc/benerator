@@ -23,7 +23,6 @@ package org.databene.benerator.composite;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Assert;
-import org.databene.commons.ConfigurationError;
 import org.databene.script.Expression;
 
 /**
