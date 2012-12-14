@@ -22,6 +22,8 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.Assert;
+import org.databene.commons.ConfigurationError;
 import org.databene.script.Expression;
 
 /**
@@ -32,16 +34,22 @@ import org.databene.script.Expression;
  */
 public class ConditionalComponentBuilder<E> extends ComponentBuilderProxy<E> {
 
-	Expression<Boolean> condition;
+	private Expression<?> condition;
 	
-	public ConditionalComponentBuilder(ComponentBuilder<E> source, Expression<Boolean> condition) {
+	public ConditionalComponentBuilder(ComponentBuilder<E> source, Expression<?> condition) {
 	    super(source);
+	    Assert.notNull(condition, "condition");
 	    this.condition = condition;
     }
 
 	@Override
     public boolean execute(BeneratorContext context) {
-		if (condition.evaluate(context))
+		Object conditionResult = condition.evaluate(context);
+		if (conditionResult == null)
+			throw new IllegalArgumentException("Condition resolves to null: " + condition);
+		if (!(conditionResult instanceof Boolean))
+			throw new IllegalArgumentException("Condition does not resolve to a boolean value: " + condition);
+		if ((Boolean) conditionResult)
 			return source.execute(context);
 		else
 			return true;
