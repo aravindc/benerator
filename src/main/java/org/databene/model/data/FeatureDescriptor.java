@@ -30,6 +30,7 @@ import org.databene.commons.Named;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.Operation;
 import org.databene.commons.StringUtil;
+import org.databene.commons.SyntaxError;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ToStringConverter;
@@ -100,10 +101,17 @@ public class FeatureDescriptor implements Named {
     }
 
     public void setDetailValue(String detailName, Object detailValue) {
-    	if ("name".equals(detailName)) // name is stored redundantly for better performance
-    		this.name = (String) detailValue;
-        FeatureDetail<Object> detail = getConfiguredDetail(detailName);
-        detail.setValue(AnyConverter.convert(detailValue, detail.getType()));
+    	try {
+			if ("name".equals(detailName)) // name is stored redundantly for better performance
+				this.name = (String) detailValue;
+			FeatureDetail<Object> detail = getConfiguredDetail(detailName);
+			Class<Object> detailType = detail.getType();
+			if (detailValue != null && !detailType.isAssignableFrom(detailValue.getClass()))
+				detailValue = AnyConverter.convert(detailValue, detailType);
+			detail.setValue(detailValue);
+		} catch (Exception e) {
+			throw new SyntaxError("Error parsing '" + detailName + "'", e, String.valueOf(detailValue), -1, -1);
+		}
     }
 
     public List<FeatureDetail<?>> getDetails() {
