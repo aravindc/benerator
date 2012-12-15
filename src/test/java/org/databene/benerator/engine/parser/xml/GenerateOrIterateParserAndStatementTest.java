@@ -34,6 +34,7 @@ import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonSource;
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.SyntaxError;
 import org.databene.commons.converter.UnsafeConverter;
 import org.databene.commons.validator.AbstractValidator;
 import org.databene.jdbacl.dialect.HSQLUtil;
@@ -53,6 +54,16 @@ import org.junit.Test;
  * @author Volker Bergmann
  */
 public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegrationTest {
+
+	@Test(expected = SyntaxError.class)
+	public void testIllegalNullable() throws Exception {
+		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
+		Statement statement = parse(
+				"<generate type='dummy' count='1' consumer='NoConsumer'>" +
+				"	<attribute name='x' nullable='xxx'/>" +
+				"</generate>");
+		statement.execute(context);
+	}
 
 	@Test
 	public void testPaging() throws Exception {
