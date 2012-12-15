@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.commons.IOUtil;
 import org.databene.model.data.Entity;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,18 +52,28 @@ public class AddingConsumerTest extends GeneratorTest {
 	@Test
 	public void testJavaInvocation() {
 		AddingConsumer consumer = new AddingConsumer();
-		consumer.setFeature("age");
-		consumer.setType("int");
-		consumer.startProductConsumption(ALICE);
-		consumer.finishProductConsumption(ALICE);
-		consumer.startProductConsumption(METHUSALEM);
-		consumer.finishProductConsumption(METHUSALEM);
-		assertEquals(1047, consumer.getSum());
+		try {
+			consumer.setFeature("age");
+			consumer.setType("int");
+			consumer.startProductConsumption(ALICE);
+			consumer.finishProductConsumption(ALICE);
+			consumer.startProductConsumption(METHUSALEM);
+			consumer.finishProductConsumption(METHUSALEM);
+			assertEquals(1047, consumer.getSum());
+		} finally {
+        	IOUtil.close(consumer);
+        }
+
 	}
 	
 	@Test
 	public void testBeneratorInvocation() throws IOException {
-		new DescriptorRunner("org/databene/benerator/primitive/AddingConsumerTest.ben.xml", context).run();
+		DescriptorRunner runner = new DescriptorRunner("org/databene/benerator/primitive/AddingConsumerTest.ben.xml", context);
+		try {
+			runner.run();
+		} finally {
+        	IOUtil.close(runner);
+        }
 	}
 
 }
