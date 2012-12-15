@@ -40,7 +40,10 @@ import org.databene.commons.ui.ConsoleInfoPrinter;
 import org.databene.commons.ui.InfoPrinter;
 import org.databene.commons.version.VersionInfo;
 import org.databene.commons.version.VersionNumber;
+import org.databene.contiperf.sensor.MemorySensor;
 import org.databene.jdbacl.DBUtil;
+import org.databene.profile.Profiling;
+import org.databene.text.KiloFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +61,7 @@ import javax.script.ScriptEngineManager;
 public class Benerator {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Benerator.class);
+	private static final Logger CONFIG_LOGGER = LoggerFactory.getLogger(LogCategories.CONFIG);
 
 	// methods ---------------------------------------------------------------------------------------------------------
 
@@ -82,6 +86,8 @@ public class Benerator {
 	}
 
 	public static void runFile(String filename, InfoPrinter printer) throws IOException {
+		MemorySensor memProfiler = MemorySensor.getInstance();
+		memProfiler.reset();
 		printer.printLines("Running file " + filename);
 		checkSystem(printer);
 		BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(filename));
@@ -91,6 +97,7 @@ public class Benerator {
 		} finally {
 			IOUtil.close(runner);
 		}
+		CONFIG_LOGGER.info("Max. committed heap size: " + new KiloFormatter(1024).format(memProfiler.getMaxCommittedHeapSize()) + "B");
 	}
 
 	private static void printVersionInfoAndExit() {
@@ -105,15 +112,17 @@ public class Benerator {
 		try {
 			Class.forName("javax.script.ScriptEngine");
 		} catch (ClassNotFoundException e) {
-			System.out.println("You need to run benerator with Java 6 or greater!");
+			CONFIG_LOGGER.error("You need to run benerator with Java 6 or greater!");
 			if (SystemInfo.isMacOsx())
-				System.out.println("Please check the manual for Java setup on Mac OS X.");
+				CONFIG_LOGGER.error("Please check the manual for Java setup on Mac OS X.");
 			System.exit(-1);
 		}
 		VersionNumber javaVersion = VersionNumber.valueOf(VMInfo.getJavaVersion());
 		if (javaVersion.compareTo(VersionNumber.valueOf("1.6")) < 0)
-			LOGGER.warn("benerator is written for and tested under Java 6 - " +
-					"you managed to set up JSR 226, but may face other problems.");
+			CONFIG_LOGGER.warn("benerator is written for and tested under Java 6 - " +
+					"you managed to set up JSR 223, but may face other problems.");
+		if (Profiling.isEnabled())
+			CONFIG_LOGGER.warn("Profiling is active. This may lead to memory issues");
 	}
 
 	private static void printVersionInfo(InfoPrinter printer) {
