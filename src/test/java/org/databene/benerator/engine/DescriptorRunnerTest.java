@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,6 +34,7 @@ import org.databene.benerator.consumer.AbstractConsumer;
 import org.databene.benerator.consumer.FileExporter;
 import org.databene.benerator.test.ModelTest;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.IOUtil;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -58,23 +59,31 @@ public class DescriptorRunnerTest extends ModelTest {
 				"		<attribute name='name' constant='Alice'/>" +
 				"	</generate>" +
 				"</setup>", new DefaultBeneratorContext());
-		BeneratorContext context = runner.getContext();
-		context.importDefaults();
-		context.setValidate(false);
-		MyConsumer myConsumer = new MyConsumer();
-		context.set("myConsumer", myConsumer);
-		runner.run();
-		assertEquals(1, myConsumer.products.size());
-		assertEquals(createEntity("Person", "name", "Alice"), myConsumer.products.get(0));
+		try {
+			BeneratorContext context = runner.getContext();
+			context.importDefaults();
+			context.setValidate(false);
+			MyConsumer myConsumer = new MyConsumer();
+			context.set("myConsumer", myConsumer);
+			runner.run();
+			assertEquals(1, myConsumer.products.size());
+			assertEquals(createEntity("Person", "name", "Alice"), myConsumer.products.get(0));
+		} finally {
+			IOUtil.close(runner);
+		}
 	}
 	
     @Test
 	public void testGetGeneratedFiles() {
 		DescriptorRunner runner = new DescriptorRunner("string://<setup/>", new DefaultBeneratorContext());
-		runner.addResource(new TestExporter());
-		List<String> generatedFiles = runner.getGeneratedFiles();
-		assertEquals(1, generatedFiles.size());
-		assertEquals(EXPORT_FILE_URI, generatedFiles.get(0));
+		try {
+			runner.addResource(new TestExporter());
+			List<String> generatedFiles = runner.getGeneratedFiles();
+			assertEquals(1, generatedFiles.size());
+			assertEquals(EXPORT_FILE_URI, generatedFiles.get(0));
+		} finally {
+			IOUtil.close(runner);
+		}
 	}
 	
 	
