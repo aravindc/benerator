@@ -29,6 +29,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.factory.ConsumerMock;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.commons.IOUtil;
 import org.databene.commons.SysUtil;
 import org.databene.model.data.Entity;
 import org.junit.Test;
@@ -58,10 +59,9 @@ public class InitialContextTest extends GeneratorTest {
 		SysUtil.runWithSystemProperty("jndi.properties", "org/databene/benerator/engine/jndi.properties", 
 			new Runnable() {
 				public void run() {
+					ConsumerMock.lastInstance = null;
+                    DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR_XML, context);
 					try {
-						ConsumerMock.lastInstance = null;
-	                    DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR_XML, context);
-	                    
 	                    BeneratorContext context = runner.getContext();
 	                    context.setValidate(false);
 	                    runner.run();
@@ -69,6 +69,8 @@ public class InitialContextTest extends GeneratorTest {
 	                    assertEquals("Alice", ((Entity) ConsumerMock.lastInstance.lastProduct).get("name"));
                     } catch (IOException e) {
 	                    throw new RuntimeException(e);
+                    } finally {
+                    	IOUtil.close(runner);
                     }
                 }
 		});
