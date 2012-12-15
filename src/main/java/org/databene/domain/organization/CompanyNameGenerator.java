@@ -191,7 +191,8 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 
 	    // private helpers -------------------------------------------------------------------------------------------------
 	    
-	    private void createAndInitShortNameGenerator(String datasetToUse, GeneratorContext context) {
+	    @SuppressWarnings("unchecked")
+		private void createAndInitShortNameGenerator(String datasetToUse, GeneratorContext context) {
 			shortNameGenerator = new AlternativeGenerator<String>(String.class);
 			shortNameGenerator.addSource(createInitialsNameGenerator());
 			addSourceIfNotNull(createPersonNameGenerator(datasetToUse), shortNameGenerator);
