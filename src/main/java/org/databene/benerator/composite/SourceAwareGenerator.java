@@ -23,7 +23,7 @@ package org.databene.benerator.composite;
 
 import java.util.List;
 
-import org.databene.BeneratorConstants;
+import org.databene.benerator.BeneratorConstants;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;

@@ -25,7 +25,7 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.databene.BeneratorConstants;
+import org.databene.benerator.BeneratorConstants;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.ProductWrapper;
