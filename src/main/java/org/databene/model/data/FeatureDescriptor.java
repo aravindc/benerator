@@ -32,8 +32,6 @@ import org.databene.commons.Operation;
 import org.databene.commons.StringUtil;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
-import org.databene.commons.converter.ConverterManager;
-import org.databene.commons.converter.String2ConverterConverter;
 import org.databene.commons.converter.ToStringConverter;
 
 import java.util.List;
@@ -48,10 +46,6 @@ public class FeatureDescriptor implements Named {
 
     public static final String NAME = "name";
 
-    static {
-        ConverterManager.getInstance().registerConverterClass(String2ConverterConverter.class);
-    }
-    
     /** The name of the feature. It is stored redundantly in the {@link #details} map and the copy in 
      *  this attribute is used for high-performance retrieval of the name. */
     private String name;
@@ -73,11 +67,7 @@ public class FeatureDescriptor implements Named {
     }
     
     // typed interface -------------------------------------------------------------------------------------------------
-/*
-    public void setParent(FeatureDescriptor parent) {
-        this.parent = parent;
-    }
-*/
+    
     public String getName() {
         return name;
     }
@@ -147,7 +137,7 @@ public class FeatureDescriptor implements Named {
 
     @Override
 	public int hashCode() {
-        return (getClass().hashCode() * 29 /*+ (parent != null ? parent.hashCode() : 0)*/) * 29 + details.hashCode();
+        return getClass().hashCode() * 29 + details.hashCode();
     }
 
     // helpers ---------------------------------------------------------------------------------------------------------
