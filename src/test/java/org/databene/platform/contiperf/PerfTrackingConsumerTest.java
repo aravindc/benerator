@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.IOUtil;
 import org.databene.stat.LatencyCounter;
 import org.junit.Test;
 
@@ -45,16 +46,20 @@ public class PerfTrackingConsumerTest {
 	public void test() {
 		ConsumerMock mock = new ConsumerMock(false, 1, MIN_LATENCY, MAX_LATENCY);
 		PerfTrackingConsumer tracker = new PerfTrackingConsumer();
-		tracker.setTarget(mock);
-		for (int i = 0; i < 10; i++) {
-			tracker.startConsuming(new ProductWrapper<Object>().wrap(null));
-			tracker.finishConsuming(new ProductWrapper<Object>().wrap(null));
+		try {
+			tracker.setTarget(mock);
+			for (int i = 0; i < 10; i++) {
+				tracker.startConsuming(new ProductWrapper<Object>().wrap(null));
+				tracker.finishConsuming(new ProductWrapper<Object>().wrap(null));
+			}
+			LatencyCounter counter = tracker.getTracker().getCounters()[0];
+			counter.printSummary(new PrintWriter(System.out), 90, 95);
+			assertTrue(counter.minLatency() >= MIN_LATENCY - 10);
+			assertTrue(counter.averageLatency() > MIN_LATENCY - 10);
+			assertTrue(counter.averageLatency() < MAX_LATENCY + 10);
+		} finally {
+			IOUtil.close(tracker);
 		}
-		LatencyCounter counter = tracker.getTracker().getCounters()[0];
-		counter.printSummary(new PrintWriter(System.out), 90, 95);
-		assertTrue(counter.minLatency() >= MIN_LATENCY - 10);
-		assertTrue(counter.averageLatency() > MIN_LATENCY - 10);
-		assertTrue(counter.averageLatency() < MAX_LATENCY + 10);
 	}
 	
 }
