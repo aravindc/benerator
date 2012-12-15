@@ -27,6 +27,7 @@
 package org.databene.benerator.engine.statement;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorMonitor;
@@ -52,12 +53,14 @@ public class TimedGeneratorStatement extends StatementProxy {
 	private String name;
 	List<String> profilerPath;
 	private boolean logging;
+	private ElapsedTimeFormatter elapsedTimeFormatter;
 	
     public TimedGeneratorStatement(String name, Statement realStatement, List<String> profilerPath, boolean logging) {
     	super(realStatement);
     	this.name = name;
     	this.profilerPath = profilerPath;
     	this.logging = logging;
+    	this.elapsedTimeFormatter = new ElapsedTimeFormatter(Locale.US, " ", false);
     }
 
     @Override
@@ -72,7 +75,7 @@ public class TimedGeneratorStatement extends StatementProxy {
 				logger.info("No data created for '" + name + "' setup");
 			else if (dt > 0)
 				logger.info("Created " + dc + " data sets from '"
-						+ name + "' setup in " + ElapsedTimeFormatter.format(dt) 
+						+ name + "' setup in " + elapsedTimeFormatter.convert(dt) 
 						+ " (" + (dc * 1000 / dt) + "/s)");
 			else
 				logger.info("Created " + dc + " '" + name + "' data set(s)");
