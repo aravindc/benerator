@@ -34,6 +34,7 @@ import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ErrorHandler;
+import org.databene.commons.IOUtil;
 import org.databene.model.data.Entity;
 import org.databene.script.Expression;
 import org.databene.script.expression.ConstantExpression;
@@ -65,13 +66,15 @@ public class GenerateOrIterateStatementTest extends GeneratorTest {
 		ConstantExpression<ErrorHandler> errorHandler = new ConstantExpression<ErrorHandler>(ErrorHandler.getDefault());
 		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(
 				countGenerator, minCount, pageSize, null, threads, errorHandler, true, false, context.createSubContext());
-		statement.setTask(task);
-		
-		statement.execute(context);
-		
-		assertEquals(INVOCATION_COUNT, entityGenerationStatement.invocationCount);
-		int found = entityGenerationStatement.threads.size();
-		assertTrue("Exprected at least " + THREAD_COUNT + " threads, but had only " + found, found >= THREAD_COUNT);
+		try {
+			statement.setTask(task);
+			statement.execute(context);
+			assertEquals(INVOCATION_COUNT, entityGenerationStatement.invocationCount);
+			int found = entityGenerationStatement.threads.size();
+			assertTrue("Exprected at least " + THREAD_COUNT + " threads, but had only " + found, found >= THREAD_COUNT);
+		} finally {
+			IOUtil.close(statement);
+		}
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
