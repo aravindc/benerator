@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,6 +34,7 @@ import java.util.List;
 import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.consumer.FileExporter;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
+import org.databene.commons.ExceptionUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.converter.ConverterManager;
@@ -58,7 +59,7 @@ public class DescriptorRunner implements ResourceManager {
 
     public static final String LOCALE_VM_PARAM = "benerator.locale";
 	
-	private static final Logger logger = LoggerFactory.getLogger(DescriptorRunner.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptorRunner.class);
 
 	// attributes ------------------------------------------------------------------------------------------------------
 
@@ -77,11 +78,6 @@ public class DescriptorRunner implements ResourceManager {
 	
 	// constructor -----------------------------------------------------------------------------------------------------
 	
-	/* This constructor easily causes conflicts between two accidentally different contexts 
-	public DescriptorRunner(String uri) {
-		this(uri, new BeneratorContext(SystemInfo.getCurrentDir()));
-	}
-	*/
 	public DescriptorRunner(String uri, BeneratorContext context) {
 		this.uri = uri;
 		this.context = context;
@@ -90,6 +86,8 @@ public class DescriptorRunner implements ResourceManager {
 		this.closingResources = true;
 		ConverterManager.getInstance().setContext(context);
 	}
+	
+	
 	
 	// interface -------------------------------------------------------------------------------------------------------
 	
@@ -130,30 +128,23 @@ public class DescriptorRunner implements ResourceManager {
 	public void execute(BeneratorRootStatement rootStatement) {
 	    try {
 	    	startTime = System.currentTimeMillis();
-
 			// run AST
 			rootStatement.execute(context);
-			
 			// calculate and print statistics
 			long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
 			if (closingResources)
 				resourceManager.close();
-			StringBuilder message = new StringBuilder("Created a total of ")
-				.append(BeneratorMonitor.INSTANCE.getTotalGenerationCount()).append(" entities ");
-			if (elapsedTime != 0) {
-	            long throughput = BeneratorMonitor.INSTANCE.getTotalGenerationCount() * 3600000L / elapsedTime;
-	            message.append("in ")
-	            	.append(ElapsedTimeFormatter.format(elapsedTime))
-	            	.append(" (~")
-					.append(RoundedNumberFormat.format(throughput, 0))
-					.append(" p.h.)");
-            }
-			logger.info(message.toString());
+			printStats(elapsedTime);
 			if (Profiling.isEnabled())
 				Profiler.defaultInstance().printSummary();
 			List<String> generations = getGeneratedFiles();
 			if (generations.size() > 0)
-				logger.info("Generated file(s): " + generations);
+				LOGGER.info("Generated file(s): " + generations);
+	    } catch (Throwable t) {
+	    	if (ExceptionUtil.containsException(OutOfMemoryError.class, t) && Profiling.isEnabled())
+	    		LOGGER.error("OutOfMemoryError! This probably happened because you activated profiling", t);
+	    	else
+	    		LOGGER.error("Error in Benerator execution", t);
 		} finally {
 			context.close();
 		}
@@ -162,7 +153,9 @@ public class DescriptorRunner implements ResourceManager {
 	public List<String> getGeneratedFiles() {
 		return generatedFiles;
 	}
-
+	
+	
+	
 	// ResourceManager interface implementation ------------------------------------------------------------------------
 
 	public boolean addResource(Closeable resource) {
@@ -176,6 +169,21 @@ public class DescriptorRunner implements ResourceManager {
     public void close() {
 	    resourceManager.close();
     }
+    
+    
+    
+    // private helpers -------------------------------------------------------------------------------------------------
+    
+	private void printStats(long elapsedTime) {
+		String message = "Created a total of " + BeneratorMonitor.INSTANCE.getTotalGenerationCount() + " entities";
+		if (elapsedTime != 0) {
+		    long throughput = BeneratorMonitor.INSTANCE.getTotalGenerationCount() * 3600000L / elapsedTime;
+		    message += " in " + ElapsedTimeFormatter.format(elapsedTime) + " (~" + RoundedNumberFormat.format(throughput, 0) + " p.h.)";
+		}
+		LOGGER.info(message);
+	}
+	
+    
     
 	// java.lang.Object overrides --------------------------------------------------------------------------------------
 
