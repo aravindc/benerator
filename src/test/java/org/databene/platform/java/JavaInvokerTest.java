@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,6 +24,7 @@ package org.databene.platform.java;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.commons.IOUtil;
 import org.databene.platform.java.JavaInvoker;
 import org.junit.Test;
 
@@ -39,9 +40,13 @@ public class JavaInvokerTest extends GeneratorTest {
 	public void testInstanceMethodEntity() {
 		POJO target = new POJO();
 		JavaInvoker invoker = new JavaInvoker(target, "dynP2");
-		invoker.startProductConsumption(createEntity("params", "name", "Alice", "age", 23));
-		invoker.startProductConsumption(createEntity("params", "name", "Bob", "age", 34));
-		assertEquals(2, target.dynCountP2);
+		try {
+			invoker.startProductConsumption(createEntity("params", "name", "Alice", "age", 23));
+			invoker.startProductConsumption(createEntity("params", "name", "Bob", "age", 34));
+			assertEquals(2, target.dynCountP2);
+		} finally {
+	    	IOUtil.close(invoker);
+	    }
 	}
 
 	@Test
@@ -49,18 +54,26 @@ public class JavaInvokerTest extends GeneratorTest {
 		POJO.statCountP2 = 0;
 		Class<POJO> target = POJO.class;
 		JavaInvoker invoker = new JavaInvoker(target, "statP2");
-		invoker.startProductConsumption(createEntity("params", "name", "Alice", "age", 23));
-		invoker.startProductConsumption(createEntity("params", "name", "Bob", "age", 34));
-		assertEquals(2, POJO.statCountP2);
+		try {
+			invoker.startProductConsumption(createEntity("params", "name", "Alice", "age", 23));
+			invoker.startProductConsumption(createEntity("params", "name", "Bob", "age", 34));
+			assertEquals(2, POJO.statCountP2);
+		} finally {
+	    	IOUtil.close(invoker);
+	    }
 	}
 	
 	@Test
 	public void testInstanceMethodObject() {
 		POJO target = new POJO();
 		JavaInvoker invoker = new JavaInvoker(target, "dynP1");
-		invoker.startProductConsumption("Alice");
-		invoker.startProductConsumption("Bob");
-		assertEquals(2, target.dynCountP1);
+		try {
+			invoker.startProductConsumption("Alice");
+			invoker.startProductConsumption("Bob");
+			assertEquals(2, target.dynCountP1);
+		} finally {
+	    	IOUtil.close(invoker);
+	    }
 	}
 
 	@Test
@@ -68,18 +81,26 @@ public class JavaInvokerTest extends GeneratorTest {
 		POJO.statCountP1 = 0;
 		Class<POJO> target = POJO.class;
 		JavaInvoker invoker = new JavaInvoker(target, "statP1");
-		invoker.startProductConsumption(23);
-		invoker.startProductConsumption(34);
-		assertEquals(2, POJO.statCountP1);
+		try {
+			invoker.startProductConsumption(23);
+			invoker.startProductConsumption(34);
+			assertEquals(2, POJO.statCountP1);
+		} finally {
+	    	IOUtil.close(invoker);
+	    }
 	}
 	
 	@Test
 	public void testInstanceMethodArray() {
 		POJO target = new POJO();
 		JavaInvoker invoker = new JavaInvoker(target, "dynP2");
-		invoker.startProductConsumption(new Object[] { "Alice", 23 });
-		invoker.startProductConsumption(new Object[] { "Bob",   34 });
-		assertEquals(2, target.dynCountP2);
+		try {
+			invoker.startProductConsumption(new Object[] { "Alice", 23 });
+			invoker.startProductConsumption(new Object[] { "Bob",   34 });
+			assertEquals(2, target.dynCountP2);
+		} finally {
+	    	IOUtil.close(invoker);
+	    }
 	}
 
 	@Test
@@ -87,9 +108,13 @@ public class JavaInvokerTest extends GeneratorTest {
 		POJO.statCountP2= 0;
 		Class<POJO> target = POJO.class;
 		JavaInvoker invoker = new JavaInvoker(target, "statP2");
-		invoker.startProductConsumption(new Object[] { "Alice", 23 });
-		invoker.startProductConsumption(new Object[] { "Bob",   34 });
-		assertEquals(2, POJO.statCountP2);
+		try {
+			invoker.startProductConsumption(new Object[] { "Alice", 23 });
+			invoker.startProductConsumption(new Object[] { "Bob",   34 });
+			assertEquals(2, POJO.statCountP2);
+		} finally {
+	    	IOUtil.close(invoker);
+	    }
 	}
 	
 	public static class POJO {
