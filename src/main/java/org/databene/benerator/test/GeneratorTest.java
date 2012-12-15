@@ -145,7 +145,8 @@ public abstract class GeneratorTest extends ModelTest {
         return new Helper(generator);
     }
 
-    protected <T> Helper expectUniqueGenerations(Generator<T> generator, int n) {
+    @SuppressWarnings("unchecked")
+	protected <T> Helper expectUniqueGenerations(Generator<T> generator, int n) {
         expectUniqueGenerationsOnce(generator, n);
         generator.reset();
         expectUniqueGenerationsOnce(generator, n);
