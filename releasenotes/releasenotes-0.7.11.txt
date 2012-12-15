@@ -7,6 +7,8 @@ summary
 
 changes
 -------
+- Made boolean parsing more restrictive
+- Improved syntax error checking and reporting
 
 
 enhancements
