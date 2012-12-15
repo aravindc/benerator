@@ -61,97 +61,113 @@ public class XMLSchemaDescriptorProviderTest {
     public void testSimpleTypeElement() {
         BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(SIMPLE_ELEMENT_TEST_FILE));
 		XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(SIMPLE_ELEMENT_TEST_FILE, context);
-        ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
-        // check root
-        assertNotNull(rootDescriptor);
-        assertEquals(2, rootDescriptor.getComponents().size());
-        // check inline 
-        assertComplexComponentWithSimpleContent("inline", rootDescriptor);
-        // check external
-        assertComplexComponentWithSimpleContent("external", rootDescriptor);
+		try {
+	        ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
+	        // check root
+	        assertNotNull(rootDescriptor);
+	        assertEquals(2, rootDescriptor.getComponents().size());
+	        // check inline 
+	        assertComplexComponentWithSimpleContent("inline", rootDescriptor);
+	        // check external
+	        assertComplexComponentWithSimpleContent("external", rootDescriptor);
+		} finally {
+	    	IOUtil.close(provider);
+	    }
     }
 
     @Test
     public void testNesting() {
         BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(NESTING_TEST_FILE));
 		XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(NESTING_TEST_FILE, context);
-        ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
-        // check root
-        assertNotNull(rootDescriptor);
-        assertEquals(4, rootDescriptor.getComponents().size());
-        ComponentDescriptor rootAtt1 = rootDescriptor.getComponent("rootAtt1");
-        assertNotNull(rootAtt1);
-        // check c1
-        ComponentDescriptor c1 = rootDescriptor.getComponent("c1");
-        assertNotNull(c1);
-        // check number
-        ComponentDescriptor number = rootDescriptor.getComponent("number");
-        assertNotNull(number);
-        assertEquals(Long.valueOf(1), number.getMinCount().evaluate(null));
-        assertEquals(Long.valueOf(1), number.getMaxCount().evaluate(null));
-        // check c2
-        ComponentDescriptor c2 = rootDescriptor.getComponent("c2");
-        assertNotNull(c2);
+		try {
+	        ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
+	        // check root
+	        assertNotNull(rootDescriptor);
+	        assertEquals(4, rootDescriptor.getComponents().size());
+	        ComponentDescriptor rootAtt1 = rootDescriptor.getComponent("rootAtt1");
+	        assertNotNull(rootAtt1);
+	        // check c1
+	        ComponentDescriptor c1 = rootDescriptor.getComponent("c1");
+	        assertNotNull(c1);
+	        // check number
+	        ComponentDescriptor number = rootDescriptor.getComponent("number");
+	        assertNotNull(number);
+	        assertEquals(Long.valueOf(1), number.getMinCount().evaluate(null));
+	        assertEquals(Long.valueOf(1), number.getMaxCount().evaluate(null));
+	        // check c2
+	        ComponentDescriptor c2 = rootDescriptor.getComponent("c2");
+	        assertNotNull(c2);
+		} finally {
+	    	IOUtil.close(provider);
+	    }
     }
 
     @Test
     public void testAnnotations() {
         BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(ANNOTATION_TEST_FILE));
 		XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(ANNOTATION_TEST_FILE, context);
-        ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
-        // check root
-        assertNotNull(rootDescriptor);
-        assertEquals(2, rootDescriptor.getComponents().size());
-        
-        // check component root.simple-type
-        ComponentDescriptor simpleTypeComponent = rootDescriptor.getComponent("simple-type");
-        assertNotNull(simpleTypeComponent);
-        
-        // check simple-type
-        SimpleTypeDescriptor simpleType = (SimpleTypeDescriptor) provider.getTypeDescriptor("simple-type");
-        assertNotNull(simpleType);
-        assertEquals("'Alice','Bob'", simpleType.getValues());
-        
-        // check component root.complex-type
-        ComponentDescriptor complexTypeComponent = rootDescriptor.getComponent("complex-type");
-        assertNotNull(complexTypeComponent);
-        
-        // check complex-type
-        ComplexTypeDescriptor complexType = (ComplexTypeDescriptor) provider.getTypeDescriptor("complex-type");
-        assertNotNull(complexType);
-        assertEquals("person.csv", complexType.getSource());
-        
-        XMLFileGenerator g = new XMLFileGenerator(ANNOTATION_TEST_FILE, "root", "target/test{0}.xml");
-        g.init(context);
-        GeneratorUtil.generateNonNull(g);
-        GeneratorUtil.generateNonNull(g);
+		try {
+	        ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
+	        // check root
+	        assertNotNull(rootDescriptor);
+	        assertEquals(2, rootDescriptor.getComponents().size());
+	        
+	        // check component root.simple-type
+	        ComponentDescriptor simpleTypeComponent = rootDescriptor.getComponent("simple-type");
+	        assertNotNull(simpleTypeComponent);
+	        
+	        // check simple-type
+	        SimpleTypeDescriptor simpleType = (SimpleTypeDescriptor) provider.getTypeDescriptor("simple-type");
+	        assertNotNull(simpleType);
+	        assertEquals("'Alice','Bob'", simpleType.getValues());
+	        
+	        // check component root.complex-type
+	        ComponentDescriptor complexTypeComponent = rootDescriptor.getComponent("complex-type");
+	        assertNotNull(complexTypeComponent);
+	        
+	        // check complex-type
+	        ComplexTypeDescriptor complexType = (ComplexTypeDescriptor) provider.getTypeDescriptor("complex-type");
+	        assertNotNull(complexType);
+	        assertEquals("person.csv", complexType.getSource());
+	        
+	        XMLFileGenerator g = new XMLFileGenerator(ANNOTATION_TEST_FILE, "root", "target/test{0}.xml");
+	        g.init(context);
+	        GeneratorUtil.generateNonNull(g);
+	        GeneratorUtil.generateNonNull(g);
+		} finally {
+	    	IOUtil.close(provider);
+	    }
     }
 
     @Test
     public void testChoice() {
         BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(CHOICE_TEST_FILE));
 		XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(CHOICE_TEST_FILE, context);
-        ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
-        // check root
-        assertNotNull(rootDescriptor);
-        List<ComponentDescriptor> components = rootDescriptor.getComponents();
-		assertEquals(2, components.size());
-        
-        // check choice a/b
-        ComponentDescriptor choiceAB = components.get(0);
-        assertNotNull(choiceAB);
-        assertEquals(1, ((Number) choiceAB.getMinCount().evaluate(null)).intValue());
-        assertEquals(1, ((Number) choiceAB.getMaxCount().evaluate(null)).intValue());
-        AlternativeGroupDescriptor choiceABType = (AlternativeGroupDescriptor) choiceAB.getTypeDescriptor();
-        assertEquals(2, choiceABType.getComponents().size());
-        
-        // check choice x/y/z
-        ComponentDescriptor choiceXYZ = components.get(1);
-        assertNotNull(choiceXYZ);
-        assertEquals(0, ((Number) choiceXYZ.getMinCount().evaluate(null)).intValue());
-        assertEquals(2, ((Number) choiceXYZ.getMaxCount().evaluate(null)).intValue());
-        AlternativeGroupDescriptor choiceXYZType = (AlternativeGroupDescriptor) choiceXYZ.getTypeDescriptor();
-        assertEquals(3, choiceXYZType.getComponents().size());
+		try {
+	        ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
+	        // check root
+	        assertNotNull(rootDescriptor);
+	        List<ComponentDescriptor> components = rootDescriptor.getComponents();
+			assertEquals(2, components.size());
+	        
+	        // check choice a/b
+	        ComponentDescriptor choiceAB = components.get(0);
+	        assertNotNull(choiceAB);
+	        assertEquals(1, ((Number) choiceAB.getMinCount().evaluate(null)).intValue());
+	        assertEquals(1, ((Number) choiceAB.getMaxCount().evaluate(null)).intValue());
+	        AlternativeGroupDescriptor choiceABType = (AlternativeGroupDescriptor) choiceAB.getTypeDescriptor();
+	        assertEquals(2, choiceABType.getComponents().size());
+	        
+	        // check choice x/y/z
+	        ComponentDescriptor choiceXYZ = components.get(1);
+	        assertNotNull(choiceXYZ);
+	        assertEquals(0, ((Number) choiceXYZ.getMinCount().evaluate(null)).intValue());
+	        assertEquals(2, ((Number) choiceXYZ.getMaxCount().evaluate(null)).intValue());
+	        AlternativeGroupDescriptor choiceXYZType = (AlternativeGroupDescriptor) choiceXYZ.getTypeDescriptor();
+	        assertEquals(3, choiceXYZType.getComponents().size());
+		} finally {
+	    	IOUtil.close(provider);
+	    }
     }
     
     // helpers ---------------------------------------------------------------------------------------------------------
