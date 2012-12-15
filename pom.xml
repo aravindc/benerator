@@ -13,7 +13,7 @@
     	<webdecs_version>0.6.15-SNAPSHOT</webdecs_version>
     	<script_version>0.7.12-SNAPSHOT</script_version>
     	<commons_version>0.5.21-SNAPSHOT</commons_version>
-    	<contiperf_version>2.3.0</contiperf_version>
+    	<contiperf_version>2.3.1</contiperf_version>
     </properties>
 
     <packaging>jar</packaging>
