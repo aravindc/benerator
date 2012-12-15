@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,6 +36,7 @@ import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.IOUtil;
 import org.databene.model.data.Entity;
 import org.junit.Test;
 
@@ -52,8 +53,12 @@ public class BeneratorRootStatementTest extends BeneratorIntegrationTest {
 		Map<String, String> attributes = CollectionUtil.buildMap(
 				"generatorFactory", EquivalenceGeneratorFactory.class.getName());
 		BeneratorRootStatement root = new BeneratorRootStatement(attributes);
-		root.execute(context);
-		assertEquals(EquivalenceGeneratorFactory.class, context.getGeneratorFactory().getClass());
+		try {
+			root.execute(context);
+			assertEquals(EquivalenceGeneratorFactory.class, context.getGeneratorFactory().getClass());
+		} finally {
+        	IOUtil.close(root);
+        }
 	}
 	
 	@Test
@@ -102,15 +107,19 @@ public class BeneratorRootStatementTest extends BeneratorIntegrationTest {
 
 	private void check(String uri) throws IOException {
 		DescriptorRunner runner = new DescriptorRunner(uri, context);
-	    BeneratorRootStatement statement = runner.parseDescriptorFile();
-        Generator<?> generator = statement.getGenerator("Person", runner.getContext());
-		assertEquals(Object.class, generator.getGeneratedType());
-        assertNotNull(generator);
-        generator.init(context);
-        for (int i = 0; i < 3; i++)
-        	checkGeneration(generator);
-        assertUnavailable(generator);
-        generator.close();
+		try {
+		    BeneratorRootStatement statement = runner.parseDescriptorFile();
+	        Generator<?> generator = statement.getGenerator("Person", runner.getContext());
+			assertEquals(Object.class, generator.getGeneratedType());
+	        assertNotNull(generator);
+	        generator.init(context);
+	        for (int i = 0; i < 3; i++)
+	        	checkGeneration(generator);
+	        assertUnavailable(generator);
+	        generator.close();
+		} finally {
+        	IOUtil.close(runner);
+        }
     }
 
 	private void checkGeneration(Generator<?> generator) {
