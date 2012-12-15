@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
+import org.databene.commons.IOUtil;
 import org.databene.model.data.Entity;
 import org.junit.Test;
 
@@ -54,18 +55,23 @@ public class DefaultComponentIntegrationTest extends BeneratorIntegrationTest {
 	public void checkFile(String uri) throws IOException {
 		ConsumerMock consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
-		new DescriptorRunner(uri, context).run();
-		List<Entity> products = (List<Entity>) consumer.getProducts();
-		long currentMillies = System.currentTimeMillis();
-		for (Entity product : products) {
-			// check created_by
-			String createdBy = (String) product.get("created_by");
-			assertEquals("Bob", createdBy);
-			// check created_at
-			Date creationDate = (Date) product.get("created_at");
-			assertNotNull(creationDate);
-			long productMillies = creationDate.getTime();
-			assertTrue(Math.abs(productMillies - currentMillies) < 3000);
+		DescriptorRunner runner = new DescriptorRunner(uri, context);
+		try {
+			runner.run();
+			List<Entity> products = (List<Entity>) consumer.getProducts();
+			long currentMillies = System.currentTimeMillis();
+			for (Entity product : products) {
+				// check created_by
+				String createdBy = (String) product.get("created_by");
+				assertEquals("Bob", createdBy);
+				// check created_at
+				Date creationDate = (Date) product.get("created_at");
+				assertNotNull(creationDate);
+				long productMillies = creationDate.getTime();
+				assertTrue(Math.abs(productMillies - currentMillies) < 3000);
+			}
+		} finally {
+			IOUtil.close(runner);
 		}
 	}
 	
