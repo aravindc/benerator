@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@ import org.databene.benerator.consumer.MappingEntityConsumer;
 import org.databene.benerator.factory.ConsumerMock;
 import org.databene.benerator.test.ModelTest;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.IOUtil;
 import org.databene.model.data.Entity;
 import org.junit.Test;
 
@@ -42,13 +43,18 @@ public class MappingEntityConsumerTest extends ModelTest {
 	public void test() {
 		ConsumerMock target = new ConsumerMock();
 		MappingEntityConsumer consumer = new MappingEntityConsumer();
-		consumer.setTarget(target);
-		consumer.setMappings("'name'->'givenName', 'none'->'some'");
-		
-		Entity input = createEntity("Person", "name", "Alice", "age", 23);
-		consumer.startConsuming(new ProductWrapper<Entity>().wrap(input));
-		consumer.finishConsuming(new ProductWrapper<Entity>().wrap(input));
-		assertEquals(createEntity("Person", "givenName", "Alice", "age", 23), target.lastProduct);
+		try {
+			consumer.setTarget(target);
+			consumer.setMappings("'name'->'givenName', 'none'->'some'");
+			
+			Entity input = createEntity("Person", "name", "Alice", "age", 23);
+			consumer.startConsuming(new ProductWrapper<Entity>().wrap(input));
+			consumer.finishConsuming(new ProductWrapper<Entity>().wrap(input));
+			assertEquals(createEntity("Person", "givenName", "Alice", "age", 23), target.lastProduct);
+		} finally {
+        	IOUtil.close(consumer);
+        }
+
 	}
 	
 }
