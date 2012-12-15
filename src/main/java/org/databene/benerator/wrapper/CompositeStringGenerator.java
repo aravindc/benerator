@@ -40,7 +40,8 @@ public class CompositeStringGenerator extends GeneratorWrapper<String[], String>
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public CompositeStringGenerator() {
+    @SuppressWarnings("unchecked")
+	public CompositeStringGenerator() {
         this(false);
     }
 
