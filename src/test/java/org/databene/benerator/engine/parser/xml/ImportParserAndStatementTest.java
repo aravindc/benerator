@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.ImportStatement;
 import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.IOUtil;
 import org.databene.commons.SyntaxError;
 import org.junit.Test;
 
@@ -41,7 +42,11 @@ public class ImportParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test(expected = ConfigurationError.class)
 	public void testNoImport() {
 		BeneratorContext context = new DefaultBeneratorContext();
-		context.forName("IncrementGenerator");
+		try {
+			context.forName("IncrementGenerator");
+		} finally {
+			IOUtil.close(context);
+		}
 	}
 	
 	@Test
