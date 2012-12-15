@@ -75,11 +75,11 @@ public class FileJoinerTest extends FileTest {
 		File sourceFile2 = null;
 		File destFile = null;
 		Context context = new DefaultBeneratorContext();
+		FileJoiner joiner = new FileJoiner();
 		try {
 			sourceFile1 = createSource1();
 			sourceFile2 = createSource2();
 			destFile = File.createTempFile(prefix(), ".txt", new File("target"));
-			FileJoiner joiner = new FileJoiner();
 			joiner.setAppend(append);
 			joiner.setSources(new String[] { "target" + File.separator + sourceFile1.getName(), "target" + File.separator + sourceFile2.getName() });
 			joiner.setDestination("target" + File.separator + destFile.getName());
@@ -93,6 +93,7 @@ public class FileJoinerTest extends FileTest {
 			FileUtil.deleteIfExists(sourceFile1);
 			FileUtil.deleteIfExists(sourceFile2);
 			FileUtil.deleteIfExists(destFile);
+			IOUtil.close(joiner);
 		}
     }
 

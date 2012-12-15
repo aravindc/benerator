@@ -31,6 +31,7 @@ import java.io.File;
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.FileUtil;
+import org.databene.commons.IOUtil;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -48,12 +49,12 @@ public class FileDeleterTest extends FileTest {
 	public void test() throws Exception {
 	    File sourceFile1 = null;
 		File sourceFile2 = null;
+		FileDeleter deleter = new FileDeleter();
 		try {
 			sourceFile1 = createSource1();
 			sourceFile2 = createSource2();
 			assertTrue(sourceFile1.exists());
 			assertTrue(sourceFile2.exists());
-			FileDeleter deleter = new FileDeleter();
 			deleter.setFiles(new String[] { 
 				"target" + File.separator + sourceFile1.getName(), 
 				"target" + File.separator + sourceFile2.getName() 
@@ -64,6 +65,7 @@ public class FileDeleterTest extends FileTest {
 		} finally {
 			FileUtil.deleteIfExists(sourceFile1);
 			FileUtil.deleteIfExists(sourceFile2);
+			IOUtil.close(deleter);
 		}
     }
 
