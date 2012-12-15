@@ -1,21 +1,25 @@
 release notes benerator 0.7.11
 =============================
 
+
 summary
 -------
+
+
+enhancements
+------------
+- improved performance
+- improved syntax error checking and reporting
+- reporting memory consumption
+- improved execution time report format
 
 
 changes
 -------
 - Made boolean parsing more restrictive
-- Improved syntax error checking and reporting
-
-
-enhancements
-------------
 
 
 bug fixes
 ---------
 - Parsing empty CSV cells with non-default separator fails
-- Area code 'de' in german address generation
+- Area code 'de' in german phone number generation
