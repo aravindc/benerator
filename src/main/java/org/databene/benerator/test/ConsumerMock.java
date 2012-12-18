@@ -23,9 +23,11 @@ package org.databene.benerator.test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.benerator.Consumer;
@@ -60,6 +62,7 @@ public class ConsumerMock extends AbstractConsumer {
 	public volatile AtomicInteger closeCount = new AtomicInteger();
 
 	private Random random;
+	private Set<String> threadNames;
 	
 	public ConsumerMock(boolean storeProducts) {
 	    this(storeProducts, 0, 0, 0);
@@ -82,14 +85,20 @@ public class ConsumerMock extends AbstractConsumer {
 	    	products = new ArrayList<Object>();
 	    this.invocations = new ArrayList<String>();
 	    instances.put(id, this);
+		threadNames = new HashSet<String>();
     }
 	
 	public List<?> getProducts() {
     	return products;
     }
 
+    public int getThreadCount() {
+    	return threadNames.size();
+    }
+    
 	@Override
-	public void startProductConsumption(Object product) {
+	public synchronized void startProductConsumption(Object product) {
+        threadNames.add(Thread.currentThread().getName());
 		invocations.add(START_CONSUMING);
 	    startConsumingCount.incrementAndGet();
 	    if (storeProducts) {
