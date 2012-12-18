@@ -36,6 +36,7 @@ import org.databene.commons.ArrayFormat;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
+import org.databene.commons.SyntaxError;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ArrayElementDescriptor;
@@ -232,9 +233,13 @@ public class ModelParser {
                 continue;
             Object tmp = resolveScript(detailName, entry.getValue(), context);
 			String detailString = ToStringConverter.convert(tmp, null);
-            if (descriptor.supportsDetail(detailName))
-                descriptor.setDetailValue(detailName, detailString);
-            else {
+            if (descriptor.supportsDetail(detailName)) {
+            	try {
+            		descriptor.setDetailValue(detailName, detailString);
+            	} catch (IllegalArgumentException e) {
+            		throw new SyntaxError("Error parsing '" + detailName + "'", e, String.valueOf(detailString), -1, -1);
+            	}
+            } else {
                 if (localType == null) {
                     String partType = attributes.get("type");
                     if (partType == null)
