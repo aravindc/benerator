@@ -71,7 +71,7 @@ public class GenerateOrIterateStatementTest extends GeneratorTest {
 			statement.execute(context);
 			assertEquals(INVOCATION_COUNT, entityGenerationStatement.invocationCount);
 			int found = entityGenerationStatement.threads.size();
-			assertTrue("Exprected at least " + THREAD_COUNT + " threads, but had only " + found, found >= THREAD_COUNT);
+			assertTrue("Expected at least " + THREAD_COUNT + " threads, but had only " + found, found >= THREAD_COUNT);
 		} finally {
 			IOUtil.close(statement);
 		}
