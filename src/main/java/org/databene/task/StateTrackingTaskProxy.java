@@ -34,7 +34,7 @@ import org.databene.commons.ErrorHandler;
  */
 public class StateTrackingTaskProxy<E extends Task> extends TaskProxy<E> {
 
-	protected TaskResult state;
+	protected volatile TaskResult state;
 	
 	public StateTrackingTaskProxy(E realTask) {
 	    super(realTask);
@@ -46,11 +46,12 @@ public class StateTrackingTaskProxy<E extends Task> extends TaskProxy<E> {
 	}
 	
 	@Override
-	public synchronized TaskResult execute(Context context, ErrorHandler errorHandler) {
+	public TaskResult execute(Context context, ErrorHandler errorHandler) {
 		if (!isAvailable())
 			return TaskResult.UNAVAILABLE;
-	    state = super.execute(context, errorHandler);
-	    return state;
+	    TaskResult result = super.execute(context, errorHandler);
+		state = result;
+	    return result; // avoiding synchronization issues using a local variable instead of 'state' attribute
 	}
 	
     @Override
