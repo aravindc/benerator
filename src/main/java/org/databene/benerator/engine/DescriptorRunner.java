@@ -73,8 +73,6 @@ public class DescriptorRunner implements ResourceManager {
 	private ResourceManagerSupport resourceManager = new ResourceManagerSupport();
 	long startTime = 0;
 
-	private boolean closingResources;
-
 	
 	// constructor -----------------------------------------------------------------------------------------------------
 	
@@ -83,7 +81,6 @@ public class DescriptorRunner implements ResourceManager {
 		this.context = context;
 		this.factory = BeneratorFactory.getInstance();
 		this.generatedFiles = new ArrayList<String>();
-		this.closingResources = true;
 		ConverterManager.getInstance().setContext(context);
 	}
 	
@@ -95,10 +92,6 @@ public class DescriptorRunner implements ResourceManager {
 		return context;
 	}
 	
-	public void setClosingResources(boolean closingResources) {
-		this.closingResources = closingResources;
-	}
-
     public void run() throws IOException {
     	Runtime runtime = Runtime.getRuntime();
 		BeneratorShutdownHook hook = new BeneratorShutdownHook(this);
@@ -132,8 +125,6 @@ public class DescriptorRunner implements ResourceManager {
 			rootStatement.execute(context);
 			// calculate and print statistics
 			long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
-			if (closingResources)
-				resourceManager.close();
 			printStats(elapsedTime);
 			if (Profiling.isEnabled())
 				Profiler.defaultInstance().printSummary();
