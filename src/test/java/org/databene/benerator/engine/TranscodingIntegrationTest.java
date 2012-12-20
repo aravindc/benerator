@@ -105,7 +105,6 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		try {
 			// run descriptor file
 			runner = new DescriptorRunner(DESCRIPTOR2_FILE_NAME, context);
-			runner.setClosingResources(false);
 			runner.run();
 			DBSystem t = (DBSystem) context.get("t");
 			// check countries
