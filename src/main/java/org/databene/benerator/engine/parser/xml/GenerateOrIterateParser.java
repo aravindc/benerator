@@ -66,7 +66,6 @@ import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableHolder;
 import org.databene.script.DatabeneScriptParser;
 import org.databene.script.Expression;
-import org.databene.script.expression.ConstantExpression;
 import org.databene.script.expression.DynamicExpression;
 import org.databene.script.PrimitiveType;
 import org.databene.task.PageListener;
@@ -86,7 +85,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 
 	private static final Set<String> OPTIONAL_ATTRIBUTES = CollectionUtil.toSet(
 			ATT_COUNT, ATT_MIN_COUNT, ATT_MAX_COUNT, ATT_COUNT_DISTRIBUTION, 
-			ATT_PAGESIZE, /*ATT_THREADS,*/ ATT_STATS, ATT_ON_ERROR,
+			ATT_PAGESIZE, ATT_STATS, ATT_ON_ERROR,
 			ATT_TEMPLATE, ATT_CONSUMER, 
 			ATT_NAME, ATT_TYPE, ATT_CONTAINER, ATT_GENERATOR, ATT_VALIDATOR, 
 			ATT_CONVERTER, ATT_NULL_QUOTA, ATT_UNIQUE, ATT_DISTRIBUTION, ATT_CYCLIC,
@@ -161,20 +160,27 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		// parse statement
 		Generator<Long> countGenerator = DescriptorUtil.createDynamicCountGenerator(descriptor, 1L, 1L, false, context);
 		Expression<Long> pageSize = parsePageSize(element);
-		//Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
 		Expression<PageListener> pager = (Expression<PageListener>) DatabeneScriptParser.parseBeanSpec(
 				element.getAttribute(ATT_PAGER));
 		Expression<ErrorHandler> errorHandler = parseOnErrorAttribute(element, element.getAttribute(ATT_NAME));
 		Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor, 0L);
-		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(
-				countGenerator, minCount, pageSize, pager, /*threads*/ new ConstantExpression<Integer>(1), 
-				errorHandler, infoLog, nested, context);
+		GenerateOrIterateStatement statement = createStatement(element, countGenerator, minCount, pageSize, pager, 
+				infoLog, nested, errorHandler, context);
 		
 		// parse task and sub statements
 		GenerateAndConsumeTask task = parseTask(element, parentPath, statement, parsingContext, descriptor, infoLog);
 		statement.setTask(task);
     	context.setCurrentProductName(null);
 		return statement;
+	}
+
+	protected GenerateOrIterateStatement createStatement(Element element,
+			Generator<Long> countGenerator, Expression<Long> minCount,
+			Expression<Long> pageSize, Expression<PageListener> pager,
+			boolean infoLog, boolean nested,
+			Expression<ErrorHandler> errorHandler, BeneratorContext context) {
+		return new GenerateOrIterateStatement(countGenerator, minCount, pageSize, pager, 
+				errorHandler, infoLog, nested, context);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

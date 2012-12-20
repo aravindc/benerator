@@ -30,8 +30,8 @@ import org.databene.benerator.engine.Statement;
 import org.databene.commons.ErrorHandler;
 import org.databene.script.Expression;
 import org.databene.task.PageListener;
+import org.databene.task.SimpleTaskRunner;
 import org.databene.task.Task;
-import org.databene.task.runner.PagedTaskRunner;
 
 /**
  * {@link Statement} that executes a {@link Task} supporting paging and multithreading.<br/><br/>
@@ -85,15 +85,13 @@ public class RunTaskStatement extends AbstractStatement implements Closeable {
 
 	public boolean execute(BeneratorContext context) {
 	    Long invocations = count.evaluate(context);
-		PagedTaskRunner.execute(
+		SimpleTaskRunner.execute(
 	    		getTask(context), context, 
 	    		invocations,
 	    		invocations,
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context), 
-	    		threads.evaluate(context),
 	    		stats.evaluate(context),
-	    		context.getExecutorService(),
 	    		getErrorHandler(context),
 	    		infoLog);
     	return true;
