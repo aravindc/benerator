@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,8 +21,8 @@
 
 package org.databene.benerator.test;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -55,7 +55,7 @@ public abstract class ModelTest {
 
     @Before
     public void setUpContextAndDescriptorProvider() throws Exception {
-    	this.context = new DefaultBeneratorContext();
+    	this.context = BeneratorFactory.getInstance().createContext(".");
         this.context.importDefaults();
         this.dataModel = context.getDataModel();
         this.testDescriptorProvider = new DefaultDescriptorProvider("test", context.getDataModel());
