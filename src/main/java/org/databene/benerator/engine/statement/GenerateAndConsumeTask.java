@@ -179,7 +179,8 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
 		for (Statement statement : statements) {
 			statement = StatementUtil.getRealStatement(statement, context);
 		    if (statement instanceof ScopedLifeCycleHolder) {
-		    	ScopedLifeCycleHolder holder = (ScopedLifeCycleHolder) statement;
+		    	@SuppressWarnings("resource")
+				ScopedLifeCycleHolder holder = (ScopedLifeCycleHolder) statement;
 				holder.resetIfNeeded();
 		    } else if (statement instanceof Resettable) {
 		    	((Resettable) statement).reset();
@@ -279,7 +280,8 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
 		    	if (scope == null || productName.equals(scope))
 		    		scopeds.add(holder);
 		    } else if (statement instanceof GenerateOrIterateStatement) {
-		    	GenerateOrIterateStatement subGenerate = (GenerateOrIterateStatement) statement;
+		    	@SuppressWarnings("resource")
+				GenerateOrIterateStatement subGenerate = (GenerateOrIterateStatement) statement;
 		    	checkScopes(subGenerate.getTask().statements);
 		    }
 		}
