@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.commons.IOUtil;
 import org.databene.commons.converter.ConverterManager;
 
 /**
@@ -34,14 +35,22 @@ import org.databene.commons.converter.ConverterManager;
  * @author Volker Bergmann
  */
 public class DescriptorBasedGenerator extends GeneratorProxy<Object> {
+	
+	private DescriptorRunner descriptorRunner;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public DescriptorBasedGenerator(String uri, String generatorName, BeneratorContext context) throws IOException {
 		super(Object.class);
 		ConverterManager.getInstance().setContext(context);
-		DescriptorRunner descriptorRunner = new DescriptorRunner(uri, context);
+		descriptorRunner = new DescriptorRunner(uri, context);
 		BeneratorRootStatement rootStatement = descriptorRunner.parseDescriptorFile();
 		super.setSource((Generator) rootStatement.getGenerator(generatorName, context));
+	}
+	
+	@Override
+	public void close() {
+		IOUtil.close(descriptorRunner);
+		IOUtil.close(getSource());
 	}
 	
 }
