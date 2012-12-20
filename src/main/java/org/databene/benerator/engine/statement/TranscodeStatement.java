@@ -31,6 +31,7 @@ import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
+import org.databene.commons.IOUtil;
 import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
 import org.databene.jdbacl.identity.KeyMapper;
@@ -144,32 +145,36 @@ public class TranscodeStatement extends SequentialStatement implements CascadePa
     		ComplexTypeGeneratorFactory.createMutatingGeneratorComponents(type, Uniqueness.NONE, context);
         ComponentAndVariableSupport<Entity> cavs = new ComponentAndVariableSupport<Entity>(
         		tableName, generatorComponents, context);
-        cavs.init(context);
-        DataIterator<Entity> iterator = iterable.iterator();
-		mapper.registerSource(source.getId(), source.getConnection());
-		long rowCount = 0;
-		DataContainer<Entity> container = new DataContainer<Entity>();
-	    while ((container = iterator.next(container)) != null) {
-			Entity sourceEntity = container.getData();
-	    	Object sourcePK = sourceEntity.idComponentValues();
-	    	boolean mapNk = parent.needsNkMapping(tableName);
-	    	String nk = null;
-	    	if (mapNk)
-	    		nk = mapper.getNaturalKey(source.getId(), identity, sourcePK);
-	    	Entity targetEntity = new Entity(sourceEntity);
-			cavs.apply(targetEntity, context);
-	    	Object targetPK = targetEntity.idComponentValues();
-			transcodeForeignKeys(targetEntity, source, context);
-			mapper.store(source.getId(), identity, nk, sourcePK, targetPK);
-		    target.store(targetEntity);
-	        LOGGER.debug("transcoded {} to {}", sourceEntity, targetEntity);
-	        cascade(sourceEntity, context);
-	        rowCount++;
-	        if (rowCount % pageSize == 0)
-	        	target.flush();
-	    }
-    	target.flush();
-		LOGGER.info("Finished transcoding " + source.countEntities(tableName) + " rows of table " + tableName);
+        try {
+	        cavs.init(context);
+	        DataIterator<Entity> iterator = iterable.iterator();
+			mapper.registerSource(source.getId(), source.getConnection());
+			long rowCount = 0;
+			DataContainer<Entity> container = new DataContainer<Entity>();
+		    while ((container = iterator.next(container)) != null) {
+				Entity sourceEntity = container.getData();
+		    	Object sourcePK = sourceEntity.idComponentValues();
+		    	boolean mapNk = parent.needsNkMapping(tableName);
+		    	String nk = null;
+		    	if (mapNk)
+		    		nk = mapper.getNaturalKey(source.getId(), identity, sourcePK);
+		    	Entity targetEntity = new Entity(sourceEntity);
+				cavs.apply(targetEntity, context);
+		    	Object targetPK = targetEntity.idComponentValues();
+				transcodeForeignKeys(targetEntity, source, context);
+				mapper.store(source.getId(), identity, nk, sourcePK, targetPK);
+			    target.store(targetEntity);
+		        LOGGER.debug("transcoded {} to {}", sourceEntity, targetEntity);
+		        cascade(sourceEntity, context);
+		        rowCount++;
+		        if (rowCount % pageSize == 0)
+		        	target.flush();
+		    }
+	    	target.flush();
+			LOGGER.info("Finished transcoding " + source.countEntities(tableName) + " rows of table " + tableName);
+        } finally {
+        	IOUtil.close(cavs);
+        }
     }
     
 	private void cascade(Entity sourceEntity, BeneratorContext context) {
