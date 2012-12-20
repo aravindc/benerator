@@ -48,7 +48,7 @@ public class PerfTrackingTaskProxyTest {
 		for (int i = 0; i < 100; i++) {
 			assertEquals(TaskResult.EXECUTING, proxy.execute(context, ErrorHandler.getDefault()));
 		}
-		LatencyCounter counter = proxy.getTracker().getCounters()[0];
+		LatencyCounter counter = proxy.getOrCreateTracker().getCounters()[0];
 		assertEquals(100, counter.sampleCount());
 		proxy.close();
 	}
