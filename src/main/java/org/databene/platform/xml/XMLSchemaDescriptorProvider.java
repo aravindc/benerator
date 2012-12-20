@@ -47,6 +47,7 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.xml.XMLUtil;
@@ -281,10 +282,14 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
                 IncludeStatement statement = (IncludeStatement) new IncludeParser().parse(child, null, new BeneratorParseContext(this));
                 statement.execute(context);
             } else if ("bean".equals(childName)) {
-                Expression<?> beanExpression = BeanParser.parseBeanExpression(child);
+                Expression<?> constructionExpression = BeanParser.parseBeanExpression(child);
                 String id = child.getAttribute("id");
-				new BeanStatement(id, beanExpression, this).execute(context);
-                beanExpression.evaluate(context);
+				BeanStatement beanStatement = new BeanStatement(id, constructionExpression, this);
+				try {
+					beanStatement.execute(context);
+				} finally {
+					IOUtil.close(beanStatement);
+				}
             } else
                 throw new UnsupportedOperationException("Document annotation type not supported: " 
                 		+ child.getNodeName());
