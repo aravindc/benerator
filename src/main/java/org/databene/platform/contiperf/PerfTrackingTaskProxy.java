@@ -49,7 +49,7 @@ public class PerfTrackingTaskProxy extends PerfTrackingWrapper implements Task {
 
 	public TaskResult execute(Context context, ErrorHandler errorHandler) {
 	    try {
-	        return (TaskResult) getTracker().invoke(new Object[] { context, errorHandler });
+	        return (TaskResult) getOrCreateTracker().invoke(new Object[] { context, errorHandler });
         } catch (Exception e) {
 	        throw new RuntimeException(e);
         }
@@ -67,7 +67,7 @@ public class PerfTrackingTaskProxy extends PerfTrackingWrapper implements Task {
 	
     @Override
     public Object clone() {
-	    return new PerfTrackingTaskProxy(BeanUtil.clone(realTask), getTracker());
+	    return new PerfTrackingTaskProxy(BeanUtil.clone(realTask), getOrCreateTracker());
     }
 
 	public String getTaskName() {

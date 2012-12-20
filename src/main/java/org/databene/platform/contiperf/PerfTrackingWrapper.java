@@ -66,7 +66,7 @@ public abstract class PerfTrackingWrapper implements Closeable {
 		this.context = context;
 	}
 	
-	public PerformanceTracker getTracker() {
+	public PerformanceTracker getOrCreateTracker() {
 		if (tracker == null) {
 			// the tracker is initialized lazily for allowing the class to be first constructed in a simple way 
 			// and then be configured by calling the property setters.

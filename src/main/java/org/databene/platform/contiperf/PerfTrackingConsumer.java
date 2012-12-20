@@ -65,7 +65,7 @@ public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consume
     
 	public void startConsuming(ProductWrapper<?> wrapper) {
 	    try {
-	        getTracker().invoke(new Object[] { wrapper });
+	        getOrCreateTracker().invoke(new Object[] { wrapper });
         } catch (Exception e) {
 	        throw new RuntimeException(e);
         }
