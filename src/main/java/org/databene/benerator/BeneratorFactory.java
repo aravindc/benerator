@@ -21,6 +21,7 @@
 
 package org.databene.benerator;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DefaultBeneratorFactory;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
@@ -41,6 +42,8 @@ public abstract class BeneratorFactory {
 
 	public static final String XML_SCHEMA_PATH = schemaPathForCurrentVersion();
 
+    public abstract BeneratorContext createContext(String contextUri);
+    
     public abstract BeneratorParseContext createParseContext(ResourceManager resourceManager);
     
 	private static BeneratorFactory instance;
