@@ -156,12 +156,6 @@
 		    <scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>cubrid</groupId>
-			<artifactId>cubrid-jdbc</artifactId>
-			<version>8.4.1.2032</version>
-		    <scope>provided</scope>
-		</dependency>
-		<dependency>
 		    <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
 		    <artifactId>jaybird</artifactId>
 		    <version>2.1.6</version>
@@ -420,6 +414,14 @@
 
         </plugins>
     </reporting>
+
+	<repositories>
+		<repository>
+			<id>CUBRID</id>
+			<name>CUBRID-releases</name>
+			<url>http://maven.cubrid.org</url>
+		</repository>
+	</repositories>
 
 	<distributionManagement>
 		<repository>
