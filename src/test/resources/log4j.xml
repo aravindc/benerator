@@ -58,6 +58,10 @@
        <priority value="info"/>
     </category>
 
+    <category name="org.databene.task">
+       <priority value="info"/>
+    </category>
+
     <category name="org.databene.CONFIG">
        <priority value="debug"/>
     </category>
