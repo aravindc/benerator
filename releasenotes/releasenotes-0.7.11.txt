@@ -17,9 +17,13 @@ enhancements
 changes
 -------
 - Made boolean parsing more restrictive
+- Simplified and consolidated task execution framework
+- Reduced to single-threaded execution and optimized performance by 30%
+- Stopped the attempts to support CUBRID - its JDBC driver is dissatisfactory
 
 
 bug fixes
 ---------
 - Parsing empty CSV cells with non-default separator fails
-- Area code 'de' in german phone number generation
+- Area code 'de' in German phone number generation
+- Closed potential resource leaks
