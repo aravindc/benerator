@@ -49,6 +49,8 @@ public class ConsoleExporter extends FormattingConsumer {
 	private PrintStream out = System.out;
 	private Map<String, AtomicLong> counters;
 	
+	// Constructors ----------------------------------------------------------------------------------------------------
+	
 	public ConsoleExporter() {
 		this(null);
 	}
@@ -65,6 +67,8 @@ public class ConsoleExporter extends FormattingConsumer {
 		this.compositeFormatter.setDatePattern(getDatePattern());
 		this.compositeFormatter.setTimestampPattern(getTimestampPattern());
 	}
+	
+	// properties ------------------------------------------------------------------------------------------------------
 	
 	@Override
 	public void setDatePattern(String datePattern) {
@@ -93,6 +97,8 @@ public class ConsoleExporter extends FormattingConsumer {
 	public void setOut(PrintStream out) {
 		this.out = out;
 	}
+	
+	// Consumer interface implementation -------------------------------------------------------------------------------
 	
 	@Override
 	public void startProductConsumption(Object object) {
