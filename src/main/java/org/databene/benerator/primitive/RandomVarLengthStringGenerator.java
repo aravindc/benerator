@@ -106,6 +106,16 @@ public class RandomVarLengthStringGenerator extends LengthGenerator<Character, S
     }
 	
 	@Override
+	public boolean isThreadSafe() {
+		return true;
+	}
+	
+	@Override
+	public boolean isParallelizable() {
+		return true;
+	}
+	
+	@Override
 	public void init(GeneratorContext context) {
 		if (pattern != null) {
 	        Object regex = new RegexParser(locale).parseSingleChar(pattern);
