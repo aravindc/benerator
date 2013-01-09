@@ -190,7 +190,7 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 								"Probably has not been in the result set of the former '" + refereeTableName + "' nk query.";
 						getErrorHandler(context).handleError(message);
 					}
-					entity.set(fk.getName(), targetRef);
+					entity.setComponent(fk.getName(), targetRef);
 				}
 			}
 		}
