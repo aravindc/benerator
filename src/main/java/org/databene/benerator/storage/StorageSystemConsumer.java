@@ -28,6 +28,7 @@ package org.databene.benerator.storage;
 
 import org.databene.benerator.StorageSystem;
 import org.databene.benerator.consumer.AbstractConsumer;
+import org.databene.commons.ThreadAware;
 
 /**
  * Stores an Entity in the associated {@link StorageSystem}. It replaces the class SystemProcessor.<br/>
@@ -36,14 +37,22 @@ import org.databene.benerator.consumer.AbstractConsumer;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public abstract class StorageSystemConsumer extends AbstractConsumer {
+public abstract class StorageSystemConsumer extends AbstractConsumer implements ThreadAware {
 
     protected final StorageSystem system;
 
     protected StorageSystemConsumer(StorageSystem system) {
         this.system = system;
     }
-
+    
+    public boolean isThreadSafe() {
+    	return (system instanceof ThreadAware && ((ThreadAware) system).isThreadSafe());
+    }
+    
+    public boolean isParallelizable() {
+    	return (system instanceof ThreadAware && ((ThreadAware) system).isParallelizable());
+    }
+    
     @Override
     public void flush() {
         system.flush();
