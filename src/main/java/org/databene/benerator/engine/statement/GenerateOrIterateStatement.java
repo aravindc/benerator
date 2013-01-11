@@ -38,7 +38,7 @@ import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
 import org.databene.script.Expression;
 import org.databene.task.PageListener;
-import org.databene.task.SimpleTaskRunner;
+import org.databene.task.TaskExecutor;
 
 /**
  * Creates a number of entities in parallel execution and a given page size.<br/><br/>
@@ -58,7 +58,7 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 	protected BeneratorContext context;
 	protected BeneratorContext childContext;
 	
-	public GenerateOrIterateStatement(Generator<Long> countGenerator, Expression<Long> minCount, 
+	public GenerateOrIterateStatement(String productName, Generator<Long> countGenerator, Expression<Long> minCount, 
 			Expression<Long> pageSize, Expression<PageListener> pageListenerEx,  
 			Expression<ErrorHandler> errorHandler, boolean infoLog, boolean isSubCreator, BeneratorContext context) {
 	    this.task = null;
@@ -69,7 +69,7 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 	    this.infoLog = infoLog;
 	    this.isSubCreator = isSubCreator;
 	    this.context = context;
-	    this.childContext = context.createSubContext();
+    	this.childContext = context.createSubContext(productName);
     }
 
 	public void setTask(GenerateAndConsumeTask task) {
@@ -93,14 +93,12 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 	// Statement interface ---------------------------------------------------------------------------------------------
 	
     public boolean execute(BeneratorContext ctx) {
-    	ctx.setCurrentProductName(task.getProductName());
     	if (!beInitialized(ctx))
     		task.reset();
 	    executeTask(generateCount(childContext), minCount.evaluate(childContext), pageSize.evaluate(childContext),
 				evaluatePageListeners(childContext), getErrorHandler(childContext));
 	    if (!isSubCreator)
 	    	close();
-    	ctx.setCurrentProductName(null);
     	return true;
     }
 
@@ -151,7 +149,7 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 
 	protected void executeTask(Long requestedExecutions, Long minExecutions, Long pageSizeValue, 
 			List<PageListener> pageListeners, ErrorHandler errorHandler) {
-		SimpleTaskRunner.execute(task, childContext, requestedExecutions, minExecutions,
+		TaskExecutor.execute(task, childContext, requestedExecutions, minExecutions,
 	    		pageListeners, pageSizeValue, false, errorHandler, infoLog);
 	}
 
