@@ -23,6 +23,7 @@ package org.databene.benerator.consumer;
 
 import org.databene.benerator.Consumer;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.ThreadAware;
 
 /**
  * Parent class for {@link Consumer}s that serve as proxy to other Consumers.<br/><br/>
@@ -30,13 +31,21 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class ConsumerProxy implements Consumer {
+public abstract class ConsumerProxy implements Consumer, ThreadAware {
 
 	protected Consumer target;
 
 	public ConsumerProxy(Consumer target) {
 	    this.target = target;
     }
+	
+	public boolean isThreadSafe() {
+		return (target instanceof ThreadAware && ((ThreadAware) target).isThreadSafe());
+	}
+	
+	public boolean isParallelizable() {
+		return false;
+	}
 
 	public Consumer getTarget() {
 		return target;
