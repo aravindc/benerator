@@ -27,6 +27,7 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.IOUtil;
+import org.databene.commons.ThreadAware;
 import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
 import org.databene.webdecs.DataSource;
@@ -74,7 +75,7 @@ public class DataSourceGenerator<E> extends AbstractGenerator<E> {
     }
 
 	public boolean isThreadSafe() {
-	    return true;
+	    return (source instanceof ThreadAware && ((ThreadAware) source).isThreadSafe());
     }
     
     public Class<E> getGeneratedType() {
