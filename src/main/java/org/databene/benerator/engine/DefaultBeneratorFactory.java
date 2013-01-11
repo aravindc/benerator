@@ -22,7 +22,13 @@
 package org.databene.benerator.engine;
 
 import org.databene.benerator.BeneratorFactory;
+import org.databene.benerator.Consumer;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
+import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
+import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
+import org.databene.commons.Converter;
+import org.databene.commons.Validator;
+import org.databene.commons.context.ContextAware;
 
 /**
  * Default implementation of the abstract {@link BeneratorFactory} class.<br/><br/>
@@ -41,5 +47,36 @@ public class DefaultBeneratorFactory extends BeneratorFactory {
     public BeneratorParseContext createParseContext(ResourceManager resourceManager) {
 		return new BeneratorParseContext(resourceManager);
     }
+
+	@Override
+	public ComplexTypeGeneratorFactory getComplexTypeGeneratorFactory() {
+		return ComplexTypeGeneratorFactory.getInstance();
+	}
+
+	@Override
+	public SimpleTypeGeneratorFactory getSimpleTypeGeneratorFactory() {
+		return SimpleTypeGeneratorFactory.getInstance();
+	}
+	
+	@Override
+	public <S, T> Converter<S, T> configureConverter(Converter<S, T> converter, BeneratorContext context) {
+    	if (converter instanceof ContextAware)
+    		((ContextAware) converter).setContext(context);
+		return converter;
+	}
+	
+	@Override
+	public <T> Validator<T> configureValidator(Validator<T> validator, BeneratorContext context) {
+    	if (validator instanceof ContextAware)
+    		((ContextAware) validator).setContext(context);
+		return validator;
+	}
+	
+	@Override
+	public Consumer configureConsumer(Consumer consumer, BeneratorContext context) {
+    	if (consumer instanceof ContextAware)
+    		((ContextAware) consumer).setContext(context);
+    	return consumer;
+	}
 
 }

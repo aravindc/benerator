@@ -25,11 +25,12 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DefaultBeneratorFactory;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
+import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
+import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
 import org.databene.commons.Validator;
-import org.databene.commons.context.ContextAware;
 import org.databene.commons.version.VersionInfo;
 
 /**
@@ -42,13 +43,8 @@ import org.databene.commons.version.VersionInfo;
 public abstract class BeneratorFactory {
 
 	public static final String BENERATOR_FACTORY_PROPERTY = "benerator.factory";
-
 	public static final String XML_SCHEMA_PATH = schemaPathForCurrentVersion();
 
-    public abstract BeneratorContext createContext(String contextUri);
-    
-    public abstract BeneratorParseContext createParseContext(ResourceManager resourceManager);
-    
 	private static BeneratorFactory instance;
 
 	public static final BeneratorFactory getInstance() {
@@ -68,22 +64,14 @@ public abstract class BeneratorFactory {
 		return "org/databene/benerator/benerator-" + version + ".xsd";
 	}
 
-	public <S, T> Converter<S, T> configureConverter(Converter<S, T> converter, BeneratorContext context) {
-    	if (converter instanceof ContextAware)
-    		((ContextAware) converter).setContext(context);
-		return converter;
-	}
-
-	public <T> Validator<T> configureValidator(Validator<T> validator, BeneratorContext context) {
-    	if (validator instanceof ContextAware)
-    		((ContextAware) validator).setContext(context);
-		return validator;
-	}
-
-	public Consumer configureConsumer(Consumer consumer, BeneratorContext context) {
-    	if (consumer instanceof ContextAware)
-    		((ContextAware) consumer).setContext(context);
-    	return consumer;
-	}
+    public abstract BeneratorContext createContext(String contextUri);
+    public abstract BeneratorParseContext createParseContext(ResourceManager resourceManager);
+    
+	public abstract ComplexTypeGeneratorFactory getComplexTypeGeneratorFactory();
+	public abstract SimpleTypeGeneratorFactory getSimpleTypeGeneratorFactory();
+	
+	public abstract <S, T> Converter<S, T> configureConverter(Converter<S, T> converter, BeneratorContext context);
+	public abstract <T> Validator<T> configureValidator(Validator<T> validator, BeneratorContext context);
+	public abstract Consumer configureConsumer(Consumer consumer, BeneratorContext context);
 
 }
