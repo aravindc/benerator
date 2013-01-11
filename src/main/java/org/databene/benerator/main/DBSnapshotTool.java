@@ -40,7 +40,7 @@ import org.databene.commons.ui.ProgressMonitor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.platform.db.DBSystem;
+import org.databene.platform.db.DefaultDBSystem;
 import org.databene.platform.db.SQLEntityExporter;
 import org.databene.platform.dbunit.DbUnitEntityExporter;
 import org.databene.platform.xls.XLSEntityExporter;
@@ -131,11 +131,11 @@ public class DBSnapshotTool {
 		long startTime = System.currentTimeMillis();
 
 		Consumer exporter = null;
-        DBSystem db = null;
+        DefaultDBSystem db = null;
         int count = 0;
         try {
         	// connect DB
-            db = new DBSystem("db", dbUrl, dbDriver, dbUser, dbPassword, new DataModel());
+            db = new DefaultDBSystem("db", dbUrl, dbDriver, dbUser, dbPassword, new DataModel());
             if (dbSchema != null)
                 db.setSchema(dbSchema);
             db.setDynamicQuerySupported(false);
