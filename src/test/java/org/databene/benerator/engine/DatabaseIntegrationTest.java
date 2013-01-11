@@ -34,7 +34,7 @@ import org.databene.commons.TimeUtil;
 import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.model.data.Entity;
-import org.databene.platform.db.DBSystem;
+import org.databene.platform.db.DefaultDBSystem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +46,7 @@ import org.junit.Test;
  */
 public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 
-	private DBSystem db; 
+	private DefaultDBSystem db; 
 	private ConsumerMock consumer;
 	
 	@Before
@@ -55,7 +55,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
-		db = new DBSystem("db", dbUrl, HSQLUtil.DRIVER, 
+		db = new DefaultDBSystem("db", dbUrl, HSQLUtil.DRIVER, 
 				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, context.getDataModel());
 		db.setSchema("PUBLIC");
 		db.execute("drop table referer if exists");
