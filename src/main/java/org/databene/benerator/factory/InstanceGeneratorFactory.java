@@ -51,17 +51,26 @@ public class InstanceGeneratorFactory {
 
     public static Generator<?> createSingleInstanceGenerator(
             InstanceDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
+    	// check if nullQuota is 1
         Generator<?> generator = DescriptorUtil.createNullQuotaOneGenerator(descriptor, context);
         if (generator != null)
         	return generator;
+        
+        // check uniqueness setting
         Uniqueness uniqueness = DescriptorUtil.getUniqueness(descriptor, context);
         if (!uniqueness.isUnique())
         	uniqueness = ownerUniqueness;
+        
+        // check nullability
 		boolean nullable = DescriptorUtil.isNullable(descriptor, context);
-		TypeDescriptor type = descriptor.getTypeDescriptor();
-		String instanceName = descriptor.getName();
+		
+		// check 'ignored' setting
 		if (descriptor.getMode() == Mode.ignored)
 			return null;
+		
+		// create an appropriate generator
+		TypeDescriptor type = descriptor.getTypeDescriptor();
+		String instanceName = descriptor.getName();
 		if (type != null) {
 			generator = MetaGeneratorFactory.createTypeGenerator(type, instanceName, nullable, uniqueness, context);
 		} else {
