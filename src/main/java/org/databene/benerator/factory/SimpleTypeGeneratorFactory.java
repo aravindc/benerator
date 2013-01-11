@@ -70,6 +70,7 @@ import org.databene.script.BeanSpec;
 import org.databene.script.DatabeneScriptParser;
 import org.databene.script.PrimitiveType;
 import org.databene.script.ScriptConverterForStrings;
+import org.databene.webdecs.DataSource;
 
 import static org.databene.model.data.SimpleTypeDescriptor.*;
 
@@ -79,8 +80,14 @@ import static org.databene.model.data.SimpleTypeDescriptor.*;
  * @author Volker Bergmann
  */
 public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeDescriptor> {
-
-    public SimpleTypeGeneratorFactory() { }
+	
+	private static SimpleTypeGeneratorFactory INSTANCE = new SimpleTypeGeneratorFactory();
+	
+	public static SimpleTypeGeneratorFactory getInstance() {
+		return INSTANCE;
+	}
+	
+    protected SimpleTypeGeneratorFactory() { }
     
 	@Override
 	protected Generator<?> createExplicitGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness,
@@ -177,7 +184,10 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
             		generator = new DataSourceGenerator(((StorageSystem) sourceObject).query(selector, true, context));
             else if (sourceObject instanceof Generator)
                 generator = (Generator<?>) sourceObject;
-            else // TODO v0.8 support DataSource and Iterable
+            else if (sourceObject instanceof DataSource) {
+				DataSource dataSource = (DataSource) sourceObject;
+				generator = new DataSourceGenerator(dataSource);
+			} else
                 throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
         } else if (lcn.endsWith(".csv")) {
             return createSimpleTypeCSVSourceGenerator(descriptor, source, uniqueness, context);

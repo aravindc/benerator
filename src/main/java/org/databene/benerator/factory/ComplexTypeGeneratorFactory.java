@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -69,8 +69,14 @@ import java.util.*;
  * @author Volker Bergmann
  */
 public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTypeDescriptor> {
+	
+	private final static ComplexTypeGeneratorFactory INSTANCE = new ComplexTypeGeneratorFactory();
+	
+	public static ComplexTypeGeneratorFactory getInstance() {
+		return INSTANCE;
+	}
 
-    public ComplexTypeGeneratorFactory() { }
+    protected ComplexTypeGeneratorFactory() { }
     
 	@Override
 	protected Generator<?> applyComponentBuilders(Generator<?> generator, ComplexTypeDescriptor descriptor, 
@@ -172,7 +178,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<Entity> createSourceGeneratorFromObject(ComplexTypeDescriptor descriptor,
             BeneratorContext context, Object sourceObject) {
     	Generator<Entity> generator;
@@ -185,10 +191,15 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 				generator = WrapperFactory.applyHeadCycler(new DataSourceGenerator<Entity>(dataSource));
 			} else 
 	        	generator = new DataSourceGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
-	    } else if (sourceObject instanceof EntitySource) {
-	        generator = new DataSourceGenerator<Entity>((EntitySource) sourceObject);
 	    } else if (sourceObject instanceof Generator) {
 	        generator = (Generator<Entity>) sourceObject;
+	    } else if (sourceObject instanceof EntitySource) {
+	        generator = new DataSourceGenerator<Entity>((EntitySource) sourceObject);
+	    } else if (sourceObject instanceof DataSource) {
+	        DataSource dataSource = (DataSource) sourceObject;
+	        if (!Entity.class.isAssignableFrom(dataSource.getType()))
+	        	throw new UnsupportedOperationException("Not a supported data type to iterate: " + dataSource.getType());
+			generator = new DataSourceGenerator<Entity>(dataSource);
 	    } else
 	        throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
 	    return generator;
