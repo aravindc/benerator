@@ -29,7 +29,7 @@ import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.jdbacl.model.DBForeignKeyConstraint;
 import org.databene.model.data.Entity;
-import org.databene.platform.db.DBSystem;
+import org.databene.platform.db.DefaultDBSystem;
 import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
 import org.junit.Before;
@@ -43,7 +43,7 @@ import org.junit.Test;
  */
 public class CascadeStatementTest extends GeneratorTest {
 
-	private DBSystem db; 
+	private DefaultDBSystem db; 
 	private ConsumerMock consumer;
 	
 	@Before
@@ -52,7 +52,7 @@ public class CascadeStatementTest extends GeneratorTest {
 		consumer = new ConsumerMock(true);
 		context.set("cons", consumer);
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
-		db = new DBSystem("db", dbUrl, HSQLUtil.DRIVER, 
+		db = new DefaultDBSystem("db", dbUrl, HSQLUtil.DRIVER, 
 				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, context.getDataModel());
 		db.setSchema("PUBLIC");
 		// drop tables if they already exist
