@@ -154,6 +154,7 @@ public interface DescriptorConstants {
 	static final String ATT_SUB_SELECTOR = "subSelector";
 	static final String ATT_DATASET = "dataset";
 	static final String ATT_NESTING = "nesting";
+    static final String ATT_LOCALE = "locale";
 	static final String ATT_FILTER = "filter";
 	
     static final String ATT_CLASS = "class";
@@ -165,16 +166,6 @@ public interface DescriptorConstants {
 
     static final String ATT_DEFAULT_SOURCE = "defaultSource";
     static final String ATT_IDENTITY = "identity";
-
-    static final String ATT_DATABASE = "database";
-    static final String ATT_IN = "in";
-    static final String ATT_OUT = "out";
-    static final String ATT_APPVERSION = "appVersion";
-    static final String ATT_TABLES = "tables";
-    static final String ATT_TAGS = "tags";
-    static final String ATT_SKIN = "skin";
-    static final String ATT_LOCALE = "locale";
-    static final String ATT_MODE = "mode";
 
     static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil
 		.toSet(ATT_PAGESIZE, ATT_THREADS, ATT_CONSUMER, ATT_ON_ERROR);
