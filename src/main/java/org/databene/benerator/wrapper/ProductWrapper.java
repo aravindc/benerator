@@ -75,7 +75,7 @@ public class ProductWrapper<E> {
 
 	@Override
 	public String toString() {
-	    return product.toString();
+	    return String.valueOf(product);
 	}
 
 	public static Object unwrap(ProductWrapper<?> wrapper) {
