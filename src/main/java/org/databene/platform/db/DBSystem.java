@@ -1,9 +1,9 @@
 /*
- * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
+ * GNU General Public License (GPL).
  *
  * For redistributing this software or a derivative work under a license other
  * than the GPL-compatible Free Software License as defined by the Free
@@ -26,12 +26,34 @@
 
 package org.databene.platform.db;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.databene.benerator.Consumer;
-import org.databene.benerator.StorageSystem;
 import org.databene.benerator.storage.AbstractStorageSystem;
 import org.databene.benerator.storage.StorageSystemInserter;
-import org.databene.commons.*;
-import org.databene.commons.bean.ArrayPropertyExtractor;
+import org.databene.commons.ArrayFormat;
+import org.databene.commons.CollectionUtil;
+import org.databene.commons.ConfigurationError;
+import org.databene.commons.ConnectFailedException;
+import org.databene.commons.Context;
+import org.databene.commons.IOUtil;
+import org.databene.commons.ImportFailedException;
+import org.databene.commons.ObjectNotFoundException;
+import org.databene.commons.StringUtil;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.version.VersionNumber;
@@ -55,52 +77,39 @@ import org.databene.jdbacl.model.Database;
 import org.databene.jdbacl.model.cache.CachingDBImporter;
 import org.databene.jdbacl.model.jdbc.JDBCDBImporter;
 import org.databene.jdbacl.model.jdbc.JDBCMetaDataUtil;
-import org.databene.model.data.*;
-import org.databene.script.expression.ConstantExpression;
+import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.ComponentDescriptor;
+import org.databene.model.data.DataModel;
+import org.databene.model.data.Entity;
+import org.databene.model.data.IdDescriptor;
+import org.databene.model.data.Mode;
+import org.databene.model.data.PartDescriptor;
+import org.databene.model.data.ReferenceDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
+import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.TypeMapper;
 import org.databene.script.PrimitiveType;
+import org.databene.script.expression.ConstantExpression;
 import org.databene.webdecs.DataSource;
 import org.databene.webdecs.util.ConvertingDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.io.File;
-import java.math.BigDecimal;
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.Types;
-
 /**
- * RDBMS implementation of the {@link StorageSystem} interface.<br/>
- * <br/>
- * Created: 27.06.2007 23:04:19
- * @since 0.3
+ * Abstract class that serves as parent for classes which connect to databases using JDBC.<br/><br/>
+ * Created: 07.01.2013 08:11:25
+ * @since 0.8.0
  * @author Volker Bergmann
  */
-public class DBSystem extends AbstractStorageSystem {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(DBSystem.class);
-	static final Logger JDBC_LOGGER = LoggerFactory.getLogger(LogCategories.JDBC);
+public abstract class DBSystem extends AbstractStorageSystem {
 
-    
+	protected Logger logger = LoggerFactory.getLogger(getClass());
+
     private static final int DEFAULT_FETCH_SIZE = 100;
 
 	private static final VersionNumber MIN_ORACLE_VERSION = VersionNumber.valueOf("10.2.0.4");
 	
 	// constants -------------------------------------------------------------------------------------------------------
-    
-    protected static final ArrayPropertyExtractor<String> nameExtractor
-            = new ArrayPropertyExtractor<String>("name", String.class);
     
 	private static final TypeDescriptor[] EMPTY_TYPE_DESCRIPTOR_ARRAY = new TypeDescriptor[0];
     
@@ -116,27 +125,26 @@ public class DBSystem extends AbstractStorageSystem {
     private String schemaName;
     private String includeTables;
     private String excludeTables;
-    boolean metaDataCache;
-    boolean batch;
-    boolean readOnly;
-    boolean lazy;
-    boolean acceptUnknownColumnTypes;
+    private boolean metaDataCache;
+    protected boolean batch;
+    protected boolean readOnly;
+    private boolean lazy;
+    private boolean acceptUnknownColumnTypes;
     
     private int fetchSize;
 
-    private Database database;
+    protected Database database;
+	protected DBMetaDataImporter importer;
 
-    private Map<Thread, ThreadContext> threadContexts;
     private OrderedNameMap<TypeDescriptor> typeDescriptors;
-    Map<String, DBTable> tables;
+    protected Map<String, DBTable> tables;
     
     private TypeMapper driverTypeMapper;
-    DatabaseDialect dialect;
+    protected DatabaseDialect dialect;
     private boolean dynamicQuerySupported;
     
 	private boolean connectedBefore;
 	private AtomicInteger invalidationCount;
-	private DBMetaDataImporter importer;
 	
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -167,7 +175,6 @@ public class DBSystem extends AbstractStorageSystem {
         setLazy(true);
         setDynamicQuerySupported(true);
         this.typeDescriptors = null;
-        this.threadContexts = new HashMap<Thread, ThreadContext>();
         this.driverTypeMapper = driverTypeMapper();
         this.connectedBefore = false;
         this.invalidationCount = new AtomicInteger();
@@ -192,7 +199,7 @@ public class DBSystem extends AbstractStorageSystem {
     		this.environment = null;
     		return;
     	}
-    	LOGGER.debug("setting environment '{}'", environment);
+    	logger.debug("setting environment '{}'", environment);
 		JDBCConnectData connectData = DBUtil.getConnectData(environment);
 		this.environment = environment;
 		this.url = connectData.url;
@@ -325,7 +332,7 @@ public class DBSystem extends AbstractStorageSystem {
     // DescriptorProvider interface ------------------------------------------------------------------------------------
 
 	public TypeDescriptor[] getTypeDescriptors() {
-        LOGGER.debug("getTypeDescriptors()");
+        logger.debug("getTypeDescriptors()");
         parseMetadataIfNecessary();
         if (typeDescriptors == null)
         	return EMPTY_TYPE_DESCRIPTOR_ARRAY;
@@ -334,7 +341,7 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     public TypeDescriptor getTypeDescriptor(String tableName) {
-        LOGGER.debug("getTypeDescriptor({})", tableName);
+        logger.debug("getTypeDescriptor({})", tableName);
         parseMetadataIfNecessary();
         return typeDescriptors.get(tableName);
     }
@@ -345,7 +352,7 @@ public class DBSystem extends AbstractStorageSystem {
 		if (readOnly)
 			throw new IllegalStateException("Tried to insert rows into table '" + entity.type() + "' " +
 					"though database '" + id + "' is read-only");
-        LOGGER.debug("Storing {}", entity);
+        logger.debug("Storing {}", entity);
         persistOrUpdate(entity, true);
     }
 
@@ -353,34 +360,21 @@ public class DBSystem extends AbstractStorageSystem {
 		if (readOnly)
 			throw new IllegalStateException("Tried to update table '" + entity.type() + "' " +
 					"though database '" + id + "' is read-only");
-        LOGGER.debug("Updating {}", entity);
+        logger.debug("Updating {}", entity);
         persistOrUpdate(entity, false);
 	}
 
-	public void flush() {
-        LOGGER.debug("flush()");
-    	for (ThreadContext threadContext : threadContexts.values())
-    		threadContext.commit();
-    }
-
-    public void close() {
-        LOGGER.debug("close()");
-        flush();
-        Iterator<ThreadContext> iterator = threadContexts.values().iterator();
-        while (iterator.hasNext()) {
-            iterator.next().close();
-            iterator.remove();
-        }
+	public void close() {
         if (database != null)
         	CachingDBImporter.updateCacheFile(database);
         IOUtil.close(importer);
-    }
-
+	}
+	
 	public Entity queryEntityById(String tableName, Object id) {
         try {
-	        LOGGER.debug("queryEntityById({}, {})", tableName, id);
+	        logger.debug("queryEntityById({}, {})", tableName, id);
 	        ComplexTypeDescriptor descriptor = (ComplexTypeDescriptor) getTypeDescriptor(tableName);
-	        PreparedStatement query = getThreadContext().getSelectByPKStatement(descriptor);
+	        PreparedStatement query = getSelectByPKStatement(descriptor);
 	        query.setObject(1, id); // TODO v0.7.6 support composite keys
 	        ResultSet resultSet = query.executeQuery();
 	        if (resultSet.next())
@@ -394,8 +388,8 @@ public class DBSystem extends AbstractStorageSystem {
 
     @SuppressWarnings("null")
     public DataSource<Entity> queryEntities(String type, String selector, Context context) {
-        LOGGER.debug("queryEntities({})", type);
-    	Connection connection = getThreadContext().connection;
+        logger.debug("queryEntities({})", type);
+    	Connection connection = getConnection();
         boolean script = false;
     	if (selector != null && selector.startsWith("{") && selector.endsWith("}")) {
     		selector = selector.substring(1, selector.length() - 1);
@@ -417,13 +411,13 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     public long countEntities(String tableName) {
-        LOGGER.debug("countEntities({})", tableName);
+        logger.debug("countEntities({})", tableName);
         String query = "select count(*) from " + tableName;
-        return DBUtil.queryLong(query, getThreadContext().connection);
+        return DBUtil.queryLong(query, getConnection());
     }
 
     public DataSource<?> queryEntityIds(String tableName, String selector, Context context) {
-        LOGGER.debug("queryEntityIds({}, {})", tableName, selector);
+        logger.debug("queryEntityIds({}, {})", tableName, selector);
         
         // check for script
         boolean script = false;
@@ -451,8 +445,8 @@ public class DBSystem extends AbstractStorageSystem {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public DataSource<?> query(String query, boolean simplify, Context context) {
-        LOGGER.debug("query({})", query);
-        Connection connection = getThreadContext().connection;
+        logger.debug("query({})", query);
+        Connection connection = getConnection();
         QueryDataSource resultSetIterable = createQuery(query, context, connection);
         ResultSetConverter converter = new ResultSetConverter(Object.class, simplify);
 		return new ConvertingDataSource<ResultSet, Object>(resultSetIterable, converter);
@@ -468,13 +462,17 @@ public class DBSystem extends AbstractStorageSystem {
     
     // database-specific interface -------------------------------------------------------------------------------------
 
+    public abstract Connection getConnection();
+    
+    protected abstract PreparedStatement getSelectByPKStatement(ComplexTypeDescriptor descriptor);
+
     public boolean tableExists(String tableName) {
-        LOGGER.debug("tableExists({})", tableName);
+        logger.debug("tableExists({})", tableName);
         return (getTypeDescriptor(tableName) != null);
     }
 
     public void createSequence(String name) throws SQLException {
-		getDialect().createSequence(name, 1, getThreadContext().connection);
+		getDialect().createSequence(name, 1, getConnection());
     }
 
     public void dropSequence(String name) {
@@ -492,14 +490,14 @@ public class DBSystem extends AbstractStorageSystem {
     }
     
     public long nextSequenceValue(String sequenceName) {
-    	return DBUtil.queryLong(getDialect().renderFetchSequenceValue(sequenceName), getThreadContext().connection);
+    	return DBUtil.queryLong(getDialect().renderFetchSequenceValue(sequenceName), getConnection());
     }
     
     public void setSequenceValue(String sequenceName, long value) throws SQLException {
-    	getDialect().setNextSequenceValue(sequenceName, value, getThreadContext().connection);
+    	getDialect().setNextSequenceValue(sequenceName, value, getConnection());
     }
     
-    Connection createConnection() {
+    protected Connection createConnection() {
 		try {
             Connection connection = DBUtil.connect(url, driver, user, password, readOnly);
             if (!connectedBefore) {
@@ -515,10 +513,6 @@ public class DBSystem extends AbstractStorageSystem {
 		}
 	}
 
-    public Connection getConnection() {
-        return getThreadContext().connection;
-    }
-    
 	public void invalidate() {
 		typeDescriptors = null;
 		tables = null;
@@ -527,10 +521,10 @@ public class DBSystem extends AbstractStorageSystem {
 			File bufferFile = CachingDBImporter.getCacheFile(environment);
 			if (bufferFile.exists()) {
 				if (!bufferFile.delete() && metaDataCache) {
-					LOGGER.error("Deleting " + bufferFile + " failed");
+					logger.error("Deleting " + bufferFile + " failed");
 					metaDataCache = false;
 				} else
-					LOGGER.info("Deleted meta data cache file: " + bufferFile);
+					logger.info("Deleted meta data cache file: " + bufferFile);
 
 			}
 		}
@@ -547,9 +541,9 @@ public class DBSystem extends AbstractStorageSystem {
         getDialect(); // make sure dialect is initialized
         database = getDbMetaData();
         if (lazy)
-        	LOGGER.info("Fetching table details and ordering tables by dependency");
+        	logger.info("Fetching table details and ordering tables by dependency");
         else
-        	LOGGER.info("Ordering tables by dependency");
+        	logger.info("Ordering tables by dependency");
         List<DBTable> tables = DBUtil.dependencyOrderedTables(database);
         for (DBTable table : tables)
             parseTable(table);
@@ -558,7 +552,7 @@ public class DBSystem extends AbstractStorageSystem {
     public DatabaseDialect getDialect() {
     	if (dialect == null) {
         	try {
-        		DatabaseMetaData metaData = getThreadContext().connection.getMetaData();
+        		DatabaseMetaData metaData = getConnection().getMetaData();
 				String productName = metaData.getDatabaseProductName();
                 VersionNumber productVersion = VersionNumber.valueOf(metaData.getDatabaseMajorVersion() + "." + 
                 		metaData.getDatabaseMinorVersion());
@@ -597,7 +591,7 @@ public class DBSystem extends AbstractStorageSystem {
 				DatabaseMetaData metaData = connection.getMetaData();
 				VersionNumber driverVersion = VersionNumber.valueOf(metaData.getDriverVersion());
 				if (driverVersion.compareTo(MIN_ORACLE_VERSION) < 0)
-					LOGGER.warn("Your Oracle driver has a bug in metadata support. Please update to 10.2.0.4 or newer. " +
+					logger.warn("Your Oracle driver has a bug in metadata support. Please update to 10.2.0.4 or newer. " +
 							"You can use that driver for accessing an Oracle 9 server as well.");
 			} catch (SQLException e) {
 				throw new ConfigurationError(e);
@@ -630,14 +624,11 @@ public class DBSystem extends AbstractStorageSystem {
 	    return new QueryDataSource(connection, query, fetchSize, (dynamicQuerySupported ? context : null));
     }
       
-    private PreparedStatement getStatement(
-    		ComplexTypeDescriptor descriptor, boolean insert, List<ColumnInfo> columnInfos) {
-        ThreadContext context = getThreadContext();
-        return context.getStatement(descriptor, insert, columnInfos);
-    }
+    protected abstract PreparedStatement getStatement(ComplexTypeDescriptor descriptor, boolean insert, 
+    		List<ColumnInfo> columnInfos);
 
     private void parseTable(DBTable table) {
-        LOGGER.debug("Parsing table {}" + table);
+        logger.debug("Parsing table {}" + table);
         String tableName = table.getName();
         tables.put(tableName.toUpperCase(), table);
         ComplexTypeDescriptor complexType;
@@ -684,7 +675,7 @@ public class DBSystem extends AbstractStorageSystem {
                 boolean nullable = fkColumn.isNullable();
 				descriptor.setNullable(nullable);
                 complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
-                LOGGER.debug("Parsed reference " + table.getName() + '.' + descriptor);
+                logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
                 // TODO v0.7.6 handle composite keys
             }
@@ -692,13 +683,13 @@ public class DBSystem extends AbstractStorageSystem {
         // process normal columns
         for (DBColumn column : table.getColumns()) {
         	try {
-	            LOGGER.debug("parsing column: {}", column);
+	            logger.debug("parsing column: {}", column);
 	            String columnName = column.getName();
 	            if (complexType.getComponent(columnName) != null)
 	                continue; // skip columns that were already parsed (fk)
 	            String columnId = table.getName() + '.' + columnName;
 	            if (column.isVersionColumn()) {
-	                LOGGER.debug("Leaving out version column {}", columnId);
+	                logger.debug("Leaving out version column {}", columnId);
 	                continue;
 	            }
 	            DBDataType columnType = column.getType();
@@ -726,11 +717,11 @@ public class DBSystem extends AbstractStorageSystem {
 	                if (constraint.getColumnNames().length == 1) {
 	                    descriptor.setUnique(true);
 	                } else {
-	                    LOGGER.warn("Automated uniqueness assurance on multiple columns is not provided yet: " + constraint);
+	                    logger.warn("Automated uniqueness assurance on multiple columns is not provided yet: " + constraint);
 	                    // TODO v0.7.6 support uniqueness constraints on combination of columns
 	                }
 	            }
-	            LOGGER.debug("parsed attribute " + columnId + ": " + descriptor);
+	            logger.debug("parsed attribute " + columnId + ": " + descriptor);
 	            complexType.addComponent(descriptor);
         	} catch (Exception e) {
         		throw new ConfigurationError("Error processing column " + column.getName() + " of table " + table.getName(), e);
@@ -786,14 +777,14 @@ public class DBSystem extends AbstractStorageSystem {
         }
     }
 
-    DBTable getTable(String tableName) {
+    public DBTable getTable(String tableName) {
     	parseMetadataIfNecessary();
         DBTable table = findTableInConfiguredCatalogAndSchema(tableName);
         if (table != null)
             return table;
         table = findAnyTableOfName(tableName);
         if (table != null) {
-           	LOGGER.warn("Table '" + tableName + "' not found " +
+           	logger.warn("Table '" + tableName + "' not found " +
            			"in the expected catalog '" + catalogName + "' and schema '" + schemaName + "'. " +
    					"I have taken it from catalog '" + table.getCatalog() + "' and schema '" + table.getSchema() + "' instead. " +
    					"You better make sure this is right and fix the configuration");
@@ -826,16 +817,6 @@ public class DBSystem extends AbstractStorageSystem {
         return null;
 	}
 
-	private synchronized ThreadContext getThreadContext() {
-        Thread currentThread = Thread.currentThread();
-        ThreadContext context = threadContexts.get(currentThread);
-        if (context == null) {
-            context = new ThreadContext();
-            threadContexts.put(currentThread, context);
-        }
-        return context;
-    }
-    
 	private void persistOrUpdate(Entity entity, boolean insert) {
         parseMetadataIfNecessary();
         List<ColumnInfo> writeColumnInfos = getWriteColumnInfos(entity, insert);
@@ -873,111 +854,6 @@ public class DBSystem extends AbstractStorageSystem {
 	private void parseMetadataIfNecessary() {
 	    if (typeDescriptors == null)
             parseMetaData();
-    }
-
-    private class ThreadContext {
-        
-        Connection connection;
-        
-        public Map<ComplexTypeDescriptor, PreparedStatement> insertStatements;
-        public Map<ComplexTypeDescriptor, PreparedStatement> updateStatements;
-        public Map<ComplexTypeDescriptor, PreparedStatement> selectByPKStatements;
-        
-        public ThreadContext() {
-            insertStatements = new OrderedMap<ComplexTypeDescriptor, PreparedStatement>();
-            updateStatements = new OrderedMap<ComplexTypeDescriptor, PreparedStatement>();
-            selectByPKStatements = new OrderedMap<ComplexTypeDescriptor, PreparedStatement>();
-            connection = createConnection();
-        }
-        
-        void commit() {
-            try {
-				flushStatements(insertStatements);
-				flushStatements(updateStatements);
-                JDBC_LOGGER.debug("Committing connection: {}" + connection);
-                connection.commit();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-		private void flushStatements(Map<ComplexTypeDescriptor, PreparedStatement> statements) throws SQLException {
-			for (Map.Entry<ComplexTypeDescriptor, PreparedStatement> entry : statements.entrySet()) {
-			    PreparedStatement statement = entry.getValue();
-			    if (statement != null) {
-			        // need to finish old statement
-		            if (batch)
-		                statement.executeBatch();
-		            JDBC_LOGGER.debug("Closing statement: {}", statement);
-			        DBUtil.close(statement);
-			    }
-			    entry.setValue(null);
-			}
-		}
-
-        public PreparedStatement getSelectByPKStatement(ComplexTypeDescriptor descriptor) {
-            try {
-                PreparedStatement statement = selectByPKStatements.get(descriptor);
-                if (statement == null)
-                    statement = createSelectByPKStatement(descriptor);
-                else
-                    statement.clearParameters();
-                return statement;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-		private PreparedStatement createSelectByPKStatement(ComplexTypeDescriptor descriptor) throws SQLException {
-	        PreparedStatement statement;
-	        String tableName = descriptor.getName();
-	        DBTable table = tables.get(tableName.toUpperCase());
-	        if (table == null)
-	        	throw new IllegalArgumentException("Table not found: " + tableName);
-	        StringBuilder builder = new StringBuilder("select * from ").append(tableName).append(" where");
-	        for (String idColumnName : descriptor.getIdComponentNames())
-	        	builder.append(' ').append(idColumnName).append("=?");
-	        statement = DBUtil.prepareStatement(connection, builder.toString(), readOnly);
-        	selectByPKStatements.put(descriptor, statement);
-	        return statement;
-        }
-
-        public PreparedStatement getStatement(ComplexTypeDescriptor descriptor, boolean insert, List<ColumnInfo> columnInfos) {
-            try {
-                PreparedStatement statement = (insert ? insertStatements.get(descriptor) : updateStatements.get(descriptor));
-                if (statement == null)
-                    statement = createStatement(descriptor, insert, columnInfos);
-                else
-                    statement.clearParameters();
-                return statement;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-		private PreparedStatement createStatement(ComplexTypeDescriptor descriptor, boolean insert,
-                List<ColumnInfo> columnInfos) throws SQLException {
-	        PreparedStatement statement;
-	        String tableName = descriptor.getName();
-	        DBTable table = tables.get(tableName.toUpperCase());
-	        if (table == null)
-	        	throw new IllegalArgumentException("Table not found: " + tableName);
-	        String sql = (insert ? 
-	        		dialect.insert(table, columnInfos) : 
-	        		dialect.update(table, getTable(tableName).getPKColumnNames(), columnInfos));
-            JDBC_LOGGER.debug("Creating prepared statement: {}", sql);
-	        statement = DBUtil.prepareStatement(connection, sql, readOnly);
-	        if (insert)
-	        	insertStatements.put(descriptor, statement);
-	        else
-	        	updateStatements.put(descriptor, statement);
-	        return statement;
-        }
-
-        public void close() {
-            commit();
-            DBUtil.close(connection);
-        }
     }
 
     private String decimalGranularity(int scale) {
