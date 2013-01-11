@@ -24,9 +24,14 @@ package org.databene.benerator.engine;
 import static org.junit.Assert.*;
 
 import java.io.Closeable;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.databene.benerator.test.BeneratorIntegrationTest;
+import org.databene.commons.ConnectFailedException;
 import org.databene.commons.IOUtil;
+import org.databene.jdbacl.DBUtil;
+import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
 import org.databene.webdecs.DataContainer;
@@ -51,19 +56,9 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 	private static final String DESCRIPTOR5_FILE_NAME = PARENT_FOLDER + "/transcode_partially_with_cascade.ben.xml";
 	
 	@After
-	public void clearDB() {
-		DBSystem s = (DBSystem) context.get("s");
-		s.execute("drop table user");
-		s.execute("drop table role");
-		s.execute("drop table city");
-		s.execute("drop table state");
-		s.execute("drop table country");
-		DBSystem t = (DBSystem) context.get("t");
-		t.execute("drop table user");
-		t.execute("drop table role");
-		t.execute("drop table city");
-		t.execute("drop table state");
-		t.execute("drop table country");
+	public void clearDB() throws ConnectFailedException, SQLException {
+		dropTables(HSQLUtil.connectInMemoryDB("s"));
+		dropTables(HSQLUtil.connectInMemoryDB("t"));
 	}
 	
 	
@@ -238,6 +233,14 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 	private void assertNextCity(int id, Integer stateId, String name, DataIterator<Entity> iterator) {
 		Entity expectedCity = createEntity("CITY", "ID", id, "STATE_FK", stateId, "NAME", name);
 		assertEquals(expectedCity, iterator.next(new DataContainer<Entity>()).getData());
+	}
+	
+	private void dropTables(Connection s) throws SQLException {
+		DBUtil.executeUpdate("drop table user", s);
+		DBUtil.executeUpdate("drop table role", s);
+		DBUtil.executeUpdate("drop table city", s);
+		DBUtil.executeUpdate("drop table state", s);
+		DBUtil.executeUpdate("drop table country", s);
 	}
 	
 }
