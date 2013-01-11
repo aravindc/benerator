@@ -42,7 +42,7 @@ import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
-import org.databene.platform.db.DBSystem;
+import org.databene.platform.db.DefaultDBSystem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -144,7 +144,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testDatabaseSource() throws Exception {
 		// prepare DB
-		DBSystem db = new DBSystem("db", HSQLUtil.getInMemoryURL("benerator"), HSQLUtil.DRIVER, "sa", null, context.getDataModel());
+		DefaultDBSystem db = new DefaultDBSystem("db", HSQLUtil.getInMemoryURL("benerator"), HSQLUtil.DRIVER, "sa", null, context.getDataModel());
 		context.set("db", db);
 		try {
 			db.execute(
