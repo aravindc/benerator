@@ -42,7 +42,7 @@ import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
-import org.databene.platform.db.DBSystem;
+import org.databene.platform.db.DefaultDBSystem;
 import org.databene.platform.java.BeanDescriptorProvider;
 import org.junit.Before;
 import org.junit.Test;
@@ -257,7 +257,7 @@ public class AnnotationMapperTest {
 	@Test
 	public void testDatabaseAnnotation() {
 		annotationMapper.parseClassAnnotations(ClassWithDatabase.class.getAnnotations(), context);
-		DBSystem db = (DBSystem) context.get("db");
+		DefaultDBSystem db = (DefaultDBSystem) context.get("db");
 		assertNotNull(db);
 		assertEquals("hsqlmem", db.getEnvironment());
 	}
