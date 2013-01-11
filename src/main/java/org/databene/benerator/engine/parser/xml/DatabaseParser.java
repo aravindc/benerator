@@ -91,13 +91,30 @@ public class DatabaseParser extends AbstractBeneratorDescriptorParser {
 			Expression<Boolean> acceptUnknownColumnTypes = new FallbackExpression<Boolean>(
 					parseBooleanExpressionAttribute(ATT_ACC_UNK_COL_TYPES, element), 
 					new GlobalAcceptUnknownSimpleTypeExpression());
-			return new DefineDatabaseStatement(id, environment, url, driver, user, password, catalog, schema, 
-					metaCache, tableFilter, includeTables, excludeTables,
-					batch, fetchSize, readOnly, lazy, acceptUnknownColumnTypes, context.getResourceManager());
+			return createDatabaseStatement(id, environment, url, driver, user,
+					password, catalog, schema, tableFilter, includeTables,
+					excludeTables, metaCache, batch, fetchSize, readOnly, lazy,
+					acceptUnknownColumnTypes, context);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		}
     }
+
+	protected DefineDatabaseStatement createDatabaseStatement(
+			Expression<String> id, Expression<String> environment,
+			Expression<String> url, Expression<String> driver,
+			Expression<String> user, Expression<String> password,
+			Expression<String> catalog, Expression<String> schema,
+			Expression<String> tableFilter, Expression<String> includeTables,
+			Expression<String> excludeTables, Expression<Boolean> metaCache,
+			Expression<Boolean> batch, Expression<Integer> fetchSize,
+			Expression<Boolean> readOnly, Expression<Boolean> lazy,
+			Expression<Boolean> acceptUnknownColumnTypes,
+			BeneratorParseContext context) {
+		return new DefineDatabaseStatement(id, environment, url, driver, user, password, catalog, schema, 
+				metaCache, tableFilter, includeTables, excludeTables,
+				batch, fetchSize, readOnly, lazy, acceptUnknownColumnTypes, context.getResourceManager());
+	}
 
 	static class GlobalAcceptUnknownSimpleTypeExpression extends DynamicExpression<Boolean> {
 		public Boolean evaluate(Context context) {
