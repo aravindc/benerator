@@ -34,9 +34,9 @@ import org.databene.commons.Mutator;
  * @author Volker Bergmann
  */
 public abstract class AbstractComponentBuilder<E> extends AbstractGeneratorComponent<E> implements ComponentBuilder<E> {
-
+	
 	protected Mutator mutator;
-	private WrapperProvider<Object> productWrapper = new WrapperProvider<Object>();
+	private WrapperProvider<Object> wrapperProvider = new WrapperProvider<Object>();
 	
     public AbstractComponentBuilder(Generator<?> source, Mutator mutator, String scope) {
 		super(source, scope);
@@ -47,7 +47,7 @@ public abstract class AbstractComponentBuilder<E> extends AbstractGeneratorCompo
     public boolean execute(BeneratorContext context) {
 		message = null;
 		Object target = context.getCurrentProduct().unwrap();
-		ProductWrapper<?> wrapper = source.generate((ProductWrapper) productWrapper.get());
+		ProductWrapper<?> wrapper = source.generate((ProductWrapper) wrapperProvider.get());
 		if (wrapper == null) {
 			message = "Generator unavailable: " + source;
 			return false;
