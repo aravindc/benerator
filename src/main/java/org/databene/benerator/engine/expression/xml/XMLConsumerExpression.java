@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.engine.expression.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringAttribute;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.Consumer;
 import org.databene.benerator.StorageSystem;
 import org.databene.benerator.consumer.ConsumerChain;
@@ -41,7 +42,6 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
-import org.databene.commons.context.ContextAware;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.script.BeanSpec;
 import org.databene.script.DatabeneScriptParser;
@@ -108,10 +108,10 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer> {
 		return consumerChain;
 	}
 
-    public static void addConsumer(BeanSpec beanSpec, BeneratorContext context, ConsumerChain chain) {
+    @SuppressWarnings("resource")
+	public static void addConsumer(BeanSpec beanSpec, BeneratorContext context, ConsumerChain chain) {
     	Consumer consumer;
     	Object bean = beanSpec.getBean();
-    	boolean ref = beanSpec.isReference();
     	// check consumer type
     	if (bean instanceof Consumer) {
     		consumer = (Consumer) bean;
@@ -119,9 +119,8 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer> {
     		consumer = new StorageSystemInserter((StorageSystem) bean);
     	} else
     		throw new UnsupportedOperationException("Consumer type not supported: " + BeanUtil.simpleClassName(bean));
-    	if (bean instanceof ContextAware)
-    		((ContextAware) bean).setContext(context);
-    	if (ref)
+    	consumer = BeneratorFactory.getInstance().configureConsumer(consumer, context);
+    	if (beanSpec.isReference())
     		consumer = new NonClosingConsumerProxy(consumer);
     	chain.addComponent(consumer);
 	}
