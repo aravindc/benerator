@@ -63,7 +63,7 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	}
 
     public boolean apply(E target, BeneratorContext context) {
-    	BeneratorContext subContext = context.createSubContext();
+    	BeneratorContext subContext = context.createSubContext(instanceName);
     	subContext.setCurrentProduct(new ProductWrapper<E>(target));
     	for (GeneratorComponent<E> component : components) {
             try {
