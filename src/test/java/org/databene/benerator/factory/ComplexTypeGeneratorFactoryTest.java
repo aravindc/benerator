@@ -28,6 +28,7 @@ package org.databene.benerator.factory;
 
 import java.util.Locale;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.test.PersonSource;
@@ -184,7 +185,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	@SuppressWarnings("unchecked")
 	private Generator<Entity> createGenerator(InstanceDescriptor instance) {
 		ComplexTypeDescriptor type = (ComplexTypeDescriptor) instance.getTypeDescriptor();
-		Generator<?> generator = new ComplexTypeGeneratorFactory().createGenerator(
+		Generator<?> generator = BeneratorFactory.getInstance().getComplexTypeGeneratorFactory().createGenerator(
 				type, type.getName(), false, instance.getUniqueness(), context);
 		assertEquals(Entity.class, generator.getGeneratedType());
 		return (Generator<Entity>) generator;
@@ -192,7 +193,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@SuppressWarnings("unchecked")
 	private Generator<Entity> createGenerator(ComplexTypeDescriptor type) {
-		Generator<?> generator = new ComplexTypeGeneratorFactory().createGenerator(
+		Generator<?> generator = BeneratorFactory.getInstance().getComplexTypeGeneratorFactory().createGenerator(
 				type, type.getName(), false, Uniqueness.NONE, context);
 		assertEquals(Entity.class, generator.getGeneratedType());
 		return (Generator<Entity>) generator;
