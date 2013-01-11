@@ -29,11 +29,11 @@ package org.databene.benerator.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.engine.BeneratorOpts;
-import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.IOUtil;
@@ -59,7 +59,7 @@ public class GeneratorUtil {
 	}
 
     public static void init(Generator<?> generator) {
-    	init(generator, new DefaultBeneratorContext());
+    	init(generator, BeneratorFactory.getInstance().createContext("."));
     }
 
     public static void init(Generator<?> generator, GeneratorContext context) {

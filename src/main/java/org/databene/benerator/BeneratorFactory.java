@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,10 @@ import org.databene.benerator.engine.DefaultBeneratorFactory;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
+import org.databene.commons.Validator;
+import org.databene.commons.context.ContextAware;
 import org.databene.commons.version.VersionInfo;
 
 /**
@@ -64,5 +67,23 @@ public abstract class BeneratorFactory {
 			version = version.substring(0, version.length() - "-SNAPSHOT".length());
 		return "org/databene/benerator/benerator-" + version + ".xsd";
 	}
-	
+
+	public <S, T> Converter<S, T> configureConverter(Converter<S, T> converter, BeneratorContext context) {
+    	if (converter instanceof ContextAware)
+    		((ContextAware) converter).setContext(context);
+		return converter;
+	}
+
+	public <T> Validator<T> configureValidator(Validator<T> validator, BeneratorContext context) {
+    	if (validator instanceof ContextAware)
+    		((ContextAware) validator).setContext(context);
+		return validator;
+	}
+
+	public Consumer configureConsumer(Consumer consumer, BeneratorContext context) {
+    	if (consumer instanceof ContextAware)
+    		((ContextAware) consumer).setContext(context);
+    	return consumer;
+	}
+
 }

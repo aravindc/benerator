@@ -30,8 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ArrayUtil;
@@ -73,7 +73,7 @@ public class XmlCreator {
 			String pattern, long fileCount, String[] propertiesFiles) {
 		logParams(schemaUri, root, pattern, fileCount);
         long start = System.currentTimeMillis();
-        BeneratorContext context = new DefaultBeneratorContext(IOUtil.getParentUri(schemaUri));
+        BeneratorContext context = BeneratorFactory.getInstance().createContext(IOUtil.getParentUri(schemaUri));
         XMLFileGenerator fileGenerator = new XMLFileGenerator(schemaUri, root, pattern, propertiesFiles);
         fileGenerator.init(context);
         try {
