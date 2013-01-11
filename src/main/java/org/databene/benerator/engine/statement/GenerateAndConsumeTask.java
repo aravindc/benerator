@@ -65,7 +65,7 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
     private BeneratorContext context;
     private ResourceManager resourceManager;
     
-    private List<Statement> statements;
+    protected List<Statement> statements;
     private List<ScopedLifeCycleHolder> scopeds;
     private Expression<Consumer> consumerExpr;
 
