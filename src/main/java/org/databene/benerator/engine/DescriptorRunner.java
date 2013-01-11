@@ -84,7 +84,9 @@ public class DescriptorRunner implements ResourceManager {
 		ConverterManager.getInstance().setContext(context);
 	}
 	
-	
+	public static void resetMonitor() {
+		BeneratorMonitor.INSTANCE.reset();
+	}
 	
 	// interface -------------------------------------------------------------------------------------------------------
 	
