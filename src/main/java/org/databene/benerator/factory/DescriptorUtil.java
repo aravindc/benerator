@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,6 +37,7 @@ import javax.validation.ConstraintValidator;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
@@ -55,7 +56,6 @@ import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
-import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
@@ -169,6 +169,7 @@ public class DescriptorUtil {
 	        	else
 	        		result = new AndValidator(result, validator);
 	        }
+	        result = BeneratorFactory.getInstance().configureValidator(result, context);
 	        return result;
         } catch (ParseException e) {
         	throw new ConfigurationError("Invalid validator definition", e);
@@ -192,10 +193,9 @@ public class DescriptorUtil {
 	            	converter = (Converter) bean;
 	            else
 	            	throw new ConfigurationError(bean + " is not an instance of " + Converter.class);
-	            if (converter instanceof ContextAware)
-	            	((ContextAware) converter).setContext(context);
-	            
-	        	if (result == null)
+	            converter = BeneratorFactory.getInstance().configureConverter(converter, context);
+
+	            if (result == null)
 	        		result = converter;
 	        	else if (result instanceof ConverterChain)
 	        		((ConverterChain) result).addComponent(converter);
