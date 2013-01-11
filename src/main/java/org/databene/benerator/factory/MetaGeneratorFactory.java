@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,6 +21,7 @@
 
 package org.databene.benerator.factory;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.model.data.ArrayTypeDescriptor;
@@ -38,8 +39,6 @@ import org.databene.model.data.Uniqueness;
  */
 public class MetaGeneratorFactory {
 
-    private static SimpleTypeGeneratorFactory simpleTypeGeneratorFactory = new SimpleTypeGeneratorFactory();
-    private static ComplexTypeGeneratorFactory complexTypeGeneratorFactory = new ComplexTypeGeneratorFactory();
     private static ArrayTypeGeneratorFactory arrayTypeGeneratorFactory = new ArrayTypeGeneratorFactory();
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -61,9 +60,9 @@ public class MetaGeneratorFactory {
 
     protected static TypeGeneratorFactory<?> factoryFor(TypeDescriptor type) {
         if (type instanceof SimpleTypeDescriptor)
-			return simpleTypeGeneratorFactory;
+			return BeneratorFactory.getInstance().getSimpleTypeGeneratorFactory();
 		else if (type instanceof ComplexTypeDescriptor)
-    		return complexTypeGeneratorFactory;
+    		return BeneratorFactory.getInstance().getComplexTypeGeneratorFactory();
         else if (type instanceof ArrayTypeDescriptor)
     		return arrayTypeGeneratorFactory;
         else
