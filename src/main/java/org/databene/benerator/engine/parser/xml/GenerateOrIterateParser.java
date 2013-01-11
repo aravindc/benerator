@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.Consumer;
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.GeneratorComponent;
@@ -153,7 +154,6 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
     @SuppressWarnings("unchecked")
     public GenerateOrIterateStatement parseGenerate(Element element, Statement[] parentPath, 
     		BeneratorParseContext parsingContext, BeneratorContext context, boolean infoLog, boolean nested) {
-    	context.setCurrentProductName(getNameOrType(element));
     	// parse descriptor
 	    InstanceDescriptor descriptor = mapDescriptorElement(element, context);
 	    
@@ -164,22 +164,21 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 				element.getAttribute(ATT_PAGER));
 		Expression<ErrorHandler> errorHandler = parseOnErrorAttribute(element, element.getAttribute(ATT_NAME));
 		Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor, 0L);
-		GenerateOrIterateStatement statement = createStatement(element, countGenerator, minCount, pageSize, pager, 
-				infoLog, nested, errorHandler, context);
+		GenerateOrIterateStatement statement = createStatement(getTaskName(descriptor), countGenerator, minCount, pageSize, pager, infoLog, 
+				nested, element, errorHandler, context);
 		
 		// parse task and sub statements
 		GenerateAndConsumeTask task = parseTask(element, parentPath, statement, parsingContext, descriptor, infoLog);
 		statement.setTask(task);
-    	context.setCurrentProductName(null);
 		return statement;
 	}
 
-	protected GenerateOrIterateStatement createStatement(Element element,
-			Generator<Long> countGenerator, Expression<Long> minCount,
-			Expression<Long> pageSize, Expression<PageListener> pager,
-			boolean infoLog, boolean nested,
+	protected GenerateOrIterateStatement createStatement(String productName, Generator<Long> countGenerator, 
+			Expression<Long> minCount, Expression<Long> pageSize,
+			Expression<PageListener> pager, boolean infoLog,
+			boolean nested, Element element,
 			Expression<ErrorHandler> errorHandler, BeneratorContext context) {
-		return new GenerateOrIterateStatement(countGenerator, minCount, pageSize, pager, 
+		return new GenerateOrIterateStatement(productName, countGenerator, minCount, pageSize, pager, 
 				errorHandler, infoLog, nested, context);
 	}
 
@@ -190,9 +189,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		if (infoLog)
 			logger.debug("{}", descriptor);
 		
-		String taskName = descriptor.getName();
-		if (taskName == null)
-			taskName = descriptor.getLocalType().getSource();
+		String taskName = getTaskName(descriptor);
 		BeneratorContext context = statement.getContext();
 		BeneratorContext childContext = statement.getChildContext();
 		String productName = getNameOrType(element);
@@ -265,18 +262,18 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		}
 		
 		// create task
-		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, productName);
+		GenerateAndConsumeTask task = createTask(taskName, productName);
 		task.setStatements(statements);
 
 		// parse converter
 		Converter converter = DescriptorUtil.getConverter(element.getAttribute(ATT_CONVERTER), context);
 		if (converter != null)
-			task.addStatement(new ConversionStatement(converter));
+			task.addStatement(new ConversionStatement(BeneratorFactory.getInstance().configureConverter(converter, context)));
 
 		// parse validator
 		Validator validator = DescriptorUtil.getValidator(element.getAttribute(ATT_VALIDATOR), context);
 		if (validator != null)
-			task.addStatement(new ValidationStatement(validator));
+			task.addStatement(new ValidationStatement(BeneratorFactory.getInstance().configureValidator(validator, context)));
 
 		// parse consumers
 		boolean consumerExpected = CONSUMER_EXPECTING_ELEMENTS.contains(element.getNodeName());
@@ -285,6 +282,17 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		
 		return task;
     }
+
+	protected String getTaskName(InstanceDescriptor descriptor) {
+		String taskName = descriptor.getName();
+		if (taskName == null)
+			taskName = descriptor.getLocalType().getSource();
+		return taskName;
+	}
+
+	protected GenerateAndConsumeTask createTask(String taskName, String productName) {
+		return new GenerateAndConsumeTask(taskName, productName);
+	}
 
 	private Expression<Consumer> parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
 		return new CachedExpression<Consumer>(new XMLConsumerExpression(entityElement, consumersExpected, resourceManager));
