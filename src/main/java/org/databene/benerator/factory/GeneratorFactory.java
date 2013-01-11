@@ -237,8 +237,8 @@ public abstract class GeneratorFactory {
     public NonNullGenerator<String> createRegexStringGenerator(String pattern, int minLength, Integer maxLength, 
     		Uniqueness uniqueness) throws ConfigurationError {
     	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, minLength, maxLength, uniqueness, this);
-        return WrapperFactory.asNonNullGenerator(WrapperFactory.applyValidator(
-        		new StringLengthValidator(minLength, maxLength), generator));
+        StringLengthValidator validator = new StringLengthValidator(minLength, maxLength);
+		return WrapperFactory.asNonNullGenerator(WrapperFactory.applyValidator(validator, generator));
     }
 
     // collection generators -------------------------------------------------------------------------------------------
