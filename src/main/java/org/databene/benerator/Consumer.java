@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,8 +42,8 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @author Volker Bergmann
  */
 public interface Consumer extends Flushable, Closeable {
-    void startConsuming(ProductWrapper<?> object);
-    void finishConsuming(ProductWrapper<?> object);
+    void startConsuming(ProductWrapper<?> wrapper);
+    void finishConsuming(ProductWrapper<?> wrapper);
     void flush();
     void close();
 }
