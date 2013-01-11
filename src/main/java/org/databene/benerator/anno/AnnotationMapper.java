@@ -80,6 +80,7 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.db.DBSystem;
+import org.databene.platform.db.DefaultDBSystem;
 import org.databene.platform.java.BeanDescriptorProvider;
 import org.databene.platform.java.Entity2JavaConverter;
 import org.databene.script.DatabeneScriptParser;
@@ -409,9 +410,9 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	private static void parseDatabase(Database annotation, BeneratorContext context) {
 		DBSystem db;
 		if (!StringUtil.isEmpty(annotation.environment()))
-			db = new DBSystem(annotation.id(), annotation.environment(), context.getDataModel());
+			db = new DefaultDBSystem(annotation.id(), annotation.environment(), context.getDataModel());
 		else 
-			db = new DBSystem(annotation.id(), annotation.url(), annotation.driver(), 
+			db = new DefaultDBSystem(annotation.id(), annotation.url(), annotation.driver(), 
 					annotation.user(), annotation.password(), context.getDataModel());
 		if (!StringUtil.isEmpty(annotation.catalog()))
 			db.setCatalog(annotation.catalog());
