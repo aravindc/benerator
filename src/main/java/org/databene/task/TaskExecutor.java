@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2012-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,26 +32,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO Document class.<br/><br/>
+ * Single-threaded non-locking {@link Task} executor.<br/><br/>
  * Created: 19.12.2012 09:54:56
- * @since TODO version
+ * @since 0.8.0
  * @author Volker Bergmann
  */
-public class SimpleTaskRunner {
+public class TaskExecutor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleTaskRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskExecutor.class);
 
-	protected Task target;
-	protected Context context;
-	protected ErrorHandler errorHandler;
+    private Task target;
+    private Context context;
+    private ErrorHandler errorHandler;
     private List<PageListener> pageListeners;
-
     private long pageSize;
-    boolean infoLog;
-    
+    private boolean infoLog;
     private PerformanceTracker tracker;
 
-    private SimpleTaskRunner(Task target, List<PageListener> pageListeners, long pageSize, 
+    private TaskExecutor(Task target, List<PageListener> pageListeners, long pageSize, 
     		boolean stats, Context context, ErrorHandler errorHandler, boolean infoLog) {
     	this.context = context;
     	this.errorHandler = errorHandler;
@@ -68,7 +66,7 @@ public class SimpleTaskRunner {
     public static void execute(Task task, Context context, Long requestedInvocations, Long minInvocations,
             List<PageListener> pageListeners, long pageSize, boolean stats,
             ErrorHandler errorHandler, boolean infoLog) {
-    	SimpleTaskRunner runner = new SimpleTaskRunner(task, pageListeners, 
+    	TaskExecutor runner = new TaskExecutor(task, pageListeners, 
 				pageSize, stats, context, errorHandler, infoLog);
 		runner.run(requestedInvocations, minInvocations);
 	}
