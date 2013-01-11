@@ -38,14 +38,14 @@ public class BeneratorSubContextTest {
 	@Test
 	public void testGetParent() {
 		DefaultBeneratorContext parent = new DefaultBeneratorContext();
-		BeneratorSubContext child = (BeneratorSubContext) parent.createSubContext();
+		BeneratorSubContext child = (BeneratorSubContext) parent.createSubContext("sub");
 		assertTrue(parent == child.getParent());
 	}
 	
 	@Test
 	public void testGetAndSet() {
 		DefaultBeneratorContext parent = new DefaultBeneratorContext();
-		BeneratorSubContext child = (BeneratorSubContext) parent.createSubContext();
+		BeneratorSubContext child = (BeneratorSubContext) parent.createSubContext("sub");
 		// verify that child settings are not available in parent
 		child.set("c", 2);
 		assertEquals(null, parent.get("c"));
@@ -64,7 +64,7 @@ public class BeneratorSubContextTest {
 	@Test
 	public void testCurrentProduct() {
 		DefaultBeneratorContext parent = new DefaultBeneratorContext();
-		BeneratorSubContext child = (BeneratorSubContext) parent.createSubContext();
+		BeneratorSubContext child = (BeneratorSubContext) parent.createSubContext("sub");
 		// verify access to parent's currentProduct
 		ProductWrapper<Integer> pp = new ProductWrapper<Integer>(11);
 		parent.setCurrentProduct(pp);
