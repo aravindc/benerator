@@ -34,4 +34,5 @@ public interface BeneratorMonitorMBean {
 	int getOpenResultSetCount();
 	int getOpenStatementCount();
 	int getOpenPreparedStatementCount();
+	void reset();
 }

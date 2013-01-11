@@ -92,6 +92,13 @@ public class BeneratorMonitor implements BeneratorMonitorMBean {
 		return DBUtil.getOpenPreparedStatementCount();
 	}
 
+	public void reset() {
+		this.latestTimeStamp = 0;
+		this.latestGenerationCount = 0;
+		this.totalGenerationCount = 0;
+		this.currentThroughput = 0;
+	}
+
 	class ControlThread extends Thread {
 		@Override
 		public void run() {
