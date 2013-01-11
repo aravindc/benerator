@@ -47,7 +47,7 @@ import static org.databene.jdbacl.dialect.HSQLUtil.*;
 import static org.junit.Assert.*;
 
 /**
- * Tests {@link DBSystem}.<br/>
+ * Tests {@link DefaultDBSystem}.<br/>
  * <br/>
  * Created at 26.12.2008 03:40:44
  * @since 0.5.6
@@ -209,13 +209,13 @@ public class DBSystemTest {
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
-	private DBSystem db;
+	private DefaultDBSystem db;
 	
 	@Before
 	public void setUp() throws Exception {
 		Connection connection = null;
 		try {
-			db = new DBSystem("db", IN_MEMORY_URL_PREFIX + "benerator", DRIVER, DEFAULT_USER, DEFAULT_PASSWORD, new DataModel());
+			db = new DefaultDBSystem("db", IN_MEMORY_URL_PREFIX + "benerator", DRIVER, DEFAULT_USER, DEFAULT_PASSWORD, new DataModel());
 			db.setSchema("public");
 			connection = db.createConnection();
 			try {

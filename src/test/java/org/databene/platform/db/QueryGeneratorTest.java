@@ -41,11 +41,11 @@ import org.junit.Test;
  */
 public class QueryGeneratorTest extends GeneratorTest {
 	
-	static DBSystem db;
+	static DefaultDBSystem db;
 
 	@BeforeClass
 	public static void setupDB() {
-	    db = new DBSystem("db", HSQLUtil.getInMemoryURL(QueryGeneratorTest.class.getSimpleName()), HSQLUtil.DRIVER, "sa", null, new DataModel());
+	    db = new DefaultDBSystem("db", HSQLUtil.getInMemoryURL(QueryGeneratorTest.class.getSimpleName()), HSQLUtil.DRIVER, "sa", null, new DataModel());
 		db.execute("create table TT ( id int, value int )");
 		db.execute("insert into TT (id, value) values (1, 1000)");
     }

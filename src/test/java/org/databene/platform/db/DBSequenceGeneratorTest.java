@@ -38,12 +38,12 @@ import org.junit.Test;
  */
 public class DBSequenceGeneratorTest extends GeneratorTest {
 
-	private DBSystem db;
+	private DefaultDBSystem db;
 	private String seq = getClass().getSimpleName();
 	
 	@Before
 	public void setUpDB() throws SQLException {
-		db = new DBSystem("db", 
+		db = new DefaultDBSystem("db", 
 				HSQLUtil.IN_MEMORY_URL_PREFIX + "benerator", 
 				HSQLUtil.DRIVER, HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, context.getDataModel());
 		// create sequence and read its value

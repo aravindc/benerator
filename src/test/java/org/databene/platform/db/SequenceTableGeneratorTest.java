@@ -45,11 +45,11 @@ import org.junit.Test;
  */
 public class SequenceTableGeneratorTest extends GeneratorTest {
 	
-	static DBSystem db;
+	static DefaultDBSystem db;
 
 	@BeforeClass
 	public static void setupDB() {
-	    db = new DBSystem("db", HSQLUtil.getInMemoryURL(SequenceTableGeneratorTest.class.getSimpleName()), HSQLUtil.DRIVER, "sa", null, new DataModel());
+	    db = new DefaultDBSystem("db", HSQLUtil.getInMemoryURL(SequenceTableGeneratorTest.class.getSimpleName()), HSQLUtil.DRIVER, "sa", null, new DataModel());
 		db.execute("create table TT ( id1 int, id2 int, value int )");
 		db.execute("insert into TT (id1, id2, value) values (1, 2, 1000)");
 		db.execute("insert into TT (id1, id2, value) values (2, 3, 2000)");

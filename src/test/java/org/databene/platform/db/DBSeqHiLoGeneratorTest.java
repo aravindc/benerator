@@ -49,12 +49,12 @@ public class DBSeqHiLoGeneratorTest extends GeneratorTest {
     private static final String SEQUENCE_NAME = "seq_id_gen";
     private static Logger logger = LoggerFactory.getLogger(DBSeqHiLoGeneratorTest.class);
 
-    private DBSystem db;
+    private DefaultDBSystem db;
     
     @Before
     public void setUpDatabase() throws Exception {
     	String url = HSQLUtil.getInMemoryURL("beneratortest");
-    	db = new DBSystem("db", url, DRIVER, DEFAULT_USER, DEFAULT_PASSWORD, context.getDataModel());
+    	db = new DefaultDBSystem("db", url, DRIVER, DEFAULT_USER, DEFAULT_PASSWORD, context.getDataModel());
     	dropSequence();
     	db.createSequence(SEQUENCE_NAME);
     }
