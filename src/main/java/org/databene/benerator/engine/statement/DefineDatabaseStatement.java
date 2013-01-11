@@ -30,7 +30,9 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.ConfigurationError;
+import org.databene.model.data.DataModel;
 import org.databene.platform.db.DBSystem;
+import org.databene.platform.db.DefaultDBSystem;
 import org.databene.script.Expression;
 import org.databene.script.expression.ExpressionUtil;
 import org.slf4j.Logger;
@@ -101,7 +103,7 @@ public class DefineDatabaseStatement implements Statement {
 	    String idValue = id.evaluate(context);
 	    
 	    // DB config is based on the (optional) environment setting
-		DBSystem db = new DBSystem(idValue, ExpressionUtil.evaluate(environment, context), context.getDataModel());
+		DBSystem db = accessDatabase(idValue, ExpressionUtil.evaluate(environment, context), context.getDataModel());
 		
 		// The user may override single or all settings from the environment configuration
 		String urlValue = ExpressionUtil.evaluate(url, context);
@@ -141,5 +143,9 @@ public class DefineDatabaseStatement implements Statement {
 	    resourceManager.addResource(db);
     	return true;
     }
+
+	protected DBSystem accessDatabase(String id, String environment, DataModel dataModel) {
+		return new DefaultDBSystem(id, environment, dataModel);
+	}
 
 }
