@@ -71,6 +71,7 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.db.DBSystem;
+import org.databene.platform.db.DefaultDBSystem;
 import org.databene.script.Expression;
 import org.databene.script.expression.ExpressionUtil;
 import org.databene.text.LFNormalizingStringBuilder;
@@ -436,7 +437,7 @@ public class ProjectBuilder implements Runnable {
     }
 	
     private void generateTables(Setup setup, LFNormalizingStringBuilder writer) {
-    	final DBSystem db = getDBSystem(setup);
+    	DBSystem db = getDBSystem(setup);
     	TypeDescriptor[] descriptors = db.getTypeDescriptors();
 		for (TypeDescriptor descriptor : descriptors) {
           	ComplexTypeDescriptor complexType = (ComplexTypeDescriptor) descriptor;
@@ -451,7 +452,7 @@ public class ProjectBuilder implements Runnable {
 	}
 
     private DBSystem getDBSystem(Setup setup) {
-		DBSystem db = new DBSystem("db", setup.getDbUrl(), setup.getDbDriver(), setup.getDbUser(), setup.getDbPassword(), dataModel);
+		DBSystem db = new DefaultDBSystem("db", setup.getDbUrl(), setup.getDbDriver(), setup.getDbUser(), setup.getDbPassword(), dataModel);
 		if (setup.getDbSchema() != null)
 			db.setSchema(setup.getDbSchema());
 		dataModel.addDescriptorProvider(db);
