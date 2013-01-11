@@ -41,7 +41,7 @@ import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
-import org.databene.platform.db.DBSystem;
+import org.databene.platform.db.DefaultDBSystem;
 import org.databene.webdecs.DataIterator;
 import org.databene.webdecs.DataSource;
 import org.databene.webdecs.util.DataIteratorTestCase;
@@ -387,7 +387,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	@Test
 	public void testDBUpdate() throws Exception {
 		// create DB
-        DBSystem db = new DBSystem("db", HSQLUtil.getInMemoryURL("benetest"), 
+        DefaultDBSystem db = new DefaultDBSystem("db", HSQLUtil.getInMemoryURL("benetest"), 
         		HSQLUtil.DRIVER, HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, context.getDataModel());
         try {
     		// prepare DB
