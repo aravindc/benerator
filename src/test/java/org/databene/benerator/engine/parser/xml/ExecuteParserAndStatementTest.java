@@ -30,6 +30,7 @@ import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.commons.ConfigurationError;
 import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.platform.db.DBSystem;
+import org.databene.platform.db.DefaultDBSystem;
 import org.junit.Test;
 
 /**
@@ -75,7 +76,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testEmptyResultSet() throws Exception {
 		String url = HSQLUtil.getInMemoryURL("benerator");
-		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
+		DBSystem db = new DefaultDBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
 		BeneratorContext context = new DefaultBeneratorContext();
 		context.set("db", db);
 		try {
@@ -91,7 +92,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testDbInvalidationDefault() throws Exception {
 		String url = HSQLUtil.getInMemoryURL("benerator");
-		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
+		DBSystem db = new DefaultDBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
 		BeneratorContext context = new DefaultBeneratorContext();
 		context.set("db", db);
 		assertEquals(0, db.invalidationCount());
@@ -112,7 +113,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testDbInvalidationOverride() throws Exception {
 		String url = HSQLUtil.getInMemoryURL("benerator");
-		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
+		DBSystem db = new DefaultDBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
 		BeneratorContext context = new DefaultBeneratorContext();
 		context.set("db", db);
 		assertEquals(0, db.invalidationCount());
