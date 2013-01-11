@@ -30,7 +30,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.commons.ErrorHandler;
 import org.databene.script.Expression;
 import org.databene.task.PageListener;
-import org.databene.task.SimpleTaskRunner;
+import org.databene.task.TaskExecutor;
 import org.databene.task.Task;
 
 /**
@@ -85,7 +85,7 @@ public class RunTaskStatement extends AbstractStatement implements Closeable {
 
 	public boolean execute(BeneratorContext context) {
 	    Long invocations = count.evaluate(context);
-		SimpleTaskRunner.execute(
+		TaskExecutor.execute(
 	    		getTask(context), context, 
 	    		invocations,
 	    		invocations,
