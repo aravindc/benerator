@@ -86,7 +86,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 	@Test
 	public void testImportPredefinedEntityType() throws Exception {
 		ComplexTypeDescriptor entityDescriptor = new ComplexTypeDescriptor("XYZ", context.getLocalDescriptorProvider());
-		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, new NoOpConverter<String>(), entityDescriptor, null);
+		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, new NoOpConverter<String>(), entityDescriptor, null, false);
 		iterator.setContext(context);
 		try {
 			assertXYZ(XYZ11, DataUtil.nextNotNullData(iterator));
@@ -103,7 +103,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 	
 	@Test
 	public void testImportProductSheet() throws Exception {
-		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, null, null, "Product");
+		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, null, null, "Product", false);
 		iterator.setContext(context);
 		try {
 			assertProduct(PROD1, DataUtil.nextNotNullData(iterator));
@@ -117,7 +117,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 	
 	@Test
 	public void testImportPersonSheet() throws Exception {
-		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, null, null, "Person");
+		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, null, null, "Person", false);
 		iterator.setContext(context);
 		try {
 			assertPerson(PERSON1, DataUtil.nextNotNullData(iterator));
