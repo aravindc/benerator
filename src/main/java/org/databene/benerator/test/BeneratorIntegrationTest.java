@@ -65,7 +65,7 @@ public abstract class BeneratorIntegrationTest extends GeneratorTest {
 		return context;
     }
 
-	protected BeneratorContext parseAndExecute(String xml) {
+	public BeneratorContext parseAndExecute(String xml) {
 	    Statement statement = parse(xml);
 		statement.execute(context);
 		return context;
