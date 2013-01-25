@@ -543,6 +543,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		mapSourceSetting(source.separator(), "separator", instanceDescriptor);
 		mapSourceSetting(source.emptyMarker(), "emptyMarker", instanceDescriptor);
 		mapSourceSetting(source.nullMarker(), "nullMarker", instanceDescriptor);
+		mapFormatted(source, instanceDescriptor);
     	setDetail("rowBased", source.rowBased(), instanceDescriptor);
     }
 
@@ -556,6 +557,14 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	    if (!StringUtil.isEmpty(value))
 	    	setDetail(detailName, value, instanceDescriptor);
     }
+
+	private void mapFormatted(Source source, InstanceDescriptor instanceDescriptor) {
+		switch (source.format()) {
+			case formatted: case raw: setDetail("format", source.format().name(), instanceDescriptor); break;
+			case globalDefault: break;
+			default: throw new UnsupportedOperationException("Not a supported Format: " + source.format());
+		}
+	}
 
 	private static void mapValuesAnnotation(Values annotation, InstanceDescriptor instanceDescriptor) throws Exception {
 		Method method = annotation.annotationType().getMethod("value");

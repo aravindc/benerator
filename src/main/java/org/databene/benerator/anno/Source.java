@@ -26,6 +26,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.databene.model.data.Format;
+
 /**
  * Specifies a data source and its characteristics for generating data for the annotated element.<br/><br/>
  * Created: 02.05.2010 19:01:59
@@ -42,6 +44,7 @@ public @interface Source {
 	
 	String uri() default "";
 	String segment() default "";
+	Format format() default Format.globalDefault;
 	
 	String filter() default "";
 	String separator() default "";
