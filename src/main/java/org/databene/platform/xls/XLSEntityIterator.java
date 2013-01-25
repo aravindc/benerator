@@ -69,6 +69,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 
 	private int sheetNo;
 	private String sheetName;
+	protected boolean formatted;
 	private boolean rowBased;
 	protected String emptyMarker;
 	
@@ -81,10 +82,10 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 	// constructors ----------------------------------------------------------------------------------------------------
 
 	public XLSEntityIterator(String uri) throws IOException {
-		this(uri, new NoOpConverter<String>(), null, null);
+		this(uri, new NoOpConverter<String>(), null, null, false);
 	}
 
-	public XLSEntityIterator(String uri, Converter<String, ?> preprocessor, ComplexTypeDescriptor entityDescriptor, String sheetName) 
+	public XLSEntityIterator(String uri, Converter<String, ?> preprocessor, ComplexTypeDescriptor entityDescriptor, String sheetName, boolean formatted) 
 			throws IOException {
 		this.uri = uri;
 		this.preprocessor = preprocessor;
@@ -94,6 +95,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 		this.workbook = new HSSFWorkbook(IOUtil.getInputStreamForURI(uri));
 		this.sheetName = sheetName;
 		this.sheetNo = -1;
+		this.formatted = formatted;
 	}
 	
 	public void setSheetName(String sheetName) {
@@ -135,13 +137,13 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 	// convenience methods ---------------------------------------------------------------------------------------------
 
 	public static List<Entity> parseAll(String uri, Converter<String, ?> preprocessor) throws IOException {
-    	return parseAll(uri, preprocessor, null);
+    	return parseAll(uri, preprocessor, null, false);
 	}
 
-	public static List<Entity> parseAll(String uri, Converter<String, ?> preprocessor, String sheetName) 
+	public static List<Entity> parseAll(String uri, Converter<String, ?> preprocessor, String sheetName, boolean formatted) 
 			throws IOException {
     	List<Entity> list = new ArrayList<Entity>();
-    	XLSEntityIterator iterator = new XLSEntityIterator(uri, preprocessor, null, sheetName);
+    	XLSEntityIterator iterator = new XLSEntityIterator(uri, preprocessor, null, sheetName, formatted);
     	iterator.setContext(new DefaultBeneratorContext());
 		DataContainer<Entity> container = new DataContainer<Entity>();
     	while ((container = iterator.next(container)) != null)
@@ -251,7 +253,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 
 		private DataIterator<Object[]> createRawIterator(HSSFSheet sheet, boolean rowBased,
 				Converter<String, ?> preprocessor) {
-			XLSLineIterator iterator = new XLSLineIterator(sheet, preprocessor);
+			XLSLineIterator iterator = new XLSLineIterator(sheet, preprocessor, formatted);
 			if (emptyMarker != null)
 				iterator.setEmptyMarker(emptyMarker);
 	        if (!rowBased)

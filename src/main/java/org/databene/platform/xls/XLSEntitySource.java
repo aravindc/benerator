@@ -49,21 +49,23 @@ public class XLSEntitySource extends FileBasedEntitySource {
 	private ComplexTypeDescriptor entityType;
     private Converter<String, ?> preprocessor;
     private String sheetName;
+    private boolean formatted;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public XLSEntitySource(String uri, Converter<String, ?> preprocessor, ComplexTypeDescriptor entityType, String sheetName) {
+    public XLSEntitySource(String uri, Converter<String, ?> preprocessor, ComplexTypeDescriptor entityType, String sheetName, boolean formatted) {
         super(uri);
         this.entityType = entityType;
         this.preprocessor = preprocessor;
 		this.sheetName = sheetName;
+		this.formatted = formatted;
 	}
 
     // EntityIterable interface ----------------------------------------------------------------------------------------
 
     public DataIterator<Entity> iterator() {
         try {
-			return new XLSEntityIterator(resolveUri(), preprocessor, entityType, sheetName);
+			return new XLSEntityIterator(resolveUri(), preprocessor, entityType, sheetName, formatted);
 		} catch (IOException e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
 		}

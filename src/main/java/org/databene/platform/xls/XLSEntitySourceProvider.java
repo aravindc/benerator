@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,14 +38,16 @@ public class XLSEntitySourceProvider implements DataSourceProvider<Entity> {
 	
 	private ComplexTypeDescriptor entityType;
 	private Converter<String, ?> scriptConverter;
+	private boolean formatted;
 	
-	public XLSEntitySourceProvider(ComplexTypeDescriptor entityType, Converter<String, ?> scriptConverter) {
+	public XLSEntitySourceProvider(ComplexTypeDescriptor entityType, boolean formatted, Converter<String, ?> scriptConverter) {
 		this.entityType = entityType;
 	    this.scriptConverter = scriptConverter;
+	    this.formatted = formatted;
     }
 
 	public EntitySource create(String uri, BeneratorContext context) {
-        XLSEntitySource source = new XLSEntitySource(uri, scriptConverter, entityType, entityType.getSegment());
+        XLSEntitySource source = new XLSEntitySource(uri, scriptConverter, entityType, entityType.getSegment(), formatted);
         source.setContext(context);
         return source;
 	}
