@@ -51,6 +51,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     public static final String SCRIPT       = "script";
 
     public static final String SOURCE       = "source";
+    public static final String FORMAT       = "format";
     public static final String ROW_BASED    = "rowBased";
     public static final String SEGMENT      = "segment";
     public static final String OFFSET       = "offset";
@@ -99,7 +100,9 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         addConfig(CONVERTER,      String.class);
         addConfig(PATTERN,        String.class);
         addConfig(SCRIPT,         String.class);
+
         addConfig(SOURCE,         String.class);
+        addConfig(FORMAT,         Format.class);
         addConfig(ROW_BASED,      Boolean.class);
         addConfig(SEGMENT,        String.class);
         addConfig(OFFSET,         Integer.class);
@@ -199,6 +202,14 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     public void setSource(String source) {
         setDetailValue(SOURCE, source);
+    }
+
+    public Format getFormat() {
+        return (Format) getDetailValue(FORMAT);
+    }
+
+    public void setFormat(Format format) {
+        setDetailValue(FORMAT, format);
     }
 
     public String getSegment() {
