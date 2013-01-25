@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,6 +42,7 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.converter.String2DateConverter;
+import org.databene.model.data.Format;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
@@ -221,6 +222,18 @@ public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
 
     protected boolean shouldNullifyEachNullable(BeneratorContext context) {
 		return (context.getGeneratorFactory().getDefaultsProvider().defaultNullQuota() == 1.);
+	}
+    
+	protected static boolean isFormatted(TypeDescriptor type) {
+		Format format = type.getFormat();
+		if (format == Format.formatted)
+			return true;
+		else if (format == Format.raw)
+			return false;
+		else if (!type.getSource().toLowerCase().endsWith(".xls"))
+			return false;
+		else
+			return org.databene.platform.xls.PlatformDescriptor.isFormattedByDefault();
 	}
 
 }

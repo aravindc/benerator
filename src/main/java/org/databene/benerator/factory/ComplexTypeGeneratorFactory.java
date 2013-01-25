@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -237,7 +237,8 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
     private static Generator<Entity> createXLSSourceGenerator(
 			ComplexTypeDescriptor complexType, BeneratorContext context, String sourceName, String segment) {
     	ScriptConverterForStrings converter = new ScriptConverterForStrings(context);
-		XLSEntitySourceProvider fileProvider = new XLSEntitySourceProvider(complexType, converter);
+    	boolean formatted = isFormatted(complexType);
+		XLSEntitySourceProvider fileProvider = new XLSEntitySourceProvider(complexType, formatted, converter);
 		return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
 

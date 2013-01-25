@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -152,13 +152,15 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
 		return WrapperFactory.applyConverter(generator, new ArrayElementTypeConverter(arrayType));
     }
 
-	private Generator<Object[]> createXLSSourceGenerator(ArrayTypeDescriptor arrayType, BeneratorContext context,
-            String sourceName) {
+	private Generator<Object[]> createXLSSourceGenerator(
+			ArrayTypeDescriptor arrayType, BeneratorContext context, String sourceName) {
 		logger.debug("createXLSSourceGenerator({})", arrayType);
 		boolean rowBased = (arrayType.isRowBased() != null ? arrayType.isRowBased() : true);
 		String emptyMarker = arrayType.getEmptyMarker();
 		String nullMarker = arrayType.getNullMarker();
-		DataSourceProvider<Object[]> factory = new XLSArraySourceProvider(new ScriptConverterForObjects(context), emptyMarker, nullMarker, rowBased);
+    	boolean formatted = isFormatted(arrayType);
+		DataSourceProvider<Object[]> factory = new XLSArraySourceProvider(formatted, 
+				new ScriptConverterForObjects(context), emptyMarker, nullMarker, rowBased);
 		Generator<Object[]> generator = SourceFactory.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
 		generator = WrapperFactory.applyConverter(generator, new ArrayElementTypeConverter(arrayType));
 		return generator;
