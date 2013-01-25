@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -100,6 +100,7 @@ public interface DescriptorConstants {
 	static final String ATT_MESSAGE = "message";
 	static final String ATT_SELECTOR = "selector";
 	static final String ATT_SOURCE = "source";
+	static final String ATT_FORMAT = "format";
 	static final String ATT_OFFSET = "offset";
     static final String ATT_REF = "ref";
     static final String ATT_VALUE = "value";
