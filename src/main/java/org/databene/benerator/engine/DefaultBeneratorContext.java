@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,9 +23,12 @@ package org.databene.benerator.engine;
 
 import java.io.File;
 import java.util.Locale;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.parser.String2DistributionConverter;
 import org.databene.benerator.factory.DefaultsProvider;
 import org.databene.benerator.factory.GeneratorFactory;
@@ -34,15 +37,17 @@ import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Level;
 import org.databene.commons.LocaleUtil;
+import org.databene.commons.NullSafeComparator;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ClassCache;
-import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
+import org.databene.commons.context.SimpleContextStack;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.file.FileSuffixFilter;
 import org.databene.domain.address.Country;
@@ -60,14 +65,21 @@ import org.databene.script.ScriptUtil;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class DefaultBeneratorContext extends ContextStack implements BeneratorContext {
-
+public class DefaultBeneratorContext implements BeneratorContext {
+	
+	// constants -------------------------------------------------------------------------------------------------------
+	
     public static final String CELL_SEPARATOR_SYSPROP = "cell.separator";
  	public static final char DEFAULT_CELL_SEPARATOR = ',';
-
+ 	
+ 	
+ 	
+ 	// attributes -------------------------------------------------------------------------------------------------------
+ 	
 	private GeneratorFactory generatorFactory;
     private DefaultContext settings;
 	private ClassCache classCache;
+	private ContextStack contextStack;
 	
     protected String  defaultEncoding      = SystemInfo.getFileEncoding();
     protected String  defaultDataset       = LocaleUtil.getDefaultCountryCode();
@@ -81,19 +93,23 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 
 
     protected ComplexTypeDescriptor defaultComponent;
-    protected ExecutorService executorService = Executors.newCachedThreadPool();
+    protected ExecutorService executorService;
 
 	private ProductWrapper<?> currentProduct;
 
 	private DataModel dataModel;
 	private DefaultDescriptorProvider localDescriptorProvider;
 	
-	private String currentCreator;
-
+	protected String currentProductName;
+	
+	
+	
+	// construction ----------------------------------------------------------------------------------------------------
+	
     static {
     	ScriptUtil.addFactory("ben", new BeneratorScriptFactory());
     	ScriptUtil.setDefaultScriptEngine("ben");
-    	ConverterManager.getInstance().registerConverterClass(String2DistributionConverter.class);
+    	ConverterManager.getInstance().registerConverterClass(String2DistributionConverter.class); // TODO is this required any longer?
     }
     
 	public DefaultBeneratorContext() {
@@ -104,26 +120,27 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 		if (contextUri == null)
 			throw new ConfigurationError("No context URI specified");
 		this.contextUri = contextUri;
+		this.executorService = createExecutorService();
 		this.dataModel = new DataModel();
 		this.localDescriptorProvider = new DefaultDescriptorProvider("ctx", dataModel);
 		this.defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent", localDescriptorProvider);
 		this.generatorFactory = new StochasticGeneratorFactory();
 		settings = new DefaultContext();
-		push(new DefaultContext(java.lang.System.getenv()));
-		push(new DefaultContext(java.lang.System.getProperties()));
-		push(settings);
-		push(new CaseInsensitiveContext(true));
+		this.contextStack = createContextStack(
+			new DefaultContext(java.lang.System.getenv()),
+			new DefaultContext(java.lang.System.getProperties()),
+			settings,
+			BeneratorFactory.getInstance().createGenerationContext()
+		);
 		set("context", this);
 		if (IOUtil.isFileUri(contextUri))
 			addLibFolderToClassLoader();
 		classCache = new ClassCache();
 	}
 	
-	public BeneratorContext createSubContext() {
-		return new BeneratorSubContext(this);
-	}
 	
-	// interface -------------------------------------------------------------------------------------------------------
+	
+	// properties ------------------------------------------------------------------------------------------------------
 	
 	public GeneratorFactory getGeneratorFactory() {
 		return generatorFactory;
@@ -140,58 +157,6 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 	public void setDefaultsProvider(DefaultsProvider defaultsProvider) {
 		this.generatorFactory.setDefaultsProvider(defaultsProvider);
 	}
-	
-	public void addLocalType(TypeDescriptor type) {
-		localDescriptorProvider.addTypeDescriptor(type);
-	}
-
-	public void setSetting(String name, Object value) {
-		settings.set(name, value);
-	}
-	
-	public Object getSetting(String name) {
-		return settings.get(name);
-	}
-	
-	public void close() {
-		executorService.shutdownNow();
-	}
-	
-    public Class<?> forName(String className) {
-		return classCache.forName(className);
-	}
-	
-	public void importClass(String className) {
-		classCache.importClass(className);
-	}
-
-	public void importPackage(String packageName) {
-		classCache.importPackage(packageName);
-	}
-
-	public void importDefaults() {
-		// import frequently used Benerator packages
-		importPackage("org.databene.benerator.consumer");
-		importPackage("org.databene.benerator.primitive");
-		importPackage("org.databene.benerator.primitive.datetime");
-		importPackage("org.databene.benerator.distribution.sequence");
-		importPackage("org.databene.benerator.distribution.function");
-		importPackage("org.databene.benerator.distribution.cumulative");
-		importPackage("org.databene.benerator.sample");
-		// import ConsoleExporter and LoggingConsumer
-		importPackage("org.databene.model.consumer");
-		// import formats, converters and validators from commons
-		importPackage("org.databene.commons.converter");
-		importPackage("org.databene.commons.format");
-		importPackage("org.databene.commons.validator");
-		// import standard platforms
-		importPackage("org.databene.platform.fixedwidth");
-		importPackage("org.databene.platform.csv");
-		importPackage("org.databene.platform.dbunit");
-		importPackage("org.databene.platform.xls");
-	}
-
-	// properties ------------------------------------------------------------------------------------------------------
 	
     public String getDefaultEncoding() {
         return defaultEncoding;
@@ -305,14 +270,6 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
     	return executorService;
     }
 
-	public void setExecutorService(ExecutorService executorService) {
-    	this.executorService = executorService;
-    }
-	
-	public String resolveRelativeUri(String relativeUri) {
-	    return IOUtil.resolveRelativeUri(relativeUri, contextUri);
-    }
-
 	public boolean isDefaultOneToOne() {
     	return defaultOneToOne;
     }
@@ -357,10 +314,6 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 
 	public void setCurrentProduct(ProductWrapper<?> currentProduct) {
 		this.currentProduct = currentProduct;
-		if (currentProduct != null)
-			set("this", currentProduct.unwrap());
-		else
-			remove("this");
 	}
 
 	public DataModel getDataModel() {
@@ -371,6 +324,118 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 		this.dataModel = dataModel;
 	}
 	
+	
+	
+	// Context interface -----------------------------------------------------------------------------------------------
+	
+	public Object get(String key) {
+		if (contextStack.contains(key))
+			return contextStack.get(key);
+		else if (key.equalsIgnoreCase(currentProductName) || "this".equalsIgnoreCase(key))
+			return currentProduct.unwrap();
+		else
+			return null;
+	}
+
+	public void set(String key, Object value) {
+		contextStack.set(key, value);
+	}
+
+	public void remove(String key) {
+		contextStack.remove(key);
+	}
+
+	public Set<String> keySet() {
+		return contextStack.keySet();
+	}
+
+	public Set<Entry<String, Object>> entrySet() {
+		return contextStack.entrySet();
+	}
+
+	public boolean contains(String key) {
+		return (key != null && (key.equalsIgnoreCase(currentProductName) || "this".equalsIgnoreCase(key) || contextStack.contains(key)));
+	}
+
+	
+	
+	// class-loading interface -----------------------------------------------------------------------------------------
+	
+    public Class<?> forName(String className) {
+		return classCache.forName(className);
+	}
+	
+	public void importClass(String className) {
+		classCache.importClass(className);
+	}
+
+	public void importPackage(String packageName) {
+		classCache.importPackage(packageName);
+	}
+
+	public void importDefaults() {
+		// import frequently used Benerator packages
+		importPackage("org.databene.benerator.consumer");
+		importPackage("org.databene.benerator.primitive");
+		importPackage("org.databene.benerator.primitive.datetime");
+		importPackage("org.databene.benerator.distribution.sequence");
+		importPackage("org.databene.benerator.distribution.function");
+		importPackage("org.databene.benerator.distribution.cumulative");
+		importPackage("org.databene.benerator.sample");
+		// import ConsoleExporter and LoggingConsumer
+		importPackage("org.databene.model.consumer");
+		// import formats, converters and validators from commons
+		importPackage("org.databene.commons.converter");
+		importPackage("org.databene.commons.format");
+		importPackage("org.databene.commons.validator");
+		// import standard platforms
+		importPackage("org.databene.platform.fixedwidth");
+		importPackage("org.databene.platform.csv");
+		importPackage("org.databene.platform.dbunit");
+		importPackage("org.databene.platform.xls");
+	}
+	
+	
+	
+	// other interface methods -----------------------------------------------------------------------------------------
+
+	public void setGlobal(String name, Object value) {
+		settings.set(name, value);
+	}
+	
+	public Object getGlobal(String name) {
+		return settings.get(name);
+	}
+	
+	public void close() {
+		executorService.shutdownNow();
+	}
+	
+	public void addLocalType(TypeDescriptor type) {
+		localDescriptorProvider.addTypeDescriptor(type);
+	}
+
+	public BeneratorContext createSubContext(String productName) {
+		return new DefaultBeneratorSubContext(productName, this);
+	}
+	
+	public void setCurrentProduct(ProductWrapper<?> currentProduct, String currentProductName) {
+		this.currentProductName = currentProductName;
+		setCurrentProduct(currentProduct);
+	}
+	
+	public boolean hasProductNameInScope(String productName) {
+		return (NullSafeComparator.equals(this.currentProductName, productName));
+	}
+	
+	public String resolveRelativeUri(String relativeUri) {
+	    return IOUtil.resolveRelativeUri(relativeUri, contextUri);
+    }
+
+	
+	
+	// non-public helper methods ---------------------------------------------------------------------------------------
+
 	private void addLibFolderToClassLoader() {
 		File libFolder = new File(contextUri, "lib");
 		if (libFolder.exists()) {
@@ -382,12 +447,12 @@ public class DefaultBeneratorContext extends ContextStack implements BeneratorCo
 		}
 	}
 
-	public void setCurrentProductName(String currentCreator) {
-		this.currentCreator = currentCreator;
+	protected ExecutorService createExecutorService() {
+		return Executors.newSingleThreadExecutor();
 	}
 
-	public boolean hasProductNameInScope(String currentCreator) {
-		return (this.currentCreator != null && this.currentCreator.equals(currentCreator));
+	protected ContextStack createContextStack(Context... contexts) {
+		return new SimpleContextStack(contexts);
 	}
 
 }
