@@ -54,7 +54,7 @@ public interface GeneratorContext extends Context {
 	// other features --------------------------------------------------------------------------------------------------
 	
     GeneratorFactory getGeneratorFactory();
-	Object getSetting(String name);
+	Object getGlobal(String name);
     Class<?> forName(String className);
 	ExecutorService getExecutorService();
 	String resolveRelativeUri(String relativeUri);
