@@ -28,6 +28,7 @@ import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
 import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
 import org.databene.commons.Validator;
@@ -66,6 +67,7 @@ public abstract class BeneratorFactory {
 
     public abstract BeneratorContext createContext(String contextUri);
     public abstract BeneratorParseContext createParseContext(ResourceManager resourceManager);
+	public abstract Context createGenerationContext();
     
 	public abstract ComplexTypeGeneratorFactory getComplexTypeGeneratorFactory();
 	public abstract SimpleTypeGeneratorFactory getSimpleTypeGeneratorFactory();
@@ -73,5 +75,5 @@ public abstract class BeneratorFactory {
 	public abstract <S, T> Converter<S, T> configureConverter(Converter<S, T> converter, BeneratorContext context);
 	public abstract <T> Validator<T> configureValidator(Validator<T> validator, BeneratorContext context);
 	public abstract Consumer configureConsumer(Consumer consumer, BeneratorContext context);
-
+	
 }
