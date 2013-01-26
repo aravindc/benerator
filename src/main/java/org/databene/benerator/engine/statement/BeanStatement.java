@@ -80,7 +80,7 @@ public class BeanStatement extends SequentialStatement {
 			resourceManager.addResource((Closeable) bean);
 		if (bean instanceof Generator && constructionExpression instanceof BeanConstruction)
 			((Generator) bean).init(context);
-		context.set(id, bean);
+		context.setGlobal(id, bean);
     	return true;
     }
 

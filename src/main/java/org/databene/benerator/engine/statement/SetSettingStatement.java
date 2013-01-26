@@ -55,7 +55,7 @@ public class SetSettingStatement implements Statement {
 		if (propertyName.startsWith("context."))
 	        AnyMutator.setValue(context, propertyName, value, true);
         else {
-			context.setSetting(propertyName, value);
+			context.setGlobal(propertyName, value);
         }
     	return true;
 	}

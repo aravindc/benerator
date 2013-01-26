@@ -175,7 +175,7 @@ public class EvaluateStatement implements Statement {
 					text = IOUtil.getContentOfURI(uriValue);
 				result = runScript(text, typeValue, onErrorValue, context);
 			}
-			context.set("result", result);
+			context.setGlobal("result", result);
 			Object assertionValue = ExpressionUtil.evaluate(assertionEx, context);
 			if (assertionValue instanceof String)
 				assertionValue = LiteralParser.parse((String) assertionValue);
@@ -190,7 +190,7 @@ public class EvaluateStatement implements Statement {
 			}
 			String idValue = ExpressionUtil.evaluate(idEx, context);
 			if (idValue != null)
-				context.set(idValue, result);
+				context.setGlobal(idValue, result);
 	    	return true;
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);

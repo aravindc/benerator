@@ -54,7 +54,7 @@ public class MemStoreStatement implements Statement {
 	    logger.debug("Instantiating store with id '" + id + "'");
 		MemStore store = new MemStore(id, context.getDataModel());
 	    // register this object on all relevant managers and in the context
-	    context.set(id, store);
+	    context.setGlobal(id, store);
 	    context.getDataModel().addDescriptorProvider(store);
 	    resourceManager.addResource(store);
     	return true;

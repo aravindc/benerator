@@ -419,13 +419,13 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		if (!StringUtil.isEmpty(annotation.schema()))
 			db.setSchema(annotation.schema());
 		db.setLazy(true);
-		context.set(db.getId(), db);
+		context.setGlobal(db.getId(), db);
 	}
 	
 	private static void parseBean(Bean annotation, BeneratorContext context) {
         Object bean = instantiateBean(annotation, context);
         applyProperties(annotation.properties(), bean, context);
-        context.set(annotation.id(), bean);
+        context.setGlobal(annotation.id(), bean);
         if (bean instanceof ContextAware)
         	((ContextAware) bean).setContext(context);
 	}

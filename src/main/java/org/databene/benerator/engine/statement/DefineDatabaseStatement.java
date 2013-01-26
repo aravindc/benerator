@@ -138,7 +138,7 @@ public class DefineDatabaseStatement implements Statement {
 	    db.setAcceptUnknownColumnTypes(ExpressionUtil.evaluate(acceptUnknownColumnTypes, context));
 
 	    // register this object on all relevant managers and in the context
-	    context.set(idValue, db);
+	    context.setGlobal(idValue, db);
 	    context.getDataModel().addDescriptorProvider(db, context.isValidate() && !isLazy);
 	    resourceManager.addResource(db);
     	return true;
