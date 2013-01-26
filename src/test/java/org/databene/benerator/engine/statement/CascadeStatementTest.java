@@ -50,7 +50,7 @@ public class CascadeStatementTest extends GeneratorTest {
 	public void setUpDatabase() throws Exception {
 		DBUtil.resetMonitors();
 		consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
 		db = new DefaultDBSystem("db", dbUrl, HSQLUtil.DRIVER, 
 				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, context.getDataModel());
@@ -72,7 +72,7 @@ public class CascadeStatementTest extends GeneratorTest {
 				"   constraint referee_fk foreign key (referee_id) references referee (id))");
 		db.execute("insert into referer (id, referee_id) values (4, 2)");
 		db.execute("insert into referer (id, referee_id) values (5, 3)");
-		context.set("db", db);
+		context.setGlobal("db", db);
 		context.getDataModel().addDescriptorProvider(db);
 	}
 	

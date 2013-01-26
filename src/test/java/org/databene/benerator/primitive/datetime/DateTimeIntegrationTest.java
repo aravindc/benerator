@@ -51,7 +51,7 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 	@Before
 	public void setUpContext() {
 		consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 	}
 
 	

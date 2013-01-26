@@ -45,7 +45,7 @@ public class XLSIntegrationTest extends BeneratorIntegrationTest {
 	@Test
 	public void testDefault() throws Exception {
 		ConsumerMock con = new ConsumerMock(true);
-		context.set("con", con);
+		context.setGlobal("con", con);
 		parseAndExecute("<iterate type='dummy' source='org/databene/benerator/engine/xls/types.xls' consumer='con'/>");
 		List<Entity> products = (List<Entity>) con.getProducts();
 		assertEquals(1, products.size());
@@ -56,7 +56,7 @@ public class XLSIntegrationTest extends BeneratorIntegrationTest {
 	@Test
 	public void testFormatted() throws Exception {
 		ConsumerMock con = new ConsumerMock(true);
-		context.set("con", con);
+		context.setGlobal("con", con);
 		LocaleUtil.runInLocale(Locale.US, new Runnable() {
 			public void run() {
 				parseAndExecute("<iterate type='dummy' source='org/databene/benerator/engine/xls/types.xls' format='formatted' consumer='con'/>");

@@ -84,7 +84,7 @@ public class XMLConsumerExpressionTest {
 		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
 				new ResourceManagerSupport());
 		BeneratorContext context = new DefaultBeneratorContext();
-		context.set("myc", new ConsumerMock(3));
+		context.setGlobal("myc", new ConsumerMock(3));
 		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(context);
 		ConsumerMock consumerMock = (ConsumerMock) ((ConsumerProxy) consumerChain.getComponent(0)).getTarget();
 		assertEquals(3, consumerMock.id);
@@ -97,7 +97,7 @@ public class XMLConsumerExpressionTest {
 		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
 				new ResourceManagerSupport());
 		BeneratorContext context = new DefaultBeneratorContext();
-		context.set("myc", new ConsumerMock());
+		context.setGlobal("myc", new ConsumerMock());
 		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(context);
 		ConsumerMock consumerMock = (ConsumerMock) ((ConsumerProxy) consumerChain.getComponent(0)).getTarget();
 		assertEquals(1, consumerMock.id);

@@ -32,6 +32,7 @@ import java.util.List;
 import org.databene.benerator.Consumer;
 import org.databene.benerator.Generator;
 import org.databene.benerator.consumer.ListConsumer;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.CurrentProductGeneration;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.wrapper.IteratingGenerator;
@@ -91,10 +92,11 @@ public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
     // test helpers ----------------------------------------------------------------------------------------------------
 
 	private void checkIteration(Task task, final ListConsumer consumer) {
+		BeneratorContext childContext = context.createSubContext("sub");
 		// check life cycle
-	    executeStepAndAssertAvailability(task, context);
-	    executeStepAndAssertAvailability(task, context);
-	    executeStepAndAssertUnavailability(task, context);
+	    executeStepAndAssertAvailability(task, childContext);
+	    executeStepAndAssertAvailability(task, childContext);
+	    executeStepAndAssertUnavailability(task, childContext);
 		// check output
 		assertEquals(2, consumer.getConsumedData().size());
 		assertEquals(ALICE, consumer.getConsumedData().get(0));

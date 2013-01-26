@@ -43,7 +43,7 @@ public class ArrayGenerationIntegrationTest extends BeneratorIntegrationTest {
 	@Before
 	public void setUpConsumer() throws Exception {
 		consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 	}
 	
 	@Test

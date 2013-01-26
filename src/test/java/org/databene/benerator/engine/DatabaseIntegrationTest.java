@@ -53,7 +53,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	public void setUpDatabase() throws Exception {
 		DBUtil.resetMonitors();
 		consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
 		db = new DefaultDBSystem("db", dbUrl, HSQLUtil.DRIVER, 
 				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, context.getDataModel());
@@ -70,7 +70,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 				"	the_date date," +
 				"	primary key (id)," +
 				"   constraint referee_fk foreign key (referee_id) references referee (id))");
-		context.set("db", db);
+		context.setGlobal("db", db);
 		context.getDataModel().addDescriptorProvider(db);
 	}
 	
@@ -79,7 +79,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	
 	@Test
 	public void testScriptResolution() {
-		context.set("tblName", "referee");
+		context.setGlobal("tblName", "referee");
 		parseAndExecute("<evaluate id='refCount' target='db'>{'select count(*) from ' + tblName}</evaluate>");
 		assertEquals(2, ((Number) context.get("refCount")).intValue());
 		closeAndCheckCleanup();
@@ -186,7 +186,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testDbRef_constant_script() {
-		context.set("rid", 2);
+		context.setGlobal("rid", 2);
 		parseAndExecute(
 			"<generate type='referer' count='3' consumer='cons'>" +
         	"  <reference name='referee_id' constant='{rid}' />" +
@@ -201,7 +201,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testDbRef_attribute_constant_script() {
-		context.set("rid", 2);
+		context.setGlobal("rid", 2);
 		parseAndExecute(
 			"<generate type='referer' count='3' consumer='cons'>" +
         	"  <attribute name='referee_id' constant='{rid}' />" +
@@ -215,7 +215,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testDbRef_script() {
-		context.set("rid", 2);
+		context.setGlobal("rid", 2);
 		parseAndExecute(
 			"<generate type='referer' count='3' consumer='cons'>" +
         	"  <reference name='referee_id' script='rid + 1' />" +
@@ -229,7 +229,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testDbRef_explicit_selector() {
-		context.set("key", 2);
+		context.setGlobal("key", 2);
 		parseAndExecute(
 			"<generate type='referer' consumer='cons'>" +
         	"  <reference name='referee_id' source='db' " +
@@ -244,7 +244,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testDbRef_explicit_subSelector() {
-		context.set("key", 2);
+		context.setGlobal("key", 2);
 		parseAndExecute(
 			"<generate type='referer' consumer='cons' count='3'>" +
         	"  <reference name='referee_id' source='db' " +
@@ -261,7 +261,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testDbRef_entity_selector() {
-		context.set("key", 2);
+		context.setGlobal("key", 2);
 		parseAndExecute(
 			"<generate type='referer' consumer='cons'>" +
         	"  <reference name='referee_id' source='db' " +
@@ -508,7 +508,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	
 	@Test
 	public void testDynamicValueSelectorUsingContextValue() {
-		context.set("key", 2);
+		context.setGlobal("key", 2);
 		parseAndExecute(
 				"<generate type='referer' count='2' consumer='cons'>" +
 				"  <id name='id' type='int' min='2' distribution='increment' />" + 

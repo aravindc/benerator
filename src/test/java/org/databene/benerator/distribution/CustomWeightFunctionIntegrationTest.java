@@ -48,7 +48,7 @@ public class CustomWeightFunctionIntegrationTest extends BeneratorIntegrationTes
 	@Test
 	public void test() {
 		ConsumerMock consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		parseAndExecute(xml);
 		List<Entity> products = (List<Entity>) consumer.getProducts();
 		assertEquals(1000, products.size());

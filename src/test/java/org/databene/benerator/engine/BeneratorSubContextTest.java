@@ -27,7 +27,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.junit.Test;
 
 /**
- * Tests the {@link BeneratorSubContext}.<br/><br/>
+ * Tests the {@link DefaultBeneratorSubContext}.<br/><br/>
  * Created: 15.02.2012 05:35:10
  * @since 0.8.0
  * @author Volker Bergmann
@@ -38,14 +38,14 @@ public class BeneratorSubContextTest {
 	@Test
 	public void testGetParent() {
 		DefaultBeneratorContext parent = new DefaultBeneratorContext();
-		BeneratorSubContext child = (BeneratorSubContext) parent.createSubContext("sub");
+		DefaultBeneratorSubContext child = (DefaultBeneratorSubContext) parent.createSubContext("sub");
 		assertTrue(parent == child.getParent());
 	}
 	
 	@Test
-	public void testGetAndSet() {
+	public void testScopedGetAndSet() {
 		DefaultBeneratorContext parent = new DefaultBeneratorContext();
-		BeneratorSubContext child = (BeneratorSubContext) parent.createSubContext("sub");
+		DefaultBeneratorSubContext child = (DefaultBeneratorSubContext) parent.createSubContext("sub");
 		// verify that child settings are not available in parent
 		child.set("c", 2);
 		assertEquals(null, parent.get("c"));
@@ -63,20 +63,23 @@ public class BeneratorSubContextTest {
 	
 	@Test
 	public void testCurrentProduct() {
-		DefaultBeneratorContext parent = new DefaultBeneratorContext();
-		BeneratorSubContext child = (BeneratorSubContext) parent.createSubContext("sub");
+		BeneratorContext root = new DefaultBeneratorContext();
+		BeneratorContext parent = root.createSubContext("top");
+		DefaultBeneratorSubContext child = (DefaultBeneratorSubContext) parent.createSubContext("sub");
+		
 		// verify access to parent's currentProduct
 		ProductWrapper<Integer> pp = new ProductWrapper<Integer>(11);
 		parent.setCurrentProduct(pp);
 		assertEquals(pp, parent.getCurrentProduct());
 		assertEquals(pp.unwrap(), parent.get("this"));
-		assertEquals(pp.unwrap(), child.get("this"));
+		assertEquals(pp.unwrap(), child.get("top"));
+		
 		// verify access to child's currentProduct
 		ProductWrapper<Integer> cp = new ProductWrapper<Integer>(12);
 		child.setCurrentProduct(cp);
 		assertEquals(pp, parent.getCurrentProduct());
 		assertEquals(pp.unwrap(), parent.get("this"));
-		assertEquals(cp.unwrap(), child.get("this"));
+		assertEquals(cp.unwrap(), child.get("sub"));
 	}
 	
 }

@@ -123,7 +123,7 @@ public class SequenceTableGeneratorTest extends GeneratorTest {
 	@Test
 	public void testIntegration() throws Exception {
 		ConsumerMock consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		DescriptorRunner runner = new DescriptorRunner("org/databene/platform/db/SequenceTableIntegrationTest.ben.xml", context);
 		try {
 			runner.run();

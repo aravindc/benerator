@@ -54,7 +54,7 @@ public class DefaultComponentIntegrationTest extends BeneratorIntegrationTest {
 	@SuppressWarnings("unchecked")
 	public void checkFile(String uri) throws IOException {
 		ConsumerMock consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		DescriptorRunner runner = new DescriptorRunner(uri, context);
 		try {
 			runner.run();

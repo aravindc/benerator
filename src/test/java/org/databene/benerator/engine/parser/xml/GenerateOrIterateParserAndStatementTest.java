@@ -71,9 +71,9 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		Statement statement = parse(
 				"<generate type='dummy' count='{c}' pageSize='{ps}' consumer='cons'/>");
 		ConsumerMock consumer = new ConsumerMock(false);
-		context.set("cons", consumer);
-		context.set("c", 100);
-		context.set("ps", 20);
+		context.setGlobal("cons", consumer);
+		context.setGlobal("c", 100);
+		context.setGlobal("ps", 20);
 		statement.execute(context);
 		assertEquals(100, consumer.startConsumingCount.get());
 		assertEquals(100, consumer.finishConsumingCount.get());
@@ -85,8 +85,8 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		Statement statement = parse("<generate type='dummy' count='3' converter='conv' consumer='cons'/>");
 		ConsumerMock consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
-		context.set("conv", new UnsafeConverter<Entity,Entity>(Entity.class, Entity.class) {
+		context.setGlobal("cons", consumer);
+		context.setGlobal("conv", new UnsafeConverter<Entity,Entity>(Entity.class, Entity.class) {
 			public Entity convert(Entity sourceValue) {
 				ComplexTypeDescriptor descriptor = sourceValue.descriptor();
 				descriptor.setName("CONV_DUMMY");
@@ -110,8 +110,8 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				"	<id name='id' type='int' />" +
 				"</generate>");
 		ConsumerMock consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
-		context.set("vali", new AbstractValidator<Entity>() {
+		context.setGlobal("cons", consumer);
+		context.setGlobal("vali", new AbstractValidator<Entity>() {
 			public boolean valid(Entity entity) {
 				return ((Integer) entity.get("id")) % 2 == 0;
 			}
@@ -133,7 +133,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				"  <value type='int' constant='42' />" +
 				"</generate>");
 		ConsumerMock consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		statement.execute(context);
 		List<Object[]> products = (List) consumer.getProducts();
 		assertEquals(5, products.size());
@@ -151,7 +151,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	public void testGeneratePageSize2() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		ConsumerMock cons = new ConsumerMock(false);
-		context.set("cons", cons);
+		context.setGlobal("cons", cons);
 		Statement statement = parse(
 			"<generate type='top' count='4' pageSize='2' consumer='cons' />"
         );
@@ -173,7 +173,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	public void testGeneratePageSize0() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		ConsumerMock cons = new ConsumerMock(false);
-		context.set("cons", cons);
+		context.setGlobal("cons", cons);
 		Statement statement = parse(
 			"<generate type='top' count='4' pageSize='0' consumer='cons' />"
         );
@@ -197,7 +197,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
         		"</generate>"
         );
 		ConsumerMock outerConsumer = new ConsumerMock(false, 1);
-		context.set("cons1", outerConsumer);
+		context.setGlobal("cons1", outerConsumer);
 		statement.execute(context);
 		assertEquals(3, outerConsumer.startConsumingCount.get());
 		assertTrue(outerConsumer.closeCount.get() == 0);
@@ -237,7 +237,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	public void testSubGeneratePageSize2() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		ConsumerMock cons = new ConsumerMock(false);
-		context.set("cons", cons);
+		context.setGlobal("cons", cons);
 		Statement statement = parse(
 				"<generate type='top' count='2' pageSize='1' consumer='cons'>" +
         		"    <generate type='sub' count='4' pageSize='2' consumer='cons'/>" +
@@ -273,7 +273,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	public void testSubGeneratePageSize0() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		ConsumerMock cons = new ConsumerMock(false);
-		context.set("cons", cons);
+		context.setGlobal("cons", cons);
 		Statement statement = parse(
 				"<generate type='top' count='2' pageSize='1' consumer='cons'>" +
         		"    <generate type='sub' count='1' pageSize='0' consumer='cons'/>" +
@@ -305,7 +305,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				"    <generate type='inner' count='pName.n' consumer='cons'/>" + 
         		"</generate>");
 		ConsumerMock consumer = new ConsumerMock(true, 1);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		statement.execute(context);
 		assertEquals(9, consumer.startConsumingCount.get());
 		assertOuter(1, consumer.products.get(0));
@@ -328,7 +328,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				"    <attribute name='n' type='int' script='n + 1' />" +
         		"</generate>");
 		ConsumerMock consumer = new ConsumerMock(true, 1);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		statement.execute(context);
 		assertEquals(3, consumer.startConsumingCount.get());
 		assertOuter(2, consumer.products.get(0));
@@ -352,7 +352,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
         		"</generate>");
 		BeanMock bean = new BeanMock();
 		bean.invocationCount = 0;
-		context.set("bean", bean);
+		context.setGlobal("bean", bean);
 		statement.execute(context);
 		assertEquals(3, bean.invocationCount);
 		assertEquals(2, bean.lastValue);
@@ -364,9 +364,9 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		Statement statement = parse("<iterate type='Person' source='personSource' consumer='cons' />");
 		PersonSource source = new PersonSource();
 		source.setContext(context);
-		context.set("personSource", source);
+		context.setGlobal("personSource", source);
 		ConsumerMock consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		statement.execute(context);
 		assertEquals(2, consumer.products.size());
 		assertEquals(source.createPersons(), consumer.products);
@@ -377,7 +377,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	public void testGenerate() throws Exception {
 		Statement statement = parse("<generate type='Person' count='2' consumer='cons' />");
 		ConsumerMock consumer = new ConsumerMock(false);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		statement.execute(context);
 		assertEquals(2, consumer.startConsumingCount.get());
 		assertEquals(2, consumer.finishConsumingCount.get());
@@ -405,7 +405,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	        	"	<attribute name='n' constant='2' />" +
 	        	"</iterate>"
 	        );
-	        context.set("db", db);
+	        context.setGlobal("db", db);
 			statement.execute(context);
 			DataSource<?> check = db.query("select N from GOIPAST", true, context);
 			DataIterator<?> iterator = check.iterator();
@@ -428,7 +428,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				"    <value type='int' distribution='step' offset='2'/>" +
         		"</generate>");
 		ConsumerMock consumer = new ConsumerMock(true, 1);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		statement.execute(context);
 		assertEquals(3, consumer.startConsumingCount.get());
 		assertArrayEquals(new Object[] { 3 }, (Object[]) consumer.products.get(0));
@@ -444,10 +444,10 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				new Integer[] { 3 }, 
 				new Integer[] { 4 }, 
 				new Integer[] { 5 });
-		context.set("source", source);
+		context.setGlobal("source", source);
 		Statement statement = parse("<iterate source='source' offset='2' type='array' count='3' consumer='cons' />");
 		ConsumerMock consumer = new ConsumerMock(true, 1);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		statement.execute(context);
 		assertEquals(3, consumer.startConsumingCount.get());
 		assertArrayEquals(new Object[] { 3 }, (Object[]) consumer.products.get(0));
@@ -471,7 +471,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
         		"</generate>"
 				);
 		ConsumerMock consumer = new ConsumerMock(true, 1);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		statement.execute(context);
 		assertEquals(8, consumer.startConsumingCount.get());
 		assertComponents((Entity) consumer.products.get(0), "slash", 1, "a", 1, "b", 1, "c", 1, "def", 1);
@@ -491,7 +491,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				"	<generate name='b' count='2' consumer='NoConsumer'>" +
 				"		<generate name='c' count='2' consumer='ConsoleExporter,cons'>" +
 				"			<variable name='slash'  type='int' distribution='increment' scope='/'/>" +
-				"			<variable name='a'      type='int' distribution='increment' scope='a'/>" +
+				"			<variable name='a'      type='int' distribution='increment' scope='a'/>" + // TODO it should be forbidden to use a variable name that shadows an outer entity/variable name
 				"			<variable name='b'      type='int' distribution='increment' scope='b'/>" +
 				"			<variable name='c'      type='int' distribution='increment' scope='c'/>" +
 				"			<variable name='def'    type='int' distribution='increment'/>" +
@@ -506,7 +506,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
         		"</generate>"
 				);
 		ConsumerMock consumer = new ConsumerMock(true, 1);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		statement.execute(context);
 		assertEquals(8, consumer.startConsumingCount.get());
 		assertComponents((Entity) consumer.products.get(0), "slash", 1, "a", 1, "b", 1, "c", 1, "def", 1);

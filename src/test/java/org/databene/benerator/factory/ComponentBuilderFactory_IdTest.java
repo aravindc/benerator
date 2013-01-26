@@ -47,7 +47,7 @@ public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFact
 		IdDescriptor id = createId("id", "int");
 		ComponentBuilder<Entity> generator = createAndInitBuilder(id);
 		Entity entity = createEntity("Person");
-		setCurrentProduct(entity);
+		setCurrentProduct(entity, "e");
 		generator.execute(context);
 		assertEquals(1, entity.get("id"));
 	}

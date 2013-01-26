@@ -45,10 +45,10 @@ public class AttributeAndVariableIntegrationTest extends BeneratorIntegrationTes
     @Before
 	public void setUpSourceAndConsumer() throws Exception {
 		consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 		PersonSource pit = new PersonSource();
 		pit.setContext(context);
-		context.set("pit", pit);
+		context.setGlobal("pit", pit);
 	}
 	
 	// test methods ----------------------------------------------------------------------------------------------------
@@ -131,6 +131,7 @@ public class AttributeAndVariableIntegrationTest extends BeneratorIntegrationTes
 		assertEquals(5, products.get(1).get("y"));
 	}
 
+	/* This syntax is not supported any longer
 	@Test
 	public void testVarAfterSubGen() {
 		parseAndExecute(
@@ -140,17 +141,18 @@ public class AttributeAndVariableIntegrationTest extends BeneratorIntegrationTes
 				"	</generate>" +
 				"	<variable name='y' type='int' script='sub.x'/>" +
 				"	<evaluate id='res' assert='result==3'>{y}</evaluate>" +
-				"	<attribute name='val' type='int' script='res'/>" +
+				"	<attribute name='val' type='int' script='y'/>" +
 				"</generate>");
 		Entity e = (Entity) context.get("e");
 		assertEquals(3, e.get("val"));
 	}
-	
+	*/
+
 	@Test
 	public void testEvaluateBetweenAttributes() {
 		parseAndExecute(
 				"<generate name='e' type='entity' count='1'>" +
-				"	<evaluate id='val1' assert='result==null'>this.id</evaluate>" + 
+				"	<evaluate id='val1' assert='result==null'>this.id</evaluate>" +
 				"	<id name='id' type='int'/>" +
 				"	<evaluate id='val2' assert='result==1'>this.id</evaluate>" +
 				"	<attribute name='x' type='int' script='val2' />" + 

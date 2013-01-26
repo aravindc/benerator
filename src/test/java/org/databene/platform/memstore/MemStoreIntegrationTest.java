@@ -49,11 +49,11 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 	@Before
 	public void setUpConsumerAndDescriptor() throws Exception {
 		consumer = new ConsumerMock(true);
-		context.set("cons", consumer);
+		context.setGlobal("cons", consumer);
 
 		// create source store and prefill it
 		src = new MemStore("src", context.getDataModel());
-		context.set("src", src);
+		context.setGlobal("src", src);
 		ComplexTypeDescriptor descriptor = createComplexType("product");
 		descriptor.addComponent(createId("id", "int"));
 		for (int i = 3; i < 6; i++)
@@ -62,7 +62,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 
 		// create dest store
 		dst = new MemStore("dst", context.getDataModel());
-		context.set("dst", dst);
+		context.setGlobal("dst", dst);
 	}
 
 	

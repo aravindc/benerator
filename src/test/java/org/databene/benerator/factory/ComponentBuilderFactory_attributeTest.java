@@ -269,7 +269,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 		PartDescriptor name = createCSVStringAttributeDescriptor(EMPTY_WGT_CSV, ",");
 		ComponentBuilder<Entity> builder = createComponentBuilder(name);
 		builder.init(context);
-    	setCurrentProduct(createEntity("E"));
+    	setCurrentProduct(createEntity("E"), "e");
 		assertFalse(builder.execute(context));
 	}
 
@@ -325,7 +325,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.SIMPLE, context);
 		builder.init(context);
 		Entity entity = createEntity();
-		setCurrentProduct(entity);
+		setCurrentProduct(entity, "e");
 		builder.execute(context);
 		assertTrue("1".equals(entity.get("a")) || "2".equals(entity.get("b")));
     }
@@ -342,7 +342,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.NONE, context);
 		builder.init(context);
 		Entity entity = createEntity();
-		setCurrentProduct(entity);
+		setCurrentProduct(entity, "e");
 		builder.execute(context);
 		assertEquals("A", entity.get("flag"));
 		builder.execute(context);

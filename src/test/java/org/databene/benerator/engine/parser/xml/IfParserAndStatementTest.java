@@ -41,25 +41,25 @@ public class IfParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testPlainTrue() throws Exception {
 		parseAndExecute("<if test='1==1'><setting name='executed' value='OK'/></if>");
-		assertEquals("OK", context.getSetting("executed"));
+		assertEquals("OK", context.getGlobal("executed"));
 	}
 	
 	@Test
 	public void testPlainFalse() throws Exception {
 		parseAndExecute("<if test='2==3'><setting name='executed' value='OK'/></if>");
-		assertEquals(null, context.getSetting("executed"));
+		assertEquals(null, context.getGlobal("executed"));
 	}
 	
 	@Test
 	public void testThenTrue() throws Exception {
 		parseAndExecute("<if test='1==1'><then><setting name='executed' value='OK'/></then></if>");
-		assertEquals("OK", context.getSetting("executed"));
+		assertEquals("OK", context.getGlobal("executed"));
 	}
 	
 	@Test
 	public void testThenFalse() throws Exception {
 		parseAndExecute("<if test='2==3'><then><setting name='executed' value='OK'/></then></if>");
-		assertEquals(null, context.getSetting("executed"));
+		assertEquals(null, context.getGlobal("executed"));
 	}
 	
 	@Test
@@ -75,13 +75,13 @@ public class IfParserAndStatementTest extends BeneratorIntegrationTest {
 			"</if>"
 		);
 		// test 'then' part
-		context.set("x", 3);
+		context.setGlobal("x", 3);
 		statement.execute(context);
-		assertEquals("OK", context.getSetting("executed"));
+		assertEquals("OK", context.getGlobal("executed"));
 		// test 'else' part
-		context.set("x", 2);
+		context.setGlobal("x", 2);
 		statement.execute(context);
-		assertEquals("NOK", context.getSetting("executed"));
+		assertEquals("NOK", context.getGlobal("executed"));
 	}
 	
 	@Test(expected = SyntaxError.class)

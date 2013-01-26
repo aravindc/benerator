@@ -65,7 +65,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		ref.getTypeDescriptor().setScript("8");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = createPersonEntity();
-		setCurrentProduct(entity);
+		setCurrentProduct(entity, "e");
 		generator.execute(context);
 		assertEquals(8, entity.get("ref"));
 	}
@@ -77,7 +77,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 			.withNullQuota(1).withCount(1);
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = createPersonEntity();
-		setCurrentProduct(entity);
+		setCurrentProduct(entity, "e");
 		generator.execute(context);
 		assertEquals(null, entity.get("ref"));
 	}
@@ -90,7 +90,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		ref.setNullable(true);
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = createPersonEntity();
-		setCurrentProduct(entity);
+		setCurrentProduct(entity, "e");
 		generator.execute(context);
 		assertEquals(null, entity.get("ref"));
 	}
@@ -103,7 +103,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		ref.getTypeDescriptor().setGenerator("new " + ConstantGenerator.class.getName() + "(42)");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = createPersonEntity();
-		setCurrentProduct(entity);
+		setCurrentProduct(entity, "e");
 		generator.execute(context);
 		assertEquals(42, entity.get("ref"));
 	}
@@ -116,7 +116,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		((SimpleTypeDescriptor) ref.getTypeDescriptor()).setConstant("3");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = createPersonEntity();
-		setCurrentProduct(entity);
+		setCurrentProduct(entity, "e");
 		generator.execute(context);
 		assertEquals(3, entity.get("ref"));
 	}
@@ -129,7 +129,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		((SimpleTypeDescriptor) ref.getTypeDescriptor()).setValues("6");
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = createPersonEntity();
-		setCurrentProduct(entity);
+		setCurrentProduct(entity, "e");
 		generator.execute(context);
 		assertEquals("6", entity.get("ref"));
 	}
@@ -156,7 +156,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		assertTrue(generator != null);
 		Entity entity = createPersonEntity();
-		setCurrentProduct(entity);
+		setCurrentProduct(entity, "e");
 		generator.execute(context);
 		assertTrue("Alice".equals(entity.get("ref")) || "Bob".equals(entity.get("ref")));
 	}
@@ -169,7 +169,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 		ComponentBuilder builder = createAndInitBuilder(ref);
 		assertTrue(builder != null);
 		Entity entity = createPersonEntity();
-		setCurrentProduct(entity);
+		setCurrentProduct(entity, "e");
 		builder.execute(context);
 		String[] product = (String[]) entity.get("ref");
 		assertEquals(2, product.length);
@@ -189,7 +189,7 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
     private ComponentBuilder<?> createAndInitBuilder(ReferenceDescriptor ref) {
 		StorageSystemMock storageSystem = new StorageSystemMock(ref.getDataModel());
 		context.getDataModel().addDescriptorProvider(storageSystem);
-		context.set(storageSystem.getId(), storageSystem);
+		context.setGlobal(storageSystem.getId(), storageSystem);
 		ComponentBuilder<?> builder = ComponentBuilderFactory.createComponentBuilder(ref, Uniqueness.NONE, context);
 		builder.init(context);
 		return builder;

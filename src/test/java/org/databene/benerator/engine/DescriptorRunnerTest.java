@@ -64,7 +64,7 @@ public class DescriptorRunnerTest extends ModelTest {
 			context.importDefaults();
 			context.setValidate(false);
 			MyConsumer myConsumer = new MyConsumer();
-			context.set("myConsumer", myConsumer);
+			context.setGlobal("myConsumer", myConsumer);
 			runner.run();
 			assertEquals(1, myConsumer.products.size());
 			assertEquals(createEntity("Person", "name", "Alice"), myConsumer.products.get(0));

@@ -58,21 +58,21 @@ public class SettingParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testDefault_predefined() throws Exception {
 		Statement statement = parse("<setting name='globalProp' default='XYZ' />");
-		context.set("globalProp", "ZZZ");
+		context.setGlobal("globalProp", "ZZZ");
 		statement.execute(context);
 		assertEquals("ZZZ", context.get("globalProp"));
 	}
 	
 	@Test
 	public void testRef() throws Exception {
-		context.set("setting", "cfg");
+		context.setGlobal("setting", "cfg");
 		parseAndExecute("<setting name='globalProp' ref='setting' />");
 		assertEquals("cfg", context.get("globalProp"));
 	}
 	
 	@Test
 	public void testSource() throws Exception {
-		context.set("myGen", new ConstantGenerator<String>("myProd"));
+		context.setGlobal("myGen", new ConstantGenerator<String>("myProd"));
 		parseAndExecute("<setting name='globalProp' source='myGen' />");
 		assertEquals("myProd", context.get("globalProp"));
 	}

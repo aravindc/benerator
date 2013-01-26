@@ -61,7 +61,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 	
 	@Test
 	public void testSimpleTypeVariableAccess() throws Exception {
-		context.set("x", 3);
+		context.setGlobal("x", 3);
 		Statement statement = parse("<execute>x = x + 2</execute>");
 		statement.execute(context);
 		assertEquals(5, context.get("x"));
@@ -78,7 +78,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 		String url = HSQLUtil.getInMemoryURL("benerator");
 		DBSystem db = new DefaultDBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
 		BeneratorContext context = new DefaultBeneratorContext();
-		context.set("db", db);
+		context.setGlobal("db", db);
 		try {
 			db.execute("create table epast_test (id int)");
 			Statement statement = parse("<execute target='db'>select * from epast_test where 1 = 0</execute>");
@@ -94,7 +94,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 		String url = HSQLUtil.getInMemoryURL("benerator");
 		DBSystem db = new DefaultDBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
 		BeneratorContext context = new DefaultBeneratorContext();
-		context.set("db", db);
+		context.setGlobal("db", db);
 		assertEquals(0, db.invalidationCount());
 		try {
 			db.execute("create table epast_test (id int)");
@@ -115,7 +115,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 		String url = HSQLUtil.getInMemoryURL("benerator");
 		DBSystem db = new DefaultDBSystem("db", url, HSQLUtil.DRIVER, "sa", null, context.getDataModel());
 		BeneratorContext context = new DefaultBeneratorContext();
-		context.set("db", db);
+		context.setGlobal("db", db);
 		assertEquals(0, db.invalidationCount());
 		try {
 			db.execute("create table epast_test (id int)");
