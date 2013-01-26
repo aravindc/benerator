@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2013 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,12 +21,32 @@
 
 package org.databene.benerator.engine;
 
+import org.databene.benerator.wrapper.ProductWrapper;
+
 /**
- * Common interface for Benerator sub contexts.<br/><br/>
- * Created: 26.01.2013 16:09:25
- * @since 0.8.0
+ * Sub context version of the {@link BeneratorContext}.<br/><br/>
+ * Created: 02.09.2011 14:35:59
+ * @since 0.7.0
  * @author Volker Bergmann
  */
-public interface BeneratorSubContext extends BeneratorContext {
-	BeneratorContext getParent();
+public class DefaultBeneratorSubContext extends AbstractBeneratorSubContext {
+	
+	private ProductWrapper<?> currentProduct;
+
+	public DefaultBeneratorSubContext(String productName, BeneratorContext parent) {
+		super(productName, parent);
+	}
+	
+	public ProductWrapper<?> getCurrentProduct() {
+		return currentProduct;
+	}
+
+	public void setCurrentProduct(ProductWrapper<?> currentProduct) {
+		this.currentProduct = currentProduct;
+	}
+	
+	public BeneratorContext createSubContext(String productName) {
+		return new DefaultBeneratorSubContext(productName, this);
+	}
+
 }
