@@ -26,8 +26,10 @@ import org.databene.benerator.Consumer;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
 import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
+import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.Validator;
+import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.commons.context.ContextAware;
 
 /**
@@ -79,4 +81,9 @@ public class DefaultBeneratorFactory extends BeneratorFactory {
     	return consumer;
 	}
 
+	@Override
+	public Context createGenerationContext() {
+		return new CaseInsensitiveContext(true);
+	}
+	
 }
