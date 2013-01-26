@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.benerator.engine;
 
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.factory.DefaultsProvider;
@@ -46,17 +45,9 @@ import org.databene.script.ScriptContext;
  * @author Volker Bergmann
  */
 public interface BeneratorContext extends GeneratorContext, ScriptContext {
-
-	BeneratorContext createSubContext();
 	
-	GeneratorFactory getGeneratorFactory();
-	void setGeneratorFactory(GeneratorFactory generatorFactory);
-	DataModel getDataModel();
-	void setDataModel(DataModel dataModel);
-	DefaultsProvider getDefaultsProvider();
-	void setDefaultsProvider(DefaultsProvider defaultsProvider);
-	void setSetting(String name, Object value);
-
+	// simple configuration properties ---------------------------------------------------------------------------------
+	
 	void setDefaultEncoding(String defaultEncoding);
 	void setDefaultLineSeparator(String defaultLineSeparator);
 	void setDefaultLocale(Locale defaultLocale);
@@ -69,28 +60,44 @@ public interface BeneratorContext extends GeneratorContext, ScriptContext {
 	void setContextUri(String contextUri);
 	void setValidate(boolean validate);
 	void setMaxCount(Long maxCount);
-	void setExecutorService(ExecutorService executorService);
-	ProductWrapper<?> getCurrentProduct();
-	void setCurrentProduct(ProductWrapper<?> currentProduct);
-	
 	boolean isDefaultImports();
 	void setDefaultImports(boolean defaultImports);
+	boolean isDefaultOneToOne();
+	void setDefaultOneToOne(boolean defaultOneToOne);
+	boolean isAcceptUnknownSimpleTypes();
+	void setAcceptUnknownSimpleTypes(boolean acceptUnknownSimpleTypes);
+	
+	// import handling -------------------------------------------------------------------------------------------------
+	
 	void importClass(String className);
 	void importPackage(String packageName);
 	void importDefaults();
 
-	boolean isDefaultOneToOne();
-	void setDefaultOneToOne(boolean defaultOneToOne);
-
-	boolean isAcceptUnknownSimpleTypes();
-	void setAcceptUnknownSimpleTypes(boolean acceptUnknownSimpleTypes);
+	// service provider sharing ----------------------------------------------------------------------------------------
+	
+	GeneratorFactory getGeneratorFactory();
+	void setGeneratorFactory(GeneratorFactory generatorFactory);
+	
+	DataModel getDataModel();
+	void setDataModel(DataModel dataModel);
+	
+	DefaultsProvider getDefaultsProvider();
+	void setDefaultsProvider(DefaultsProvider defaultsProvider);
+	
+	DescriptorProvider getLocalDescriptorProvider();
+	void addLocalType(TypeDescriptor type);
 
 	ComponentDescriptor getDefaultComponentConfig(String name);
 	void setDefaultComponentConfig(ComponentDescriptor component);
 
-	DescriptorProvider getLocalDescriptorProvider();
-	void addLocalType(TypeDescriptor type);
+	// data management -------------------------------------------------------------------------------------------------
+	
+	void setGlobal(String name, Object value);
+	
+	ProductWrapper<?> getCurrentProduct();
+	void setCurrentProduct(ProductWrapper<?> currentProduct);
+	boolean hasProductNameInScope(String productName);
+	
+	BeneratorContext createSubContext(String productName);
 
-	void setCurrentProductName(String currentProductName);
-	boolean hasProductNameInScope(String currentProductName);
 }
