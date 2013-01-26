@@ -20,6 +20,7 @@ changes
 - Simplified and consolidated task execution framework
 - Reduced to single-threaded execution and optimized performance by 30%
 - Stopped the attempts to support CUBRID - its JDBC driver is dissatisfactory
+- Redesigned GeneratorContext interface and inheritance hierarchy
 
 
 bug fixes
