@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,7 +38,6 @@ import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Resettable;
-import org.databene.commons.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,13 +50,6 @@ public class GeneratorUtil {
 	
 	private static Logger LOGGER = LoggerFactory.getLogger(GeneratorUtil.class);
 	
-	public static boolean isBeneratorFile(String localFilename) {
-		if (StringUtil.isEmpty(localFilename))
-			return false;
-		String lcFilename = localFilename.toLowerCase();
-		return "benerator.xml".equals(lcFilename) || lcFilename.endsWith(".ben.xml");
-	}
-
     public static void init(Generator<?> generator) {
     	init(generator, BeneratorFactory.getInstance().createContext("."));
     }

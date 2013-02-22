@@ -28,6 +28,7 @@ package org.databene.benerator.engine.statement;
 
 import java.io.IOException;
 
+import org.databene.benerator.BeneratorUtil;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.engine.Statement;
@@ -72,7 +73,7 @@ public class IncludeStatement implements Statement {
         try {
 			if (lcUri.endsWith(".properties"))
 	            includeProperties(uri, context);
-			else if (lcUri.endsWith(".ben.xml") || lcUri.endsWith("benerator.xml"))
+			else if (BeneratorUtil.isDescriptorFilePath(uri))
 				includeDescriptor(uri, context);
 			else if (lcUri.endsWith(".xsd"))
 				includeXmlSchema(uri, context);
