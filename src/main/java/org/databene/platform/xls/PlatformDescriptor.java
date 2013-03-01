@@ -22,9 +22,9 @@
 package org.databene.platform.xls;
 
 /**
- * TODO Document class.<br/><br/>
+ * XLS platform descriptor.<br/><br/>
  * Created: 24.01.2013 17:41:59
- * @since TODO version
+ * @since 0.8.0
  * @author Volker Bergmann
  */
 public class PlatformDescriptor {

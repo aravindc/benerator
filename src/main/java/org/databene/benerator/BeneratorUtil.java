@@ -26,9 +26,9 @@ import java.io.File;
 import org.databene.commons.StringUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Provides general utility methods for Benerator.<br/><br/>
  * Created: 01.02.2013 16:20:10
- * @since TODO version
+ * @since 0.8.0
  * @author Volker Bergmann
  */
 public class BeneratorUtil {
