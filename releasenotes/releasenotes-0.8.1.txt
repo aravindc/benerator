@@ -1,0 +1,21 @@
+release notes benerator 0.8.1
+=============================
+
+
+summary
+-------
+
+
+enhancements
+------------
+
+
+
+changes
+-------
+
+
+
+bug fixes
+---------
+- Windows issue: ConfigurationError: Resource not found: org\databene\commons\time\timeUnits.properties
