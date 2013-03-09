@@ -8,8 +8,16 @@ summary
 
 enhancements
 ------------
-
-
+- PersonGenerator:
+  - Supporting Belgium
+  - Supporting China
+  - Supporting South Korea
+  - Supporting Ukraine
+  - Supporting Slovakia
+  - Extended set of italian person names
+  - Extended set of irish person names
+  - Extended set of Dutch family names
+- 
 
 changes
 -------
@@ -19,3 +27,4 @@ changes
 bug fixes
 ---------
 - Windows issue: ConfigurationError: Resource not found: org\databene\commons\time\timeUnits.properties
+- Missing female form of Czech family names
