@@ -68,7 +68,7 @@ public class CSVGeneratorUtil {
             	String[] tokens = container.getData();
                 if (tokens.length == 0)
                     continue;
-                double weight = (tokens.length < 2 ? 1. : Double.parseDouble(tokens[1]));
+                double weight = (tokens.length < 2 || tokens[1] == null || tokens[1].trim().length() == 0 ? 1. : Double.parseDouble(tokens[1].trim()));
                 T value = converter.convert(tokens[0]);
                 WeightedSample<T> sample = new WeightedSample<T>(value, weight);
                 samples.add(sample);
