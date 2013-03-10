@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -115,6 +115,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 		return new CountryCompanyNameGenerator(country);
 	}
 
+	@Override
 	public CompanyName generate() {
 		ProductWrapper<CompanyName> wrapper = generate(getResultWrapper());
 		return (wrapper != null ? wrapper.unwrap() : null);
@@ -135,6 +136,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 			this.country = country;
 		}
 
+		@Override
 		public Class<CompanyName> getGeneratedType() {
 		    return CompanyName.class;
 	    }
@@ -180,6 +182,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 	        return name;
 		}
 
+		@Override
 		public double getWeight() {
 			return country.getPopulation();
 		}
