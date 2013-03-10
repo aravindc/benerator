@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,7 +44,8 @@ public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
         super(Object.class, Object.class);
     }
 
-    public Object convert(Object entityOrArray) {
+    @Override
+	public Object convert(Object entityOrArray) {
     	return convertAny(entityOrArray);
     }
 
