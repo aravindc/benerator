@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,11 +45,13 @@ public abstract class StorageSystemConsumer extends AbstractConsumer implements 
         this.system = system;
     }
     
-    public boolean isThreadSafe() {
+    @Override
+	public boolean isThreadSafe() {
     	return (system instanceof ThreadAware && ((ThreadAware) system).isThreadSafe());
     }
     
-    public boolean isParallelizable() {
+    @Override
+	public boolean isParallelizable() {
     	return (system instanceof ThreadAware && ((ThreadAware) system).isParallelizable());
     }
     

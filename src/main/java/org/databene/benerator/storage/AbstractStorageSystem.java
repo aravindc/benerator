@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,14 +50,17 @@ public abstract class AbstractStorageSystem implements StorageSystem {
 		this.dataModel = null;
 	}
 
+	@Override
 	public DataModel getDataModel() {
 		return dataModel;
 	}
 	
+	@Override
 	public void setDataModel(DataModel dataModel) {
 		this.dataModel = dataModel;
 	}
 	
+	@Override
 	public Object execute(String command) {
 		throw new UnsupportedOperationException("execute() not supported by " + this);
 	}
