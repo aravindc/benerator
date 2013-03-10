@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -101,7 +101,8 @@ public class Array2EntityConverter extends ThreadSafeConverter<Object[], Entity>
 		return converter;
 	}
 
-    public Entity convert(Object[] sourceValue) {
+    @Override
+	public Entity convert(Object[] sourceValue) {
     	if (sourceValue == null)
     		return null;
         Entity entity = new Entity(descriptor);

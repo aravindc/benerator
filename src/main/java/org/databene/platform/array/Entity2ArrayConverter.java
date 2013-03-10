@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,7 +50,8 @@ public class Entity2ArrayConverter extends ThreadSafeConverter<Entity, Object[]>
         this.featureNames = featureNames;
     }
 
-    public Object[] convert(Entity entity) {
+    @Override
+	public Object[] convert(Entity entity) {
     	if (entity == null)
     		return null;
     	if (featureNames == null)
