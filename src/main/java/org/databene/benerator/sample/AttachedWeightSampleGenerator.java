@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -143,7 +143,8 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
         super.init(context);
     }
 
-    public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
+    @Override
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	assertInitialized();
         if (samples.size() == 0)
             return null;
@@ -163,6 +164,7 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     	}
     }
 
+	@Override
 	public double getWeight() {
 		return totalWeight;
 	}
@@ -184,7 +186,8 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     class SampleWeightFunction extends AbstractWeightFunction {
 
         /** @see org.databene.benerator.distribution.WeightFunction#value(double) */
-        public double value(double param) {
+        @Override
+		public double value(double param) {
             return samples.get((int) param).getWeight();
         }
 

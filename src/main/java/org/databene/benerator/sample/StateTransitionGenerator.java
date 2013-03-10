@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -69,10 +69,12 @@ public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition>
     
     // Generator interface implementation ------------------------------------------------------------------------------
 
+	@Override
 	public Class<Transition> getGeneratedType() {
 	    return Transition.class;
     }
 
+	@Override
 	public ProductWrapper<Transition> generate(ProductWrapper<Transition> wrapper) {
     	if (done)
     		return null;
