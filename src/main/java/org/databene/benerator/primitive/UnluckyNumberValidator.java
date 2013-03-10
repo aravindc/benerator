@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -119,6 +119,7 @@ public class UnluckyNumberValidator extends AbstractConstraintValidator<UnluckyN
     	this.endOnly = endOnly;
     }
 
+	@Override
 	public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
 		if (StringUtil.isEmpty(value))
 			return false;

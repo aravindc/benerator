@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -186,6 +186,7 @@ public class StringGenerator extends NonNullGeneratorProxy<String> {
 		GeneratorFactory factory = context.getGeneratorFactory();
 		if (minInitial != null) {
 			Filter<Character> initialFilter = new Filter<Character>() {
+				@Override
 				public boolean accept(Character candidate) {
 					return (candidate >= minInitial);
 				}

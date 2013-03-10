@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -65,6 +65,7 @@ public class UniqueFixedLengthStringGenerator extends NonNullGeneratorWrapper<in
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+	@Override
 	public Class<String> getGeneratedType() {
 	    return String.class;
     }
@@ -79,6 +80,7 @@ public class UniqueFixedLengthStringGenerator extends NonNullGeneratorWrapper<in
         super.init(context);
     }
     
+	@Override
 	public String generate() {
 		ProductWrapper<int[]> wrapper = generateFromSource();
 		if (wrapper == null)

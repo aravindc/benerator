@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,6 +41,7 @@ public class IncrementalStringGenerator extends GeneratorChain<String> implement
 		super(String.class, false, createSources(chars, minLength, maxLength, lengthGranularity));
 	}
 	
+	@Override
 	public String generate() {
 		return GeneratorUtil.generateNonNull(this);
 	}

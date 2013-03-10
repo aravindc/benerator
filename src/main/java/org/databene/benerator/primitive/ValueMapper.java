@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -76,14 +76,17 @@ public class ValueMapper implements Converter {
 		}
 	}
 	
+	@Override
 	public Class getSourceType() {
 	    return sourceType;
 	}
 	
+	@Override
 	public Class<?> getTargetType() {
 	    return targetType;
     }
 	
+	@Override
 	public Object convert(Object sourceValue) throws ConversionException {
 		sourceValue = AnyConverter.convert(sourceValue, sourceType);
 		if (!mappings.containsKey(sourceValue))
@@ -100,10 +103,12 @@ public class ValueMapper implements Converter {
 	    return getClass().getSimpleName() + mappings;
 	}
 
+	@Override
 	public boolean isParallelizable() {
 	    return true;
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return true;
     }

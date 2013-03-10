@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -92,7 +92,8 @@ public class HiLoGenerator extends AbstractNonNullGenerator<Long> {
 
     // Generator interface -------------------------------------------------------------------
     
-    public Class<Long> getGeneratedType() {
+    @Override
+	public Class<Long> getGeneratedType() {
         return Long.class;
     }
 
@@ -133,10 +134,12 @@ public class HiLoGenerator extends AbstractNonNullGenerator<Long> {
         super.close();
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return hiGenerator.isThreadSafe();
     }
     
+	@Override
 	public boolean isParallelizable() {
 	    return hiGenerator.isParallelizable();
     }

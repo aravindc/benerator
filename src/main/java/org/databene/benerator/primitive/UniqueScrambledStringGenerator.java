@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -93,16 +93,19 @@ public class UniqueScrambledStringGenerator extends MultiGeneratorWrapper<String
         super.init(context);
     }
 
+	@Override
 	public String generateWithLength(int length) {
 		ProductWrapper<String> wrapper = generateFromSource(length - minLength, getSourceWrapper());
 		return (wrapper != null ? wrapper.unwrap() : null);
 	}
 
+	@Override
 	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
     	assertInitialized();
     	return generateFromRandomSource(wrapper);
     }
 
+	@Override
 	public String generate() {
 		ProductWrapper<String> wrapper = generate(getResultWrapper());
 		return (wrapper != null ? wrapper.unwrap() : null);

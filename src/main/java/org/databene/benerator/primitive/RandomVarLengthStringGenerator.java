@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -101,6 +101,7 @@ public class RandomVarLengthStringGenerator extends LengthGenerator<Character, S
 	
 	// Generator interface implementation ------------------------------------------------------------------------------
 
+	@Override
 	public Class<String> getGeneratedType() {
 	    return String.class;
     }
@@ -125,14 +126,17 @@ public class RandomVarLengthStringGenerator extends LengthGenerator<Character, S
 		super.init(context);
 	}
 	
+	@Override
 	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
 		return wrapper.wrap(generate());
 	}
 
+	@Override
 	public String generate() {
 		return generateWithLength(generateCardinal());
     }
 
+	@Override
 	public String generateWithLength(int length) {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < length; i++)

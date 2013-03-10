@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,10 +49,12 @@ public class ScriptGenerator extends ThreadSafeGenerator<Object> {
         this.script = script;
     }
 
-    public Class<Object> getGeneratedType() {
+    @Override
+	public Class<Object> getGeneratedType() {
 	    return Object.class;
     }
 
+	@Override
 	public ProductWrapper<Object> generate(ProductWrapper<Object> wrapper) {
         Object result = ScriptUtil.execute(script, context);
         LOGGER.debug("Generated: {}", result);
