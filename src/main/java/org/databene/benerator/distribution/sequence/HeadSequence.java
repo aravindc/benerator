@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -58,7 +58,8 @@ public class HeadSequence extends Sequence {
 	    return new NShotGeneratorProxy<T>(source, size);
 	}
 	
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+    @Override
+	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	Generator<T> source = STEP_SEQ.createNumberGenerator(numberType, min, max, granularity, unique);
 		return WrapperFactory.asNonNullGenerator(new NShotGeneratorProxy<T>(source, size));

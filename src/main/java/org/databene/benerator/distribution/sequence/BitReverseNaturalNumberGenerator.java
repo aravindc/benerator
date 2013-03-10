@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -53,6 +53,7 @@ public class BitReverseNaturalNumberGenerator extends ThreadSafeNonNullGenerator
 
     // config properties -----------------------------------------------------------------------------------------------
 
+	@Override
 	public Class<Long> getGeneratedType() {
         return Long.class;
     }

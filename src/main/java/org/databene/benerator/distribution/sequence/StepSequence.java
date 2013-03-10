@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -99,7 +99,8 @@ public class StepSequence extends Sequence {
 					SequenceManager.RANDOM_SEQUENCE, toInteger(limit));
 	}
 	
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+    @Override
+	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T granularity, boolean unique) {
         Number deltaToUse = deltaToUse(granularity);
     	if (unique && deltaToUse.doubleValue() == 0)

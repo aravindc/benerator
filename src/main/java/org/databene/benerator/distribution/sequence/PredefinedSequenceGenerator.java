@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,10 +46,12 @@ public class PredefinedSequenceGenerator<E extends Number> extends ThreadSafeGen
 	    this.cursor = new AtomicInteger(0);
     }
 
+	@Override
 	public Class<E> getGeneratedType() {
 	    return numberType;
     }
 
+	@Override
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 	    int i = cursor.getAndIncrement();
 	    if (i >= numbers.length)
