@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -121,6 +121,7 @@ public class BeneratorGUI {
 		    urlDecodeItem.setMnemonic('R');
 	    }
 		
+		@Override
 		public void exit() {
 			try {
 		        String content = text.getText();
@@ -138,6 +139,7 @@ public class BeneratorGUI {
 		        super("Run");
 	        }
 
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				File file = null;
 				try {
@@ -167,12 +169,14 @@ public class BeneratorGUI {
 			
 		}
 
+		@Override
 		public void about() {
 			JOptionPane.showMessageDialog(this, 
 					"Benerator GUI " + VersionInfo.getInfo("benerator").getVersion() + SystemInfo.getLineSeparator() + 
 					"(c) 2011 by Volker Bergmann");
         }
 
+		@Override
 		public String iconPath() {
 			return null; // TODO
 		}
