@@ -37,14 +37,17 @@ public class DefaultBeneratorSubContext extends AbstractBeneratorSubContext {
 		super(productName, parent);
 	}
 	
+	@Override
 	public ProductWrapper<?> getCurrentProduct() {
 		return currentProduct;
 	}
 
+	@Override
 	public void setCurrentProduct(ProductWrapper<?> currentProduct) {
 		this.currentProduct = currentProduct;
 	}
 	
+	@Override
 	public BeneratorContext createSubContext(String productName) {
 		return new DefaultBeneratorSubContext(productName, this);
 	}

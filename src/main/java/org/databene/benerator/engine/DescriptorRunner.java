@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -151,6 +151,7 @@ public class DescriptorRunner implements ResourceManager {
 	
 	// ResourceManager interface implementation ------------------------------------------------------------------------
 
+	@Override
 	public boolean addResource(Closeable resource) {
 		if (!resourceManager.addResource(resource))
 			return false;
@@ -159,7 +160,8 @@ public class DescriptorRunner implements ResourceManager {
 	    return true;
     }
 
-    public void close() {
+    @Override
+	public void close() {
 	    resourceManager.close();
     }
     

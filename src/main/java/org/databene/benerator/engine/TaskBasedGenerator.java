@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,28 +45,34 @@ public class TaskBasedGenerator implements Generator<Object> {
 		this.errorHandler = ErrorHandler.getDefault();
 	}
 
+	@Override
 	public boolean isParallelizable() {
 		return task.isParallelizable();
 	}
 
+	@Override
 	public boolean isThreadSafe() {
 		return task.isThreadSafe();
 	}
 
+	@Override
 	public Class<Object> getGeneratedType() {
 		return Object.class;
 	}
 
+	@Override
 	public void init(GeneratorContext context) {
 		task.init((BeneratorContext) context);
 		this.context = context;
 		this.initialized = true;
 	}
 
+	@Override
 	public boolean wasInitialized() {
 		return initialized;
 	}
 
+	@Override
 	public ProductWrapper<Object> generate(ProductWrapper<Object> wrapper) {
 		task.execute(context, errorHandler);
 		ProductWrapper<?> currentProduct = task.getRecentProduct();
@@ -75,10 +81,12 @@ public class TaskBasedGenerator implements Generator<Object> {
 		return new ProductWrapper<Object>().wrap(currentProduct.unwrap());
 	}
 
+	@Override
 	public void reset() {
 		task.reset();
 	}
 
+	@Override
 	public void close() {
 		task.close();
 	}

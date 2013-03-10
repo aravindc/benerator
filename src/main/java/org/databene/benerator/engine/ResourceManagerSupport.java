@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,6 +49,7 @@ public class ResourceManagerSupport implements ResourceManager{
 	
 	private List<Closeable> resources = new ArrayList<Closeable>();
 
+	@Override
 	public boolean addResource(Closeable resource) {
 		if (resources.contains(resource))
 			return false;
@@ -59,7 +60,8 @@ public class ResourceManagerSupport implements ResourceManager{
 		return resources;
 	}
 
-    public void close() {
+    @Override
+	public void close() {
 		LOGGER.debug("Closing resources: {}", this);
 		for (int i = resources.size() - 1; i >= 0; i--)
 			IOUtil.close(resources.get(i));
