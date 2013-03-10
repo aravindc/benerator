@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,6 +44,7 @@ public class RelativePathResolver extends AbstractPathResolver {
 	
 	// PathResolver interface implementation ---------------------------------------------------------------------------
 	
+	@Override
 	public String getPathFor(String uri, Class<?> testClass) {
 		char sep = File.separatorChar;
 		return basePath + sep + testClass.getPackage().getName().replace('.', sep) + sep + normalizePath(uri);
