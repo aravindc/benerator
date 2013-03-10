@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,10 +44,12 @@ public class CurrentProductGeneration implements Statement, LifeCycleHolder {
 		this.provider = new WrapperProvider<Object>();
 	}
 
+	@Override
 	public void init(BeneratorContext context) {
 		source.init(context);
 	}
 
+	@Override
 	public boolean execute(BeneratorContext context) {
 		ProductWrapper<Object> wrapper = source.generate(provider.get());
 		context.setCurrentProduct(wrapper);
@@ -58,10 +60,12 @@ public class CurrentProductGeneration implements Statement, LifeCycleHolder {
 		return (wrapper != null);
 	}
 
+	@Override
 	public void reset() {
 		source.reset();
 	}
 
+	@Override
 	public void close() {
 		source.close();
 	}

@@ -142,51 +142,63 @@ public class DefaultBeneratorContext implements BeneratorContext {
 	
 	// properties ------------------------------------------------------------------------------------------------------
 	
+	@Override
 	public GeneratorFactory getGeneratorFactory() {
 		return generatorFactory;
 	}
 
+	@Override
 	public void setGeneratorFactory(GeneratorFactory generatorFactory) {
 		this.generatorFactory = generatorFactory;
 	}
 	
+	@Override
 	public DescriptorProvider getLocalDescriptorProvider() {
 		return localDescriptorProvider;
 	}
 	
+	@Override
 	public void setDefaultsProvider(DefaultsProvider defaultsProvider) {
 		this.generatorFactory.setDefaultsProvider(defaultsProvider);
 	}
 	
-    public String getDefaultEncoding() {
+    @Override
+	public String getDefaultEncoding() {
         return defaultEncoding;
     }
     
-    public void setDefaultEncoding(String defaultEncoding) {
+    @Override
+	public void setDefaultEncoding(String defaultEncoding) {
     	SystemInfo.setFileEncoding(defaultEncoding);
         this.defaultEncoding = defaultEncoding;
     }
     
-    public String getDefaultLineSeparator() {
+    @Override
+	public String getDefaultLineSeparator() {
 		return SystemInfo.getLineSeparator();
 	}
 
+	@Override
 	public void setDefaultLineSeparator(String defaultLineSeparator) {
     	SystemInfo.setLineSeparator(defaultLineSeparator);
 	}
 
+	@Override
 	public Locale getDefaultLocale() {
 		return Locale.getDefault();
 	}
 
+	@Override
 	public void setDefaultLocale(Locale defaultLocale) {
 		Locale.setDefault(defaultLocale);
 	}
 
+	@Override
 	public String getDefaultDataset() {
 		return defaultDataset;
 	}
 
+	@Override
 	public void setDefaultDataset(String defaultDataset) {
 		this.defaultDataset = defaultDataset;
 		Country country = Country.getInstance(defaultDataset, false);
@@ -194,94 +206,117 @@ public class DefaultBeneratorContext implements BeneratorContext {
 			Country.setDefault(country);
 	}
 
+	@Override
 	public long getDefaultPageSize() {
         return defaultPageSize;
     }
     
-    public void setDefaultPageSize(long defaultPageSize) {
+    @Override
+	public void setDefaultPageSize(long defaultPageSize) {
         this.defaultPageSize = defaultPageSize;
     }
     
-    public String getDefaultScript() {
+    @Override
+	public String getDefaultScript() {
         return ScriptUtil.getDefaultScriptEngine();
     }
     
-    public void setDefaultScript(String defaultScript) {
+    @Override
+	public void setDefaultScript(String defaultScript) {
         ScriptUtil.setDefaultScriptEngine(defaultScript);
     }
     
-    public boolean isDefaultNull() {
+    @Override
+	public boolean isDefaultNull() {
         return defaultNull;
     }
     
-    public void setDefaultNull(boolean defaultNull) {
+    @Override
+	public void setDefaultNull(boolean defaultNull) {
         this.defaultNull = defaultNull;
     }
     
+	@Override
 	public char getDefaultSeparator() {
 		return getDefaultCellSeparator();
 	}
 
+	@Override
 	public void setDefaultSeparator(char defaultSeparator) {
 		System.setProperty(CELL_SEPARATOR_SYSPROP, String.valueOf(defaultSeparator));
 	}
 
+	@Override
 	public ComponentDescriptor getDefaultComponentConfig(String name) {
 		return defaultComponent.getComponent(name);
 	}
 
+	@Override
 	public void setDefaultComponentConfig(ComponentDescriptor component) {
 		defaultComponent.addComponent(component);
 	}
 
+	@Override
 	public String getDefaultErrorHandler() {
 		return ErrorHandler.getDefaultLevel().name();
 	}
 
+	@Override
 	public void setDefaultErrorHandler(String defaultErrorHandler) {
 		ErrorHandler.setDefaultLevel(Level.valueOf(defaultErrorHandler));
 	}
 
+	@Override
 	public String getContextUri() {
 		return contextUri;
 	}
 
+	@Override
 	public void setContextUri(String contextUri) {
 		this.contextUri = contextUri;
 	}
 
+	@Override
 	public boolean isValidate() {
 		return BeneratorOpts.isValidating();
 	}
 
+	@Override
 	public void setValidate(boolean validate) {
 		BeneratorOpts.setValidating(validate);
 	}
 	
+	@Override
 	public Long getMaxCount() {
 		return maxCount;
 	}
 
+	@Override
 	public void setMaxCount(Long maxCount) {
 		this.maxCount = maxCount;
 	}
 	
+	@Override
 	public ExecutorService getExecutorService() {
     	return executorService;
     }
 
+	@Override
 	public boolean isDefaultOneToOne() {
     	return defaultOneToOne;
     }
 
+	@Override
 	public void setDefaultOneToOne(boolean defaultOneToOne) {
     	this.defaultOneToOne = defaultOneToOne;
     }
 
+	@Override
 	public boolean isAcceptUnknownSimpleTypes() {
     	return acceptUnknownSimpleTypes;
     }
 
+	@Override
 	public void setAcceptUnknownSimpleTypes(boolean acceptUnknownSimpleTypes) {
     	this.acceptUnknownSimpleTypes = acceptUnknownSimpleTypes;
     	dataModel.setAcceptUnknownPrimitives(acceptUnknownSimpleTypes);
@@ -296,30 +331,37 @@ public class DefaultBeneratorContext implements BeneratorContext {
 		return tmp.charAt(0);
 	}
 
+	@Override
 	public DefaultsProvider getDefaultsProvider() {
 		return getGeneratorFactory().getDefaultsProvider();
 	}
 
+	@Override
 	public void setDefaultImports(boolean defaultImports) {
 		this.defaultImports = defaultImports;
 	}
 	
+	@Override
 	public boolean isDefaultImports() {
 		return defaultImports;
 	}
 
+	@Override
 	public ProductWrapper<?> getCurrentProduct() {
 		return currentProduct;
 	}
 
+	@Override
 	public void setCurrentProduct(ProductWrapper<?> currentProduct) {
 		this.currentProduct = currentProduct;
 	}
 
+	@Override
 	public DataModel getDataModel() {
 		return dataModel;
 	}
 
+	@Override
 	public void setDataModel(DataModel dataModel) {
 		this.dataModel = dataModel;
 	}
@@ -328,6 +370,7 @@ public class DefaultBeneratorContext implements BeneratorContext {
 	
 	// Context interface -----------------------------------------------------------------------------------------------
 	
+	@Override
 	public Object get(String key) {
 		if (contextStack.contains(key))
 			return contextStack.get(key);
@@ -337,22 +380,27 @@ public class DefaultBeneratorContext implements BeneratorContext {
 			return null;
 	}
 
+	@Override
 	public void set(String key, Object value) {
 		contextStack.set(key, value);
 	}
 
+	@Override
 	public void remove(String key) {
 		contextStack.remove(key);
 	}
 
+	@Override
 	public Set<String> keySet() {
 		return contextStack.keySet();
 	}
 
+	@Override
 	public Set<Entry<String, Object>> entrySet() {
 		return contextStack.entrySet();
 	}
 
+	@Override
 	public boolean contains(String key) {
 		return (key != null && (key.equalsIgnoreCase(currentProductName) || "this".equalsIgnoreCase(key) || contextStack.contains(key)));
 	}
@@ -361,18 +409,22 @@ public class DefaultBeneratorContext implements BeneratorContext {
 	
 	// class-loading interface -----------------------------------------------------------------------------------------
 	
-    public Class<?> forName(String className) {
+    @Override
+	public Class<?> forName(String className) {
 		return classCache.forName(className);
 	}
 	
+	@Override
 	public void importClass(String className) {
 		classCache.importClass(className);
 	}
 
+	@Override
 	public void importPackage(String packageName) {
 		classCache.importPackage(packageName);
 	}
 
+	@Override
 	public void importDefaults() {
 		// import frequently used Benerator packages
 		importPackage("org.databene.benerator.consumer");
@@ -399,22 +451,27 @@ public class DefaultBeneratorContext implements BeneratorContext {
 	
 	// other interface methods -----------------------------------------------------------------------------------------
 
+	@Override
 	public void setGlobal(String name, Object value) {
 		settings.set(name, value);
 	}
 	
+	@Override
 	public Object getGlobal(String name) {
 		return settings.get(name);
 	}
 	
+	@Override
 	public void close() {
 		executorService.shutdownNow();
 	}
 	
+	@Override
 	public void addLocalType(TypeDescriptor type) {
 		localDescriptorProvider.addTypeDescriptor(type);
 	}
 
+	@Override
 	public BeneratorContext createSubContext(String productName) {
 		return new DefaultBeneratorSubContext(productName, this);
 	}
@@ -424,10 +481,12 @@ public class DefaultBeneratorContext implements BeneratorContext {
 		setCurrentProduct(currentProduct);
 	}
 	
+	@Override
 	public boolean hasProductNameInScope(String productName) {
 		return (NullSafeComparator.equals(this.currentProductName, productName));
 	}
 	
+	@Override
 	public String resolveRelativeUri(String relativeUri) {
 	    return IOUtil.resolveRelativeUri(relativeUri, contextUri);
     }
