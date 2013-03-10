@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -85,14 +85,17 @@ public abstract class AbstractNonNullNumberGenerator<E extends Number> extends A
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public Class<E> getGeneratedType() {
+    @Override
+	public Class<E> getGeneratedType() {
     	return generatedType;
     }
     
-    public boolean isThreadSafe() {
+    @Override
+	public boolean isThreadSafe() {
     	return true;
     }
 
+	@Override
 	public boolean isParallelizable() {
     	return true;
     }

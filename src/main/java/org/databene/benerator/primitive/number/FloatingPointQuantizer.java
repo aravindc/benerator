@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,6 +45,7 @@ public class FloatingPointQuantizer<E extends Number> extends ThreadSafeConverte
 	    this.converter = new NumberToNumberConverter<Double, E>(Double.class, numberType);
     }
 
+	@Override
 	public E convert(E sourceValue) throws ConversionException {
 		double l = Math.floor((sourceValue.doubleValue() - min) / granularity) * granularity + min;
 	    return converter.convert(l);
