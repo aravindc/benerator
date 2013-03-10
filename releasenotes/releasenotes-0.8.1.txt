@@ -17,14 +17,17 @@ enhancements
   - Extended set of italian person names
   - Extended set of irish person names
   - Extended set of Dutch family names
-- 
+
 
 changes
 -------
 
 
-
 bug fixes
 ---------
+- Benerator does not cancel on errors
+- multiple exception stack traces
+- ClassCastException on <import platforms="xls"/>
+- Benerator hangs when finished
 - Windows issue: ConfigurationError: Resource not found: org\databene\commons\time\timeUnits.properties
 - Missing female form of Czech family names
