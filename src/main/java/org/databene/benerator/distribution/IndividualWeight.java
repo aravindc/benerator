@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -43,12 +43,14 @@ public abstract class IndividualWeight<E> implements Weight {
 	
 	public abstract double weight(E object);
 	
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+    @Override
+	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T granularity, boolean unique) {
 	    throw new UnsupportedOperationException("createGenerator() is not supported by " + getClass());
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
     	if (unique)
     		throw new ConfigurationError("Uniqueness is not supported by " + getClass());

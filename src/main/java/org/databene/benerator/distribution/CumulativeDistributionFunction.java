@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,6 +48,7 @@ public abstract class CumulativeDistributionFunction implements Distribution {
 	
 	public abstract double inverse(double probability);
 
+	@Override
 	public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
 		if (unique)
 			throw new IllegalArgumentException(this + " cannot generate unique values");
@@ -57,6 +58,7 @@ public abstract class CumulativeDistributionFunction implements Distribution {
 	    return new SampleGenerator<T>(source.getGeneratedType(), this, unique, allProducts);
     }
 
+	@Override
 	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
 			Class<T> numberType, T min, T max, T granularity, boolean unique) {
 		if (unique)

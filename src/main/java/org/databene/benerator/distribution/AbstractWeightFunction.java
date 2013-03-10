@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,7 +41,8 @@ import org.databene.commons.BeanUtil;
 
 public abstract class AbstractWeightFunction implements WeightFunction {
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	if (Long.class.equals(numberType))
@@ -54,7 +55,8 @@ public abstract class AbstractWeightFunction implements WeightFunction {
     		return WrapperFactory.asNonNullNumberGeneratorOfType(numberType, createDoubleGenerator(min, max, granularity), min, granularity);
     }
 
-    public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
+    @Override
+	public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
 	    return new IndexBasedSampleGeneratorProxy<T>(source, this, unique);
     }
     

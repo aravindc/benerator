@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,7 +41,8 @@ public abstract class Sequence implements Distribution {
 	
     // interface -------------------------------------------------------------------------------------------------------
 
-    public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
+    @Override
+	public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
     	if (source == null)
     		throw new ConfigurationError("No source provided");
 	    return new IndexBasedSampleGeneratorProxy<T>(source, this, unique);
