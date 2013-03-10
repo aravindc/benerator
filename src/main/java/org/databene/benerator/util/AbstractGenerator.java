@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,19 +51,23 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
 	    this.resultWrapperProvider = new WrapperProvider<E>();
     }
 
+	@Override
 	public synchronized void init(GeneratorContext context) {
 		this.context = context;
 		this.state = GeneratorState.RUNNING;
     }
 	
+	@Override
 	public boolean wasInitialized() {
 	    return (state != GeneratorState.CREATED);
 	}
 
+	@Override
 	public void reset() {
 	    this.state = GeneratorState.RUNNING;
 	}
 	
+	@Override
 	public void close() {
 	    this.state = GeneratorState.CLOSED;
 	}

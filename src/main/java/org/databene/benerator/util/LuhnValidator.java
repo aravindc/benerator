@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,6 +35,7 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  */
 public class LuhnValidator extends AbstractConstraintValidator<Luhn, CharSequence> {
 
+	@Override
 	public boolean isValid(CharSequence number, ConstraintValidatorContext context) {
 	    return LuhnUtil.luhnValid(number);
     }

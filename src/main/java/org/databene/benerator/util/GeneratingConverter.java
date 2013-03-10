@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,12 +51,14 @@ public abstract class GeneratingConverter<S, G, T> extends ThreadSafeConverter<S
 	
 	// ContextAware interface implementation ---------------------------------------------------------------------------
 
+	@Override
 	public void setContext(Context context) {
 	    this.context = (GeneratorContext) context;
     }
 
 	// Converter interface implementation ------------------------------------------------------------------------------
 	
+	@Override
 	public final T convert(S sourceValue) {
 		if (sourceValue == null)
 			return null;

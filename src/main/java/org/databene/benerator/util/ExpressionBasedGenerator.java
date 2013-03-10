@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,10 +41,12 @@ public class ExpressionBasedGenerator<E> extends ThreadSafeGenerator<E> {
 	    this.generatedType = generatedType;
     }
 
+	@Override
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 	    return wrapper.wrap(expression.evaluate(context));
     }
 
+	@Override
 	public Class<E> getGeneratedType() {
 	    return generatedType;
     }

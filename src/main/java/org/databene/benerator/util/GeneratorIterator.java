@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,21 +51,25 @@ public class GeneratorIterator<E> implements Iterator<E>, Closeable {
 		this.next = fetchNext(source);
 	}
 
-    public boolean hasNext() {
+    @Override
+	public boolean hasNext() {
 	    return next != null;
     }
 
-    public E next() {
+    @Override
+	public E next() {
     	E result = next;
     	next = source.generate(wrapperProvider.get()).unwrap();
 	    return result;
     }
 
-    public void remove() {
+    @Override
+	public void remove() {
 	    throw new UnsupportedOperationException("removal is not supported by " + getClass());
     }
 
-    public void close() {
+    @Override
+	public void close() {
         source.close();
     }
     

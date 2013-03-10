@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ public abstract class ThreadSafeGenerator<E> extends AbstractGenerator<E> {
 	 * Returns <code>true</code> to indicate thread-safety and may not be overwritten by child classes.
 	 * @return true to indicate thread-safety. 
 	 */
+	@Override
 	public final boolean isThreadSafe() {
 	    return true;
     }
@@ -42,6 +43,7 @@ public abstract class ThreadSafeGenerator<E> extends AbstractGenerator<E> {
 	 * but may be overwritten by child classes.
 	 * @return true to indicate parallelization support
 	 */
+	@Override
 	public boolean isParallelizable() {
 	    return true;
     }

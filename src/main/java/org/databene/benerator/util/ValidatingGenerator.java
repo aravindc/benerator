@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -65,7 +65,8 @@ public abstract class ValidatingGenerator<P> extends AbstractGenerator<P> {
      * WARNING_THRESHOLD value, a warning is logged, if the count reaches the
      * ERROR_THRESHOLD, an exception is raised.
      */
-    public ProductWrapper<P> generate(ProductWrapper<P> wrapper) {
+    @Override
+	public ProductWrapper<P> generate(ProductWrapper<P> wrapper) {
         boolean valid;
         int count = 0;
         P product;

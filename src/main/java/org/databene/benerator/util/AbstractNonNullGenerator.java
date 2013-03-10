@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,11 +32,13 @@ import org.databene.benerator.wrapper.ProductWrapper;
  */
 public abstract class AbstractNonNullGenerator<E> extends AbstractGenerator<E> implements NonNullGenerator<E> {
 
+	@Override
 	public final ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 		E result = generate();
 		return (result != null ? wrapper.wrap(result) : null);
 	}
 	
+	@Override
 	public abstract E generate();
 	
 }
