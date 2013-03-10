@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,6 +44,7 @@ public class String2DistributionConverter extends ThreadSafeConverter<String, Di
 	    super(String.class, Distribution.class);
     }
 
+	@Override
 	public Distribution convert(String stringOrScript) throws ConversionException {
 		Object sourceValue = ScriptUtil.parseUnspecificText(stringOrScript).evaluate(context);
 		Distribution result;
@@ -57,6 +58,7 @@ public class String2DistributionConverter extends ThreadSafeConverter<String, Di
 	    return result;
     }
 
+	@Override
 	public void setContext(Context context) {
 	    this.context = context;
     }

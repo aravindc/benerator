@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -85,7 +85,8 @@ public class SettingParser extends AbstractBeneratorDescriptorParser {
 		        case 0: throw new ConfigurationError("No valid property spec: " + XMLUtil.formatShort(element));
 		        case 1: return subExpressions[0];
 		        default: return new CompositeExpression<Object, Object>(subExpressions) {
-		    		public Object[] evaluate(Context context) {
+		    		@Override
+					public Object[] evaluate(Context context) {
 		                return ExpressionUtil.evaluateAll(terms, context);
 		            }
 		        };
@@ -127,7 +128,8 @@ public class SettingParser extends AbstractBeneratorDescriptorParser {
 	        this.source = source;
         }
 
-        public E evaluate(Context context) {
+        @Override
+		public E evaluate(Context context) {
 			Generator<E> generator = source.evaluate(context);
 			ProductWrapper<E> wrapper = generator.generate(new ProductWrapper<E>());
 			if (wrapper == null)

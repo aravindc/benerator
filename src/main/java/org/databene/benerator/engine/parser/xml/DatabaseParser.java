@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -117,6 +117,7 @@ public class DatabaseParser extends AbstractBeneratorDescriptorParser {
 	}
 
 	static class GlobalAcceptUnknownSimpleTypeExpression extends DynamicExpression<Boolean> {
+		@Override
 		public Boolean evaluate(Context context) {
             return ((BeneratorContext) context).isAcceptUnknownSimpleTypes();
         }
