@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -107,7 +107,8 @@ public class DateGenerator extends NonNullGeneratorWrapper<Long, Date> {
 
     // source interface ---------------------------------------------------------------------------------------------
 
-    public Class<Date> getGeneratedType() {
+    @Override
+	public Class<Date> getGeneratedType() {
         return Date.class;
     }
 
@@ -119,6 +120,7 @@ public class DateGenerator extends NonNullGeneratorWrapper<Long, Date> {
     }
 
     /** Generates a Date by creating a millisecond value from the source generator and wrapping it into a Date */
+	@Override
 	public Date generate() {
     	assertInitialized();
         ProductWrapper<Long> tmp = generateFromSource();

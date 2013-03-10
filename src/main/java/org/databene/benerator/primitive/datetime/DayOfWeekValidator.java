@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -83,6 +83,7 @@ public class DayOfWeekValidator extends AbstractConstraintValidator<DayOfWeek, D
         	daysOfWeekAccepted[isoDayOfWeek(dayOfWeek) - 1] = true;
     }
     
+	@Override
 	public boolean isValid(Date candidate, ConstraintValidatorContext ctx) {
 	    int isoDayOfWeek = isoDayOfWeek(candidate);
 		return daysOfWeekAccepted[isoDayOfWeek - 1];
