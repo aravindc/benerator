@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -58,10 +58,12 @@ public class RandomDomainGenerator extends CompositeGenerator<String> implements
 	    super.init(context);
 	}
 	
+	@Override
 	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
 		return wrapper.wrap(generate());
 	}
 
+	@Override
 	public String generate() {
 		return nameGenerator.generate() + '.' + generateNonNull(tldGenerator);
 	}
