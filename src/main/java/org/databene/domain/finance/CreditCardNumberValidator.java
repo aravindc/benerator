@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,7 +39,8 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  */
 public class CreditCardNumberValidator extends AbstractConstraintValidator<CreditCardNumber, CharSequence> {
 
-    public boolean isValid(CharSequence number, ConstraintValidatorContext context) {
+    @Override
+	public boolean isValid(CharSequence number, ConstraintValidatorContext context) {
 		if (number == null || number.length() < 13 || number.length() > 16)
 			return false;
 		return LuhnUtil.luhnValid(number);

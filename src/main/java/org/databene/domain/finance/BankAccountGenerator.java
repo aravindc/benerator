@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -62,10 +62,12 @@ public class BankAccountGenerator extends CompositeGenerator<BankAccount> implem
         super.init(context);
     }
     
+	@Override
 	public ProductWrapper<BankAccount> generate(ProductWrapper<BankAccount> wrapper) {
 		return wrapper.wrap(generate());
 	}
 
+	@Override
 	public BankAccount generate() {
 		Bank bank = bankGenerator.generate();
 		String accountNumber = accountNumberGenerator.generate();

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -63,10 +63,12 @@ public class BankGenerator extends CompositeGenerator<Bank> implements NonNullGe
         super.init(context);
     }
     
+	@Override
 	public ProductWrapper<Bank> generate(ProductWrapper<Bank> wrapper) {
 		return wrapper.wrap(generate());
 	}
 
+	@Override
 	public Bank generate() {
 		String name = nameGenerator.generate();
 		String bankCode = bankCodeGenerator.generate();

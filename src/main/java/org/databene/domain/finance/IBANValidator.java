@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,7 +44,8 @@ public class IBANValidator extends AbstractConstraintValidator<IBAN, String> {
 
 	private CountryCode2Validator countryCodeValidator = new CountryCode2Validator();
 	
-    public boolean isValid(String iban, ConstraintValidatorContext context) {
+    @Override
+	public boolean isValid(String iban, ConstraintValidatorContext context) {
 	    // check length
 		if (iban == null || iban.length() < 15 || iban.length() > 32 )
 			return false;
