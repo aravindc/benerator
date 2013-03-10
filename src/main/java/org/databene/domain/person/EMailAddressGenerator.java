@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -70,6 +70,7 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements NonNul
 	
 	// Generator interface ---------------------------------------------------------------------------------------------
 	
+	@Override
 	public Class<String> getGeneratedType() {
 	    return String.class;
     }
@@ -80,22 +81,27 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements NonNul
 		super.init(context);
     }
 	
+	@Override
 	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
 		return wrapper.wrap(generate());
 	}
 
+	@Override
 	public String generate() {
 		Person person = personGenerator.generate();
 		return generate(person.getGivenName(), person.getFamilyName());
 	}
 	
+	@Override
 	public boolean wasInitialized() {
 	    return personGenerator.wasInitialized();
 	}
 	
+	@Override
 	public void reset() {
     }
 
+	@Override
 	public void close() {
     }
 

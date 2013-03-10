@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -72,7 +72,8 @@ public class FemaleFamilyNameConverter extends ThreadSafeConverter<String, Strin
 	    this.mappings = builder.toArray();
     }
 
-    public String convert(String name) throws ConversionException {
+    @Override
+	public String convert(String name) throws ConversionException {
 	    for (String[] mapping : mappings)
 	    	if (mapping[0].length() == 0 || name.endsWith(mapping[0]))
 	    		return name.substring(0, name.length() - mapping[0].length()) + mapping[1];

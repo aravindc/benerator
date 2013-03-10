@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -101,6 +101,7 @@ public class EMailAddressBuilder implements ThreadAware {
 	
 	// ThreadAware interface implementation ----------------------------------------------------------------------------
 	
+	@Override
 	public boolean isParallelizable() {
 		return domainGenerator.isParallelizable() 
 			&& caseConverter.isParallelizable() 
@@ -108,6 +109,7 @@ public class EMailAddressBuilder implements ThreadAware {
 			&& joinGenerator.isParallelizable();
     }
 
+	@Override
 	public boolean isThreadSafe() {
 		return domainGenerator.isThreadSafe() 
 			&& caseConverter.isThreadSafe() 
