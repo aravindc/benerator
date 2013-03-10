@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -43,6 +43,7 @@ public class SequentialTask extends CompositeTask {
 		super(subTasks);
 	}
 	
+	@Override
 	public TaskResult execute(Context context, ErrorHandler errorHandler) {
 		TaskResult result = TaskResult.EXECUTING;
 	    for (Task subTask : subTasks) {

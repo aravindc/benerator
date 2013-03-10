@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -54,7 +54,8 @@ public abstract class TaskProxy<E extends Task> extends AbstractTask implements 
         setTaskName(realTask != null ? realTask.getClass().getSimpleName() : "undefined");
     }
     
-    public TaskResult execute(Context context, ErrorHandler errorHandler) {
+    @Override
+	public TaskResult execute(Context context, ErrorHandler errorHandler) {
         return realTask.execute(context, errorHandler);
     }
     
@@ -73,7 +74,8 @@ public abstract class TaskProxy<E extends Task> extends AbstractTask implements 
         return realTask.isParallelizable();
     }
     
-    public String getMessage() {
+    @Override
+	public String getMessage() {
     	return (realTask instanceof MessageHolder ? ((MessageHolder) realTask).getMessage() : null);
     }
 

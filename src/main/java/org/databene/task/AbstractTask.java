@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -59,7 +59,8 @@ public abstract class AbstractTask implements Task {
     
     // Task interface --------------------------------------------------------------------------------------------------
 
-    public String getTaskName() {
+    @Override
+	public String getTaskName() {
         return taskName;
     }
 
@@ -67,21 +68,27 @@ public abstract class AbstractTask implements Task {
         this.taskName = taskName;
     }
 
-    public boolean isThreadSafe() {
+    @Override
+	public boolean isThreadSafe() {
         return threadSafe;
     }
     
-    public boolean isParallelizable() {
+    @Override
+	public boolean isParallelizable() {
         return parallelizable;
     }
     
-    public void pageFinished() {
+    @Override
+	public void pageFinished() {
         // empty
     }
     
-    public void close() {
+    @Override
+	public void close() {
     	// empty
     }
+    
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
     public String toString() {

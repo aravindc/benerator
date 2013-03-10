@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,11 +40,13 @@ public class LoggingPageListener implements PageListener {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingPageListener.class);
 
-    public void pageStarting() {
+    @Override
+	public void pageStarting() {
         logger.info("pageStarting()");
     }
 
-    public void pageFinished() {
+    @Override
+	public void pageFinished() {
         logger.info("pageFinished()");
     }
     

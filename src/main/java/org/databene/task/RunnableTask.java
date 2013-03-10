@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,7 +46,8 @@ public class RunnableTask extends AbstractTask {
         this.runnable = runnable;
     }
 
-    public TaskResult execute(Context context, ErrorHandler errorHandler) {
+    @Override
+	public TaskResult execute(Context context, ErrorHandler errorHandler) {
     	if (runnable instanceof ContextAware)
     		((ContextAware) runnable).setContext(context);
         runnable.run();

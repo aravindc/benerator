@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,13 +48,12 @@ public interface Task extends ThreadAware, Closeable {
     /** @return the name of the task. */
     String getTaskName();
     
-    /** 
-     * Executes the task's work, possibly interacting with the context.
-     */
+    /** Executes the task's work, possibly interacting with the context. */
     TaskResult execute(Context context, ErrorHandler errorHandler);
     
     void pageFinished();
 
-    void close();
+    @Override
+	void close();
     
 }
