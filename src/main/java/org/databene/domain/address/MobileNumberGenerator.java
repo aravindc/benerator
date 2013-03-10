@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,6 +45,7 @@ public class MobileNumberGenerator extends ThreadSafeNonNullGenerator<PhoneNumbe
     	this.country = country;
     }
 
+	@Override
 	public Class<PhoneNumber> getGeneratedType() {
 	    return PhoneNumber.class;
 	}

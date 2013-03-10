@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,6 +40,7 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  */
 public class CountryCode2Validator extends AbstractConstraintValidator<CountryCode2, String> {
 
+	@Override
 	public boolean isValid(String countryCode, ConstraintValidatorContext context) {
 	    if (countryCode == null || countryCode.length() != 2)
 			return false;

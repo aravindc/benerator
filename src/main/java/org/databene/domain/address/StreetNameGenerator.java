@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -72,10 +72,12 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
     
 	// DatasetBasedGenerator interface implementation ------------------------------------------------------------------
 	
+	@Override
 	public String getNesting() {
 		return REGION_NESTING;
 	}
 
+	@Override
 	public String getDataset() {
 		return datasetName;
 	}
@@ -84,6 +86,7 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
 		this.datasetName = datasetName;
 	}
 
+	@Override
 	public String generateForDataset(String dataset) {
 		return getSource().generateForDataset(dataset);
 	}
@@ -119,6 +122,7 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
 		return (WeightedDatasetCSVGenerator<String>) super.getSource();
 	}
 	
+	@Override
 	public String generate() {
 		return GeneratorUtil.generateNonNull(this);
 	}

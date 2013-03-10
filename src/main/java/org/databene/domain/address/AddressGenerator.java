@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -89,10 +89,12 @@ public class AddressGenerator extends CompositeGenerator<Address> implements Non
         super.init(context);
 	}
 
+	@Override
 	public ProductWrapper<Address> generate(ProductWrapper<Address> wrapper) {
 		return wrapper.wrap(generate());
 	}
 
+	@Override
 	public Address generate() {
     	assertInitialized();
         City city = cityGenerator.generate();
