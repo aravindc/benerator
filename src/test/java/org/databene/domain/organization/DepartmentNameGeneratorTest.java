@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,6 +45,7 @@ public class DepartmentNameGeneratorTest extends GeneratorClassTest {
 	@Test
 	public void testLocales() {
 		Runnable runner = new Runnable() {
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				logger.debug("Checking Locale " + Locale.getDefault());

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -75,6 +75,7 @@ public class Array2EntityConverterTest extends ModelTest {
 
     	List<Escalation> escalations = new ArrayList<Escalation>();
 
+		@Override
 		public void escalate(String message, Object originator, Object cause) {
 			escalations.add(new Escalation(message, originator, cause));
 			loggerEscalator.escalate(message, originator, cause);

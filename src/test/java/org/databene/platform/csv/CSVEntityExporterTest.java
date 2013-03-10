@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -250,6 +250,7 @@ public class CSVEntityExporterTest extends GeneratorTest {
 			final Entity entity = new Entity(type, "a", "0123456789", "b", "5555555555", "c", "9876543210");
 			ExecutorService service = Executors.newCachedThreadPool();
 			Runnable runner = new Runnable() {
+				@Override
 				public void run() {
 					for (int i = 0; i < 500; i++)
 						exporter.startProductConsumption(entity);
