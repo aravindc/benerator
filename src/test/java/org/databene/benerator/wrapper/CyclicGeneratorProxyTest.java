@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -85,13 +85,14 @@ public class CyclicGeneratorProxyTest extends GeneratorTest {
 		
 		private int n = 0;
 		
+		@Override
+		public Class<Integer> getGeneratedType() {
+	        return Integer.class;
+        }
+		
+		@Override
 		public ProductWrapper<Integer> generate(ProductWrapper<Integer> wrapper) {
 	        return (n < 2 ? wrapper.wrap(++n) : null);
-        }
-
-        @Override
-        public void close() {
-	        n = 3;
         }
 
         @Override
@@ -99,9 +100,11 @@ public class CyclicGeneratorProxyTest extends GeneratorTest {
 	        n = 0;
         }
 
-		public Class<Integer> getGeneratedType() {
-	        return Integer.class;
+        @Override
+        public void close() {
+	        n = 3;
         }
+
 	}
 
 }

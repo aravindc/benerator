@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -68,10 +68,12 @@ public class GeneratorWrapperTest extends GeneratorTest {
 	        super(source);
         }
 
-        public Class<Integer> getGeneratedType() {
+        @Override
+		public Class<Integer> getGeneratedType() {
 	        return getSource().getGeneratedType();
         }
 		
+		@Override
 		public ProductWrapper<Integer> generate(ProductWrapper<Integer> wrapper) {
 	        return getSource().generate(wrapper);
         }
@@ -82,13 +84,14 @@ public class GeneratorWrapperTest extends GeneratorTest {
 		
 		private int n = 0;
 		
-		public ProductWrapper<Integer> generate(ProductWrapper<Integer> wrapper) {
-        	return (n < 2 ? wrapper.wrap(++n) : null);
+		@Override
+		public Class<Integer> getGeneratedType() {
+	        return Integer.class;
         }
 
-        @Override
-        public void close() {
-	        n = 3;
+		@Override
+		public ProductWrapper<Integer> generate(ProductWrapper<Integer> wrapper) {
+        	return (n < 2 ? wrapper.wrap(++n) : null);
         }
 
         @Override
@@ -96,8 +99,9 @@ public class GeneratorWrapperTest extends GeneratorTest {
 	        n = 0;
         }
 
-		public Class<Integer> getGeneratedType() {
-	        return Integer.class;
+        @Override
+        public void close() {
+	        n = 3;
         }
 
 	}

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -71,10 +71,12 @@ public class IteratingGeneratorTest extends GeneratorTest {
 
     	public EmptyIterator latestInstance;
     	
+		@Override
 		public Class<Integer> getType() {
 			return Integer.class;
 		}
     	
+		@Override
 		public HeavyweightIterator<Integer> iterator() {
 			latestInstance = new EmptyIterator();
 			 return latestInstance;
@@ -86,18 +88,22 @@ public class IteratingGeneratorTest extends GeneratorTest {
     	
     	public boolean closed = false;
 
+		@Override
 		public boolean hasNext() {
 			return false;
 		}
 
+		@Override
 		public Integer next() {
 			throw new IllegalStateException();
 		}
 
+		@Override
 		public void remove() {
 			throw new UnsupportedOperationException("EmptyIterator.remove() is not supported");
 		}
 
+		@Override
 		public void close() {
 			closed = true;
 		}

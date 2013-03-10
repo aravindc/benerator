@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -63,6 +63,7 @@ public class ConvertingGeneratorTest extends GeneratorTest {
 			super(Integer.class, String.class);
 		}
 
+		@Override
 		public String convert(Integer sourceValue) throws ConversionException {
             return String.valueOf(sourceValue);
         }
