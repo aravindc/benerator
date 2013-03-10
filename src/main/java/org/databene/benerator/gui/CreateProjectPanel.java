@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -130,6 +130,7 @@ public class CreateProjectPanel extends JPanel {
 		// Exit the application if 'Escape' is pressed
 		KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		registerKeyboardAction(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				exit();
 			}
@@ -140,6 +141,7 @@ public class CreateProjectPanel extends JPanel {
 		JPanel pane = new JPanel();
 
 		createButton = createButton("create", new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				new Thread(new Creator()).start();
 			}
@@ -147,6 +149,7 @@ public class CreateProjectPanel extends JPanel {
 		pane.add(createButton);
 		
 		pane.add(createButton("cancel", new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				exit();
 			}
@@ -163,6 +166,7 @@ public class CreateProjectPanel extends JPanel {
 		folderField = new PropertyFileField(setup, "projectFolder", WIDE, 
 				FileTypeSupport.directoriesOnly, FileOperation.SAVE);
 		folderField.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				File folder = CreateProjectPanel.this.folderField.getFile();
 				if (! setup.isOverwrite() && folder.exists() && !FileUtil.isEmptyFolder(folder))
@@ -309,7 +313,8 @@ public class CreateProjectPanel extends JPanel {
 
 	
 	class ArchetypeListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
 	        boolean useDB = setup.isDatabaseProject();
 	        dbDriverTypeField.setEnabled(useDB);
         	dbUrlField.setEnabled(useDB);
@@ -333,6 +338,7 @@ public class CreateProjectPanel extends JPanel {
 	
 	class Creator implements Runnable {
 
+		@Override
 		public void run() {
 			try {
 				logger.info("Creating project " + setup.getProjectName() + " " +
@@ -369,7 +375,8 @@ public class CreateProjectPanel extends JPanel {
 
 	class TestConnectionListener implements ActionListener {
 
-        public void actionPerformed(ActionEvent actionevent) {
+        @Override
+		public void actionPerformed(ActionEvent actionevent) {
 	        try {
 	        	Class.forName(setup.getDbDriver());
 	        	DriverManager.getConnection(setup.getDbUrl(), setup.getDbUser(), setup.getDbPassword());
