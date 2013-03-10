@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2012-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,22 +39,27 @@ public abstract class AbstractScopedLifeCycleHolder implements ScopedLifeCycleHo
 		setResetNeeded(false);
 	}
 
+	@Override
 	public String getScope() {
 		return scope;
 	}
 
+	@Override
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
 
+	@Override
 	public boolean isResetNeeded() {
 		return resetNeeded;
 	}
 
+	@Override
 	public void setResetNeeded(boolean resetNeeded) {
 		this.resetNeeded = resetNeeded;
 	}
 
+	@Override
 	public void resetIfNeeded() {
 		if (this.resetNeeded) {
 			reset();

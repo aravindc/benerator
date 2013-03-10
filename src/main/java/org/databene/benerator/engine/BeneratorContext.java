@@ -69,12 +69,14 @@ public interface BeneratorContext extends GeneratorContext, ScriptContext {
 	
 	// import handling -------------------------------------------------------------------------------------------------
 	
+	@Override
 	void importClass(String className);
 	void importPackage(String packageName);
 	void importDefaults();
 
 	// service provider sharing ----------------------------------------------------------------------------------------
 	
+	@Override
 	GeneratorFactory getGeneratorFactory();
 	void setGeneratorFactory(GeneratorFactory generatorFactory);
 	
@@ -94,7 +96,9 @@ public interface BeneratorContext extends GeneratorContext, ScriptContext {
 	
 	void setGlobal(String name, Object value);
 	
+	@Override
 	ProductWrapper<?> getCurrentProduct();
+	@Override
 	void setCurrentProduct(ProductWrapper<?> currentProduct);
 	boolean hasProductNameInScope(String productName);
 	

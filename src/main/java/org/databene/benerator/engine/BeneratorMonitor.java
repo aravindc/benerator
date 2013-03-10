@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -64,10 +64,12 @@ public class BeneratorMonitor implements BeneratorMonitorMBean {
 		totalGenerationCount += newGenerations;
 	}
 	
+	@Override
 	public long getTotalGenerationCount() {
 	    return totalGenerationCount;
     }
 
+	@Override
 	public long getCurrentThroughput() {
 	    return currentThroughput;
     }
@@ -76,22 +78,27 @@ public class BeneratorMonitor implements BeneratorMonitorMBean {
     	this.totalGenerationCount = totalGenerationCount;
     }
 
+	@Override
 	public int getOpenConnectionCount() {
 		return DBUtil.getOpenConnectionCount();
 	}
 	
+	@Override
 	public int getOpenResultSetCount() {
 		return DBUtil.getOpenResultSetCount();
 	}
 
+	@Override
 	public int getOpenStatementCount() {
 		return DBUtil.getOpenStatementCount();
 	}
 
+	@Override
 	public int getOpenPreparedStatementCount() {
 		return DBUtil.getOpenPreparedStatementCount();
 	}
 
+	@Override
 	public void reset() {
 		this.latestTimeStamp = 0;
 		this.latestGenerationCount = 0;
