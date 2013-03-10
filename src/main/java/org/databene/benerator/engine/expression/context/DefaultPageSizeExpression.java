@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import org.databene.script.expression.DynamicExpression;
  */
 public class DefaultPageSizeExpression extends DynamicExpression<Long> {
 
+	@Override
 	public Long evaluate(Context context) {
         return ((BeneratorContext) context).getDefaultPageSize();
     }
