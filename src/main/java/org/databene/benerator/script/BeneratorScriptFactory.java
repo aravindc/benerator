@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,11 +44,13 @@ import org.databene.script.ScriptFactory;
 
 public class BeneratorScriptFactory implements ScriptFactory {
 
-    public Script parseText(String text) throws ParseException {
+    @Override
+	public Script parseText(String text) throws ParseException {
         return new BeneratorScript(DatabeneScriptParser.parseExpression(text), text);
     }
 
-    public Script readFile(String uri) throws ParseException, IOException {
+    @Override
+	public Script readFile(String uri) throws ParseException, IOException {
 	    String text = IOUtil.getContentOfURI(uri);
 	    return parseText(text);
     }
