@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,112 +41,142 @@ import org.databene.benerator.factory.ConsumerMock;
  */
 public class InitialContextFactoryMock implements InitialContextFactory, Context {
 	
+	@Override
 	public Context getInitialContext(Hashtable<?, ?> environment) {
 		return this;
     }
 	
+	@Override
 	public Object addToEnvironment(String s, Object obj) {
         return null;
     }
 
+	@Override
 	public void bind(Name name, Object obj) {
     }
 
+	@Override
 	public void bind(String s, Object obj) {
     }
 
+	@Override
 	public void close() {
     }
 
+	@Override
 	public Name composeName(Name name, Name name1) {
         return null;
     }
 
+	@Override
 	public String composeName(String s, String s1) {
         return null;
     }
 
+	@Override
 	public Context createSubcontext(Name name) {
         return null;
     }
 
+	@Override
 	public Context createSubcontext(String s) {
         return null;
     }
 
+	@Override
 	public void destroySubcontext(Name name) {
     }
 
+	@Override
 	public void destroySubcontext(String s) {
     }
 
+	@Override
 	public Hashtable<?, ?> getEnvironment() {
         return null;
     }
 
+	@Override
 	public String getNameInNamespace() {
         return null;
     }
 
+	@Override
 	public NameParser getNameParser(Name name) {
         return null;
     }
 
+	@Override
 	public NameParser getNameParser(String s) {
         return null;
     }
 
+	@Override
 	public NamingEnumeration<NameClassPair> list(Name name) {
         return null;
     }
 
+	@Override
 	public NamingEnumeration<NameClassPair> list(String s) {
         return null;
     }
 
+	@Override
 	public NamingEnumeration<Binding> listBindings(Name name) {
         return null;
     }
 
+	@Override
 	public NamingEnumeration<Binding> listBindings(String s) {
         return null;
     }
 
+	@Override
 	public Object lookup(Name name) {
         return new ConsumerMock();
     }
 
+	@Override
 	public Object lookup(String s) {
         return new ConsumerMock();
     }
 
+	@Override
 	public Object lookupLink(Name name) {
         return null;
     }
 
+	@Override
 	public Object lookupLink(String s) {
         return null;
     }
 
+	@Override
 	public void rebind(Name name, Object obj) {
     }
 
+	@Override
 	public void rebind(String s, Object obj) {
     }
 
+	@Override
 	public Object removeFromEnvironment(String s) {
         return null;
     }
 
+	@Override
 	public void rename(Name name, Name name1) {
     }
 
+	@Override
 	public void rename(String s, String s1) {
     }
 
+	@Override
 	public void unbind(Name name) {
     }
 
+	@Override
 	public void unbind(String s) {
     }
 	
