@@ -89,8 +89,10 @@ public class ImportParser extends AbstractBeneratorDescriptorParser {
 		List<PlatformDescriptor> platforms = new ArrayList<PlatformDescriptor>(platformNames.length);
 		for (String platformName : platformNames) {
 			PlatformDescriptor platformDescriptor = createPlatformDescriptor(platformName);
-			for (XMLElementParser<Statement> parser : platformDescriptor.getParsers())
-				context.addParser(parser);
+			List<XMLElementParser<Statement>> parsers = platformDescriptor.getParsers();
+			if (parsers != null)
+				for (XMLElementParser<Statement> parser : parsers)
+					context.addParser(parser);
 			platforms.add(platformDescriptor);
 		}
 		return platforms;
