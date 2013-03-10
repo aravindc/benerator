@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -59,11 +59,13 @@ public abstract class AbstractDbUnitEntityIterator implements DataIterator<Entit
     
     // DataIterator interface implementation ---------------------------------------------------------------------------
 
-    public Class<Entity> getType() {
+    @Override
+	public Class<Entity> getType() {
     	return Entity.class;
     }
     
-    public void close() {
+    @Override
+	public void close() {
     	if (reader != null) {
     		try {
 				reader.close();
