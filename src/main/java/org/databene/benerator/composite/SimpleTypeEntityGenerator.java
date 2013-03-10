@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,10 +50,12 @@ public class SimpleTypeEntityGenerator extends GeneratorWrapper<Object, Entity> 
 
 	// Generator interface implementation ------------------------------------------------------------------------------
 
+	@Override
 	public Class<Entity> getGeneratedType() {
 		return Entity.class;
 	}
 	
+	@Override
 	public ProductWrapper<Entity> generate(ProductWrapper<Entity> wrapper) {
 		ProductWrapper<Object> sourceWrapper = generateFromSource();
 		if (sourceWrapper == null)

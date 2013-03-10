@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -54,6 +54,7 @@ public class ComponentTypeConverter extends AbstractConverter<Entity, Entity> {
 		this.type = type;
 	}
 
+	@Override
 	public Entity convert(Entity entity) throws ConversionException {
 		if (entity == null)
 			return null;
@@ -75,10 +76,12 @@ public class ComponentTypeConverter extends AbstractConverter<Entity, Entity> {
 		return entity;
 	}
 
+	@Override
 	public boolean isParallelizable() {
 	    return false;
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return false;
     }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,6 +49,7 @@ public abstract class AbstractGeneratorComponent<E> extends AbstractScopedLifeCy
     	return source;
     }
     
+	@Override
 	public String getMessage() {
 		return message;
 	}
@@ -60,23 +61,28 @@ public abstract class AbstractGeneratorComponent<E> extends AbstractScopedLifeCy
 
     // GeneratorComponent interface implementation ---------------------------------------------------------------------
 
+	@Override
 	public void init(BeneratorContext context) {
 		this.context = context;
 		source.init(context);
 	}
 
+	@Override
 	public void reset() {
 		source.reset();
 	}
 	
+	@Override
 	public void close() {
     	source.close();
 	}
 
+	@Override
 	public boolean isParallelizable() {
 	    return source.isParallelizable();
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return source.isThreadSafe();
     }

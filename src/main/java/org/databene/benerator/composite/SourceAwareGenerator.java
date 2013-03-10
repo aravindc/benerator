@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -107,6 +107,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 		super.close();
 	}
 	
+	@Override
 	public String getMessage() {
 		if (message != null)
 			return message;

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,14 +41,17 @@ public class AlternativeComponentBuilder<E> extends MultiComponentBuilder<E> {
 		super(alternatives, scope);
 	}
 
+	@Override
 	public boolean execute(BeneratorContext context) {
 		return buildRandomComponent(context);
 	}
 
+	@Override
 	public boolean isParallelizable() {
 	    return ThreadUtil.allParallelizable(builders);
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return ThreadUtil.allThreadSafe(builders);
     }

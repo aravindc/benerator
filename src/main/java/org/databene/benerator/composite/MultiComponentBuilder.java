@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -52,23 +52,27 @@ public abstract class MultiComponentBuilder<E> extends AbstractScopedLifeCycleHo
 		this.availableBuilders = CollectionUtil.toList(builders);
 	}
 	
+	@Override
 	public String getMessage() {
 		return message;
 	}
 	
 	// Generator interface ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void init(BeneratorContext context) {
 		for (ComponentBuilder<E> builder : builders)
 			builder.init(context);
 	}
 
+	@Override
 	public void reset() {
 		for (ComponentBuilder<E> builder : builders)
 			builder.reset();
 		this.availableBuilders = CollectionUtil.toList(builders);
 	}
 
+	@Override
 	public void close() {
 		for (ComponentBuilder<E> builder : builders)
 			builder.close();

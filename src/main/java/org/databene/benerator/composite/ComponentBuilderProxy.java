@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -43,30 +43,37 @@ public class ComponentBuilderProxy<E> extends AbstractScopedLifeCycleHolder impl
 	    this.source = source;
     }
 
+	@Override
 	public boolean isParallelizable() {
 	    return source.isParallelizable();
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return source.isThreadSafe();
     }
 
+	@Override
 	public void init(BeneratorContext context) {
 		source.init(context);
 	}
 
+	@Override
 	public boolean execute(BeneratorContext context) {
 	    return source.execute(context);
     }
 	
+	@Override
 	public void reset() {
 	    source.reset();
     }
 
+	@Override
 	public void close() {
 	    source.close();
     }
 
+	@Override
 	public String getMessage() {
 		return source.getMessage();
 	}

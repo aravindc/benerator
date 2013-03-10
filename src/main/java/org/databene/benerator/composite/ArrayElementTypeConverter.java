@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,6 +45,7 @@ public class ArrayElementTypeConverter extends AbstractConverter<Object[], Objec
 		this.type = type;
 	}
 
+	@Override
 	public Object[] convert(Object[] array) throws ConversionException {
 		if (array == null)
 			return null;
@@ -68,10 +69,12 @@ public class ArrayElementTypeConverter extends AbstractConverter<Object[], Objec
 		return array;
 	}
 
+	@Override
 	public boolean isParallelizable() {
 	    return false;
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return false;
     }
