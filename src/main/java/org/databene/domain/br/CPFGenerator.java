@@ -1,5 +1,5 @@
 /*
-  * (c) Copyright 2009-2011 by Eric Chaves & Volker Bergmann. All rights reserved.
+  * (c) Copyright 2009-2013 by Eric Chaves & Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -71,7 +71,8 @@ public class CPFGenerator extends ThreadSafeNonNullGenerator<String> {
 	    return buf.toString();
     }
     
-    public Class<String> getGeneratedType() {
+    @Override
+	public Class<String> getGeneratedType() {
         return String.class;
     }
     

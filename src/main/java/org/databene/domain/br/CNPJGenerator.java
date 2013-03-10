@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Eric Chaves & Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Eric Chaves & Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -58,6 +58,7 @@ public class CNPJGenerator extends WeightedCSVSampleGenerator<String> implements
 	
 	// Generator interface implementation ------------------------------------------------------------------------------
 
+	@Override
 	public String generate() {
 		return generate(getResultWrapper()).unwrap();
 	}
