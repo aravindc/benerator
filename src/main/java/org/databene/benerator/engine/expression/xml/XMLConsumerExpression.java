@@ -70,7 +70,8 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer> {
 		this.resourceManager = resourceManager;
     }
 
-    public Consumer evaluate(Context context) {
+    @Override
+	public Consumer evaluate(Context context) {
 		BeneratorContext beneratorContext = (BeneratorContext) context;
 		ConsumerChain consumerChain = new ConsumerChain();
 		
