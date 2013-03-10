@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -63,10 +63,12 @@ public class MemStore extends AbstractStorageSystem {
 		this.id = id;
 	}
 	
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public DataSource<Entity> queryEntities(String entityType, String selector, Context context) {
 		Map<?, Entity> idMap = getOrCreateIdMapForType(entityType);
 		DataSource<Entity> result = new DataSourceProxy<Entity>(new DataSourceFromIterable<Entity>(idMap.values(), Entity.class));
@@ -77,6 +79,7 @@ public class MemStore extends AbstractStorageSystem {
 		return result;
 	}
 
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DataSource<?> queryEntityIds(String entityType, String selector, Context context) {
 		Map<?, Entity> idMap = getOrCreateIdMapForType(entityType);
@@ -88,10 +91,12 @@ public class MemStore extends AbstractStorageSystem {
 		return result;
 	}
 
+	@Override
 	public DataSource<?> query(String selector, boolean simplify, Context context) {
 		throw new UnsupportedOperationException(getClass() + " does not support query(String, Context)");
 	}
 
+	@Override
 	public void store(Entity entity) {
 		String entityType = entity.type();
 		Map<Object, Entity> idMap = getOrCreateIdMapForType(entityType);
@@ -103,21 +108,26 @@ public class MemStore extends AbstractStorageSystem {
 			types.put(entityType, new ComplexTypeDescriptor(entityType, this));
 	}
 
+	@Override
 	public void update(Entity entity) {
 		store(entity);
 	}
 
+	@Override
 	public TypeDescriptor[] getTypeDescriptors() {
 		return CollectionUtil.toArray(types.values(), TypeDescriptor.class);
 	}
 
+	@Override
 	public TypeDescriptor getTypeDescriptor(String typeName) {
 		return types.get(typeName);
 	}
 
+	@Override
 	public void flush() {
 	}
 
+	@Override
 	public void close() {
 		if (!ignoreClose)
 			typeMap.clear();
