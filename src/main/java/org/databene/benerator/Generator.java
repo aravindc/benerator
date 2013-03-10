@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -63,23 +63,24 @@ import org.databene.commons.ThreadAware;
  */
 public interface Generator<E> extends ThreadAware, Resettable, Closeable {
 
-    /**
-     * Declares the type of the objects returned by the generate() method.
-     */
+    /** Declares the type of the objects returned by the generate() method. */
     Class<E> getGeneratedType();
 
     void init(GeneratorContext context);
     
     boolean wasInitialized();
     
-    /**
-     * Returns an instance of the generic type E.
-     */
+    /** Returns an instance of the generic type E, using the {@link ProductWrapper} 
+     *  instance provided as argument. 
+     *  The wrapper may wrap a null value as a regular generator product. 
+     *  If the generator is not available (any more), it returns null instead of 
+     *  the ProductWrapper instance. */
     ProductWrapper<E> generate(ProductWrapper<E> wrapper);
 
     /**
      * Closes the generator. After invocation the state is <i>unavailable</i>.
      */
-    void close();
+    @Override
+	void close();
 
 }
