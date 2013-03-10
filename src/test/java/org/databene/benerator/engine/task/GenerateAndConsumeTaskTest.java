@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -106,11 +106,13 @@ public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
 	class AB implements TypedIterable<Entity> {
 		private final List<Entity> ab = CollectionUtil.toList(ALICE, BOB);
 		
-        public Class<Entity> getType() {
+        @Override
+		public Class<Entity> getType() {
 	        return Entity.class;
         }
         
-        public Iterator<Entity> iterator() {
+        @Override
+		public Iterator<Entity> iterator() {
 	        return ab.iterator();
         }
         

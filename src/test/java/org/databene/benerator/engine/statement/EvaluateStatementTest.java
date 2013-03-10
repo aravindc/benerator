@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -128,35 +128,43 @@ public class EvaluateStatementTest extends AbstractStatementTest {
 
 		protected String execInfo;
 
+		@Override
 		public TypeDescriptor[] getTypeDescriptors() {
 			return new TypeDescriptor[0];
 		}
 
+		@Override
 		public TypeDescriptor getTypeDescriptor(String typeName) {
 			return null;
 		}
 
+		@Override
 		public String getId() {
 			return "id";
 		}
 
+		@Override
 		public DataSource<Entity> queryEntities(String type,
 				String selector, Context context) {
 			return null;
 		}
 
+		@Override
 		public DataSource<?> queryEntityIds(String entityName,
 				String selector, Context context) {
 			return null;
 		}
 
+		@Override
 		public DataSource<?> query(String selector, boolean simplify, Context context) {
 			return null;
 		}
 
+		@Override
 		public void store(Entity entity) {
 		}
 
+		@Override
 		public void update(Entity entity) {
 		}
 
@@ -166,9 +174,11 @@ public class EvaluateStatementTest extends AbstractStatementTest {
 			return command;
 		}
 
+		@Override
 		public void flush() {
 		}
 
+		@Override
 		public void close() {
 		}
 
