@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,7 +51,8 @@ public class CurrentMilliTimeGeneratorTest extends GeneratorClassTest {
         CurrentMilliTimeGenerator generator = new CurrentMilliTimeGenerator();
         generator.init(context);
 		expectGenerations(generator, 10, new AbstractConstraintValidator<Annotation, Long>() {
-            public boolean isValid(Long millis, ConstraintValidatorContext context) {
+            @Override
+			public boolean isValid(Long millis, ConstraintValidatorContext context) {
                 return Math.abs(System.currentTimeMillis() - millis) < 1000L;
             }
         });

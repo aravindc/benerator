@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -56,7 +56,8 @@ public class CurrentTimeGeneratorTest extends GeneratorClassTest {
     }
     
     static class CurrentTimeValidator extends AbstractConstraintValidator<Annotation, Date> {
-        public boolean isValid(Date date, ConstraintValidatorContext context) {
+        @Override
+		public boolean isValid(Date date, ConstraintValidatorContext context) {
             long currentTimeMillis = TimeUtil.currentTime().getTime();
 			long generatedTimeMillis = date.getTime();
 			return (Math.abs(currentTimeMillis - generatedTimeMillis) < 1000);

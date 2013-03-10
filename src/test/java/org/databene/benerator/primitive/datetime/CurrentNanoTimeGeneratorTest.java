@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,6 +50,7 @@ public class CurrentNanoTimeGeneratorTest extends GeneratorClassTest {
     @Test
     public void testProducts() {
         expectGenerations(new CurrentNanoTimeGenerator(), 10, new AbstractConstraintValidator<Annotation, Long>() {
+			@Override
 			public boolean isValid(Long generatedNanos, ConstraintValidatorContext context) {
                 long nanoTime = System.nanoTime();
                 return Math.abs(nanoTime - generatedNanos) < 500000000L;
