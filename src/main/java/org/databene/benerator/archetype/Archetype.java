@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -115,6 +115,7 @@ public class Archetype implements Serializable {
 
 	private void copyNonSourceFilesTo(File targetFolder) throws IOException {
 		IOUtil.copyDirectory(url, targetFolder, new Filter<String>() {
+			@Override
 			public boolean accept(String candidate) {
 	            return !candidate.contains("ARCHETYPE-INF") && !candidate.contains("/src/");
             }
