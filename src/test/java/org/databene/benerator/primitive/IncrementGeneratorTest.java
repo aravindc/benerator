@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -60,6 +60,7 @@ public class IncrementGeneratorTest extends GeneratorClassTest {
 		final IncrementGenerator generator = new IncrementGenerator(0);
 		ExecutorService service = Executors.newCachedThreadPool();
 		Runnable runner = new Runnable() {
+			@Override
 			public void run() {
 				for (int i = 0; i < 500; i++)
 					generator.generate();

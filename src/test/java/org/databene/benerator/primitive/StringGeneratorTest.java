@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -288,6 +288,7 @@ public class StringGeneratorTest extends GeneratorTest {
 	
 	public class UmlautValidator implements Validator<String> {
 		private Set<Character> allowedValues = CollectionUtil.toSet('Ä', 'ä', 'Ö', 'ö', 'Ü', 'ü', 'ß');
+		@Override
 		public boolean valid(String value) {
 			for (int i = 0; i < value.length(); i++)
 				if (!allowedValues.contains(value.charAt(i)))
@@ -297,6 +298,7 @@ public class StringGeneratorTest extends GeneratorTest {
 	}
 
 	public class LengthsValidator implements Validator<String> {
+		@Override
 		public boolean valid(String value) {
 			return value.length() == 500 || value.length() == 750 || value.length() == 1000;
 		}
