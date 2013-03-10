@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -92,7 +92,8 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
     
 	// Statement interface ---------------------------------------------------------------------------------------------
 	
-    public boolean execute(BeneratorContext ctx) {
+    @Override
+	public boolean execute(BeneratorContext ctx) {
     	if (!beInitialized(ctx))
     		task.reset();
 	    executeTask(generateCount(childContext), minCount.evaluate(childContext), pageSize.evaluate(childContext),
@@ -108,6 +109,7 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 	    return (count != null ? count.unwrap() : null);
     }
 
+	@Override
 	public void close() {
 	    task.close();
 	    countGenerator.close();
@@ -117,9 +119,11 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Clo
 
     // PageListener interface implementation ---------------------------------------------------------------------------
     
+	@Override
 	public void pageStarting() {
 	}
 
+	@Override
 	public void pageFinished() {
 		getTask().pageFinished();
 	}

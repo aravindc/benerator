@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -104,30 +104,37 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
     	return true;
 	}
 
+	@Override
 	public DBSystem getSource(BeneratorContext context) {
 		return parent.getSource(context);
 	}
 
+	@Override
 	public Entity currentEntity() {
 		return currentEntity;
 	}
 
+	@Override
 	public KeyMapper getKeyMapper() {
 		return parent.getKeyMapper();
 	}
 
+	@Override
 	public IdentityProvider getIdentityProvider() {
 		return parent.getIdentityProvider();
 	}
 
+	@Override
 	public boolean needsNkMapping(String type) {
 		return parent.needsNkMapping(type);
 	}
 
+	@Override
 	public DBSystem getTarget(BeneratorContext context) {
 		return parent.getTarget(context);
 	}
 
+	@Override
 	public ComplexTypeDescriptor getType(DBSystem db, BeneratorContext context) {
 		if (type == null) {
 			String parentType = parent.getType(db, context).getName();

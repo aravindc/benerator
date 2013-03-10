@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -55,6 +55,7 @@ public class ImportStatement implements Statement {
 	    this.platformImports = platformImports;
     }
 
+	@Override
 	public boolean execute(BeneratorContext context) {
     	if (defaultImports)
     		context.importDefaults();

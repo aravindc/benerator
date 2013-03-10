@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -83,6 +83,7 @@ public class RunTaskStatement extends AbstractStatement implements Closeable {
     	return pageListener;
     }
 
+	@Override
 	public boolean execute(BeneratorContext context) {
 	    Long invocations = count.evaluate(context);
 		TaskExecutor.execute(
@@ -103,6 +104,7 @@ public class RunTaskStatement extends AbstractStatement implements Closeable {
 	    return task;
     }
 
+	@Override
 	public void close() {
 		task.close();
 	}

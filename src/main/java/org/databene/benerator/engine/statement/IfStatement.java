@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -54,7 +54,8 @@ public class IfStatement extends ConditionStatement {
 	    setElseStatement(elseStatement);
     }
 
-    public boolean execute(BeneratorContext context) {
+    @Override
+	public boolean execute(BeneratorContext context) {
 	    if (condition.evaluate(context))
 	    	return thenStatement.execute(context);
 	    else if (elseStatement != null)
@@ -70,6 +71,7 @@ public class IfStatement extends ConditionStatement {
 	    this.elseStatement = elseStatement;
     }
 
+	@Override
 	public void close() throws IOException {
 		if (thenStatement instanceof Closeable)
 			((Closeable) thenStatement).close();

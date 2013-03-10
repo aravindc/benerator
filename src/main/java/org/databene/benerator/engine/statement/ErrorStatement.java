@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,6 +44,7 @@ public class ErrorStatement implements Statement {
 	    this.codeEx = codeEx;
     }
 
+	@Override
 	public boolean execute(BeneratorContext context) {
 		String message = ExpressionUtil.evaluate(messageEx, context);
 		Integer code = ExpressionUtil.evaluate(codeEx, context);

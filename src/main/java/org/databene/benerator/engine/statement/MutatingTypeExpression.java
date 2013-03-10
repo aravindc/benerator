@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,10 +49,12 @@ public class MutatingTypeExpression implements Expression<ComplexTypeDescriptor>
 		this.typeName = typeName;
 	}
 
+	@Override
 	public boolean isConstant() {
 		return true;
 	}
 
+	@Override
 	public ComplexTypeDescriptor evaluate(Context ctx) {
 		BeneratorContext context = (BeneratorContext) ctx;
 	    ComplexTypeDescriptor parent = (ComplexTypeDescriptor) context.getDataModel().getTypeDescriptor(typeName);

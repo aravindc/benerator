@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,6 +41,7 @@ public class ConversionStatement implements Statement {
 		this.converter = converter;
 	}
 
+	@Override
 	public boolean execute(BeneratorContext context) {
 		ProductWrapper currentProduct = context.getCurrentProduct();
 		Object value = currentProduct.unwrap();

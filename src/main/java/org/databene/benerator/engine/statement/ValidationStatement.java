@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,6 +40,7 @@ public class ValidationStatement implements Statement {
 		this.validator = validator;
 	}
 
+	@Override
 	public boolean execute(BeneratorContext context) {
 		return validator.valid(context.getCurrentProduct().unwrap());
 	}

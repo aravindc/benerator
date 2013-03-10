@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -52,6 +52,7 @@ public class WhileStatement extends ConditionStatement {
 	    this.statements = new SequentialStatement(statements);
 	}
 
+	@Override
 	public boolean execute(BeneratorContext context) {
 	    while (condition.evaluate(context))
 	    	if (!statements.execute(context))
@@ -59,6 +60,7 @@ public class WhileStatement extends ConditionStatement {
 	    return true;
 	}
 
+	@Override
 	public void close() throws IOException {
 		statements.close();
 	}

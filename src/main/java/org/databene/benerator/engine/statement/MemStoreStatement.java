@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,7 +50,8 @@ public class MemStoreStatement implements Statement {
 		this.resourceManager = resourceManager;
     }
 
-    public boolean execute(BeneratorContext context) {
+    @Override
+	public boolean execute(BeneratorContext context) {
 	    logger.debug("Instantiating store with id '" + id + "'");
 		MemStore store = new MemStore(id, context.getDataModel());
 	    // register this object on all relevant managers and in the context

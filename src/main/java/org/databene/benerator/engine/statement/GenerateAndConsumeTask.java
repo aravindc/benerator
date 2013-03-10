@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -132,19 +132,23 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
 
     // Task interface implementation -----------------------------------------------------------------------------------
     
+	@Override
 	public String getTaskName() {
 	    return taskName;
     }
 
-    public boolean isThreadSafe() {
+    @Override
+	public boolean isThreadSafe() {
         return false;
     }
     
-    public boolean isParallelizable() {
+    @Override
+	public boolean isParallelizable() {
         return false;
     }
     
-    public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
+    @Override
+	public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
     	message = null;
     	if (!initialized.get())
     		init((BeneratorContext) ctx);
@@ -188,6 +192,7 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
 		}
     }
 
+	@Override
 	public void close() {
         // close sub statements
         for (Statement statement : statements) {
@@ -202,23 +207,27 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
     
     // PageListener interface ------------------------------------------------------------------------------------------
     
+	@Override
 	public void pageStarting() {
 		// nothing special to do on page start
 	}
     
-    public void pageFinished() {
+    @Override
+	public void pageFinished() {
     	IOUtil.flush(consumer);
     }
     
 
     // ResourceManager interface ---------------------------------------------------------------------------------------
     
+	@Override
 	public boolean addResource(Closeable resource) {
 	    return resourceManager.addResource(resource);
     }
 	
 	// MessageHolder interface -----------------------------------------------------------------------------------------
 	
+	@Override
 	public String getMessage() {
 	    return message;
     }

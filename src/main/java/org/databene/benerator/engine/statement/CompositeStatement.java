@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -60,6 +60,7 @@ public abstract class CompositeStatement extends AbstractStatement implements Cl
 		this.subStatements = subStatements;
 	}
 	
+	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void accept(Visitor<Statement> visitor) {
 		visitor.visit(this);
@@ -70,6 +71,7 @@ public abstract class CompositeStatement extends AbstractStatement implements Cl
 	    		visitor.visit(subStatement);
     }
 
+	@Override
 	public void close() throws IOException {
 		for (Statement subStatement : subStatements)
 			if (subStatement instanceof Closeable)
