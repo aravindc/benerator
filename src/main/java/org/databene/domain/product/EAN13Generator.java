@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -73,7 +73,8 @@ public class EAN13Generator extends NonNullGeneratorWrapper<String, String> {
 	
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public Class<String> getGeneratedType() {
+    @Override
+	public Class<String> getGeneratedType() {
         return String.class;
     }
 
@@ -85,6 +86,7 @@ public class EAN13Generator extends NonNullGeneratorWrapper<String, String> {
         super.init(context);
     }
     
+	@Override
 	public String generate() {
     	assertInitialized();
         char[] chars = new char[13];

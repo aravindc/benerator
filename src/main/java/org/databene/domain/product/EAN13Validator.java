@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,7 +40,8 @@ public class EAN13Validator extends AbstractConstraintValidator<EAN13, String> {
 
     private EANValidator checksumValidator = new EANValidator();
     
-    public boolean isValid(String number, ConstraintValidatorContext context) {
+    @Override
+	public boolean isValid(String number, ConstraintValidatorContext context) {
 	    if (number == null || number.length() != 13)
             return false;
         return checksumValidator.valid(number);
