@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,16 +50,19 @@ public class SequenceTestGenerator<E> implements Generator<E> {
         this.initialized = false;
     }
 
-    public void init(GeneratorContext context) {
+    @Override
+	public void init(GeneratorContext context) {
         if (sequence == null)
             throw new IllegalArgumentException("sequence is null");
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public Class<E> getGeneratedType() {
         return (Class<E>) (sequence.length > 0 ? sequence[0].getClass() : Object.class);
     }
 
+	@Override
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	generateCount++;
         if (cursor >= sequence.length)
@@ -67,31 +70,36 @@ public class SequenceTestGenerator<E> implements Generator<E> {
         return wrapper.wrap(sequence[cursor++]);
     }
 
-    public boolean wasInitialized() {
+    @Override
+	public boolean wasInitialized() {
         return initialized;
     }
 
-    public void reset() {
+    @Override
+	public void reset() {
         this.cursor = 0;
         this.resetCount++;
     }
 
-    public void close() {
+    @Override
+	public void close() {
     	this.closeCount++;
         this.cursor = sequence.length;
+    }
+
+	@Override
+	public boolean isParallelizable() {
+	    return false;
+    }
+
+	@Override
+	public boolean isThreadSafe() {
+	    return false;
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + ArrayFormat.format(sequence) + ']';
-    }
-
-	public boolean isParallelizable() {
-	    return false;
-    }
-
-	public boolean isThreadSafe() {
-	    return false;
     }
 
 }

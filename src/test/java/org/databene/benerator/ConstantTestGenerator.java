@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -47,29 +47,35 @@ public class ConstantTestGenerator<E> implements Generator<E> {
         this.initialized = false;
     }
 
-    public void init(GeneratorContext context) {
+    @Override
+	public void init(GeneratorContext context) {
     	this.initialized = true;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public Class<E> getGeneratedType() {
         return (value != null ? (Class<E>) value.getClass() : null);
     }
 
+	@Override
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         this.lastMethodCall = "generate";
         return wrapper.wrap(value);
     }
 
-    public boolean wasInitialized() {
+    @Override
+	public boolean wasInitialized() {
         return initialized;
     }
 
-    public void reset() {
+    @Override
+	public void reset() {
         this.lastMethodCall = "reset";
     }
 
-    public void close() {
+    @Override
+	public void close() {
         this.lastMethodCall = "close";
     }
 
@@ -77,10 +83,12 @@ public class ConstantTestGenerator<E> implements Generator<E> {
         return lastMethodCall;
     }
 
+	@Override
 	public boolean isParallelizable() {
 	    return true;
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return true;
     }
