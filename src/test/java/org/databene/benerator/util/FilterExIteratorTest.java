@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -54,6 +54,7 @@ public class FilterExIteratorTest {
 	
 	class IsThreeExpression extends DynamicExpression<Boolean> {
 
+		@Override
 		public Boolean evaluate(Context context) {
 			Integer candidateValue = (Integer) context.get("_candidate");
 			return (candidateValue != null && candidateValue.intValue() == 3);
