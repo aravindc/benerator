@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,6 +49,7 @@ public class TaskMock extends AbstractTask implements ContextAware {
 	    this.context = context;
     }
 
+	@Override
 	public void setContext(Context context) {
 		this.context = context;
     }
@@ -67,6 +68,7 @@ public class TaskMock extends AbstractTask implements ContextAware {
 		return new TaskMock(intProp, context);
 	}
 
+	@Override
 	public TaskResult execute(Context context, ErrorHandler errorHandler) {
 		if (this.context == null)
 			throw new IllegalStateException("Context has not been injected");
