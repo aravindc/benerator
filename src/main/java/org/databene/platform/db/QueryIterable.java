@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -77,7 +77,8 @@ public class QueryIterable implements HeavyweightIterable<ResultSet> {
         return query;
     }
 
-    public HeavyweightIterator<ResultSet> iterator() {
+    @Override
+	public HeavyweightIterator<ResultSet> iterator() {
         renderedQuery = queryPreprocessor.convert(query).toString();
         return new QueryIterator(renderedQuery, connection, fetchSize);
     }

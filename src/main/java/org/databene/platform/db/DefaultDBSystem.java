@@ -55,6 +55,7 @@ public class DefaultDBSystem extends DBSystem {
 		this.connectionHolder = new ConnectionHolder(this);
 	}
 
+	@Override
 	public void flush() {
         logger.debug("flush()");
     	connectionHolder.commit();

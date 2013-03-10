@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -52,10 +52,12 @@ public class ResultSetEntityIterator implements DataIterator<Entity> {
         this.descriptor = descriptor;
     }
 
+	@Override
 	public Class<Entity> getType() {
 		return Entity.class;
 	}
 
+	@Override
 	public DataContainer<Entity> next(DataContainer<Entity> container) {
 		try {
 			DataContainer<ResultSet> feed = source.next(new DataContainer<ResultSet>());
@@ -69,6 +71,7 @@ public class ResultSetEntityIterator implements DataIterator<Entity> {
 		}
     }
 
+	@Override
 	public void close() {
 		IOUtil.close(source);
 	}

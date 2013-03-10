@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -90,7 +90,8 @@ public class SequenceTableGenerator<E extends Number> extends UnsafeNonNullGener
 
 	// Generator interface implementation ------------------------------------------------------------------------------
 	
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public Class<E> getGeneratedType() {
         return (Class<E>) Number.class;
     }
@@ -190,7 +191,8 @@ public class SequenceTableGenerator<E extends Number> extends UnsafeNonNullGener
 
     interface IncrementorStrategy extends Closeable {
     	void run(long currentValue, BeneratorContext context, Object... params);
-    	void close();
+    	@Override
+		void close();
     }
 
     class PreparedStatementStrategy implements IncrementorStrategy {
@@ -205,6 +207,7 @@ public class SequenceTableGenerator<E extends Number> extends UnsafeNonNullGener
             }
         }
 
+		@Override
 		public void run(long currentValue, BeneratorContext context, Object... params) {
 		    try {
 		    	statement.setLong(1, currentValue + increment);
@@ -216,6 +219,7 @@ public class SequenceTableGenerator<E extends Number> extends UnsafeNonNullGener
 	        }
 	    }
 
+		@Override
 		public void close() {
 			DBUtil.close(statement);
 		}
@@ -235,6 +239,7 @@ public class SequenceTableGenerator<E extends Number> extends UnsafeNonNullGener
             }
         }
 
+		@Override
 		public void run(long currentValue, BeneratorContext context, Object... params) {
 			try {
 	            String cmd = sql.replace("?", String.valueOf(currentValue + increment));
@@ -245,6 +250,7 @@ public class SequenceTableGenerator<E extends Number> extends UnsafeNonNullGener
             }
 	    }
 
+		@Override
 		public void close() {
 			DBUtil.close(statement);
 		}

@@ -182,7 +182,8 @@ public abstract class DBSystem extends AbstractStorageSystem {
 
 	// properties ------------------------------------------------------------------------------------------------------
 
-    public String getId() {
+    @Override
+	public String getId() {
         return id;
     }
 
@@ -331,6 +332,7 @@ public abstract class DBSystem extends AbstractStorageSystem {
 
     // DescriptorProvider interface ------------------------------------------------------------------------------------
 
+	@Override
 	public TypeDescriptor[] getTypeDescriptors() {
         logger.debug("getTypeDescriptors()");
         parseMetadataIfNecessary();
@@ -340,7 +342,8 @@ public abstract class DBSystem extends AbstractStorageSystem {
         	return CollectionUtil.toArray(typeDescriptors.values(), TypeDescriptor.class);
     }
 
-    public TypeDescriptor getTypeDescriptor(String tableName) {
+    @Override
+	public TypeDescriptor getTypeDescriptor(String tableName) {
         logger.debug("getTypeDescriptor({})", tableName);
         parseMetadataIfNecessary();
         return typeDescriptors.get(tableName);
@@ -348,7 +351,8 @@ public abstract class DBSystem extends AbstractStorageSystem {
 
     // StorageSystem interface -----------------------------------------------------------------------------------------
 
-    public void store(Entity entity) {
+    @Override
+	public void store(Entity entity) {
 		if (readOnly)
 			throw new IllegalStateException("Tried to insert rows into table '" + entity.type() + "' " +
 					"though database '" + id + "' is read-only");
@@ -356,6 +360,7 @@ public abstract class DBSystem extends AbstractStorageSystem {
         persistOrUpdate(entity, true);
     }
 
+	@Override
 	public void update(Entity entity) {
 		if (readOnly)
 			throw new IllegalStateException("Tried to update table '" + entity.type() + "' " +
@@ -364,6 +369,7 @@ public abstract class DBSystem extends AbstractStorageSystem {
         persistOrUpdate(entity, false);
 	}
 
+	@Override
 	public void close() {
         if (database != null)
         	CachingDBImporter.updateCacheFile(database);
@@ -386,7 +392,8 @@ public abstract class DBSystem extends AbstractStorageSystem {
         }
     }
 
-    @SuppressWarnings("null")
+    @Override
+	@SuppressWarnings("null")
     public DataSource<Entity> queryEntities(String type, String selector, Context context) {
         logger.debug("queryEntities({})", type);
     	Connection connection = getConnection();
@@ -416,7 +423,8 @@ public abstract class DBSystem extends AbstractStorageSystem {
         return DBUtil.queryLong(query, getConnection());
     }
 
-    public DataSource<?> queryEntityIds(String tableName, String selector, Context context) {
+    @Override
+	public DataSource<?> queryEntityIds(String tableName, String selector, Context context) {
         logger.debug("queryEntityIds({}, {})", tableName, selector);
         
         // check for script
@@ -443,7 +451,8 @@ public abstract class DBSystem extends AbstractStorageSystem {
         return query(query, true, context);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public DataSource<?> query(String query, boolean simplify, Context context) {
         logger.debug("query({})", query);
         Connection connection = getConnection();

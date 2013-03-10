@@ -152,7 +152,8 @@ public class ConnectionHolder implements Closeable {
         return statement;
     }
 
-    public void close() {
+    @Override
+	public void close() {
         commit();
         DBUtil.close(connection);
     }

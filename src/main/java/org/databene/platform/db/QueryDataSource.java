@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -74,7 +74,8 @@ public class QueryDataSource extends AbstractDataSource<ResultSet> {
         return query;
     }
 
-    public DataIterator<ResultSet> iterator() {
+    @Override
+	public DataIterator<ResultSet> iterator() {
         renderedQuery = queryPreprocessor.convert(query).toString();
         return new QueryDataIterator(renderedQuery, connection, fetchSize);
     }
