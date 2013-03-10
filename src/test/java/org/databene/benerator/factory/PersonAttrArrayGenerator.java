@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,10 +34,12 @@ public class PersonAttrArrayGenerator extends UnsafeGenerator<Object[]> {
 
 	static final Object[] ALICE = new Object[] { "Alice", 23 };
 
+	@Override
 	public Class<Object[]> getGeneratedType() {
         return Object[].class;
     }
 	
+	@Override
 	public ProductWrapper<Object[]> generate(ProductWrapper<Object[]> wrapper) {
         return wrapper.wrap(ALICE);
     }

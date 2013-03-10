@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -76,10 +76,12 @@ public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest 
 	        super.init(context);
         }
 
-        public Class<E> getGeneratedType() {
+        @Override
+		public Class<E> getGeneratedType() {
 	        return (Class<E>) Object.class;
         }
 
+		@Override
 		@SuppressWarnings("synthetic-access")
         public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 			Entity entity = createEntity("Test");
@@ -101,10 +103,12 @@ public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest 
 			builder.close();
 		}
 
+		@Override
 		public boolean isParallelizable() {
 	        return false;
         }
 
+		@Override
 		public boolean isThreadSafe() {
 	        return false;
         }

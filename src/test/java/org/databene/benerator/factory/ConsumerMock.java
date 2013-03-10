@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -61,6 +61,7 @@ public class ConsumerMock extends AbstractConsumer implements ContextAware {
 		instances.put(id, this);
 	}
 	
+	@Override
 	public void setContext(Context context) {
 	    this.context = context;
 	}

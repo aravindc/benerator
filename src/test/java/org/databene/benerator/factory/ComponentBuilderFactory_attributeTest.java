@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -212,6 +212,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
 		Validator<Character> charValidator = new Validator<Character>() {
+			@Override
 			public boolean valid(Character c) {
 	            return ('0' <= c && c <= '9');
             }
@@ -363,6 +364,7 @@ public class ComponentBuilderFactory_attributeTest extends AbstractComponentBuil
 		Validator<Date> validator = new Validator<Date>() {
 			final Date minDate = TimeUtil.date(2000, 2, 4);
 			final Date maxDate = TimeUtil.date(2000, 7, 9);
+			@Override
 			public boolean valid(Date date) {
 	            return !minDate.after(date) && !maxDate.before(date);
             }

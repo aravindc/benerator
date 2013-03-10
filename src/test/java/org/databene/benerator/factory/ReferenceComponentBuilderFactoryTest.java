@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -206,34 +206,42 @@ public class ReferenceComponentBuilderFactoryTest extends GeneratorTest {
 			super.addTypeDescriptor(new ComplexTypeDescriptor("Person", this));
 		}
 
+		@Override
 		public void close() {
 		}
 
+		@Override
 		public void flush() {
 		}
 
+		@Override
 		public Object execute(String command) {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 
+		@Override
 		public DataSource<?> query(String selector, boolean simplify, Context context) {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 
+		@Override
 		public DataSource<Entity> queryEntities(String type, String selector, Context context) {
 			throw new UnsupportedOperationException("queryEntities() not implemented");
 		}
 
-        public DataSource<?> queryEntityIds(String entityName, String selector, Context context) {
+        @Override
+		public DataSource<?> queryEntityIds(String entityName, String selector, Context context) {
 			DataSource<String> source = 
 				new DataSourceFromIterable<String>(CollectionUtil.toList("Alice", "Bob"), String.class);
 			return new DataSourceProxy<String>(source);
 		}
 
+		@Override
 		public void store(Entity entity) {
 			throw new UnsupportedOperationException("store() not implemented");
 		}
 
+		@Override
 		public void update(Entity entity) {
 			throw new UnsupportedOperationException("StorageSystem.update() is not implemented");
 		}
