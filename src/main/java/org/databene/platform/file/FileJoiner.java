@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -96,6 +96,7 @@ public class FileJoiner extends AbstractTask {
 
 	// Task interface implementation -----------------------------------------------------------------------------------
 
+	@Override
 	public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
 		Assert.notNull(destination, "property 'destination'");
 		BeneratorContext context = (BeneratorContext) ctx;
