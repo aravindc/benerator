@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -81,6 +81,7 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
         this.encoding = encoding;
     }
 
+	@Override
 	public String[] getColumnNames() {
 		if (ArrayUtil.isEmpty(columnNames)) {
 			columnNames = StringUtil.trimAll(CSVUtil.parseHeader(uri, separator, encoding));
@@ -101,6 +102,7 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
 	
     // EntitySource interface ------------------------------------------------------------------------------------------
 
+	@Override
 	public DataIterator<Entity> iterator() {
         try {
 			CSVEntityIterator iterator = new CSVEntityIterator(resolveUri(), entityType, preprocessor, separator, encoding);

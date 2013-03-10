@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -100,7 +100,8 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
 		this.rowBased = rowBased;
 	}
 	
-    public String[] getColumnNames() {
+    @Override
+	public String[] getColumnNames() {
     	return columns;
     }
     
@@ -116,15 +117,18 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
 
     // DataIterator interface ------------------------------------------------------------------------------------------
     
+	@Override
 	public Class<Entity> getType() {
 		return Entity.class;
 	}
 	
+	@Override
 	public DataContainer<Entity> next(DataContainer<Entity> container) {
     	assureInitialized();
         return source.next(container);
     }
     
+	@Override
 	public void close() {
 		 IOUtil.close(source);
 	}
