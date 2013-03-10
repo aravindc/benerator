@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -68,7 +68,8 @@ public class GaussianFunction extends AbstractWeightFunction {
     // WeightFunction implementation -----------------------------------------------------------------------------------------
 
     /** calculates the value */
-    public double value(double param) {
+    @Override
+	public double value(double param) {
         double x = (param - average) / deviation;
         return scale * Math.exp(-0.5 * x*x);
     }
