@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -55,10 +55,12 @@ public class GeneratorMock extends UnsafeGenerator<Integer> {
 		this.value = value;
 	}
 
-    public Class<Integer> getGeneratedType() {
+    @Override
+	public Class<Integer> getGeneratedType() {
 	    return Integer.class;
     }
 	
+	@Override
 	public ProductWrapper<Integer> generate(ProductWrapper<Integer> wrapper) {
 		return wrapper.wrap(value);
 	}

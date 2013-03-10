@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -55,6 +55,7 @@ public class ValidatorMock implements Validator<Integer> {
 		this.value = value;
 	}
 
+	@Override
 	public boolean valid(Integer candidate) {
 		return (candidate != null && value == candidate.intValue());
 	}
