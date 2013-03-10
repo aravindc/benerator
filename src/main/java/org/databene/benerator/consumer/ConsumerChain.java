@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -71,6 +71,7 @@ public class ConsumerChain implements Consumer {
 
     // Processor interface ---------------------------------------------------------------------------------------------
 
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void startConsuming(ProductWrapper<?> wrapper) {
 		Object product = wrapper.unwrap();
@@ -78,6 +79,7 @@ public class ConsumerChain implements Consumer {
             processor.startConsuming(((ProductWrapper) wrapper).wrap(product));
     }
 
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void finishConsuming(ProductWrapper<?> wrapper) {
 		Object product = wrapper.unwrap();
@@ -85,11 +87,13 @@ public class ConsumerChain implements Consumer {
             processor.finishConsuming(((ProductWrapper) wrapper).wrap(product));
     }
 
+	@Override
 	public void flush() {
         for (Consumer processor : components)
             processor.flush();
     }
 
+	@Override
 	public void close() {
         for (Consumer consumer : components)
             IOUtil.close(consumer);

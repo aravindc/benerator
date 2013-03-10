@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,10 +39,12 @@ public abstract class ConsumerProxy implements Consumer, ThreadAware {
 	    this.target = target;
     }
 	
+	@Override
 	public boolean isThreadSafe() {
 		return (target instanceof ThreadAware && ((ThreadAware) target).isThreadSafe());
 	}
 	
+	@Override
 	public boolean isParallelizable() {
 		return false;
 	}
@@ -55,18 +57,22 @@ public abstract class ConsumerProxy implements Consumer, ThreadAware {
     	this.target = target;
     }
 
+	@Override
 	public void startConsuming(ProductWrapper<?> wrapper) {
 		target.startConsuming(wrapper);
 	}
 	
+	@Override
 	public void finishConsuming(ProductWrapper<?> wrapper) {
 	    target.finishConsuming(wrapper);
     }
 
+	@Override
 	public void flush() {
 	    target.flush();
     }
 
+	@Override
 	public void close() {
 	    target.close();
     }

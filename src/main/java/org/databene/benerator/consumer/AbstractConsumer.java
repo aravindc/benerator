@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,18 +42,24 @@ import org.databene.benerator.wrapper.ProductWrapper;
  */
 public abstract class AbstractConsumer implements Consumer {
 	
+	@Override
 	public void startConsuming(ProductWrapper<?> wrapper) {
 		startProductConsumption(wrapper.unwrap());
 	}
 	
+	@Override
 	public void finishConsuming(ProductWrapper<?> wrapper) {
 		finishProductConsumption(wrapper.unwrap());
 	}
 
 	public abstract void startProductConsumption(Object object);
+	
 	public void finishProductConsumption(Object object) { }
 	
-    public void flush() { }
-    public void close() { }
+    @Override
+	public void flush() { }
+    
+    @Override
+	public void close() { }
     
 }
