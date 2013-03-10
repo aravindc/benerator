@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -106,16 +106,19 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 		this.rowBased = rowBased;
 	}
 	
+	@Override
 	public void setContext(Context context) {
 		this.context = (BeneratorContext) context;
 	}
 	
 	// DataSource interface implementation -----------------------------------------------------------------------------
 
+	@Override
 	public Class<Entity> getType() {
 		return Entity.class;
 	}
 	
+	@Override
 	public synchronized DataContainer<Entity> next(DataContainer<Entity> container) {
 		if (sheetNo == -1)
 			nextSheet();
@@ -130,6 +133,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 		return result;
 	}
 
+	@Override
 	public synchronized void close() {
 		IOUtil.close(source);
 	}
@@ -261,10 +265,12 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 	        return iterator;
 		}
 		
+		@Override
 		public Class<Entity> getType() {
 			return Entity.class;
 		}
 		
+		@Override
 		public DataContainer<Entity> next(DataContainer<Entity> container) {
 			if (source == null)
 				return null;
@@ -281,6 +287,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 			return container.setData(converter.convert(rawData));
 		}
 		
+		@Override
 		public void close() {
 			IOUtil.close(source);
 		}

@@ -46,6 +46,7 @@ public class XLSEntitySourceProvider implements DataSourceProvider<Entity> {
 	    this.formatted = formatted;
     }
 
+	@Override
 	public EntitySource create(String uri, BeneratorContext context) {
         XLSEntitySource source = new XLSEntitySource(uri, scriptConverter, entityType, entityType.getSegment(), formatted);
         source.setContext(context);

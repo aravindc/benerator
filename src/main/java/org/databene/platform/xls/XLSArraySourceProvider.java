@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -52,6 +52,7 @@ public class XLSArraySourceProvider implements DataSourceProvider<Object[]> {
 	    this.rowBased = rowBased;
     }
 
+	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public DataSource<Object[]> create(String uri, BeneratorContext context) {
 		DataSource<Object[]> source = new XLSSource(uri, formatted, emptyMarker, nullMarker, rowBased);
