@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -64,7 +64,8 @@ public class DefaultEntryConverter extends AbstractConverter<Map.Entry, Map.Entr
         this.stringParser = new LiteralParser();
     }
 
-    public Map.Entry convert(Map.Entry entry) throws ConversionException {
+    @Override
+	public Map.Entry convert(Map.Entry entry) throws ConversionException {
         String key = String.valueOf(entry.getKey());
         String sourceValue = String.valueOf(entry.getValue());
         sourceValue = String.valueOf(((Converter) preprocessor).convert(sourceValue));
@@ -78,10 +79,12 @@ public class DefaultEntryConverter extends AbstractConverter<Map.Entry, Map.Entr
         return new MapEntry<String, Object>(key, result);
     }
 
+	@Override
 	public boolean isParallelizable() {
 	    return preprocessor.isParallelizable();
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return preprocessor.isThreadSafe();
     }
