@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,7 +50,8 @@ public class ValidatingGeneratorProxy<E> extends ValidatingGenerator<E> {
 
     // Generator & ValidatingGenerator implementation ------------------------------------------------------------------
 
-    public Class<E> getGeneratedType() {
+    @Override
+	public Class<E> getGeneratedType() {
         return source.getGeneratedType();
     }
 
@@ -83,10 +84,12 @@ public class ValidatingGeneratorProxy<E> extends ValidatingGenerator<E> {
         super.close();
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return source.isThreadSafe();
     }
     
+	@Override
 	public boolean isParallelizable() {
 	    return source.isParallelizable();
     }

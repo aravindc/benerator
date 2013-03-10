@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,10 +40,12 @@ public class AsDoubleGeneratorWrapper<E extends Number> extends GeneratorWrapper
         super(source);
     }
 
-    public Class<Double> getGeneratedType() {
+    @Override
+	public Class<Double> getGeneratedType() {
 	    return Double.class;
     }
 
+	@Override
 	public ProductWrapper<Double> generate(ProductWrapper<Double> wrapper) {
     	assertInitialized();
     	ProductWrapper<E> number = generateFromSource();

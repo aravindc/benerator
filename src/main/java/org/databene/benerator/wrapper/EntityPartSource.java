@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2012-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -54,6 +54,7 @@ public class EntityPartSource extends AbstractDataSource<Entity> implements Enti
 		this.context = context;
 	}
 
+	@Override
 	public DataIterator<Entity> iterator() {
 		return new EntityPartIterator();
 	}
@@ -72,6 +73,7 @@ public class EntityPartSource extends AbstractDataSource<Entity> implements Enti
 				source = CollectionUtil.toList((Entity)part).iterator();
 		}
 
+		@Override
 		public DataContainer<Entity> next(DataContainer<Entity> container) {
 			if (source.hasNext())
 				return container.setData(source.next());

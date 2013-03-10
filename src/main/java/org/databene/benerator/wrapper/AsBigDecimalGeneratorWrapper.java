@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -60,10 +60,12 @@ public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWra
 	    	this.fractionDigits = 0;
     }
 
+	@Override
 	public Class<BigDecimal> getGeneratedType() {
 	    return BigDecimal.class;
     }
 
+	@Override
 	public ProductWrapper<BigDecimal> generate(ProductWrapper<BigDecimal> wrapper) {
 		ProductWrapper<E> tmp = generateFromSource();
 	    if (tmp == null)

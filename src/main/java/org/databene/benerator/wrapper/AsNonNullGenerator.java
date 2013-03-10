@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,6 +37,7 @@ public class AsNonNullGenerator<E> extends GeneratorProxy<E> implements NonNullG
 		super(source);
 	}
 	
+	@Override
 	public E generate() {
 		return GeneratorUtil.generateNonNull(getSource());
 	}

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -84,6 +84,7 @@ public class SkipGeneratorProxy<E> extends CardinalGenerator<E, E> {
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
+	@Override
 	public Class<E> getGeneratedType() {
     	return getSource().getGeneratedType();
     }
@@ -100,7 +101,8 @@ public class SkipGeneratorProxy<E> extends CardinalGenerator<E, E> {
         super.init(context);
 	}
 	
-    public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
+    @Override
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	Integer increment = generateCardinal();
     	if (increment == null)
     		return null;

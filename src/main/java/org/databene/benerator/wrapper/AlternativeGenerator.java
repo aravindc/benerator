@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -47,6 +47,7 @@ public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
+	@Override
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	assertInitialized();
     	return generateFromRandomSource(wrapper);

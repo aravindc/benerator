@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,10 +42,12 @@ public class AsFloatGeneratorWrapper<E extends Number> extends GeneratorWrapper<
 	    super(source);
     }
 
+	@Override
 	public Class<Float> getGeneratedType() {
 	    return Float.class;
     }
 
+	@Override
 	public ProductWrapper<Float> generate(ProductWrapper<Float> wrapper) {
     	assertInitialized();
 	    ProductWrapper<E> tmp = generateFromSource();

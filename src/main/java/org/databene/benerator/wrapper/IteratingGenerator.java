@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -72,10 +72,12 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+	@Override
 	public boolean isParallelizable() {
 	    return false;
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return false;
     }
@@ -87,10 +89,12 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
     	super.init(context);
     }
 
-    public Class<E> getGeneratedType() {
+    @Override
+	public Class<E> getGeneratedType() {
         return iterable.getType();
     }
 
+	@Override
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         try {
             assertInitialized();

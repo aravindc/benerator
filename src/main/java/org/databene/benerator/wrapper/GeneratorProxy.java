@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -55,7 +55,8 @@ public abstract class GeneratorProxy<E> extends GeneratorWrapper<E, E> {
     
     // Generator interface implementation ------------------------------------------------------------------------------
 
-    public Class<E> getGeneratedType() {
+    @Override
+	public Class<E> getGeneratedType() {
 		if (getSource() != null)
 			return getSource().getGeneratedType();
 		else if (generatedType != null)
@@ -64,7 +65,8 @@ public abstract class GeneratorProxy<E> extends GeneratorWrapper<E, E> {
 			throw new IllegalGeneratorStateException("Generator not initialized correctly: " + this);
     }
 
-    public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
+    @Override
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	assertInitialized();
     	return getSource().generate(wrapper);
     }

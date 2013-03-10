@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,10 +42,12 @@ public class AsShortGeneratorWrapper<E extends Number> extends GeneratorWrapper<
 	    super(source);
     }
 
+	@Override
 	public Class<Short> getGeneratedType() {
 	    return Short.class;
     }
 
+	@Override
 	public ProductWrapper<Short> generate(ProductWrapper<Short> wrapper) {
     	assertInitialized();
 	    ProductWrapper<E> tmp = generateFromSource();

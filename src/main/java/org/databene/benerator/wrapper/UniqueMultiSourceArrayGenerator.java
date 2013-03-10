@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -92,7 +92,8 @@ public class UniqueMultiSourceArrayGenerator<S> extends MultiGeneratorWrapper<S,
         }
     }
 
-    @SuppressWarnings("cast")
+    @Override
+	@SuppressWarnings("cast")
 	public ProductWrapper<S[]> generate(ProductWrapper<S[]> wrapper) {
     	assertInitialized();
     	if (buffer == null)

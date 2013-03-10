@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -62,7 +62,8 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
         super.init(context);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public Class<T> getGeneratedType() {
     	if (converters.length > 0)
     		return (Class<T>) converters[converters.length - 1].getTargetType();
@@ -70,7 +71,8 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
     		return (Class<T>) getSource().getGeneratedType();
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ProductWrapper<T> generate(ProductWrapper<T> wrapper) {
         try {
         	ProductWrapper<S> sourceWrapper = generateFromSource();

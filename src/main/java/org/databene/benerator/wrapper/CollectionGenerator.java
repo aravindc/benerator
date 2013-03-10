@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -78,10 +78,12 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
         super.init(context);
     }
 
-    public Class<C> getGeneratedType() {
+    @Override
+	public Class<C> getGeneratedType() {
         return collectionType;
     }
 
+	@Override
 	public ProductWrapper<C> generate(ProductWrapper<C> wrapper) {
         assertInitialized();
         Integer size = generateCardinal();

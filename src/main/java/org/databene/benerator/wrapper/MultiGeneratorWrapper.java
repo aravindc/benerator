@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -96,6 +96,7 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
 
     // Generator interface implementation ------------------------------------------------------------------------------
 
+	@Override
 	public Class<P> getGeneratedType() {
 		return generatedType;
 	}
@@ -129,14 +130,16 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     	super.close();
     }
     
-    public boolean isThreadSafe() {
+    @Override
+	public boolean isThreadSafe() {
     	for (Generator<? extends S> source : sources)
     		if (!source.isThreadSafe())
     			return false;
         return true;
     }
     
-    public boolean isParallelizable() {
+    @Override
+	public boolean isParallelizable() {
     	for (Generator<? extends S> source : sources)
     		if (!source.isParallelizable())
     			return false;

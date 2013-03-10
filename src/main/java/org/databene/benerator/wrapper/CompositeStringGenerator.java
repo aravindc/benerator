@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -60,10 +60,12 @@ public class CompositeStringGenerator extends GeneratorWrapper<String[], String>
 	
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public Class<String> getGeneratedType() {
+    @Override
+	public Class<String> getGeneratedType() {
         return String.class;
     }
 
+	@Override
 	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
         StringBuilder builder = new StringBuilder();
         ProductWrapper<String[]> parts = generateFromSource();

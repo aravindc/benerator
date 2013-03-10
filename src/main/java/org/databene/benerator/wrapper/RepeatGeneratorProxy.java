@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -56,7 +56,8 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
         super(source, false, minRepetitions, maxRepetitions, repetitionGranularity, repetitionDistribution);
     }
 
-    public Class<E> getGeneratedType() {
+    @Override
+	public Class<E> getGeneratedType() {
     	return getSource().getGeneratedType();
     }
     
@@ -71,6 +72,7 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
 	    totalReps = -1;
     }
 
+	@Override
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         assertInitialized();
         if (repCount == -1 || repCount >= totalReps) {

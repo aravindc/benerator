@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -70,14 +70,17 @@ public abstract class CompositeGenerator<E> extends AbstractGenerator<E> {
 	
 	// partial Generator interface implementation ----------------------------------------------------------------------
 	
+	@Override
 	public Class<E> getGeneratedType() {
 	    return generatedType;
     }
 
+	@Override
 	public boolean isThreadSafe() {
 		return ThreadUtil.allThreadSafe(components);
     }
 
+	@Override
 	public boolean isParallelizable() {
 		return ThreadUtil.allParallelizable(components);
     }

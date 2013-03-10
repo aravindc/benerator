@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2012-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,14 +46,17 @@ public class SingleSourceCollectionGenerator<I, C extends Collection<I>> extends
 
     // configuration properties ----------------------------------------------------------------------------------------
 
-    public Class<C> getGeneratedType() {
+    @Override
+	public Class<C> getGeneratedType() {
         return collectionType;
     }
 
+	@Override
 	public ProductWrapper<C> generate(ProductWrapper<C> wrapper) {
         return wrapper.wrap(generate());
     }
 
+	@Override
 	public C generate() {
     	ProductWrapper<Integer> sizeWrapper = generateCardinalWrapper();
     	if (sizeWrapper == null)

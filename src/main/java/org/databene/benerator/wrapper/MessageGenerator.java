@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -138,10 +138,12 @@ public class MessageGenerator extends ValidatingGenerator<String> implements Non
         super.init(context);
     }
 
-    public Class<String> getGeneratedType() {
+    @Override
+	public Class<String> getGeneratedType() {
         return String.class;
     }
 
+	@Override
 	public String generate() {
 		return GeneratorUtil.generateNonNull(this);
 	}
@@ -164,10 +166,12 @@ public class MessageGenerator extends ValidatingGenerator<String> implements Non
         super.reset();
     }
 
+	@Override
 	public boolean isParallelizable() {
 	    return helper.isParallelizable();
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return helper.isThreadSafe();
     }
