@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,14 +49,17 @@ public class AtomicDatasetGenerator<E> extends GeneratorProxy<E> implements Weig
 		this.weight = weight;
 	}
 	
+	@Override
 	public String getNesting() {
 		return nesting;
 	}
 	
+	@Override
 	public String getDataset() {
 		return dataset;
 	}
 
+	@Override
 	public double getWeight() {
 		return weight;
 	}
@@ -66,6 +69,7 @@ public class AtomicDatasetGenerator<E> extends GeneratorProxy<E> implements Weig
 		return super.generate(wrapper).setTag(nesting, dataset);
 	}
 	
+	@Override
 	public E generateForDataset(String requestedDataset) {
 		if (!dataset.equals(requestedDataset))
 			throw new IllegalArgumentException("Requested dataset " + requestedDataset + ", but supporting only dataset " + this.dataset);

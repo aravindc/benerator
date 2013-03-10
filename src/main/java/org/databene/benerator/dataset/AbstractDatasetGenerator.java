@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -72,6 +72,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 	
     // DatasetBasedGenerator interface implementation ------------------------------------------------------------------
     
+	@Override
 	public String getNesting() {
 		return nesting;
 	}
@@ -80,6 +81,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		this.nesting = nesting;
 	}
 	
+	@Override
 	public String getDataset() {
 		return datasetName;
 	}
@@ -101,6 +103,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		super.init(context);
 	}
 	
+	@Override
 	public E generateForDataset(String requestedDataset) {
 		DatasetBasedGenerator<E> sourceGen = getSource();
 		if (sourceGen instanceof CompositeDatasetGenerator)

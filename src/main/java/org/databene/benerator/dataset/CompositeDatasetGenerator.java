@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -59,6 +59,7 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 	
 	// Generator interface implementation ------------------------------------------------------------------------------
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Class<E> getGeneratedType() {
 		WeightedGeneratorGenerator<E> generatorGenerator = getSource();
@@ -67,6 +68,7 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 		return (Class<E>) Object.class;
 	}
 	
+	@Override
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 		DatasetBasedGenerator<E> generator = randomAtomicGenerator();
 		if (generator == null)
@@ -79,18 +81,22 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 
 	// DatasetRelatedGenerator interface implementation ----------------------------------------------------------------
 	
+	@Override
 	public String getNesting() {
 		return nesting;
 	}
 	
+	@Override
 	public String getDataset() {
 		return datasetName;
 	}
 	
+	@Override
 	public double getWeight() {
 		return getSource().getWeight();
 	}
 
+	@Override
 	public E generateForDataset(String dataset) {
 		ProductWrapper<E> wrapper = getGeneratorForDataset(dataset, true).generate(getResultWrapper());
 		if (wrapper == null)
