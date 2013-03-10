@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -55,7 +55,8 @@ public class ScriptableExpression extends DynamicExpression<Object> {
     	return new ScriptableExpression(scriptOrText, defaultValueExpression);
     }
 
-    public Object evaluate(Context context) {
+    @Override
+	public Object evaluate(Context context) {
     	Object result;
 		if (StringUtil.isEmpty(scriptOrText))
 			result = (defaultValueExpression != null ? defaultValueExpression.evaluate(context) : null);

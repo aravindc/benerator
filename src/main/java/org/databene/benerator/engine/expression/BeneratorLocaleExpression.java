@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,11 +42,13 @@ public class BeneratorLocaleExpression implements Expression<Locale> {
 		this.provider = codeProvider;
 	}
 
+	@Override
 	public Locale evaluate(Context context) {
 		String localeSpec = ExpressionUtil.evaluate(provider, context);
 		return (localeSpec != null ? new Locale(localeSpec) : ((BeneratorContext) context).getDefaultLocale());
 	}
 
+	@Override
 	public boolean isConstant() {
 		return (provider == null || provider.isConstant());
 	}

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,7 +46,8 @@ public class ScriptableLiteral extends UnaryExpression<Object> {
 	    super(ScriptableLiteral.class.getSimpleName(), new ScriptableExpression(textOrScript, null));
     }
 
-    public Object evaluate(Context context) {
+    @Override
+	public Object evaluate(Context context) {
 		Object feed = term.evaluate(context);
 		if (feed instanceof String)
 			return LiteralParser.parse((String) feed);

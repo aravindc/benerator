@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -52,6 +52,7 @@ public class ErrorHandlerExpression extends DynamicExpression<ErrorHandler> {
 	    this.category = category;
     }
 
+	@Override
 	public ErrorHandler evaluate(Context context) {
 		String levelName = ExpressionUtil.evaluate(levelExpr, context);
 		if (levelName == null)
