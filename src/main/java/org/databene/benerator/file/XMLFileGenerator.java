@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -77,7 +77,8 @@ public class XMLFileGenerator extends UnsafeGenerator<File> {
         this.root = root;
     }
 
-    public Class<File> getGeneratedType() {
+    @Override
+	public Class<File> getGeneratedType() {
     	return File.class;
     }
 
@@ -108,7 +109,8 @@ public class XMLFileGenerator extends UnsafeGenerator<File> {
         super.init(context);
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ProductWrapper<File> generate(ProductWrapper<File> wrapper) {
 		ProductWrapper tmp = contentGenerator.generate(new ProductWrapper());
         if (tmp == null)
