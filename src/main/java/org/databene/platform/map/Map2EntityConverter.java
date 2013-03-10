@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,6 +49,7 @@ public class Map2EntityConverter extends ThreadSafeConverter<Map, Entity> {
         this.descriptor = descriptor;
     }
 
+	@Override
 	public Entity convert(Map map) {
         Entity entity = new Entity(descriptor);
         for (Map.Entry entry : ((Set<Map.Entry>) map.entrySet()))
