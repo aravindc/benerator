@@ -58,6 +58,7 @@ public class XLSIntegrationTest extends BeneratorIntegrationTest {
 		ConsumerMock con = new ConsumerMock(true);
 		context.setGlobal("con", con);
 		LocaleUtil.runInLocale(Locale.US, new Runnable() {
+			@Override
 			public void run() {
 				parseAndExecute("<iterate type='dummy' source='org/databene/benerator/engine/xls/types.xls' format='formatted' consumer='con'/>");
 			}});

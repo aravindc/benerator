@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -90,14 +90,22 @@ public class DescriptorRunnerTest extends ModelTest {
 	
 	static class TestExporter implements FileExporter {
 
-        public String getUri() {
+        @Override
+		public String getUri() {
 	        return EXPORT_FILE_URI;
         }
 
-        public void startConsuming(ProductWrapper<?> object) { }
-        public void finishConsuming(ProductWrapper<?> object) { }
-        public void flush() { }
-        public void close() { }
+        @Override
+		public void startConsuming(ProductWrapper<?> object) { }
+        
+        @Override
+		public void finishConsuming(ProductWrapper<?> object) { }
+        
+        @Override
+		public void flush() { }
+        
+        @Override
+		public void close() { }
 	}
 	
 	static class MyConsumer extends AbstractConsumer {
