@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,10 +42,12 @@ public class ConsumerInvoker implements Invoker {
 	    this.consumer = consumer;
     }
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public Object invoke(Object[] args) throws Exception {
 		consumer.startConsuming(new ProductWrapper<Object>().wrap(args));
 		return null;

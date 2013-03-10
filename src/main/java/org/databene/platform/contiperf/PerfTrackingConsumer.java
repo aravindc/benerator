@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -63,6 +63,7 @@ public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consume
 	
     // Consumer interface implementation -------------------------------------------------------------------------------
     
+	@Override
 	public void startConsuming(ProductWrapper<?> wrapper) {
 	    try {
 	        getOrCreateTracker().invoke(new Object[] { wrapper });
@@ -71,10 +72,12 @@ public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consume
         }
     }
 	
+	@Override
 	public void finishConsuming(ProductWrapper<?> wrapper) {
 		target.finishConsuming(wrapper);
     }
 
+	@Override
 	public void flush() {
 	    target.flush();
     }

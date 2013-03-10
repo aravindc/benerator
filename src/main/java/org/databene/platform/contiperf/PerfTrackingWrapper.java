@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -76,7 +76,8 @@ public abstract class PerfTrackingWrapper implements Closeable {
 		return tracker;
 	}
 
-    public void close() {
+    @Override
+	public void close() {
     	if (tracker.isTrackingStarted())
     		tracker.stopTracking();
     }

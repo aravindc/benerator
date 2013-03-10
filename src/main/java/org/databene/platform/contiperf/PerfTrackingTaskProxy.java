@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -47,6 +47,7 @@ public class PerfTrackingTaskProxy extends PerfTrackingWrapper implements Task {
 	    this.realTask = realTask;
     }
 
+	@Override
 	public TaskResult execute(Context context, ErrorHandler errorHandler) {
 	    try {
 	        return (TaskResult) getOrCreateTracker().invoke(new Object[] { context, errorHandler });
@@ -55,6 +56,7 @@ public class PerfTrackingTaskProxy extends PerfTrackingWrapper implements Task {
         }
 	}
 	
+	@Override
 	public void pageFinished() {
 	    // nothing special to do here
 	}
@@ -70,14 +72,17 @@ public class PerfTrackingTaskProxy extends PerfTrackingWrapper implements Task {
 	    return new PerfTrackingTaskProxy(BeanUtil.clone(realTask), getOrCreateTracker());
     }
 
+	@Override
 	public String getTaskName() {
 	    return realTask.getTaskName();
     }
 
+	@Override
 	public boolean isParallelizable() {
 	    return realTask.isParallelizable();
     }
 
+	@Override
 	public boolean isThreadSafe() {
 	    return realTask.isThreadSafe();
     }

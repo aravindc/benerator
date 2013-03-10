@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,10 +40,12 @@ public class TaskInvoker implements Invoker {
 	    this.target = target;
     }
 
+	@Override
 	public String getId() {
 		return target.getTaskName();
     }
 
+	@Override
 	public Object invoke(Object[] args) throws Exception {
 	    return target.execute((Context) args[0], (ErrorHandler) args[1]);
     }
