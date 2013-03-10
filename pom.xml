@@ -101,6 +101,12 @@
 		    <version>${contiperf_version}</version>
         </dependency>
         
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+        </dependency>
+
         <dependency> <!-- TODO which Benerator version should depend on JUnit in which scope? -->
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
