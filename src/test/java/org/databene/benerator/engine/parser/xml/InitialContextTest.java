@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -58,6 +58,7 @@ public class InitialContextTest extends GeneratorTest {
 	public void test() {
 		SysUtil.runWithSystemProperty("jndi.properties", "org/databene/benerator/engine/jndi.properties", 
 			new Runnable() {
+				@Override
 				public void run() {
 					ConsumerMock.lastInstance = null;
                     DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR_XML, context);

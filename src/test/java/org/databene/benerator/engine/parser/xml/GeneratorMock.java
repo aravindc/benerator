@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,10 +42,12 @@ public class GeneratorMock extends UnsafeGenerator<Entity> {
 		this.context = context;
 	}
 
+	@Override
 	public Class<Entity> getGeneratedType() {
 		return Entity.class;
     }
 
+	@Override
 	public ProductWrapper<Entity> generate(ProductWrapper<Entity> wrapper) {
 		Assert.notNull(context, "context");
 		return wrapper.wrap(new Entity("Dummy", context.getLocalDescriptorProvider()));

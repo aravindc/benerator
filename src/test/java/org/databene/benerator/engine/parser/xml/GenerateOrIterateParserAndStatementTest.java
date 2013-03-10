@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -87,6 +87,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		ConsumerMock consumer = new ConsumerMock(true);
 		context.setGlobal("cons", consumer);
 		context.setGlobal("conv", new UnsafeConverter<Entity,Entity>(Entity.class, Entity.class) {
+			@Override
 			public Entity convert(Entity sourceValue) {
 				ComplexTypeDescriptor descriptor = sourceValue.descriptor();
 				descriptor.setName("CONV_DUMMY");
@@ -112,6 +113,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		ConsumerMock consumer = new ConsumerMock(true);
 		context.setGlobal("cons", consumer);
 		context.setGlobal("vali", new AbstractValidator<Entity>() {
+			@Override
 			public boolean valid(Entity entity) {
 				return ((Integer) entity.get("id")) % 2 == 0;
 			}
