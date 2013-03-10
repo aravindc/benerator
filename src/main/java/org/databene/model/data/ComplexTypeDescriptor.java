@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -150,7 +150,8 @@ public class ComplexTypeDescriptor extends TypeDescriptor implements VariableHol
     	return CollectionUtil.extractItemsOfExactType(ReferenceDescriptor.class, getComponents());
     }
 	
-    public void addVariable(VariableDescriptor variable) {
+    @Override
+	public void addVariable(VariableDescriptor variable) {
         parts.add(variable.getName(), variable);
     }
     

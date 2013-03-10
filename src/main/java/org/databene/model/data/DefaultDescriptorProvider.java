@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -68,24 +68,29 @@ public class DefaultDescriptorProvider implements DescriptorProvider {
         logger.debug("added " + descriptor.getClass().getSimpleName() + ": " + descriptor);
     }
     
-    public DataModel getDataModel() {
+    @Override
+	public DataModel getDataModel() {
     	return dataModel;
     }
     
+	@Override
 	public void setDataModel(DataModel dataModel) {
 		this.dataModel = dataModel;
 	}
     
-    public String getId() {
+    @Override
+	public String getId() {
         return id;
     }
 
-    public TypeDescriptor getTypeDescriptor(String typeName) {
+    @Override
+	public TypeDescriptor getTypeDescriptor(String typeName) {
         String localName = XMLUtil.localName(typeName);
         return typeMap.get(localName);
     }
 
-    public TypeDescriptor[] getTypeDescriptors() {
+    @Override
+	public TypeDescriptor[] getTypeDescriptors() {
         return CollectionUtil.toArray(typeMap.values(), TypeDescriptor.class);
     }
     

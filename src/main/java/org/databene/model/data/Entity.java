@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -92,7 +92,8 @@ public class Entity implements Composite {
         return getComponent(componentName);
     }
 
-    public Object getComponent(String componentName) {
+    @Override
+	public Object getComponent(String componentName) {
         return components.get(componentName);
     }
     
@@ -100,7 +101,8 @@ public class Entity implements Composite {
         return components.containsKey(componentName);
     }
 
-    public OrderedNameMap<Object> getComponents() {
+    @Override
+	public OrderedNameMap<Object> getComponents() {
         return components;
     }
 
@@ -112,7 +114,8 @@ public class Entity implements Composite {
         setComponent(componentName, component);
     }
     
-    public void setComponent(String componentName, Object component) {
+    @Override
+	public void setComponent(String componentName, Object component) {
     	ComponentDescriptor componentDescriptor = null;
     	if (descriptor != null)
     		componentDescriptor = descriptor.getComponent(componentName);
