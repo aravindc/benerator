@@ -46,9 +46,6 @@ import org.databene.webdecs.DataSource;
  */
 public interface StorageSystem extends DescriptorProvider, Closeable, Flushable {
 
-    /** Returns a name that identifies the database */
-    String getId();
-    
     /** Creates an iterator that provides all entities of given type. */
     DataSource<Entity> queryEntities(String type, String selector, Context context);
     
@@ -66,11 +63,5 @@ public interface StorageSystem extends DescriptorProvider, Closeable, Flushable 
     
     /** Executes a command on the storage system */
     Object execute(String command);
-    
-    /** Assures that all data that has been {@link #store(Entity)}d, is send to the target system. */
-    void flush();
-    
-    /** Closes the database. */
-    void close();
     
 }
