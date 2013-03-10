@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,38 +40,47 @@ public class MeanDefaultsProvider implements DefaultsProvider {
 
 	private static final BigDecimal DECIMAL_GRANULARITY = new BigDecimal("0.00001");
 
+	@Override
 	public <T extends Number> T defaultMin(Class<T> numberType) {
 		return NumberUtil.minValue(numberType);
 	}
 
+	@Override
 	public <T extends Number> T defaultMax(Class<T> numberType) {
 		return NumberUtil.maxValue(numberType);
 	}
 
+	@Override
 	public <T extends Number> T defaultGranularity(Class<T> numberType) {
 		return NumberToNumberConverter.convert((BeanUtil.isDecimalNumberType(numberType) ? DECIMAL_GRANULARITY : 1), numberType);
 	}
 
+	@Override
 	public int defaultMinLength() {
 		return 0;
 	}
 
+	@Override
 	public Integer defaultMaxLength() {
 		return 1000;
 	}
 
+	@Override
 	public boolean defaultNullable() {
 		return true;
 	}
 
+	@Override
 	public double defaultNullQuota() {
 		return 0.5;
 	}
 
+	@Override
 	public Date defaultMinDate() {
 		return TimeUtil.date(-2000, 0, 1);
 	}
 
+	@Override
 	public Date defaultMaxDate() {
 		return TimeUtil.date(2999, 11, 31);
 	}

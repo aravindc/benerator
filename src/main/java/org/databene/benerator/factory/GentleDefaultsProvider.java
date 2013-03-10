@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,38 +34,47 @@ import org.databene.commons.converter.NumberToNumberConverter;
  */
 public class GentleDefaultsProvider implements DefaultsProvider {
 
+	@Override
 	public <T extends Number> T defaultMin(Class<T> numberType) {
 		return NumberToNumberConverter.convert(1, numberType);
 	}
 	
+	@Override
 	public <T extends Number> T defaultMax(Class<T> numberType) {
 		return NumberToNumberConverter.convert(9, numberType);
 	}
 	
+	@Override
 	public <T extends Number> T defaultGranularity(Class<T> numberType) {
 		return NumberToNumberConverter.convert(1, numberType);
 	}
 	
+	@Override
 	public int defaultMinLength() {
 		return 1;
 	}
 	
+	@Override
 	public Integer defaultMaxLength() {
 		return 30;
 	}
 	
+	@Override
 	public boolean defaultNullable() {
 		return false;
 	}
 	
+	@Override
 	public double defaultNullQuota() {
 		return 1.;
 	}
 
+	@Override
 	public Date defaultMinDate() {
 		return TimeUtil.today();
 	}
 
+	@Override
 	public Date defaultMaxDate() {
 		return TimeUtil.addYears(TimeUtil.today(), 2);
 	}

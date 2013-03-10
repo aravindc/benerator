@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -135,6 +135,7 @@ public class RegexGeneratorFactory {
             final Uniqueness uniqueness, final GeneratorFactory factory) {
     	final Object[] alternatives = choice.getAlternatives();
     	GeneratorProvider<String> generatorProvider = new GeneratorProvider<String>() {
+			@Override
 			public Generator<String> create() {
 		    	final Generator[] altGens = createComponentGenerators(
 		    			alternatives, minLength, maxLength, uniqueness, factory);
@@ -150,6 +151,7 @@ public class RegexGeneratorFactory {
             final Uniqueness uniqueness, final GeneratorFactory factory) {
 		GeneratorProvider<String> partGeneratorProvider = new GeneratorProvider<String>() {
 			
+			@Override
 			public Generator<String> create() {
 				return createFromObject(group.getRegex(), minLength, maxLength, uniqueness, factory);
 			}

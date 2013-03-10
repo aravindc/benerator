@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -279,6 +279,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
 		Converter<Object[], Object> converterChain = new ConverterChain<Object[], Object>(
 				new ArrayElementExtractor<Object>(Object.class, 0),
 				new ConditionalConverter(new Condition<Object>() {
+					@Override
 					public boolean evaluate(Object argument) {
 						return (argument instanceof String);
 					}

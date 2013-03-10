@@ -439,10 +439,12 @@ public class DescriptorUtil {
     }
 
     static class GlobalMaxCountExpression implements Expression<Long> {
+		@Override
 		public boolean isConstant() {
 			return true;
 		}
 		
+		@Override
 		public Long evaluate(Context context) {
             return ((BeneratorContext) context).getMaxCount();
         }
