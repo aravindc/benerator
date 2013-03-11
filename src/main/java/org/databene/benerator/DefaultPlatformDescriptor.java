@@ -44,6 +44,7 @@ public class DefaultPlatformDescriptor implements PlatformDescriptor {
 		this.parsers = new ArrayList<XMLElementParser<Statement>>();
 	}
 
+	@Override
 	public List<XMLElementParser<Statement>> getParsers() {
 		return parsers;
 	}
@@ -52,6 +53,7 @@ public class DefaultPlatformDescriptor implements PlatformDescriptor {
 		parsers.add(parser);
 	}
 
+	@Override
 	public void init(BeneratorContext context) {
 		context.importPackage(rootPackage);
 	}
