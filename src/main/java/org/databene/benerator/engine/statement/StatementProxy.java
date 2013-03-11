@@ -55,4 +55,10 @@ public class StatementProxy implements Statement, Closeable {
 		if (realStatement instanceof Closeable)
 			((Closeable) realStatement).close();
 	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[" + realStatement + "]";
+	}
+	
 }

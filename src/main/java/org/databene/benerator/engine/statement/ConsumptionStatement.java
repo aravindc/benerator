@@ -56,5 +56,10 @@ public class ConsumptionStatement implements Statement {
 		}
 		return true;
 	}
-
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[" + consumer + "]";
+	}
+	
 }
