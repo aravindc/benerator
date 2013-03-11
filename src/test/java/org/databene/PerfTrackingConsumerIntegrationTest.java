@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,7 +23,6 @@ package org.databene;
 
 import static org.junit.Assert.*;
 
-import org.databene.benerator.consumer.ConsumerChain;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
@@ -75,8 +74,7 @@ public class PerfTrackingConsumerIntegrationTest extends BeneratorIntegrationTes
 		while (tmp instanceof StatementProxy)
 			tmp = ((StatementProxy) tmp).getRealStatement(context);
 	    GenerateOrIterateStatement realStatement = (GenerateOrIterateStatement) tmp;
-		ConsumerChain chain = (ConsumerChain) (realStatement.getTask()).getConsumer();
-		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
+		PerfTrackingConsumer tracker = (PerfTrackingConsumer) (realStatement.getTask()).getConsumer();
 		LatencyCounter counter = tracker.getOrCreateTracker().getCounters()[0];
 		assertEquals(10, counter.sampleCount());
 		assertTrue("Expected latency greater than 29 ms, but measured " + counter.minLatency() + " ms", counter.minLatency() > 29);

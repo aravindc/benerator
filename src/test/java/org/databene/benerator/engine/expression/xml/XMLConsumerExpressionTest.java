@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.consumer.ConsumerChain;
 import org.databene.benerator.consumer.ConsumerProxy;
+import org.databene.benerator.consumer.NonClosingConsumerProxy;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.engine.ResourceManagerSupport;
@@ -47,8 +48,7 @@ public class XMLConsumerExpressionTest {
 				"consumer='org.databene.benerator.factory.ConsumerMock'/>");
 		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
 				new ResourceManagerSupport());
-		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(new DefaultBeneratorContext());
-		ConsumerMock consumerMock = (ConsumerMock) consumerChain.getComponent(0);
+		ConsumerMock consumerMock = (ConsumerMock) expression.evaluate(new DefaultBeneratorContext());
 		assertNotNull("Context not set", consumerMock.context);
 	}
 	
@@ -58,8 +58,7 @@ public class XMLConsumerExpressionTest {
 				"consumer='new org.databene.benerator.factory.ConsumerMock(2)'/>");
 		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
 				new ResourceManagerSupport());
-		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(new DefaultBeneratorContext());
-		ConsumerMock consumerMock = (ConsumerMock) consumerChain.getComponent(0);
+		ConsumerMock consumerMock = (ConsumerMock) expression.evaluate(new DefaultBeneratorContext());
 		assertNotNull("Context not set", consumerMock.context);
 		assertEquals(2, consumerMock.id);
 	}
@@ -71,8 +70,7 @@ public class XMLConsumerExpressionTest {
 				"</generate>");
 		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
 				new ResourceManagerSupport());
-		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(new DefaultBeneratorContext());
-		ConsumerMock consumerMock = (ConsumerMock) consumerChain.getComponent(0);
+		ConsumerMock consumerMock = (ConsumerMock) expression.evaluate(new DefaultBeneratorContext());
 		assertNotNull("Context not set", consumerMock.context);
 	}
 	
@@ -85,8 +83,8 @@ public class XMLConsumerExpressionTest {
 				new ResourceManagerSupport());
 		BeneratorContext context = new DefaultBeneratorContext();
 		context.setGlobal("myc", new ConsumerMock(3));
-		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(context);
-		ConsumerMock consumerMock = (ConsumerMock) ((ConsumerProxy) consumerChain.getComponent(0)).getTarget();
+		NonClosingConsumerProxy consumer = (NonClosingConsumerProxy) expression.evaluate(context);
+		ConsumerMock consumerMock = (ConsumerMock) consumer.getTarget();
 		assertEquals(3, consumerMock.id);
 	}
 	
