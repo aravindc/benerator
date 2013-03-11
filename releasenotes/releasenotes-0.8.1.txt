@@ -31,4 +31,5 @@ bug fixes
 - ClassCastException on <import platforms="xls"/>
 - Benerator hangs when finished
 - Windows issue: ConfigurationError: Resource not found: org\databene\commons\time\timeUnits.properties
+- if minCount is not set, <generate> does not try to generate maxCount elements
 - Missing female form of Czech family names
