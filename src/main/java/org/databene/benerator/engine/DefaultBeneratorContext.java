@@ -513,5 +513,14 @@ public class DefaultBeneratorContext implements BeneratorContext {
 	protected ContextStack createContextStack(Context... contexts) {
 		return new SimpleContextStack(contexts);
 	}
-
+	
+	
+	
+	// java.lang.Object overrides --------------------------------------------------------------------------------------
+	
+	@Override
+	public String toString() {
+		return getClass() + "[" + currentProductName + "]";
+	}
+	
 }
