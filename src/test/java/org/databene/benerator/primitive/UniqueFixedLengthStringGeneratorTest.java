@@ -75,6 +75,14 @@ public class UniqueFixedLengthStringGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
+    public void testThreeBinaryDigits() {
+    	expectUniquelyGeneratedSet(createAndInit(3, true, '0', '1'), 
+    			"000", "001", "010", "011", "100", "101", "110", "111"
+    			).withCeasedAvailability();
+        expectUniqueProducts(createAndInit(3, true, '0', '1'), 8).withCeasedAvailability();
+    }
+
+    @Test
     public void testTwoAlphaDigits() {
     	expectUniquelyGeneratedSet(createAndInit(2, false, 'A', 'O'), "AA", "AO", "OA", "OO").withCeasedAvailability();
         expectUniqueProducts(createAndInit(2, false, 'A', 'O'), 4).withCeasedAvailability();
