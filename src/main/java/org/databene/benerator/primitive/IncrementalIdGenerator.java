@@ -76,5 +76,10 @@ public class IncrementalIdGenerator extends ThreadSafeNonNullGenerator<Long> {
 	public Long generate() {
 	    return cursor.getAndAdd(increment);
     }
-
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[current=" + cursor.get() + ", increment=" + increment + "]";
+	}
+	
 }
