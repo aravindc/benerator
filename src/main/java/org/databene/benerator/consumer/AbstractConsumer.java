@@ -62,4 +62,9 @@ public abstract class AbstractConsumer implements Consumer {
     @Override
 	public void close() { }
     
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName();
+    }
+    
 }
