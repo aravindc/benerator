@@ -25,6 +25,7 @@ changes
 
 bug fixes
 ---------
+- generated <variable> value not visible in nested sub loops
 - Benerator does not cancel on errors
 - multiple exception stack traces
 - ClassCastException on <import platforms="xls"/>
