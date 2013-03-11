@@ -21,11 +21,7 @@
 
 package org.databene.platform.xls;
 
-import java.util.List;
-
-import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.Statement;
-import org.databene.webdecs.xml.XMLElementParser;
+import org.databene.benerator.DefaultPlatformDescriptor;
 
 /**
  * XLS platform descriptor.<br/><br/>
@@ -33,7 +29,7 @@ import org.databene.webdecs.xml.XMLElementParser;
  * @since 0.8.0
  * @author Volker Bergmann
  */
-public class PlatformDescriptor implements org.databene.benerator.PlatformDescriptor {
+public class PlatformDescriptor extends DefaultPlatformDescriptor {
 	
 	private static boolean formattedByDefault = false;
 	
@@ -45,14 +41,8 @@ public class PlatformDescriptor implements org.databene.benerator.PlatformDescri
 		PlatformDescriptor.formattedByDefault = formattedByDefault;
 	}
 
-	@Override
-	public List<XMLElementParser<Statement>> getParsers() {
-		return null; // no custom parsers
+	public PlatformDescriptor() {
+		super(PlatformDescriptor.class.getName());
 	}
 
-	@Override
-	public void init(BeneratorContext context) {
-		// nothing to do
-	}
-	
 }
