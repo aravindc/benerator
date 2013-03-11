@@ -64,6 +64,11 @@ public class PlainEntityComponentBuilder extends AbstractComponentBuilder<Entity
 		public void setValue(Object target, Object value) throws UpdateFailedException {
 			((Entity) target).setComponent(name, value);
         }
+		
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 
 }
