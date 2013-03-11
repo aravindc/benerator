@@ -38,6 +38,8 @@ import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.util.WrapperProvider;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ProgrammerError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parent class for wrapping several other generators (in a <i>sources</i> property) 
@@ -48,6 +50,8 @@ import org.databene.commons.ProgrammerError;
  * @author Volker Bergmann
  */
 public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(MultiGeneratorWrapper.class);
 
 	protected Class<P> generatedType;
     protected List<Generator<? extends S>> sources;
@@ -164,6 +168,7 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     		if (test == null)
     			availableSources.remove(sourceIndex);
     	} while (test == null && availableSources.size() > 0);
+    	LOGGER.debug("generateFromRandomSource(): {}", test);
     	return test;
     }
 

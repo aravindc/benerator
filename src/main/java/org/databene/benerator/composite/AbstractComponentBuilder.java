@@ -26,6 +26,8 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Mutator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class for simple definition of custom {@link ComponentBuilder}s which uses a {@link Mutator}
@@ -34,6 +36,8 @@ import org.databene.commons.Mutator;
  * @author Volker Bergmann
  */
 public abstract class AbstractComponentBuilder<E> extends AbstractGeneratorComponent<E> implements ComponentBuilder<E> {
+	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	protected Mutator mutator;
 	private WrapperProvider<Object> wrapperProvider = new WrapperProvider<Object>();
@@ -49,6 +53,7 @@ public abstract class AbstractComponentBuilder<E> extends AbstractGeneratorCompo
 		message = null;
 		Object target = context.getCurrentProduct().unwrap();
 		ProductWrapper<?> wrapper = source.generate((ProductWrapper) wrapperProvider.get());
+		logger.debug("execute(): {} := {}", mutator, wrapper);
 		if (wrapper == null) {
 			message = "Generator unavailable: " + source;
 			return false;
