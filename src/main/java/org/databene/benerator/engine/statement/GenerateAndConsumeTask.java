@@ -117,7 +117,7 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
 	    		injectConsumptionEnd();
 	    		initialized.set(true);
 	        	initStatements(context);
-	        	checkScopes(statements);
+	        	checkScopes(statements, context);
 	    	}
 	    }
     }
@@ -280,9 +280,9 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
 		}
 	}
 
-    private void checkScopes(List<Statement> statements) {
+    private void checkScopes(List<Statement> statements, BeneratorContext scopeContext) {
         for (Statement statement : statements) {
-			statement = StatementUtil.getRealStatement(statement, context);
+			statement = StatementUtil.getRealStatement(statement, scopeContext);
 		    if (statement instanceof ScopedLifeCycleHolder) {
 		    	ScopedLifeCycleHolder holder = (ScopedLifeCycleHolder) statement;
 		    	String scope = holder.getScope();
@@ -291,7 +291,7 @@ public class GenerateAndConsumeTask implements Task, PageListener, ResourceManag
 		    } else if (statement instanceof GenerateOrIterateStatement) {
 		    	@SuppressWarnings("resource")
 				GenerateOrIterateStatement subGenerate = (GenerateOrIterateStatement) statement;
-		    	checkScopes(subGenerate.getTask().statements);
+		    	checkScopes(subGenerate.getTask().statements, subGenerate.getChildContext());
 		    }
 		}
     }
