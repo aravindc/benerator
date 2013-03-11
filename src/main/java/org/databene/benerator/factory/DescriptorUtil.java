@@ -322,13 +322,17 @@ public class DescriptorUtil {
     	else {
 			final Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor, defaultMin);
 			final Expression<Long> maxCount = DescriptorUtil.getMaxCount(descriptor, defaultMax);
-			if (minCount.isConstant() && maxCount.isConstant() && descriptor.getCountDistribution() == null) {
-				Long minCountValue = minCount.evaluate(context);
-				Long maxCountValue = maxCount.evaluate(context);
-				if (NullSafeComparator.equals(minCountValue, maxCountValue))
-					return new ConstantGenerator<Long>(minCountValue);
-			}
 			final Expression<Long> countGranularity = DescriptorUtil.getCountGranularity(descriptor);
+			if (minCount.isConstant()) {
+				if (maxCount.isConstant() && descriptor.getCountDistribution() == null) {
+					Long minCountValue = minCount.evaluate(context);
+					Long maxCountValue = maxCount.evaluate(context);
+					if (NullSafeComparator.equals(minCountValue, maxCountValue))
+						return new ConstantGenerator<Long>(minCountValue);
+				} else {
+					return new ExpressionBasedGenerator<Long>(maxCount, Long.class);
+				}
+			}
 			final Expression<Distribution> countDistribution = 
 				FactoryUtil.getDistributionExpression(descriptor.getCountDistribution(), Uniqueness.NONE, true);
 			return new DynamicCountGenerator(minCount, maxCount, countGranularity, countDistribution, 
