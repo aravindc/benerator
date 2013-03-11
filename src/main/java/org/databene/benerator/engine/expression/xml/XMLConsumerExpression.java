@@ -106,7 +106,7 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer> {
 		}
 		for (Consumer consumer : consumerChain.getComponents())
 			resourceManager.addResource(consumer);
-		return consumerChain;
+		return (consumerChain.componentCount() == 1 ? consumerChain.getComponent(0) : consumerChain);
 	}
 
     @SuppressWarnings("resource")
