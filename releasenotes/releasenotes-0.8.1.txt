@@ -2,11 +2,14 @@ release notes benerator 0.8.1
 =============================
 
 
-summary
+Summary
 -------
+Release 0.8.1 provides fixes for several severe bugs introduced in 0.8.0, 
+and some older minor bugs. In addition, the PersonGenerator has been 
+extended to support Belgium, China, South Korea, Ukraine and Slovakia.
+ 
 
-
-enhancements
+Enhancements
 ------------
 - PersonGenerator:
   - Supporting Belgium
@@ -19,11 +22,7 @@ enhancements
   - Extended set of Dutch family names
 
 
-changes
--------
-
-
-bug fixes
+Bug Fixes
 ---------
 - generated <variable> value not visible in nested sub loops
 - Benerator does not cancel on errors
