@@ -325,14 +325,19 @@ public class DescriptorUtil {
 			final Expression<Long> countGranularity = DescriptorUtil.getCountGranularity(descriptor);
 			if (minCount.isConstant()) {
 				if (maxCount.isConstant() && descriptor.getCountDistribution() == null) {
+					// if minCount and maxCount are constants of the same value,
+					// then create a generator for a constant value
 					Long minCountValue = minCount.evaluate(context);
 					Long maxCountValue = maxCount.evaluate(context);
 					if (NullSafeComparator.equals(minCountValue, maxCountValue))
 						return new ConstantGenerator<Long>(minCountValue);
 				} else {
+					// if there is only a maxCount specified, then assume that 
+					// the user actually wants to generate maxCount items but accepts less
 					return new ExpressionBasedGenerator<Long>(maxCount, Long.class);
 				}
 			}
+			// if no simplification was found yet, then create a fully featured distributed count generator
 			final Expression<Distribution> countDistribution = 
 				FactoryUtil.getDistributionExpression(descriptor.getCountDistribution(), Uniqueness.NONE, true);
 			return new DynamicCountGenerator(minCount, maxCount, countGranularity, countDistribution, 
