@@ -60,6 +60,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.databene.benerator.BeneratorConstants;
 import org.databene.benerator.archetype.Archetype;
 import org.databene.benerator.archetype.ArchetypeManager;
 import org.databene.benerator.archetype.MavenFolderLayout;
@@ -294,7 +295,7 @@ public class CreateProjectPanel extends JPanel {
 		saveSetup();
 		JFrame frame = (JFrame) SwingUtilities.getRoot(this);
 		frame.dispose();
-		System.exit(0);
+		System.exit(BeneratorConstants.EXIT_CODE_NORMAL);
 	}
 
 	void showErrors(Object... errors) {

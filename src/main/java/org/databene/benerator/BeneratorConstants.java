@@ -31,4 +31,7 @@ public interface BeneratorConstants {
 	
     public static final String STATE_LOGGER = "org.databene.benerator.STATE";
 
+    public static final int EXIT_CODE_NORMAL = 0;
+    public static final int EXIT_CODE_ERROR  = -1;
+    
 }

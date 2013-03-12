@@ -39,6 +39,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
+import org.databene.benerator.BeneratorConstants;
 import org.databene.benerator.BeneratorError;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
@@ -129,7 +130,7 @@ public class BeneratorGUI {
 	        } catch (IOException e) {
 		        throw new RuntimeException(e);
 	        } finally {
-	        	System.exit(0);
+	        	System.exit(BeneratorConstants.EXIT_CODE_NORMAL);
 	        }
 		}
 

@@ -26,6 +26,7 @@
 
 package org.databene.benerator.main;
 
+import org.databene.benerator.BeneratorConstants;
 import org.databene.benerator.BeneratorError;
 import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.BeneratorContext;
@@ -105,7 +106,7 @@ public class Benerator {
 	private static void printVersionInfoAndExit() {
 		InfoPrinter console = new ConsoleInfoPrinter();
 		printVersionInfo(console);
-		System.exit(0);
+		System.exit(BeneratorConstants.EXIT_CODE_NORMAL);
 	}
 
 	private static void checkSystem(InfoPrinter printer) {
@@ -117,7 +118,7 @@ public class Benerator {
 			CONFIG_LOGGER.error("You need to run benerator with Java 6 or greater!");
 			if (SystemInfo.isMacOsx())
 				CONFIG_LOGGER.error("Please check the manual for Java setup on Mac OS X.");
-			System.exit(-1);
+			System.exit(BeneratorConstants.EXIT_CODE_ERROR);
 		}
 		VersionNumber javaVersion = VersionNumber.valueOf(VMInfo.getJavaVersion());
 		if (javaVersion.compareTo(VersionNumber.valueOf("1.6")) < 0)

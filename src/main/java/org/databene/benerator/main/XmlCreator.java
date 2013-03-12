@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 
+import org.databene.benerator.BeneratorConstants;
 import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.file.XMLFileGenerator;
@@ -57,7 +58,7 @@ public class XmlCreator {
     public static void main(String[] args) throws IOException {
         if (args.length < 3) {
             printHelp();
-            System.exit(-1);
+            System.exit(BeneratorConstants.EXIT_CODE_ERROR);
         }
         String schemaUri = args[0];
         String root = args[1];
