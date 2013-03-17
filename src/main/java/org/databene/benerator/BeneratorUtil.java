@@ -23,7 +23,19 @@ package org.databene.benerator;
 
 import java.io.File;
 
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
+
+import org.databene.commons.LogCategories;
 import org.databene.commons.StringUtil;
+import org.databene.commons.SystemInfo;
+import org.databene.commons.VMInfo;
+import org.databene.commons.ui.InfoPrinter;
+import org.databene.commons.version.VersionInfo;
+import org.databene.commons.version.VersionNumber;
+import org.databene.profile.Profiling;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides general utility methods for Benerator.<br/><br/>
@@ -33,6 +45,8 @@ import org.databene.commons.StringUtil;
  */
 public class BeneratorUtil {
 	
+	private static final Logger CONFIG_LOGGER = LoggerFactory.getLogger(LogCategories.CONFIG);
+	
 	public static boolean isDescriptorFilePath(String filePath) {
 		if (StringUtil.isEmpty(filePath))
 			return false;
@@ -40,4 +54,45 @@ public class BeneratorUtil {
 		return ("benerator.xml".equals(filePath) || lcName.replace(File.separatorChar, '/').endsWith("/benerator.xml") || lcName.endsWith(".ben.xml"));
 	}
 	
+	public static void checkSystem(InfoPrinter printer) {
+		printVersionInfo(printer);
+		printer.printLines("Configured heap size limit: " + Runtime.getRuntime().maxMemory() / 1024 / 1024 + " MB");
+		try {
+			Class.forName("javax.script.ScriptEngine");
+		} catch (ClassNotFoundException e) {
+			CONFIG_LOGGER.error("You need to run benerator with Java 6 or greater!");
+			if (SystemInfo.isMacOsx())
+				CONFIG_LOGGER.error("Please check the manual for Java setup on Mac OS X.");
+			System.exit(BeneratorConstants.EXIT_CODE_ERROR);
+		}
+		VersionNumber javaVersion = VersionNumber.valueOf(VMInfo.getJavaVersion());
+		if (javaVersion.compareTo(VersionNumber.valueOf("1.6")) < 0)
+			CONFIG_LOGGER.warn("benerator is written for and tested under Java 6 - " +
+					"you managed to set up JSR 223, but may face other problems.");
+		if (Profiling.isEnabled())
+			CONFIG_LOGGER.warn("Profiling is active. This may lead to memory issues");
+	}
+
+	public static void printVersionInfo(InfoPrinter printer) {
+		VersionInfo version = VersionInfo.getInfo("benerator");
+		printer.printLines(
+			"Benerator " + version.getVersion() + " build " + version.getBuildNumber(),
+			"Java version " + VMInfo.getJavaVersion(),
+			"JVM " + VMInfo.getJavaVmName() + " " + VMInfo.getJavaVmVersion() + " (" + VMInfo.getJavaVmVendor() + ")",
+			"OS " + SystemInfo.getOsName() + " " + SystemInfo.getOsVersion() + " (" + SystemInfo.getOsArchitecture() + ")"
+		);
+        listScriptEngines(printer);
+    }
+
+	private static void listScriptEngines(InfoPrinter printer) {
+    	printer.printLines("Installed JSR 223 Script Engines:");
+        for (ScriptEngineFactory engine : new ScriptEngineManager().getEngineFactories()) {
+			printer.printLines("- " + engine.getEngineName() + engine.getNames());
+        }
+	}
+
+	public static void logConfig(String config) {
+		CONFIG_LOGGER.info(config);
+	}
+
 }

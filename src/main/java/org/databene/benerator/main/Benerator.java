@@ -29,30 +29,24 @@ package org.databene.benerator.main;
 import org.databene.benerator.BeneratorConstants;
 import org.databene.benerator.BeneratorError;
 import org.databene.benerator.BeneratorFactory;
+import org.databene.benerator.BeneratorUtil;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.LogCategories;
-import org.databene.commons.SystemInfo;
-import org.databene.commons.VMInfo;
 import org.databene.commons.log.LoggingInfoPrinter;
 import org.databene.commons.ui.ConsoleInfoPrinter;
 import org.databene.commons.ui.InfoPrinter;
 import org.databene.commons.version.VersionInfo;
-import org.databene.commons.version.VersionNumber;
 import org.databene.contiperf.sensor.MemorySensor;
 import org.databene.jdbacl.DBUtil;
-import org.databene.profile.Profiling;
 import org.databene.text.KiloFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-
-import javax.script.ScriptEngineFactory;
-import javax.script.ScriptEngineManager;
 
 /**
  * Parses and executes a benerator setup file.<br/>
@@ -63,7 +57,6 @@ import javax.script.ScriptEngineManager;
 public class Benerator {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Benerator.class);
-	private static final Logger CONFIG_LOGGER = LoggerFactory.getLogger(LogCategories.CONFIG);
 
 	// methods ---------------------------------------------------------------------------------------------------------
 
@@ -91,8 +84,10 @@ public class Benerator {
 		BeneratorMonitor.INSTANCE.reset();
 		MemorySensor memProfiler = MemorySensor.getInstance();
 		memProfiler.reset();
-		printer.printLines("Running file " + filename);
-		checkSystem(printer);
+		if (printer != null) {
+			printer.printLines("Running file " + filename);
+			BeneratorUtil.checkSystem(printer);
+		}
 		BeneratorContext context = BeneratorFactory.getInstance().createContext(IOUtil.getParentUri(filename));
 		DescriptorRunner runner = new DescriptorRunner(filename, context);
 		try {
@@ -100,50 +95,13 @@ public class Benerator {
 		} finally {
 			IOUtil.close(runner);
 		}
-		CONFIG_LOGGER.info("Max. committed heap size: " + new KiloFormatter(1024).format(memProfiler.getMaxCommittedHeapSize()) + "B");
+		BeneratorUtil.logConfig("Max. committed heap size: " + new KiloFormatter(1024).format(memProfiler.getMaxCommittedHeapSize()) + "B");
 	}
 
 	private static void printVersionInfoAndExit() {
 		InfoPrinter console = new ConsoleInfoPrinter();
-		printVersionInfo(console);
+		BeneratorUtil.printVersionInfo(console);
 		System.exit(BeneratorConstants.EXIT_CODE_NORMAL);
-	}
-
-	private static void checkSystem(InfoPrinter printer) {
-		printVersionInfo(printer);
-		printer.printLines("Max heap size: " + Runtime.getRuntime().maxMemory() / 1024 / 1024 + " MB");
-		try {
-			Class.forName("javax.script.ScriptEngine");
-		} catch (ClassNotFoundException e) {
-			CONFIG_LOGGER.error("You need to run benerator with Java 6 or greater!");
-			if (SystemInfo.isMacOsx())
-				CONFIG_LOGGER.error("Please check the manual for Java setup on Mac OS X.");
-			System.exit(BeneratorConstants.EXIT_CODE_ERROR);
-		}
-		VersionNumber javaVersion = VersionNumber.valueOf(VMInfo.getJavaVersion());
-		if (javaVersion.compareTo(VersionNumber.valueOf("1.6")) < 0)
-			CONFIG_LOGGER.warn("benerator is written for and tested under Java 6 - " +
-					"you managed to set up JSR 223, but may face other problems.");
-		if (Profiling.isEnabled())
-			CONFIG_LOGGER.warn("Profiling is active. This may lead to memory issues");
-	}
-
-	private static void printVersionInfo(InfoPrinter printer) {
-		VersionInfo version = VersionInfo.getInfo("benerator");
-		printer.printLines(
-			"Benerator " + version.getVersion() + " build " + version.getBuildNumber(),
-			"Java version " + VMInfo.getJavaVersion(),
-			"JVM " + VMInfo.getJavaVmName() + " " + VMInfo.getJavaVmVersion() + " (" + VMInfo.getJavaVmVendor() + ")",
-			"OS " + SystemInfo.getOsName() + " " + SystemInfo.getOsVersion() + " (" + SystemInfo.getOsArchitecture() + ")"
-		);
-        listScriptEngines(printer);
-    }
-
-	private static void listScriptEngines(InfoPrinter printer) {
-    	printer.printLines("Installed JSR 223 Script Engines:");
-        for (ScriptEngineFactory engine : new ScriptEngineManager().getEngineFactories()) {
-			printer.printLines("- " + engine.getEngineName() + engine.getNames());
-        }
 	}
 
 }
