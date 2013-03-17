@@ -30,7 +30,6 @@ import org.databene.benerator.WeightedGenerator;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.commons.ConfigurationError;
 
 /**
  * Abstract implementation of the {@link DatasetBasedGenerator} interface.
@@ -126,11 +125,11 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 	// helper methods --------------------------------------------------------------------------------------------------
 	
     protected WeightedDatasetGenerator<E> createDatasetGenerator(Dataset dataset, boolean required, boolean fallback) {
-    	WeightedDatasetGenerator<E> generator;
-    	if (isAtomic(dataset))
+    	WeightedDatasetGenerator<E> generator = null;
+    	if (!isAtomic(dataset))
+    		generator = createCompositeDatasetGenerator(dataset, fallback);
+		if (isAtomic(dataset) || (generator == null && required))
 			generator = createAtomicDatasetGenerator(dataset, required);
-		else 
-    		generator = createCompositeDatasetGenerator(dataset, required, fallback);
     	if (generator != null)
         	supportedDatasets.add(dataset.getName());
 		return generator;
@@ -140,7 +139,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		return dataset.isAtomic();
 	}
 
-    protected CompositeDatasetGenerator<E> createCompositeDatasetGenerator(Dataset dataset, boolean required, boolean fallback) {
+    protected CompositeDatasetGenerator<E> createCompositeDatasetGenerator(Dataset dataset, boolean fallback) {
 		CompositeDatasetGenerator<E> generator = new CompositeDatasetGenerator<E>(nesting, dataset.getName(), fallback);
 		for (Dataset subSet : dataset.getSubSets()) {
 			WeightedDatasetGenerator<E> subGenerator = createDatasetGenerator(subSet, false, fallback);
@@ -149,9 +148,6 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		}
 		if (generator.getSource().getSources().size() > 0)
 			return generator;
-		if (required)
-			throw new ConfigurationError("No samples defined for composite dataset: " + dataset.getName() + 
-					" in generator " + this);
 		else
 			return null;
 	}
