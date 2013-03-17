@@ -72,7 +72,7 @@ public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWra
 	    	return null;
 	    E feed = tmp.unwrap();
 	    double d = feed.doubleValue();
-		int prefixDigits = (Math.floor(d) == 0. ? 0 : MathUtil.prefixDigits(d));
+		int prefixDigits = (Math.floor(d) == 0. ? 0 : MathUtil.prefixDigitCount(d));
 		MathContext mathcontext = new MathContext(prefixDigits + fractionDigits);
 		return wrapper.wrap(new BigDecimal(d, mathcontext));
     }
