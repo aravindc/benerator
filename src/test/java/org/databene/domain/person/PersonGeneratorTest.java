@@ -66,6 +66,16 @@ public class PersonGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
+    public void testSwitzerland() {
+        PersonGenerator generator = new PersonGenerator(Country.SWITZERLAND.getIsoCode(), Locale.GERMAN);
+        generator.init(context);
+        for (int i = 0; i < 10; i++) {
+            Person person = generator.generate();
+            logger.debug(person.toString());
+        }
+    }
+
+    @Test
     public void testFemaleQuota() {
         PersonGenerator generator = new PersonGenerator();
         generator.setDataset("DE");
