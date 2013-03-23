@@ -110,7 +110,7 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
 		if (ArrayUtil.isEmpty(columns))
 			this.columns = null;
 		else {
-	        this.columns = columns;
+	        this.columns = columns.clone();
 	        StringUtil.trimAll(this.columns);
 		}
     }

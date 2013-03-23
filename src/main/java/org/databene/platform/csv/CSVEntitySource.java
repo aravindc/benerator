@@ -94,7 +94,7 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
 		if (ArrayUtil.isEmpty(columns))
 			this.columnNames = null;
 		else {
-	        this.columnNames = columns;
+	        this.columnNames = columns.clone();
 	        StringUtil.trimAll(this.columnNames);
 			expectingHeader = false;
 		}
