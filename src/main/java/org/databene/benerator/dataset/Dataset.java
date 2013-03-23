@@ -130,12 +130,12 @@ public class Dataset implements Named {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(Object other) {
+        if (this == other)
             return true;
-        if (getClass() != obj.getClass())
+        if (other == null || getClass() != other.getClass())
             return false;
-        final Dataset that = (Dataset) obj;
+        final Dataset that = (Dataset) other;
         return this.id.equals(that.id);
     }
 
