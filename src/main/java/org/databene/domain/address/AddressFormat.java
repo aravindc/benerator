@@ -55,10 +55,10 @@ public class AddressFormat {
 	
     private static final FreeMarkerScriptFactory SCRIPT_FACTORY = new FreeMarkerScriptFactory();
     
-    public static AddressFormat US = getInstance("US");
-    public static AddressFormat AU = getInstance("AU");
-    public static AddressFormat DE = getInstance("DE");
-    public static AddressFormat BE = getInstance("BE");
+    public static final AddressFormat US = getInstance("US");
+    public static final AddressFormat AU = getInstance("AU");
+    public static final AddressFormat DE = getInstance("DE");
+    public static final AddressFormat BE = getInstance("BE");
     
 	private String pattern;
 	private Script script;
