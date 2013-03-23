@@ -140,11 +140,12 @@ public class Archetype implements Serializable {
     }
 
 	private void copySchemaTo(File targetFolder) throws IOException, FileNotFoundException {
-	    URL schemaUrl = getClass().getClassLoader().getResource(BeneratorFactory.XML_SCHEMA_PATH);
+		String xmlSchemaPath = BeneratorFactory.getSchemaPathForCurrentVersion();
+	    URL schemaUrl = getClass().getClassLoader().getResource(xmlSchemaPath);
 	    if (schemaUrl == null)
-	    	throw new FileNotFoundException("File not found: " + BeneratorFactory.XML_SCHEMA_PATH);
+	    	throw new FileNotFoundException("File not found: " + xmlSchemaPath);
 		InputStream in = schemaUrl.openStream();
-		File file = new File(targetFolder, BeneratorFactory.XML_SCHEMA_PATH.substring(BeneratorFactory.XML_SCHEMA_PATH.lastIndexOf('/')));
+		File file = new File(targetFolder, xmlSchemaPath.substring(xmlSchemaPath.lastIndexOf('/')));
 		OutputStream out = new FileOutputStream(file);
 		IOUtil.transfer(in, out);
 		in.close();
