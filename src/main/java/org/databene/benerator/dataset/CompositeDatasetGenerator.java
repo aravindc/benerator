@@ -138,10 +138,13 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 					Dataset datasetInstance = DatasetUtil.getDataset(DatasetUtil.REGION_NESTING, requestedDataset);
 					// try each atomic data subset (this makes the first atomic subset the main one)
 					createFallbackGeneratorFor(datasetInstance);
-					if (fallbackGenerator == null && required)
-						throw new IllegalArgumentException("Unable to find sub generator for data subset " + 
-								requestedDataset + " in " + this);
-					logger.warn("Falling back to data set '{}'", fallbackGenerator.getDataset());
+					if (fallbackGenerator == null) {
+						if (required)
+							throw new IllegalArgumentException("Unable to find sub generator for data subset " + 
+									requestedDataset + " in " + this);
+						else
+							logger.warn("Falling back to data set '{}'", fallbackGenerator.getDataset());
+					}
 				}
 				return fallbackGenerator;
 			} else {
