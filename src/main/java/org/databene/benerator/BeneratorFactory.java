@@ -44,7 +44,7 @@ import org.databene.commons.version.VersionInfo;
 public abstract class BeneratorFactory {
 
 	public static final String BENERATOR_FACTORY_PROPERTY = "benerator.factory";
-	public static final String XML_SCHEMA_PATH = schemaPathForCurrentVersion();
+	private static String XML_SCHEMA_PATH = null;
 
 	private static BeneratorFactory instance;
 
@@ -58,11 +58,14 @@ public abstract class BeneratorFactory {
 		return instance;
 	}
 	
-	public static String schemaPathForCurrentVersion() {
-		String version = VersionInfo.getInfo("benerator").getVersion();
-		if (version.endsWith("-SNAPSHOT"))
-			version = version.substring(0, version.length() - "-SNAPSHOT".length());
-		return "org/databene/benerator/benerator-" + version + ".xsd";
+	public static synchronized String getSchemaPathForCurrentVersion() {
+		if (XML_SCHEMA_PATH == null) { 
+			String version = VersionInfo.getInfo("benerator").getVersion();
+			if (version.endsWith("-SNAPSHOT"))
+				version = version.substring(0, version.length() - "-SNAPSHOT".length());
+			XML_SCHEMA_PATH = "org/databene/benerator/benerator-" + version + ".xsd";
+		}
+		return XML_SCHEMA_PATH;
 	}
 
     public abstract BeneratorContext createContext(String contextUri);
