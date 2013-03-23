@@ -48,7 +48,6 @@ public class RunTaskStatement extends AbstractStatement implements Closeable {
 	protected Expression<Integer> threads;
 	protected Expression<PageListener> pageListener;
 	protected Expression<Boolean> stats;
-	protected Expression<ErrorHandler> errorHandler;
 	protected boolean infoLog;
 
 	public RunTaskStatement(Expression<? extends Task> taskProvider, 
@@ -63,7 +62,6 @@ public class RunTaskStatement extends AbstractStatement implements Closeable {
 	    this.threads = threads;
 	    this.pageListener = pageListener;
 	    this.stats = stats;
-	    this.errorHandler = errorHandler;
 	    this.infoLog = infoLog;
     }
 
@@ -108,7 +106,7 @@ public class RunTaskStatement extends AbstractStatement implements Closeable {
 	public void close() {
 		task.close();
 	}
-
+	
 	private List<PageListener> getPageListeners(BeneratorContext context) {
 		List<PageListener> listeners = new ArrayList<PageListener>();
 	    if (pageListener != null)
