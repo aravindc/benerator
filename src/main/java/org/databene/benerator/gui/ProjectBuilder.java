@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.transform.sax.TransformerHandler;
-
 import org.databene.benerator.archetype.FolderLayout;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
@@ -98,7 +96,6 @@ public class ProjectBuilder implements Runnable {
 
 	protected Setup setup;
 	protected TypeDescriptor[]  descriptors;
-	protected TransformerHandler handler;
 	protected DBSystem db;
     private List<Exception> errors;
     private ProgressMonitor monitor;
