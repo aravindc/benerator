@@ -66,7 +66,7 @@ public class RandomBigDecimalGenerator extends ThreadSafeNonNullGenerator<BigDec
         this.max = max;
         this.granularity = granularity;
         BigDecimal tmp = max.subtract(min).divide(granularity);
-        tmp.setScale(0, RoundingMode.DOWN);
+        tmp = tmp.setScale(0, RoundingMode.DOWN);
         this.range = tmp.multiply(granularity);
     }
 
