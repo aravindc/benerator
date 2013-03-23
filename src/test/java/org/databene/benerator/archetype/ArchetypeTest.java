@@ -55,7 +55,7 @@ public class ArchetypeTest {
 		// check that benerator.xml was copied from the archetype
 		assertTrue(ArrayUtil.contains("benerator.xml", createdFiles));
 		// check that benerator xsd was copied from the classpath
-		String schemaPath = StringUtil.splitOnLastSeparator(BeneratorFactory.schemaPathForCurrentVersion(), '/')[1];
+		String schemaPath = StringUtil.splitOnLastSeparator(BeneratorFactory.getSchemaPathForCurrentVersion(), '/')[1];
 		assertTrue("File not found: " + schemaPath, ArrayUtil.contains(schemaPath, createdFiles));
 		// check that src/main/resources is mapped to src in Eclipse projects
 		File src = new File(targetFolder, "src");
