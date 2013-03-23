@@ -56,7 +56,7 @@ public class DatasetUtil {
 	private static String defaultRegionName;
 	private static Dataset defaultRegion;
 	
-    protected static Map<String, Map<String, Dataset>> types = new HashMap<String, Map<String, Dataset>>();
+    protected static final Map<String, Map<String, Dataset>> types = new HashMap<String, Map<String, Dataset>>();
 
 	public static Dataset defaultRegion() {
 		if (defaultRegion == null)
