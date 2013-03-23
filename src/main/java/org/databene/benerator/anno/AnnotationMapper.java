@@ -233,7 +233,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		return type;
 	}
 
-	private boolean containsConfig(Annotation[] annotations) {
+	private static boolean containsConfig(Annotation[] annotations) {
 		for (Annotation annotation : annotations) {
 			Package annoPkg = annotation.annotationType().getPackage();
 			if ((annoPkg == BENERATOR_ANNO_PACKAGE || annoPkg == BEANVAL_ANNO_PACKAGE) && 
@@ -294,7 +294,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		// ...otherwise the GeneratorFactory's DefaultProvider is used
 	}
 
-	private boolean applyDefaultsProvider(Annotation[] annotations, BeneratorContext context) {
+	private static boolean applyDefaultsProvider(Annotation[] annotations, BeneratorContext context) {
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof Defaults) {
 				context.setDefaultsProvider(BeanUtil.newInstance(((Defaults) annotation).value()));
@@ -376,7 +376,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		return generator;
 	}
 
-	private int indexOfLast(Method testMethod) {
+	private static int indexOfLast(Method testMethod) {
 		Annotation[][] paramsAnnotations = testMethod.getParameterAnnotations();
 		for (int i = 0; i < paramsAnnotations.length; i++) {
 			for (Annotation paramAnnotation : paramsAnnotations[i])
@@ -387,7 +387,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private Generator<Object[]> createDescriptorBasedGenerator(Descriptor annotation, Method testMethod, BeneratorContext context) {
+	private static Generator<Object[]> createDescriptorBasedGenerator(Descriptor annotation, Method testMethod, BeneratorContext context) {
 		String filename = null;
 		try {
 			if (annotation.file().length() > 0)
@@ -558,7 +558,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	    	setDetail(detailName, value, instanceDescriptor);
     }
 
-	private void mapFormatted(Source source, InstanceDescriptor instanceDescriptor) {
+	private static void mapFormatted(Source source, InstanceDescriptor instanceDescriptor) {
 		switch (source.format()) {
 			case formatted: case raw: setDetail("format", source.format().name(), instanceDescriptor); break;
 			case globalDefault: break;
