@@ -41,24 +41,24 @@ public class Address {
 	
 	private static final Escalator escalator = new LoggerEscalator();
 
-    public String street;
-    public String houseNumber;
-    public String postalCode;
-    public City city;
-    public State state;
-    public Country country;
+    private String street;
+    private String houseNumber;
+    private String postalCode;
+    private City city;
+    private State state;
+    private Country country;
     
-    public PhoneNumber privatePhone;
-    public PhoneNumber officePhone;
-    public PhoneNumber mobilePhone;
-    public PhoneNumber fax;
+    private PhoneNumber privatePhone;
+    private PhoneNumber officePhone;
+    private PhoneNumber mobilePhone;
+    private PhoneNumber fax;
     
     // TODO v0.8 generate the following attributes
-    public String organization;
-    public String department;
-    public String building;
-    public String co;
-    public String poBox;
+    private String organization;
+    private String department;
+    private String building;
+    private String co;
+    private String poBox;
     
     public Address() {
         this(null, null, null, null, null, null, null, null, null, null);
