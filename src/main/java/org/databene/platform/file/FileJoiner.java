@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.ArrayFormat;
 import org.databene.commons.Assert;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
@@ -67,7 +68,7 @@ public class FileJoiner extends AbstractTask {
     }
 
     public void setSources(String[] sources) {
-    	this.sources = sources;
+    	this.sources = sources.clone();
     }
 
     public String getDestination() {
@@ -115,7 +116,7 @@ public class FileJoiner extends AbstractTask {
 								"Probably it is locked");
 				}
         } catch (IOException e) {
-        	errorHandler.handleError("Error joining files: " + sources, e);
+        	errorHandler.handleError("Error joining files: " + ArrayFormat.format(sources), e);
         } finally {
 			IOUtil.close(out);
 		}
@@ -124,7 +125,7 @@ public class FileJoiner extends AbstractTask {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private void appendFile(OutputStream out, String source, byte[] buffer, BeneratorContext context) throws FileNotFoundException, IOException {
+    private static void appendFile(OutputStream out, String source, byte[] buffer, BeneratorContext context) throws FileNotFoundException, IOException {
 	    FileInputStream in = null;
 	    try {
 	    	in = new FileInputStream(context.resolveRelativeUri(source));

@@ -51,7 +51,7 @@ public class FileDeleter extends AbstractTask {
     }
 
     public void setFiles(String[] files) {
-    	this.files = files;
+    	this.files = files.clone();
     }
 
 	@Override
