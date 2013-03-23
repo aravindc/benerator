@@ -195,7 +195,7 @@ public class XLSEntityExporter extends FormattingConsumer implements FileExporte
 	    }
     }
 
-	private Set<Entry<String, Object>> getComponents(Entity entity) {
+	private static Set<Entry<String, Object>> getComponents(Entity entity) {
 	    return entity.getComponents().entrySet();
     }
 
@@ -241,7 +241,7 @@ public class XLSEntityExporter extends FormattingConsumer implements FileExporte
 	    if (obj == null || getClass() != obj.getClass())
 		    return false;
 	    XLSEntityExporter that = (XLSEntityExporter) obj;
-	    return (this.uri.equals(that.uri != null));
+	    return (this.uri.equals(that.uri));
     }
     
 }
