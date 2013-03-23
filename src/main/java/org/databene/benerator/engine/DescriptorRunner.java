@@ -170,7 +170,7 @@ public class DescriptorRunner implements ResourceManager {
     
     // private helpers -------------------------------------------------------------------------------------------------
     
-	private void printStats(long elapsedTime) {
+	private static void printStats(long elapsedTime) {
 		String message = "Created a total of " + BeneratorMonitor.INSTANCE.getTotalGenerationCount() + " entities";
 		if (elapsedTime != 0) {
 		    long throughput = BeneratorMonitor.INSTANCE.getTotalGenerationCount() * 3600000L / elapsedTime;
