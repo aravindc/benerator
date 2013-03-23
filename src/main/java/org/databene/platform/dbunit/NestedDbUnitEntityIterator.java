@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayBuilder;
+import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.SyntaxError;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -156,7 +157,7 @@ public class NestedDbUnitEntityIterator extends AbstractDbUnitEntityIterator {
 
 		@Override
         public String toString() {
-            return name + columnNames;
+            return name + '[' + ArrayFormat.format(columnNames) + ']';
         }
 
         public String[] getColumnNames() {
