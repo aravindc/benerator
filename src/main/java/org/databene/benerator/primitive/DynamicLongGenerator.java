@@ -44,7 +44,6 @@ public class DynamicLongGenerator extends GeneratorProxy<Long> {
     protected Expression<Long> max;
     protected Expression<Long> granularity;
     protected Expression<? extends Distribution> distribution;
-    protected Expression<Boolean> unique;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
