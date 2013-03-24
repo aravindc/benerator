@@ -182,6 +182,15 @@ public class BeneratorGUI {
 			return null; // TODO
 		}
 
+		@Override
+		public void preferences() {
+		}
+
+		@Override
+		public boolean supportsPreferences() {
+			return false;
+		}
+
 	}
 	
 }
