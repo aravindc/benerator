@@ -102,8 +102,9 @@ public class AnnotationMapperTest {
 	    @SuppressWarnings("resource")
 		BeneratorContext context = new DefaultBeneratorContext();
 		AnnotationMapper mapper = new AnnotationMapper(context.getDataModel(), new DefaultPathResolver());
-		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethod);
-		InstanceDescriptor arrayDescriptor = mapper.createMethodParamsInstanceDescriptor(stringMethod, type);
+		MethodDescriptor stringMethodDescriptor = new MethodDescriptor(stringMethod);
+		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethodDescriptor);
+		InstanceDescriptor arrayDescriptor = mapper.createMethodParamsInstanceDescriptor(stringMethodDescriptor, type);
 		assertEquals(true, arrayDescriptor.isUnique());
 	}
 	
@@ -344,8 +345,9 @@ public class AnnotationMapperTest {
 		@SuppressWarnings("resource")
 		DefaultBeneratorContext context = new DefaultBeneratorContext();
 	    AnnotationMapper mapper = new AnnotationMapper(context.getDataModel(), new DefaultPathResolver());
-		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethod);
-		InstanceDescriptor arrayDescriptor = mapper.createMethodParamsInstanceDescriptor(stringMethod, type);
+		MethodDescriptor stringMethodDescriptor = new MethodDescriptor(stringMethod);
+		ArrayTypeDescriptor type = mapper.createMethodParamsType(stringMethodDescriptor);
+		InstanceDescriptor arrayDescriptor = mapper.createMethodParamsInstanceDescriptor(stringMethodDescriptor, type);
 		ArrayTypeDescriptor typeDescriptor = (ArrayTypeDescriptor) arrayDescriptor.getTypeDescriptor();
 		ArrayTypeDescriptor parentTypeDescriptor = typeDescriptor.getParent();
 		assertEquals(1, parentTypeDescriptor.getElements().size());

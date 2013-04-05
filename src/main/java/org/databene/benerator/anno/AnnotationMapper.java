@@ -156,6 +156,10 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	}
 
 	public Generator<Object[]> createAndInitMethodParamsGenerator(Method testMethod, BeneratorContext context) {
+		return createAndInitMethodParamsGenerator(new MethodDescriptor(testMethod), context);
+    }
+
+	public Generator<Object[]> createAndInitMethodParamsGenerator(MethodDescriptor testMethod, BeneratorContext context) {
 		applyMethodGeneratorFactory(testMethod, context);
 
 		// Evaluate @Bean and @Database annotations attached to the test method
@@ -177,20 +181,20 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 
     // helper methods --------------------------------------------------------------------------------------------------
 	
-	protected ArrayTypeDescriptor createMethodParamsType(Method testMethod) {
+	protected ArrayTypeDescriptor createMethodParamsType(MethodDescriptor testMethod) {
 		ArrayTypeDescriptor nativeType = createNativeParamsDescriptor(testMethod);
 		return createConfiguredParamsDescriptor(testMethod, nativeType);
 	}
 
 	protected InstanceDescriptor createMethodParamsInstanceDescriptor(
-			Method testMethod, ArrayTypeDescriptor type) {
+			MethodDescriptor testMethod, ArrayTypeDescriptor type) {
 		InstanceDescriptor instance = new InstanceDescriptor(testMethod.getName(), this, type);
 		for (Annotation annotation : testMethod.getAnnotations())
 			mapParamAnnotation(annotation, instance, testMethod.getDeclaringClass());
 		return instance;
 	}
 
-	protected ArrayTypeDescriptor createNativeParamsDescriptor(Method testMethod) {
+	protected ArrayTypeDescriptor createNativeParamsDescriptor(MethodDescriptor testMethod) {
 		ArrayTypeDescriptor nativeDescriptor = new ArrayTypeDescriptor(testMethod.getName() + "_native", this);
 		Class<?>[] paramTypes = testMethod.getParameterTypes();
 		for (int i = 0; i < paramTypes.length; i++) {
@@ -212,7 +216,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	}
 
 	private ArrayTypeDescriptor createConfiguredParamsDescriptor(
-			Method testMethod, ArrayTypeDescriptor nativeDescriptor) {
+			MethodDescriptor testMethod, ArrayTypeDescriptor nativeDescriptor) {
 		ArrayTypeDescriptor type = new ArrayTypeDescriptor(
 				testMethod.getName() + "_configured", this, nativeDescriptor);
 		Class<?>[] parameterTypes = testMethod.getParameterTypes();
@@ -247,7 +251,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		return EXPLICITLY_MAPPED_ANNOTATIONS.contains(annotation.annotationType());
 	}
 
-	protected void applyMethodGeneratorFactory(Method testMethod, BeneratorContext context) {
+	protected void applyMethodGeneratorFactory(MethodDescriptor testMethod, BeneratorContext context) {
 		boolean configured = applyGeneratorFactory(testMethod.getAnnotations(), context);
 		if (!configured)
 			applyClassGeneratorFactory(testMethod.getDeclaringClass().getAnnotations(), context);
@@ -285,7 +289,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		return configured;
 	}
 
-	protected void applyMethodDefaultsProvider(Method testMethod, BeneratorContext context) {
+	protected void applyMethodDefaultsProvider(MethodDescriptor testMethod, BeneratorContext context) {
 		// check if the method is annotated with an individual DefaultsProvider...
 		boolean configured = applyDefaultsProvider(testMethod.getAnnotations(), context);
 		// ... otherwise check for a class-wide DefaultsProvider annotation...
@@ -346,7 +350,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 
     @SuppressWarnings("unchecked")
 	protected Generator<Object[]> createGenerator(ArrayTypeDescriptor type,
-			Method testMethod, Uniqueness uniqueness, BeneratorContext context) {
+			MethodDescriptor testMethod, Uniqueness uniqueness, BeneratorContext context) {
 		Generator<Object[]> generator;
 		
 		Descriptor descriptorBasedAnno = testMethod.getAnnotation(Descriptor.class);
@@ -376,7 +380,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 		return generator;
 	}
 
-	private static int indexOfLast(Method testMethod) {
+	private static int indexOfLast(MethodDescriptor testMethod) {
 		Annotation[][] paramsAnnotations = testMethod.getParameterAnnotations();
 		for (int i = 0; i < paramsAnnotations.length; i++) {
 			for (Annotation paramAnnotation : paramsAnnotations[i])
@@ -387,7 +391,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static Generator<Object[]> createDescriptorBasedGenerator(Descriptor annotation, Method testMethod, BeneratorContext context) {
+	private static Generator<Object[]> createDescriptorBasedGenerator(Descriptor annotation, MethodDescriptor testMethod, BeneratorContext context) {
 		String filename = null;
 		try {
 			if (annotation.file().length() > 0)
