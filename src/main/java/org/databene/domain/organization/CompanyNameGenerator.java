@@ -48,6 +48,7 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.MessageGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.WrapperFactory;
+import org.databene.commons.Assert;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Encodings;
 import org.databene.commons.bean.PropertyAccessConverter;
@@ -111,7 +112,10 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
     
 	@Override
 	protected WeightedGenerator<CompanyName> createGeneratorForAtomicDataset(Dataset dataset) {
-		Country country = Country.getInstance(dataset.getName(), false);
+		String isoCode = dataset.getName();
+		Country country = Country.getInstance(isoCode, false);
+		if (country == null)
+			throw new ConfigurationError("Unknown country code: " + isoCode);
 		return new CountryCompanyNameGenerator(country);
 	}
 
@@ -133,6 +137,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 	    private Generator<String> locationGenerator;
 
 		public CountryCompanyNameGenerator(Country country) {
+			Assert.notNull(country, "country");
 			this.country = country;
 		}
 
