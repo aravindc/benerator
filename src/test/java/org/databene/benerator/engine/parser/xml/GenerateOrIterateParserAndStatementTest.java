@@ -338,7 +338,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertOuter(4, consumer.products.get(2));
 	}
 
-	private void assertOuter(int n, Object object) {
+	private static void assertOuter(int n, Object object) {
 		Entity entity = (Entity) object;
 	    assertNotNull(entity);
 	    assertEquals("outer", entity.type());
@@ -519,6 +519,21 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertComponents((Entity) consumer.products.get(5), "slash", 6, "a", 2, "b", 2, "c", 2, "def", 2);
 		assertComponents((Entity) consumer.products.get(6), "slash", 7, "a", 3, "b", 1, "c", 1, "def", 1);
 		assertComponents((Entity) consumer.products.get(7), "slash", 8, "a", 4, "b", 2, "c", 2, "def", 2);
+	}
+
+	@Test
+	public void testModeIgnored() {
+		Statement statement = parse(
+				"<generate name='a' count='3' consumer='cons'>" +
+				"	<id name='id' mode='ignored' />" +
+        		"</generate>"
+			);
+		ConsumerMock consumer = new ConsumerMock(true, 1);
+		context.setGlobal("cons", consumer);
+		statement.execute(context);
+		assertEquals(3, consumer.startConsumingCount.get());
+		for (int i = 0; i < 3; i++)
+			assertNull(((Entity) consumer.products.get(0)).get("id"));
 	}
 
 }
