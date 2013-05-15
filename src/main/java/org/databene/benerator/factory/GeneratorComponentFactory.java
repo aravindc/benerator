@@ -27,8 +27,11 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.Mode;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory for {@link GeneratorComponent}s.<br/><br/>
@@ -37,9 +40,15 @@ import org.databene.model.data.VariableDescriptor;
  * @author Volker Bergmann
  */
 public class GeneratorComponentFactory {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(GeneratorComponentFactory.class);
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static GeneratorComponent<?> createGeneratorComponent(InstanceDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
+		if (descriptor.getMode() == Mode.ignored) {
+			LOGGER.debug("Ignoring {}", descriptor);
+			return null;
+		}
 		if (descriptor instanceof ComponentDescriptor)
 			return ComponentBuilderFactory.createComponentBuilder((ComponentDescriptor) descriptor, ownerUniqueness, context);
 		else if (descriptor instanceof VariableDescriptor)

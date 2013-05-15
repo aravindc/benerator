@@ -290,6 +290,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<?> generator, BeneratorContext context) {
+    	if (generator == null)
+    		return null;
     	String container = instance.getContainer();
     	if (container == null) {
         	Generator<Long> longCountGenerator = DescriptorUtil.createDynamicCountGenerator(instance, 1L, 1L, true, context);

@@ -522,7 +522,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	}
 
 	@Test
-	public void testModeIgnored() {
+	public void testIdIgnored() {
 		Statement statement = parse(
 				"<generate name='a' count='3' consumer='cons'>" +
 				"	<id name='id' mode='ignored' />" +
@@ -534,6 +534,37 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertEquals(3, consumer.startConsumingCount.get());
 		for (int i = 0; i < 3; i++)
 			assertNull(((Entity) consumer.products.get(0)).get("id"));
+	}
+
+	@Test
+	public void testAttributeIgnored() {
+		Statement statement = parse(
+				"<generate name='a' count='3' consumer='cons'>" +
+				"	<attribute name='att' mode='ignored' />" +
+        		"</generate>"
+			);
+		ConsumerMock consumer = new ConsumerMock(true, 1);
+		context.setGlobal("cons", consumer);
+		statement.execute(context);
+		assertEquals(3, consumer.startConsumingCount.get());
+		for (int i = 0; i < 3; i++)
+			assertNull(((Entity) consumer.products.get(0)).get("att"));
+	}
+
+	@Test
+	public void testReferenceIgnored() {
+		Statement statement = parse(
+				"<generate type='a' count='3' consumer='cons'>" +
+				"	<reference name='ref' targetType='b' mode='ignored' />" +
+        		"</generate>"
+			);
+		ConsumerMock consumer = new ConsumerMock(true, 1);
+		context.setGlobal("cons", consumer);
+		context.addLocalType(new ComplexTypeDescriptor("b", context.getLocalDescriptorProvider()));
+		statement.execute(context);
+		assertEquals(3, consumer.startConsumingCount.get());
+		for (int i = 0; i < 3; i++)
+			assertNull(((Entity) consumer.products.get(0)).get("ref"));
 	}
 
 }
