@@ -36,6 +36,8 @@ import org.databene.model.data.Uniqueness;
 import org.databene.benerator.*;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.IncrementGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates entity generators from entity metadata.<br/>
@@ -44,6 +46,8 @@ import org.databene.benerator.primitive.IncrementGenerator;
  * @author Volker Bergmann
  */
 public class InstanceGeneratorFactory {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(InstanceGeneratorFactory.class);
 
     // protected constructor for preventing instantiation --------------------------------------------------------------
     
@@ -65,8 +69,10 @@ public class InstanceGeneratorFactory {
 		boolean nullable = DescriptorUtil.isNullable(descriptor, context);
 		
 		// check 'ignored' setting
-		if (descriptor.getMode() == Mode.ignored)
+		if (descriptor.getMode() == Mode.ignored) {
+			LOGGER.debug("Ignoring descriptor {}", descriptor);
 			return null;
+		}
 		
 		// create an appropriate generator
 		TypeDescriptor type = descriptor.getTypeDescriptor();
