@@ -56,7 +56,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public static final String COUNT_DISTRIBUTION = "countDistribution";
     public static final String COUNT              = "count";
     public static final String NULL_QUOTA         = "nullQuota";
-    public static final String MODE = "mode";
+    public static final String MODE               = "mode";
     
     
     private InstanceDescriptor parent;
