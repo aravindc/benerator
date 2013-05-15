@@ -250,6 +250,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     static ComponentBuilder<?> wrapWithCondition(ComponentDescriptor descriptor, ComponentBuilder<?> builder) {
+    	if (builder == null)
+    		return null;
     	TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
     	if (typeDescriptor == null)
     		return builder;
@@ -263,12 +265,15 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
 	static ComponentBuilder<?> createIdBuilder(IdDescriptor id, Uniqueness ownerUniqueness, BeneratorContext context) {
         Generator<?> generator = createSingleInstanceGenerator(id, Uniqueness.ORDERED, context);
-        LOGGER.debug("Created {}", generator);
+        if (generator != null)
+        	LOGGER.debug("Created {}", generator);
         return builderFromGenerator(generator, id, context);
     }
 
     private static ComponentBuilder<?> builderFromGenerator(
     		Generator<?> source, ComponentDescriptor descriptor, BeneratorContext context) {
+    	if (source == null)
+    		return null;
 		boolean nullability = DescriptorUtil.isNullable(descriptor, context);
 		Double nullQuota = descriptor.getNullQuota();
 		if (nullQuota != null && nullQuota != 0)

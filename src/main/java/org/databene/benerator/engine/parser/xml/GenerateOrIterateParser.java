@@ -134,7 +134,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 
-	private List<String> createProfilerPath(Statement[] parentPath, Statement currentElement) {
+	private static List<String> createProfilerPath(Statement[] parentPath, Statement currentElement) {
 		List<String> path = new ArrayList<String>(parentPath != null ? parentPath.length + 1 : 1);
 		if (parentPath != null)
 			for (int i = 0; i < parentPath.length; i++)
@@ -143,7 +143,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		return path;
 	}
 
-	private String getNameOrType(Element element) {
+	private static String getNameOrType(Element element) {
 		String result = element.getAttribute(ATT_NAME);
 		if (StringUtil.isEmpty(result))
 			result = element.getAttribute(ATT_TYPE);
@@ -225,7 +225,8 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			if (componentDescriptor != null) {
 				GeneratorComponent<?> componentGenerator = GeneratorComponentFactory.createGeneratorComponent(
 						componentDescriptor, Uniqueness.NONE, childContext);
-				statements.add(componentGenerator);
+				if (componentGenerator != null)
+					statements.add(componentGenerator);
 			} else if (!EL_CONSUMER.equals(childName)) {
 				Statement[] subPath = parseContext.createSubPath(parentPath, statement);
 				Statement subStatement = parseContext.parseChildElement(child, subPath);
@@ -295,11 +296,11 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		return new GenerateAndConsumeTask(taskName, productName);
 	}
 
-	private Expression<Consumer> parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
+	private static Expression<Consumer> parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
 		return new CachedExpression<Consumer>(new XMLConsumerExpression(entityElement, consumersExpected, resourceManager));
 	}
 
-	private InstanceDescriptor mapDescriptorElement(Element element, BeneratorContext context) { 
+	private static InstanceDescriptor mapDescriptorElement(Element element, BeneratorContext context) { 
 		// TODO v0.7.1 Make Descriptors an abstraction of the XML file content and convert XML -> Descriptors -> Statements
 		
 		// evaluate type
