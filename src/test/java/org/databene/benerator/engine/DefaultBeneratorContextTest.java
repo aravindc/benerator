@@ -23,7 +23,6 @@ package org.databene.benerator.engine;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
 import java.util.Locale;
 
 import org.databene.commons.BeanUtil;
@@ -78,7 +77,7 @@ public class DefaultBeneratorContextTest {
 	}
 	
 	@Test
-	public void testResourceInJarInLibFolder() throws IOException {
+	public void testResourceInJarInLibFolder() throws Exception {
 		String XLS_RESOURCE_NAME = "xls/xls_in_jar.xls";
 		BeneratorContext context = new DefaultBeneratorContext(OFF_CLASSPATH_RESOURCES_FOLDER);
 		String resourceUri = context.resolveRelativeUri(XLS_RESOURCE_NAME);
