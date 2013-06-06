@@ -71,6 +71,7 @@ import org.databene.script.DatabeneScriptParser;
 import org.databene.script.PrimitiveType;
 import org.databene.script.ScriptConverterForStrings;
 import org.databene.webdecs.DataSource;
+import org.databene.webdecs.util.DataFileUtil;
 
 import static org.databene.model.data.SimpleTypeDescriptor.*;
 
@@ -170,7 +171,6 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
         String source = descriptor.getSource();
         if (source == null)
             return null;
-        String lcn = source.toLowerCase();
         String selector = descriptor.getSelector();
         String subSelector = descriptor.getSubSelector();
         Generator<?> generator;
@@ -189,11 +189,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
 				generator = new DataSourceGenerator(dataSource);
 			} else
                 throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
-        } else if (lcn.endsWith(".csv")) {
+        } else if (DataFileUtil.isCsvDocument(source)) {
             return createSimpleTypeCSVSourceGenerator(descriptor, source, uniqueness, context);
-        } else if (lcn.endsWith(".xls")) {
+        } else if (DataFileUtil.isExcelDocument(source)) {
             return createSimpleTypeXLSSourceGenerator(descriptor, source, uniqueness, context);
-        } else if (lcn.endsWith(".txt")) {
+        } else if (DataFileUtil.isPlainTextDocument(source)) {
             generator = SourceFactory.createTextLineGenerator(source);
         } else {
         	try {

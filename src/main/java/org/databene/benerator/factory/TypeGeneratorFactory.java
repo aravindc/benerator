@@ -47,6 +47,7 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.script.PrimitiveType;
+import org.databene.webdecs.util.DataFileUtil;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -230,7 +231,7 @@ public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
 			return true;
 		else if (format == Format.raw)
 			return false;
-		else if (!type.getSource().toLowerCase().endsWith(".xls"))
+		else if (!DataFileUtil.isExcelDocument(type.getSource()))
 			return false;
 		else
 			return org.databene.platform.xls.PlatformDescriptor.isFormattedByDefault();

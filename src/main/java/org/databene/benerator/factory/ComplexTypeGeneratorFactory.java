@@ -59,6 +59,7 @@ import org.databene.script.Expression;
 import org.databene.script.ScriptConverterForStrings;
 import org.databene.script.ScriptUtil;
 import org.databene.webdecs.DataSource;
+import org.databene.webdecs.util.DataFileUtil;
 
 import java.util.*;
 
@@ -113,15 +114,14 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
         if (sourceObject != null)
             generator = createSourceGeneratorFromObject(descriptor, context, sourceObject);
         else {
-        	String lcSourceName = sourceSpec.toLowerCase();
         	String segment = descriptor.getSegment();
-        	if (lcSourceName.endsWith(".xml"))
+        	if (DataFileUtil.isXmlDocument(sourceSpec))
 	            generator = new DataSourceGenerator<Entity>(new DbUnitEntitySource(sourceSpec, context));
-	        else if (lcSourceName.endsWith(".csv"))
+	        else if (DataFileUtil.isCsvDocument(sourceSpec))
 	            generator = createCSVSourceGenerator(descriptor, context, sourceSpec);
-	        else if (lcSourceName.endsWith(".fcw"))
+	        else if (DataFileUtil.isFixedColumnWidthFile(sourceSpec))
 	            generator = createFixedColumnWidthSourceGenerator(descriptor, context, sourceSpec);
-	        else if (lcSourceName.endsWith(".xls")) 
+	        else if (DataFileUtil.isExcelDocument(sourceSpec)) 
 	            generator = createXLSSourceGenerator(descriptor, context, sourceSpec, segment);
 	        else {
 	        	try {

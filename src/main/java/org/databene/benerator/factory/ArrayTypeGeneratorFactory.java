@@ -50,6 +50,7 @@ import org.databene.script.Expression;
 import org.databene.script.ScriptConverterForObjects;
 import org.databene.script.ScriptConverterForStrings;
 import org.databene.script.ScriptUtil;
+import org.databene.webdecs.util.DataFileUtil;
 
 /**
  * Creates array {@link Generator}s.<br/><br/>
@@ -72,10 +73,9 @@ public class ArrayTypeGeneratorFactory extends TypeGeneratorFactory<ArrayTypeDes
         if (contextSourceObject != null)
             generator = createSourceGeneratorFromObject(descriptor, context, generator, contextSourceObject);
         else {
-        	String lcSourceName = sourceName.toLowerCase();
-	        if (lcSourceName.endsWith(".csv"))
+	        if (DataFileUtil.isCsvDocument(sourceName))
 	            generator = createCSVSourceGenerator(descriptor, context, sourceName);
-	        else if (lcSourceName.endsWith(".xls"))
+	        else if (DataFileUtil.isExcelDocument(sourceName))
 	            generator = createXLSSourceGenerator(descriptor, context, sourceName);
 	        else {
 	        	try {
