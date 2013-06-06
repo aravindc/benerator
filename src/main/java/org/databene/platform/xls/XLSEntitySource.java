@@ -26,8 +26,6 @@
 
 package org.databene.platform.xls;
 
-import java.io.IOException;
-
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -67,7 +65,7 @@ public class XLSEntitySource extends FileBasedEntitySource {
 	public DataIterator<Entity> iterator() {
         try {
 			return new XLSEntityIterator(resolveUri(), preprocessor, entityType, sheetName, formatted);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
 		}
     }
