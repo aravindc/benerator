@@ -85,6 +85,7 @@ import org.databene.platform.java.BeanDescriptorProvider;
 import org.databene.platform.java.Entity2JavaConverter;
 import org.databene.script.DatabeneScriptParser;
 import org.databene.script.ScriptUtil;
+import org.databene.webdecs.util.DataFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -552,7 +553,7 @@ public class AnnotationMapper extends DefaultDescriptorProvider {
     }
 
 	private void mapSourceUriOrValue(String value, InstanceDescriptor instanceDescriptor, Class<?> testClass) {
-		if (value.toLowerCase().endsWith(".xls") || value.toLowerCase().endsWith(".csv"))
+		if (DataFileUtil.isExcelOrCsvDocument(value))
 			value = pathResolver.getPathFor(value, testClass);
 		mapSourceSetting(value, "source", instanceDescriptor);
 	}
