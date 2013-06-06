@@ -30,8 +30,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.ConfigurationError;
@@ -65,7 +67,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 
 	private String uri;
 	
-	private HSSFWorkbook workbook;
+	private Workbook workbook;
 
 	private int sheetNo;
 	private String sheetName;
@@ -81,23 +83,23 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 	
 	// constructors ----------------------------------------------------------------------------------------------------
 
-	public XLSEntityIterator(String uri) throws IOException {
+	public XLSEntityIterator(String uri) throws IOException, InvalidFormatException {
 		this(uri, new NoOpConverter<String>(), null, null, false);
 	}
 
 	public XLSEntityIterator(String uri, Converter<String, ?> preprocessor, ComplexTypeDescriptor entityDescriptor, String sheetName, boolean formatted) 
-			throws IOException {
+			throws IOException, InvalidFormatException {
 		this.uri = uri;
 		this.preprocessor = preprocessor;
 		this.entityDescriptor = entityDescriptor;
 		this.rowBased = (entityDescriptor != null && entityDescriptor.isRowBased() != null ? entityDescriptor.isRowBased() : true);
 		this.emptyMarker = (entityDescriptor != null && entityDescriptor.getEmptyMarker() != null ? entityDescriptor.getEmptyMarker() : null);
-		this.workbook = new HSSFWorkbook(IOUtil.getInputStreamForURI(uri));
+		this.workbook = WorkbookFactory.create(IOUtil.getInputStreamForURI(uri));
 		this.sheetName = sheetName;
 		this.sheetNo = -1;
 		this.formatted = formatted;
 	}
-	
+
 	public void setSheetName(String sheetName) {
 		this.sheetName = sheetName;
 	}
@@ -140,12 +142,12 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 	
 	// convenience methods ---------------------------------------------------------------------------------------------
 
-	public static List<Entity> parseAll(String uri, Converter<String, ?> preprocessor) throws IOException {
+	public static List<Entity> parseAll(String uri, Converter<String, ?> preprocessor) throws IOException, InvalidFormatException {
     	return parseAll(uri, preprocessor, null, false);
 	}
 
 	public static List<Entity> parseAll(String uri, Converter<String, ?> preprocessor, String sheetName, boolean formatted) 
-			throws IOException {
+			throws IOException, InvalidFormatException {
     	List<Entity> list = new ArrayList<Entity>();
     	XLSEntityIterator iterator = new XLSEntityIterator(uri, preprocessor, null, sheetName, formatted);
     	iterator.setContext(new DefaultBeneratorContext());
@@ -170,7 +172,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 
-    private void nextSheet() {
+	private void nextSheet() {
     	// check if a sheet is available
     	if (sheetNo >= workbook.getNumberOfSheets() - 1) {
     		source = null;
@@ -190,7 +192,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 			this.sheetNo++;
 		
 		// determine the entity type name from the name of the sheet
-		HSSFSheet sheet = workbook.getSheetAt(sheetNo);
+		Sheet sheet = workbook.getSheetAt(sheetNo);
 		ComplexTypeDescriptor descriptorToUse = entityDescriptor;
 		if (descriptorToUse == null) {
 			String entityTypeName = sheet.getSheetName();
@@ -217,7 +219,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 	}
 
 	private DataIterator<Entity> createSheetIterator(
-			HSSFSheet sheet, ComplexTypeDescriptor complexTypeDescriptor, boolean rowBased, Converter<String, ?> preprocessor, String uri) {
+			Sheet sheet, ComplexTypeDescriptor complexTypeDescriptor, boolean rowBased, Converter<String, ?> preprocessor, String uri) {
 		return new SingleSheetIterator(sheet, complexTypeDescriptor, rowBased, preprocessor, uri);
     }
 	
@@ -228,7 +230,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 	    private Object[] buffer;
 	    private ThreadLocalDataContainer<Object[]> sourceContainer = new ThreadLocalDataContainer<Object[]>();
 		
-		public SingleSheetIterator(HSSFSheet sheet, ComplexTypeDescriptor complexTypeDescriptor, boolean rowBased, Converter<String, ?> preprocessor, 
+		public SingleSheetIterator(Sheet sheet, ComplexTypeDescriptor complexTypeDescriptor, boolean rowBased, Converter<String, ?> preprocessor, 
 				String defaultProviderId) {
 	        this.source = createRawIterator(sheet, rowBased, preprocessor);
 	        // parse headers
@@ -255,7 +257,7 @@ public class XLSEntityIterator implements DataIterator<Entity>, ContextAware {
 			return headers;
 		}
 
-		private DataIterator<Object[]> createRawIterator(HSSFSheet sheet, boolean rowBased,
+		private DataIterator<Object[]> createRawIterator(Sheet sheet, boolean rowBased,
 				Converter<String, ?> preprocessor) {
 			XLSLineIterator iterator = new XLSLineIterator(sheet, preprocessor, formatted);
 			if (emptyMarker != null)
