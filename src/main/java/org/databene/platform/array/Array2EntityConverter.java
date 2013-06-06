@@ -80,14 +80,20 @@ public class Array2EntityConverter extends ThreadSafeConverter<Object[], Entity>
 	protected Converter createConverter(
 			String featureName, ComplexTypeDescriptor descriptor, boolean stringSource) {
 		Converter converter = new NoOpConverter();
-		while (featureName.contains(".")) {
+		// for sub paths, iterate recursively through the component names separated with '.'
+		while (featureName.contains(".") && descriptor != null) {
 			String[] pathComponents = StringUtil.splitOnFirstSeparator(featureName, '.');
 			String partName = pathComponents[0];
 			ComponentDescriptor component = descriptor.getComponent(partName);
-			descriptor = (ComplexTypeDescriptor) component.getTypeDescriptor();
+			if (component != null)
+				descriptor = (ComplexTypeDescriptor) component.getTypeDescriptor();
+			else
+				descriptor = null;
 			featureName = pathComponents[1];
 		}
-		if (descriptor != null) {
+		if (descriptor != null) { 
+			// if all parts of the feature path have been defined in the associated descriptors, 
+			// then determine an appropriate converter
 			ComponentDescriptor component = descriptor.getComponent(featureName);
 			if (component != null && component.getTypeDescriptor() != null) {
 				SimpleTypeDescriptor componentType = (SimpleTypeDescriptor) component.getTypeDescriptor();
