@@ -30,8 +30,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import org.databene.benerator.IteratorTestCase;
 import org.databene.commons.TimeUtil;
-import org.databene.commons.iterator.IteratorTestCase;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
