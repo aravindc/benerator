@@ -29,6 +29,7 @@ package org.databene.benerator.composite;
 import java.util.Map;
 
 import org.databene.benerator.factory.DescriptorUtil;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.AbstractConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -56,24 +57,7 @@ public class ComponentTypeConverter extends AbstractConverter<Entity, Entity> {
 
 	@Override
 	public Entity convert(Entity entity) throws ConversionException {
-		if (entity == null)
-			return null;
-		Map<String, Object> components = entity.getComponents();
-		for (Map.Entry<String, Object> entry : components.entrySet()) {
-			String componentName = entry.getKey();
-			ComponentDescriptor componentDescriptor = type.getComponent(componentName);
-			if (componentDescriptor != null) {
-				TypeDescriptor componentType = componentDescriptor.getTypeDescriptor();
-				Object componentValue = entry.getValue();
-				if (componentType instanceof SimpleTypeDescriptor) {
-					Object javaValue = DescriptorUtil.convertType(componentValue, (SimpleTypeDescriptor) componentType);
-			        components.put(componentName, javaValue);
-				} else {
-			        components.put(componentName, convert((Entity) componentValue));
-				}
-			}
-		}
-		return entity;
+		return convert(entity, type);
 	}
 
 	@Override
@@ -91,4 +75,27 @@ public class ComponentTypeConverter extends AbstractConverter<Entity, Entity> {
 		return getClass().getSimpleName() + "[" + type + "]";
 	}
 	
+	public static Entity convert(Entity entity, ComplexTypeDescriptor type) throws ConversionException {
+		if (entity == null)
+			return null;
+		Map<String, Object> components = entity.getComponents();
+		for (Map.Entry<String, Object> entry : components.entrySet()) {
+			String componentName = entry.getKey();
+			ComponentDescriptor componentDescriptor = type.getComponent(componentName);
+			if (componentDescriptor != null) {
+				TypeDescriptor componentType = componentDescriptor.getTypeDescriptor();
+				Object componentValue = entry.getValue();
+				if (componentType instanceof SimpleTypeDescriptor) {
+					Object javaValue = DescriptorUtil.convertType(componentValue, (SimpleTypeDescriptor) componentType);
+			        components.put(componentName, javaValue);
+				} else if (componentValue instanceof Entity) {
+			        components.put(componentName, convert((Entity) componentValue, (ComplexTypeDescriptor) componentType));
+				} else {
+					throw new ConfigurationError("Expected complex data type for '" + componentName + "' but got " + componentValue.getClass());
+				}
+			}
+		}
+		return entity;
+	}
+
 }
