@@ -5,14 +5,14 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.8.4-SNAPSHOT</version>
+    <version>0.8.4</version>
 
     <properties>
     	<build_number>${buildNumber}</build_number>
-    	<jdbacl_version>0.8.12-SNAPSHOT</jdbacl_version>
-    	<webdecs_version>0.7.0-SNAPSHOT</webdecs_version>
-    	<script_version>0.7.16-SNAPSHOT</script_version>
-    	<commons_version>0.5.25-SNAPSHOT</commons_version>
+    	<jdbacl_version>0.8.12</jdbacl_version>
+    	<webdecs_version>0.7.0</webdecs_version>
+    	<script_version>0.7.16</script_version>
+    	<commons_version>0.5.25</commons_version>
     	<contiperf_version>2.3.2</contiperf_version>
     </properties>
 
@@ -110,7 +110,7 @@
         <dependency> <!-- TODO which Benerator version should depend on JUnit in which scope? -->
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.11</version>
             <!-- NOT in test scope because Benerator provides test helper classes -->
         </dependency>
 
@@ -184,7 +184,7 @@
         	<!-- TODO refer to this only in community edition -->
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.9</version>
+            <version>2.3.20</version>
         </dependency>
 
         <!-- Dependencies to JDBC drivers that are closed source or not available on the maven repository -->
