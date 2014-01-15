@@ -43,13 +43,17 @@ import org.w3c.dom.Element;
  */
 public abstract class BeneratorIntegrationTest extends GeneratorTest {
 	
+	protected ResourceManagerSupport resourceManager;
+	
 	@Before
 	public void setUpEnvironment() throws Exception {
 		System.setProperty(DefaultBeneratorContext.CELL_SEPARATOR_SYSPROP, ",");
+		this.resourceManager = new ResourceManagerSupport();
 	}
 
 	@After
 	public void tearDown() {
+		this.resourceManager.close();
 		System.setProperty(DefaultBeneratorContext.CELL_SEPARATOR_SYSPROP, ",");
 	}
 
@@ -73,7 +77,6 @@ public abstract class BeneratorIntegrationTest extends GeneratorTest {
 
 	public Statement parse(String xml) {
 		Element element = XMLUtil.parseStringAsElement(xml);
-		ResourceManagerSupport resourceManager = new ResourceManagerSupport();
 		BeneratorParseContext parsingContext = BeneratorFactory.getInstance().createParseContext(resourceManager);
 		return parsingContext.parseElement(element, null);
 	}
