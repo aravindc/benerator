@@ -65,6 +65,7 @@ public class EntityPartSource extends AbstractDataSource<Entity> implements Enti
 		
 		@SuppressWarnings("unchecked")
 		public EntityPartIterator() {
+			super(Entity.class);
 			Entity entity = (Entity) context.get(productName);
 			Object part = entity.get(partName);
 			if (part instanceof Collection)
