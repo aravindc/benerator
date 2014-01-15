@@ -48,7 +48,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * TODO Document class.<br/><br/>
+ * Loads an XML document into a DOM structure, supports queries for data and updates. 
+ * When an instance is {@link #close()}d, the tree content is written to the {@link #outputUri}.<br/><br/>
  * Created: 08.01.2014 15:27:38
  * @since 0.9.0
  * @author Volker Bergmann
@@ -125,9 +126,7 @@ public class DOMTree extends AbstractStorageSystem implements ContextAware {
 	
 	@Override
 	public DataSource<?> queryEntityIds(String type, String selector, Context context) {
-		beInitialized();
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support queries for entity ids");
 	}
 
 	@Override
@@ -163,16 +162,12 @@ public class DOMTree extends AbstractStorageSystem implements ContextAware {
 
 	@Override
 	public void flush() {
-		// TODO Auto-generated method stub
+		// nothhing to do
 	}
 
 	@Override
 	public void close() {
-		try {
-			XMLUtil.saveDocument(document, new File(outputUri), document.getInputEncoding());
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Error writing DOMTree to " + outputUri, e);
-		}
+		save();
 	}
 
 	@Override
@@ -190,6 +185,14 @@ public class DOMTree extends AbstractStorageSystem implements ContextAware {
 			types.put(typeName, type);
 		}
 		return type;
+	}
+	
+	public void save() {
+		try {
+			XMLUtil.saveDocument(document, new File(outputUri), document.getInputEncoding());
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException("Error writing DOMTree to " + outputUri, e);
+		}
 	}
 	
 	
