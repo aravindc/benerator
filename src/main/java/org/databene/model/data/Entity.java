@@ -166,7 +166,7 @@ public class Entity implements Composite {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (o == null || !(o instanceof Entity))
             return false;
         final Entity that = (Entity) o;
         if (!this.descriptor.getName().equals(that.descriptor.getName()))
