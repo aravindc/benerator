@@ -49,12 +49,15 @@ public abstract class IteratorTestCase {
     }
 
 	public static <T> NextHelper expectNextElements(Iterator<?> iterator, T... expectedValues) {
-		for (T expected : expectedValues) {
-			assertTrue("Iterator is expected to have a next, but does not", iterator.hasNext());
-			Object actual = iterator.next();
-			assertEquals(expected, actual);
-		}
+		for (T expected : expectedValues)
+			assertNext(expected, iterator);
 		return new NextHelper(iterator);
+	}
+
+	public static <T> void assertNext(T expectedNext, Iterator<?> iterator) {
+		assertTrue("Iterator is expected to have a next, but does not", iterator.hasNext());
+		Object actual = iterator.next();
+		assertEquals(expectedNext, actual);
 	}
 	
 	public static class NextHelper {
