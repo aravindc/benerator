@@ -72,6 +72,7 @@ public interface DescriptorConstants {
     static final String EL_EXECUTE = "execute";
     static final String EL_DATABASE = "database";
     static final String EL_MEMSTORE = "memstore";
+    static final String EL_DOMTREE = "domtree";
     static final String EL_ECHO = "echo";
     static final String EL_ERROR = "error";
     static final String EL_IMPORT = "import";
@@ -167,6 +168,10 @@ public interface DescriptorConstants {
 
     static final String ATT_DEFAULT_SOURCE = "defaultSource";
     static final String ATT_IDENTITY = "identity";
+    
+    static final String ATT_NAMESPACE_AWARE = "namespaceAware";
+    static final String ATT_INPUT_URI = "inputUri";
+    static final String ATT_OUTPUT_URI = "outputUri";
 
     static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil
 		.toSet(ATT_PAGESIZE, ATT_THREADS, ATT_CONSUMER, ATT_ON_ERROR);

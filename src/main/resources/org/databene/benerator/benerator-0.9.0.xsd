@@ -68,6 +68,7 @@
 			<xs:element ref="include"           minOccurs="0" />
 			<xs:element ref="setting"           minOccurs="0" />
 			<xs:element ref="database"          minOccurs="0" />
+			<xs:element ref="domtree"           minOccurs="0" />
 			<xs:element ref="bean"              minOccurs="0" />
 			<xs:element ref="defaultComponents" minOccurs="0" />
 			<xs:element ref="generate"          minOccurs="0" />
@@ -286,6 +287,16 @@
             <xs:attribute name="lazy"          type="xs:string"/>
             <xs:attribute name="metaCache"     type="xs:string"/>
             <xs:attribute name="acceptUnknownColumnTypes" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- creates a DOM Tree -->
+	<xs:element name="domtree">
+		<xs:complexType>
+			<xs:attribute name="id"             type="xs:string" use="required"/>
+			<xs:attribute name="inputUri"       type="xs:string" use="required"/>
+			<xs:attribute name="outputUri"      type="xs:string"/>
+			<xs:attribute name="namespaceAware" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	
