@@ -33,6 +33,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.storage.AbstractStorageSystem;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
+import org.databene.commons.NullSafeComparator;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.xml.XMLUtil;
@@ -42,6 +43,8 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.script.PrimitiveType;
 import org.databene.webdecs.DataSource;
 import org.databene.webdecs.util.DataSourceFromIterable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -57,20 +60,27 @@ import org.w3c.dom.NodeList;
 
 public class DOMTree extends AbstractStorageSystem implements ContextAware {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DOMTree.class);
+	
 	private String id;
 	private String inputUri;
 	private String outputUri;
+	private boolean namespaceAware;
+	
+	private Context context;
 	private Document document;
 	private OrderedNameMap<ComplexTypeDescriptor> types;
+
 	
 	public DOMTree() {
 		this(null, null);
 	}
 
-	public DOMTree(String uri, BeneratorContext context) {
-		this.id = uri;
-		this.inputUri = uri;
-		this.outputUri = uri;
+	public DOMTree(String inOutUri, BeneratorContext context) {
+		this.id = inOutUri;
+		this.inputUri = inOutUri;
+		this.outputUri = inOutUri;
+		this.namespaceAware = true;
 		this.document = null;
 		this.types = OrderedNameMap.createCaseInsensitiveMap();
 		setContext(context);
@@ -101,8 +111,17 @@ public class DOMTree extends AbstractStorageSystem implements ContextAware {
 		this.outputUri = outputUri;
 	}
 	
+	public boolean isNamespaceAware() {
+		return namespaceAware;
+	}
+	
+	public void setNamespaceAware(boolean namespaceAware) {
+		this.namespaceAware = namespaceAware;
+	}
+	
 	@Override
 	public void setContext(Context context) {
+		this.context = context;
 		if (context instanceof BeneratorContext)
 			setDataModel(((BeneratorContext) context).getDataModel());
 	}
@@ -110,12 +129,14 @@ public class DOMTree extends AbstractStorageSystem implements ContextAware {
 	@Override
 	public DataSource<Entity> queryEntities(String type, String selector, Context context) {
 		beInitialized();
+		LOGGER.debug("queryEntities({}, {}, context)", type, selector);
 		try {
 			NodeList nodes = XMLUtil.queryNodes(document, selector);
+			LOGGER.debug("queryEntities() found {} results", nodes.getLength());
 			List<Entity> list = new ArrayList<Entity>(nodes.getLength());
 			for (int i = 0; i < nodes.getLength(); i++) {
 				Element element = (Element) nodes.item(i);
-				Entity entity = XmlElement2EntityConverter.convert(element, this);
+				Entity entity = XMLPlatformUtil.convertElement2Entity(element, this);
 				list.add(entity);
 			}
 			return new DataSourceFromIterable<Entity>(list, Entity.class);
@@ -132,8 +153,10 @@ public class DOMTree extends AbstractStorageSystem implements ContextAware {
 	@Override
 	public DataSource<?> query(String selector, boolean simplify, Context context) {
 		beInitialized();
+		LOGGER.debug("query({}, {}, context)", selector, simplify);
 		try {
 			NodeList nodes = XMLUtil.queryNodes(document, selector);
+			LOGGER.debug("query() found {} results", nodes.getLength());
 			List<Object> list = new ArrayList<Object>(nodes.getLength());
 			for (int i = 0; i < nodes.getLength(); i++) {
 				Node node = nodes.item(i);
@@ -162,12 +185,16 @@ public class DOMTree extends AbstractStorageSystem implements ContextAware {
 
 	@Override
 	public void flush() {
-		// nothhing to do
+		// nothing to do
 	}
 
 	@Override
 	public void close() {
-		save();
+		if (document != null) {
+			save();
+		} else {
+			// if document is null, loading has failed and there already has been an error message
+		}
 	}
 
 	@Override
@@ -189,7 +216,9 @@ public class DOMTree extends AbstractStorageSystem implements ContextAware {
 	
 	public void save() {
 		try {
-			XMLUtil.saveDocument(document, new File(outputUri), document.getInputEncoding());
+			String encoding = normalizeEncoding(document.getInputEncoding());
+			File uri = new File(resolveUri(outputUri));
+			XMLUtil.saveDocument(document, uri, encoding);
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Error writing DOMTree to " + outputUri, e);
 		}
@@ -206,10 +235,26 @@ public class DOMTree extends AbstractStorageSystem implements ContextAware {
 
 	private void init() {
 		try {
-			this.document = XMLUtil.parse(inputUri);
+			this.document = XMLUtil.parse(resolveUri(inputUri), namespaceAware, null, null, null);
+			System.out.println(this.document.getDocumentElement().getNamespaceURI());
 		} catch (IOException e) {
 			throw new RuntimeException("Error parsing " + inputUri, e);
 		}
 	}
 
+	private String resolveUri(String uri) {
+		return (context instanceof BeneratorContext ? ((BeneratorContext) context).resolveRelativeUri(uri) : uri);
+	}
+	
+	private static String normalizeEncoding(String encoding) {
+		if (encoding.startsWith("UTF-16"))
+			encoding = "UTF-16";
+		return encoding;
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[" + inputUri + (NullSafeComparator.equals(inputUri, outputUri) ? "" : " -> " + outputUri) + "]";
+	}
+	
 }
