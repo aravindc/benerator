@@ -90,6 +90,10 @@
        <priority value="info"/>
     </category>
 
+    <category name="org.databene.platform.xml">
+       <priority value="info"/>
+    </category>
+
    <!-- ======================= -->
    <!-- Setup the Root category -->
    <!-- ======================= -->
