@@ -21,7 +21,7 @@
 
 package org.databene.platform.xml;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.DataModel;
@@ -32,19 +32,19 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * Test the {@link XmlElement2EntityConverter}.<br/><br/>
- * Created: 14.01.2014 17:42:36
+ * Tests the {@link XMLPlatformUtil}.<br/><br/>
+ * Created: 16.01.2014 13:57:18
  * @since 0.9.0
  * @author Volker Bergmann
  */
 
-public class XmlElement2EntityConverterTest {
-	
+public class XMLPlatformUtilTest {
+
 	@Test
 	public void test() {
 		Element element = XMLUtil.parseStringAsElement("<person age='23'><name>Alice</name></person>");
 		DescriptorProvider provider = new DefaultDescriptorProvider("test", new DataModel());
-		Entity entity = XmlElement2EntityConverter.convert(element, provider);
+		Entity entity = XMLPlatformUtil.convertElement2Entity(element, provider);
 		assertEquals("person", entity.type());
 		assertEquals("23", entity.get("age"));
 		assertEquals("Alice", entity.get("name"));
