@@ -82,6 +82,10 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
     protected boolean location;
     protected boolean legalForm;
     
+    
+    
+    // Constructors ----------------------------------------------------------------------------------------------------
+    
     public CompanyNameGenerator() {
     	this(true, true, true);
     }
@@ -104,6 +108,38 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
         setDataset(datasetName);
     }
     
+    
+    
+    // properties -----------------------------------------------------------------------------------------------------------
+    
+	public boolean isSector() {
+		return sector;
+	}
+	
+	public void setSector(boolean sector) {
+		this.sector = sector;
+	}
+    
+	public boolean isLocation() {
+		return location;
+	}
+	
+	public void setLocation(boolean location) {
+		this.location = location;
+	}
+	
+	public boolean isLegalForm() {
+		return legalForm;
+	}
+	
+	public void setLegalForm(boolean legalForm) {
+		this.legalForm = legalForm;
+	}
+	
+	
+	
+	// interface -------------------------------------------------------------------------------------------------------
+	
     @Override
 	protected boolean isAtomic(Dataset dataset) {
 		Country country = Country.getInstance(dataset.getName(), false);
@@ -126,6 +162,8 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName>
 	}
 	
 	
+	
+	// helper class ----------------------------------------------------------------------------------------------------
 	
 	class CountryCompanyNameGenerator extends ThreadSafeNonNullGenerator<CompanyName> 
 				implements WeightedGenerator<CompanyName> {
