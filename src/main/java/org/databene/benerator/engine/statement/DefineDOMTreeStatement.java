@@ -32,9 +32,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Statement} for creating a {@link DOMTree} element 
+ * and assigning it with context and resource manager.<br/><br/>
  * Created: 16.01.2014 16:07:06
- * @since TODO version
+ * @since 0.9.0
  * @author Volker Bergmann
  */
 
@@ -44,9 +45,9 @@ public class DefineDOMTreeStatement implements Statement {
 	
 	private ResourceManager resourceManager;
 	
-	private Expression<String> id;
-	private Expression<String> inputUri;
-	private Expression<String> outputUri;
+	private Expression<String>  id;
+	private Expression<String>  inputUri;
+	private Expression<String>  outputUri;
 	private Expression<Boolean> namespaceAware;
 	
 	public DefineDOMTreeStatement(Expression<String> id, Expression<String> inputUri, 
