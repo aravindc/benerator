@@ -237,6 +237,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<?> createSimpleTypeCSVSourceGenerator(
 			SimpleTypeDescriptor descriptor, String sourceName, Uniqueness uniqueness, BeneratorContext context) {
+		String sourceUri = context.resolveRelativeUri(sourceName);
 		Generator<?> generator;
 		char separator = DescriptorUtil.getSeparator(descriptor, context);
 		boolean rowBased = (descriptor.isRowBased() == null || descriptor.isRowBased());
@@ -249,17 +250,17 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
 		String nesting = descriptor.getNesting();
 		if (dataset != null && nesting != null) {
 			if (uniqueness.isUnique()) {
-			    generator = new SequencedDatasetCSVGenerator(sourceName, separator, dataset, nesting, 
+			    generator = new SequencedDatasetCSVGenerator(sourceUri, separator, dataset, nesting, 
 			    		distribution, encoding, new ScriptConverterForStrings(context));
 			} else {
-			    generator = new WeightedDatasetCSVGenerator(Object.class, sourceName, separator, dataset, nesting, false, 
+			    generator = new WeightedDatasetCSVGenerator(Object.class, sourceUri, separator, dataset, nesting, false, 
 			    		encoding, new ScriptConverterForStrings(context));
 			}
 		} else if (sourceName.toLowerCase().endsWith(".wgt.csv") || distribution instanceof IndividualWeight) {
         	generator = new WeightedCSVSampleGenerator(
-        			Object.class, sourceName, encoding, new ScriptConverterForStrings(context));
+        			Object.class, sourceUri, encoding, new ScriptConverterForStrings(context));
         } else {
-    		Generator<String[]> src = SourceFactory.createCSVGenerator(sourceName, separator, encoding, true, rowBased);
+    		Generator<String[]> src = SourceFactory.createCSVGenerator(sourceUri, separator, encoding, true, rowBased);
     		Converter<String[], Object> converterChain = new ConverterChain<String[], Object>(
     				new ArrayElementExtractor<String>(String.class, 0), 
     				new ScriptConverterForStrings(context));
