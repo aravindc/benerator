@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<setup>
+	<import domains="person" />
+	<import class="org.databene.commons.TimeUtil" />
+	
+	<setting name="ecos_uri" value="{'ECOSGLOBE.' + TimeUtil.formatCurrentDateTime('yyyyMMddHHmmss')}"/>
+	<setting name="acount" value="5"/>
+	<setting name="bcount" value="8"/>
+	
+	<bean id="file" class="FixedWidthEntityExporter">
+		<property name="uri" value="{ecos_uri}"/>
+		<property name="encoding" value="ISO-8859-1"/>
+		<property name="datePattern" value="yyyyMMdd"/>
+		<property name="formats.rectype1" value="typecode[1],id[8r0],price[8r0],items[4r0],date[8]" />
+		<property name="formats.rectype2" value="typecode[1],id[8r0],name[12],date[8]" />
+	</bean>
+	
+    <generate type="rectype1" count="acount" consumer="file">
+        <id name="id" type="long" />
+        <attribute name="typecode" constant="A"/>
+        <attribute name="price" type="double" min="0.10" max="9.99"/>
+        <attribute name="items" type="short" min="1" max="27"/>
+        <attribute name="date" type="date"/>
+    </generate>
+    
+    <generate type="rectype2" count="bcount" consumer="file">
+        <id name="id" type="long" />
+        <attribute name="typecode" constant="B"/>
+        <attribute name="name" generator="GivenNameGenerator" dataset="US" converter="ToUpperCaseConverter"/>
+        <attribute name="date" type="date"/>
+    </generate>
+    
+    <echo>Generated data:</echo> 
+    <if test="org.databene.commons.SystemInfo.isWindows()">
+        <then>
+            <execute type="shell">{'cmd /C type ' + ecos_uri}</execute>
+        </then>
+        <else>
+            <execute type="shell">{'cat ' + ecos_uri}</execute>
+        </else>
+    </if>
+	
+</setup>
