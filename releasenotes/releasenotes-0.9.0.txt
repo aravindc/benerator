@@ -2,14 +2,10 @@ release notes benerator 0.9.0
 =============================
 
 
-Summary
--------
-
- 
-
 Enhancements
 ------------
-- Supporting XML anonymization
+- Supporting template-based descriptor file generation
+- Allowing for fixed-column-width file export with different row types
 
 
 Bug Fixes
