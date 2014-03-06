@@ -27,20 +27,13 @@
 package org.databene.platform.fixedwidth;
 
 import org.databene.model.data.Entity;
-import org.databene.model.data.ComponentAccessor;
-import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
 import org.databene.benerator.consumer.TextFileExporter;
 import org.databene.commons.*;
-import org.databene.commons.converter.AccessingConverter;
-import org.databene.commons.converter.ConverterChain;
-import org.databene.commons.converter.FormatFormatConverter;
-import org.databene.commons.format.Alignment;
-import org.databene.commons.format.PadFormat;
+import org.databene.commons.collection.OrderedNameMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.ParsePosition;
-import java.text.ParseException;
+import java.util.Map;
 
 /**
  * Exports Entities to fixed-width files.<br/>
@@ -51,8 +44,9 @@ import java.text.ParseException;
 public class FixedWidthEntityExporter extends TextFileExporter {
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(FixedWidthEntityExporter.class);
-
-    private Converter<Entity, String> converters[];
+    
+    private Map<String, String> formats;
+    private Map<String, FWRecordFormatter> formatters;
 
     public FixedWidthEntityExporter() {
         this("export.fcw", null);
@@ -65,75 +59,25 @@ public class FixedWidthEntityExporter extends TextFileExporter {
     public FixedWidthEntityExporter(String uri, String encoding, String columnFormatList) {
         super(uri, encoding, null);
         this.uri = uri;
+        this.formats = OrderedNameMap.createCaseInsensitiveMap();
+        this.formatters = null;
         setColumns(columnFormatList);
         setDecimalPattern("0.##");
     }
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void setColumns(String columnFormatList) {
-        if (columnFormatList == null) {
-            converters = null;
-            return;
-        }
-        try {
-            String[] columnFormats = StringUtil.tokenize(columnFormatList, ',');
-            this.converters = new Converter[columnFormats.length];
-            for (int i = 0; i < columnFormats.length; i++) {
-                String columnFormat = columnFormats[i];
-                int lbIndex = columnFormat.indexOf('[');
-                if (lbIndex < 0)
-                    throw new ConfigurationError("'[' expected in column format descriptor '" + columnFormat + "'");
-                int rbIndex = columnFormat.indexOf(']');
-                if (rbIndex < 0)
-                    throw new ConfigurationError("']' expected in column format descriptor '" + columnFormat + "'");
-                String columnName = columnFormat.substring(0, lbIndex);
-                // parse width
-                ParsePosition pos = new ParsePosition(lbIndex + 1);
-                int width = (int) ParseUtil.parseNonNegativeInteger(columnFormat, pos);
-                // parse fractionDigits
-                int minFractionDigits = 0;
-                int maxFractionDigits = 2;
-                if (pos.getIndex() < rbIndex && columnFormat.charAt(pos.getIndex()) == '.') {
-                    pos.setIndex(pos.getIndex() + 1);
-                    minFractionDigits = (int) ParseUtil.parseNonNegativeInteger(columnFormat, pos);
-                    maxFractionDigits = minFractionDigits;
-                }
-                // parse alignment
-                Alignment alignment = Alignment.LEFT;
-                if (pos.getIndex() < rbIndex) {
-                    char alignmentCode = columnFormat.charAt(pos.getIndex());
-                    switch (alignmentCode) {
-                        case 'l' : alignment = Alignment.LEFT; break;
-                        case 'r' : alignment = Alignment.RIGHT; break;
-                        case 'c' : alignment = Alignment.CENTER; break;
-                        default: throw new ConfigurationError("Illegal alignment code '" + alignmentCode + "'" +
-                        		" in colun format descriptor '" + columnFormat + "'");
-                    }
-                    pos.setIndex(pos.getIndex() + 1);
-                }
-                // parse pad char
-                char padChar = ' ';
-                if (pos.getIndex() < rbIndex) {
-                    padChar = columnFormat.charAt(pos.getIndex());
-                    pos.setIndex(pos.getIndex() + 1);
-                }
-                assert pos.getIndex() == rbIndex;
-                FixedWidthColumnDescriptor descriptor = new FixedWidthColumnDescriptor(columnName, width, alignment, padChar);
-                PadFormat format = new PadFormat(descriptor.getWidth(), minFractionDigits, maxFractionDigits, descriptor.getAlignment(), padChar);
-                ConverterChain<Entity, String> chain = new ConverterChain<Entity, String>();
-                chain.addComponent(new AccessingConverter<Entity, Object>(Entity.class, Object.class, new ComponentAccessor(descriptor.getName())));
-                if (format.getMinimumFractionDigits() == 0)
-                	chain.addComponent(plainConverter);
-				chain.addComponent(new FormatFormatConverter(String.class, format, true));
-                this.converters[i] = chain;
-            }
-        } catch (ParseException e) {
-            throw new ConfigurationError("Invalid column definition: " + columnFormatList, e);
-        }
+    	if (columnFormatList != null)
+    		this.formats.put("*", columnFormatList);
+    	else
+    		this.formats.clear();
     }
-
+    
+	public Map<String, String> getFormats() {
+		return formats;
+	}
+	
     // Consumer interface ----------------------------------------------------------------------------------------------
 
     @Override
@@ -151,8 +95,8 @@ public class FixedWidthEntityExporter extends TextFileExporter {
     
 	@Override
 	protected void postInitPrinter(Object object) {
-        if (this.converters == null)
-            throw new ConfigurationError("Property 'columns' not set on bean " + getClass().getName());
+        if (this.formats.isEmpty())
+            throw new ConfigurationError("No format(s) set on " + getClass().getName());
 	}
 
 	@Override
@@ -161,14 +105,32 @@ public class FixedWidthEntityExporter extends TextFileExporter {
         if (!(object instanceof Entity))
         	throw new IllegalArgumentException("Expected Entity");
         Entity entity = (Entity) object;
-        for (Converter<Entity, String> converter : converters)
-            printer.print(converter.convert(entity));
+        getFormatter(entity.type()).format(entity, printer);
         printer.print(lineSeparator);
 	}
+	
+	// private helpers -------------------------------------------------------------------------------------------------
 
-    // java.lang.Object overrrides -------------------------------------------------------------------------------------
+    private FWRecordFormatter getFormatter(String type) {
+    	if (this.formatters == null)
+    		initFormatters();
+		FWRecordFormatter formatter = formatters.get(type);
+		if (formatter == null)
+			formatter = formatters.get("*");
+		if (formatter == null)
+			throw new ConfigurationError("No format defined for type " + type);
+		return formatter;
+	}
 
-    @Override
+	private void initFormatters() {
+		this.formatters = OrderedNameMap.createCaseInsensitiveMap();
+		for (Map.Entry<String, String> entry : this.formats.entrySet())
+			this.formatters.put(entry.getKey(), new FWRecordFormatter(entry.getValue(), plainConverter));
+	}
+
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+
+	@Override
 	public String toString() {
         return getClass().getSimpleName() + '[' + ArrayFormat.format() + ']';
     }
