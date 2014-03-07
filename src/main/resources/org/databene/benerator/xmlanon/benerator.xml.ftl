@@ -32,9 +32,6 @@
 		/>
 	</generate>
 	
-	<echo>Commodity anonymizations:</echo>
-	<iterate type="commodity_map" source="memdb" consumer="ConsoleExporter" />
-	
 	<#list anon.locators as locator>
 	<echo>Anonymizing ${anon.varname} in ${locator.file}</echo>
 	<iterate type="${locator.entity}" source="dom_${locator.file}" selector="${locator.entityPath}" consumer="dom_${locator.file}.updater()">
