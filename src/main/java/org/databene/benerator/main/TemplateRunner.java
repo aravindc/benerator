@@ -24,11 +24,14 @@ package org.databene.benerator.main;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.databene.benerator.template.TemplateInputReader;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.StringUtil;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.ui.ConsoleInfoPrinter;
 import org.databene.script.Script;
@@ -44,15 +47,19 @@ import org.databene.script.freemarker.FreeMarkerScriptFactory;
 public class TemplateRunner {
 	
 	public static void main(String[] args) throws Exception {
+		// extract possible VM params from argument list
+		List<String> params = processCmdLineArgs(args);
+		
+		
 		// check preconditions
-		if (args.length < 3 || args.length > 4)
+		if (params.size() < 3 || params.size() > 4)
 			printHelpAndExit();
 		
 		// parse parameters
-		String configFile = args[0];
-		String configParserClass = args[1];
-		String templateFile = args[2];
-		String generatedFile = (args.length == 4 ? args[3] : "benerator.xml");
+		String configFile = params.get(0);
+		String configParserClass = params.get(1);
+		String templateFile = params.get(2);
+		String generatedFile = (params.size() == 4 ? params.get(3) : "benerator.xml");
 		
 		// generate descriptor file
 		TemplateInputReader reader = (TemplateInputReader) BeanUtil.newInstance(configParserClass);
@@ -64,11 +71,24 @@ public class TemplateRunner {
 		runDescriptor(generatedFile);
 	}
 	
+	private static List<String> processCmdLineArgs(String[] args) {
+		List<String> params = new ArrayList<String>();
+		for (String arg : args) {
+			if (arg.startsWith("-D")) {
+				String[] tokens = StringUtil.splitOnFirstSeparator(arg.substring(2), '=');
+				if (tokens.length == 2)
+					System.setProperty(tokens[0], tokens[1]);
+			} else {
+				params.add(arg);
+			}
+		}
+		return params;
+	}
+
 	private static void printHelpAndExit() {
 		ConsoleInfoPrinter.printHelp(
-				"The class " + TemplateRunner.class.getSimpleName(),
-				"creates Benerator descriptor files from custom templates.",
-				"It has the following parameters:",
+				"The class " + TemplateRunner.class.getName(),
+				"creates and runs Benerator descriptor files from custom templates. It has the following parameters:",
 				"<config_file> <config_parser_class> <template_file> [<generated_file>]",
 				"	config_file:         Path of an individual data file to provide configuration",
 				"	config_parser_class: Fully qualified name of a Java class which is able to parse the config_file",
