@@ -48,7 +48,9 @@ public class MetaGeneratorFactory {
 		String instanceName = descriptor.getName();
         TypeDescriptor type = descriptor.getTypeDescriptor();
 		TypeGeneratorFactory factory = factoryFor(type);
-        return factory.createRootGenerator(type, instanceName, nullable, uniqueness, context);
+        Generator generator = factory.createRootGenerator(type, instanceName, nullable, uniqueness, context);
+        generator = factory.applyOffsetAndCyclic(generator, descriptor.getTypeDescriptor(), instanceName, uniqueness, context);
+		return generator;
     }
     
 	@SuppressWarnings({ "unchecked", "rawtypes" })

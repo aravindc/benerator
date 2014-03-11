@@ -69,6 +69,7 @@ public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
         Generator<?> generator = createRootGenerator(descriptor, instanceName, nullable, uniqueness, context);
         generator = applyComponentBuilders(generator, descriptor, instanceName, uniqueness, context);
         generator = wrapWithPostprocessors(generator, descriptor, context);
+        generator = applyOffsetAndCyclic(generator, descriptor, instanceName, uniqueness, context);
         logger.debug("Created {}", generator);
         return generator;
     }
@@ -84,7 +85,6 @@ public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
         	generator = createHeuristicGenerator(descriptor, instanceName, uniqueness, context);
         if (generator == null) // by now, we must have created a generator
         	throw new ConfigurationError("Failed to create root generator for descriptor: " + descriptor);
-        generator = applyRootWrappers(generator, descriptor, instanceName, uniqueness, context);
         return generator;
 	}
 	
@@ -121,7 +121,7 @@ public abstract class TypeGeneratorFactory<E extends TypeDescriptor> {
 	protected abstract Generator<?> createHeuristicGenerator(E descriptor, String instanceName, 
 			Uniqueness uniqueness, BeneratorContext context);
 	
-	protected Generator<?> applyRootWrappers(Generator<?> generator, E descriptor, String instanceName,
+	protected Generator<?> applyOffsetAndCyclic(Generator<?> generator, E descriptor, String instanceName,
 			Uniqueness uniqueness, BeneratorContext context) {
         generator = DescriptorUtil.processOffset(generator, descriptor);
         generator = DescriptorUtil.processCyclic(generator, descriptor);
