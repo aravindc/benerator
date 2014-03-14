@@ -101,6 +101,7 @@ public interface DescriptorConstants {
 	static final String ATT_MESSAGE = "message";
 	static final String ATT_SELECTOR = "selector";
 	static final String ATT_SOURCE = "source";
+	static final String ATT_SEGMENT = "segment";
 	static final String ATT_FORMAT = "format";
 	static final String ATT_OFFSET = "offset";
     static final String ATT_REF = "ref";

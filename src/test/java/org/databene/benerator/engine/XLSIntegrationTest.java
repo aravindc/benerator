@@ -49,7 +49,7 @@ public class XLSIntegrationTest extends BeneratorIntegrationTest {
 		parseAndExecute("<iterate type='dummy' source='org/databene/benerator/engine/xls/types.xls' consumer='con'/>");
 		List<Entity> products = (List<Entity>) con.getProducts();
 		assertEquals(1, products.size());
-		assertTypesValues("Alice", 123L, TimeUtil.date(2008, 11, 31), TimeUtil.date(2008, 11, 31, 13, 45, 0, 0), products.get(0));
+		assertPersonValues("Alice", 123L, TimeUtil.date(2008, 11, 31), TimeUtil.date(2008, 11, 31, 13, 45, 0, 0), products.get(0));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -64,14 +64,27 @@ public class XLSIntegrationTest extends BeneratorIntegrationTest {
 			}});
 		List<Entity> products = (List<Entity>) con.getProducts();
 		assertEquals(1, products.size());
-		assertTypesValues("Alice", "123", "2008-Dec-31", "13:45", products.get(0));
+		assertPersonValues("Alice", "123", "2008-Dec-31", "13:45", products.get(0));
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSheet() throws Exception {
+		ConsumerMock con = new ConsumerMock(true);
+		context.setGlobal("con", con);
+		parseAndExecute("<iterate type='dummy' segment='address' source='org/databene/benerator/engine/xls/sheets.xls' consumer='con'/>");
+		List<Entity> products = (List<Entity>) con.getProducts();
+		assertEquals(1, products.size());
+		Entity address = products.get(0);
+		assertEquals("Main Street", address.get("street"));
+		assertEquals("New York", address.get("city"));
+	}
+
 	
 	
 	// private helper methods ------------------------------------------------------------------------------------------
 	
-	private static void assertTypesValues(Object name, Object number, Object date, Object time, Entity entity) {
+	private static void assertPersonValues(Object name, Object number, Object date, Object time, Entity entity) {
 		assertEquals(name, entity.get("name"));
 		assertEquals(number, entity.get("number"));
 		assertEquals(date, entity.get("a_date"));
