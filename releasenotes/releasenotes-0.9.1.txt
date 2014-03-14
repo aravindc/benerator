@@ -10,3 +10,4 @@ Enhancements
 Bug Fixes
 ---------
 - OutOfMemoryError when using @Offset
+- 'segment' not supported in <iterate>
