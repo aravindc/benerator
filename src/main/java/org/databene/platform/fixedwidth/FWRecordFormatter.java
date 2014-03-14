@@ -23,20 +23,16 @@ package org.databene.platform.fixedwidth;
 
 import java.io.PrintWriter;
 import java.text.ParseException;
-import java.text.ParsePosition;
+import java.util.Locale;
 
 import org.databene.commons.Assert;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
-import org.databene.commons.ParseUtil;
-import org.databene.commons.StringUtil;
 import org.databene.commons.converter.AccessingConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
-import org.databene.commons.converter.ToStringConverter;
-import org.databene.commons.format.Alignment;
-import org.databene.commons.format.PadFormat;
 import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
+import org.databene.document.fixedwidth.FixedWidthUtil;
 import org.databene.model.data.ComponentAccessor;
 import org.databene.model.data.Entity;
 
@@ -50,62 +46,18 @@ import org.databene.model.data.Entity;
 public class FWRecordFormatter {
 
     private Converter<Entity, String> converters[];
-    private ToStringConverter plainConverter;
 
-    public FWRecordFormatter(String columnFormatList, ToStringConverter plainConverter) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public FWRecordFormatter(String columnFormatList, Locale locale) {
         Assert.notNull(columnFormatList, "columnFormatList");
-        Assert.notNull(plainConverter, "plainConverter");
-        this.plainConverter = plainConverter;
         try {
-            String[] columnFormats = StringUtil.tokenize(columnFormatList, ',');
-            this.converters = new Converter[columnFormats.length];
-            for (int i = 0; i < columnFormats.length; i++) {
-                String columnFormat = columnFormats[i];
-                int lbIndex = columnFormat.indexOf('[');
-                if (lbIndex < 0)
-                    throw new ConfigurationError("'[' expected in column format descriptor '" + columnFormat + "'");
-                int rbIndex = columnFormat.indexOf(']');
-                if (rbIndex < 0)
-                    throw new ConfigurationError("']' expected in column format descriptor '" + columnFormat + "'");
-                String columnName = columnFormat.substring(0, lbIndex);
-                // parse width
-                ParsePosition pos = new ParsePosition(lbIndex + 1);
-                int width = (int) ParseUtil.parseNonNegativeInteger(columnFormat, pos);
-                // parse fractionDigits
-                int minFractionDigits = 0;
-                int maxFractionDigits = 2;
-                if (pos.getIndex() < rbIndex && columnFormat.charAt(pos.getIndex()) == '.') {
-                    pos.setIndex(pos.getIndex() + 1);
-                    minFractionDigits = (int) ParseUtil.parseNonNegativeInteger(columnFormat, pos);
-                    maxFractionDigits = minFractionDigits;
-                }
-                // parse alignment
-                Alignment alignment = Alignment.LEFT;
-                if (pos.getIndex() < rbIndex) {
-                    char alignmentCode = columnFormat.charAt(pos.getIndex());
-                    switch (alignmentCode) {
-                        case 'l' : alignment = Alignment.LEFT; break;
-                        case 'r' : alignment = Alignment.RIGHT; break;
-                        case 'c' : alignment = Alignment.CENTER; break;
-                        default: throw new ConfigurationError("Illegal alignment code '" + alignmentCode + "'" +
-                        		" in colun format descriptor '" + columnFormat + "'");
-                    }
-                    pos.setIndex(pos.getIndex() + 1);
-                }
-                // parse pad char
-                char padChar = ' ';
-                if (pos.getIndex() < rbIndex) {
-                    padChar = columnFormat.charAt(pos.getIndex());
-                    pos.setIndex(pos.getIndex() + 1);
-                }
-                assert pos.getIndex() == rbIndex;
-                FixedWidthColumnDescriptor descriptor = new FixedWidthColumnDescriptor(columnName, width, alignment, padChar);
-                PadFormat format = new PadFormat(descriptor.getWidth(), minFractionDigits, maxFractionDigits, descriptor.getAlignment(), padChar);
+            FixedWidthColumnDescriptor[] descriptors = FixedWidthUtil.parseBeanColumnsSpec(columnFormatList, locale);
+            this.converters = new Converter[descriptors.length];
+            for (int i = 0; i < descriptors.length; i++) {
+            	FixedWidthColumnDescriptor descriptor = descriptors[i];
                 ConverterChain<Entity, String> chain = new ConverterChain<Entity, String>();
                 chain.addComponent(new AccessingConverter<Entity, Object>(Entity.class, Object.class, new ComponentAccessor(descriptor.getName())));
-                if (format.getMinimumFractionDigits() == 0)
-                	chain.addComponent(plainConverter);
-				chain.addComponent(new FormatFormatConverter(String.class, format, true));
+                chain.addComponent(new FormatFormatConverter(String.class, descriptor.getFormat(), true));
                 this.converters[i] = chain;
             }
         } catch (ParseException e) {

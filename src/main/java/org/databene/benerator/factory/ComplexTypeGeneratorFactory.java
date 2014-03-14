@@ -61,6 +61,7 @@ import org.databene.script.ScriptUtil;
 import org.databene.webdecs.DataSource;
 import org.databene.webdecs.util.DataFileUtil;
 
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -214,12 +215,16 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 		String pattern = descriptor.getPattern();
 		if (pattern == null)
 		    throw new ConfigurationError("No pattern specified for FCW file import: " + sourceName);
-		FixedWidthColumnDescriptor[] ffcd = FixedWidthUtil.parseColumnsSpec(pattern);
-		Converter<String, String> scriptConverter = DescriptorUtil.createStringScriptConverter(context);
-		FixedWidthEntitySource iterable = new FixedWidthEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);
-		iterable.setContext(context);
-		generator = new DataSourceGenerator<Entity>(iterable);
-		return generator;
+		try {
+			FixedWidthColumnDescriptor[] ffcd = FixedWidthUtil.parseBeanColumnsSpec(pattern, context.getDefaultLocale());
+			Converter<String, String> scriptConverter = DescriptorUtil.createStringScriptConverter(context);
+			FixedWidthEntitySource iterable = new FixedWidthEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);
+			iterable.setContext(context);
+			generator = new DataSourceGenerator<Entity>(iterable);
+			return generator;
+		} catch (ParseException e) {
+			throw new ConfigurationError("Error parsing fixed-width pattern: " + pattern, e);
+		}
 	}
 
     private static Generator<Entity> createCSVSourceGenerator(

@@ -26,6 +26,9 @@
 
 package org.databene.platform.fixedwidth;
 
+import java.text.ParseException;
+import java.util.Locale;
+
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.Converter;
@@ -59,6 +62,7 @@ public class FixedWidthEntitySource extends FileBasedEntitySource {
 
 	private static final Escalator escalator = new LoggerEscalator();
 	
+	private Locale locale;
     private String encoding;
     private String entityTypeName;
     private ComplexTypeDescriptor entityDescriptor;
@@ -83,6 +87,7 @@ public class FixedWidthEntitySource extends FileBasedEntitySource {
     		Converter<String, String> preprocessor, String encoding, String lineFilter, 
     		FixedWidthColumnDescriptor ... descriptors) {
         super(uri);
+        this.locale = Locale.getDefault();
         this.encoding = encoding;
         this.entityDescriptor = entityDescriptor;
         this.descriptors = descriptors;
@@ -92,7 +97,11 @@ public class FixedWidthEntitySource extends FileBasedEntitySource {
     }
     
     // properties ------------------------------------------------------------------------------------------------------
-
+    
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+	
     public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
@@ -106,17 +115,18 @@ public class FixedWidthEntitySource extends FileBasedEntitySource {
     }
 
     /**
+     * @throws ParseException 
      * @deprecated use {@link #setColumns(String)}
      */
     @Deprecated
-	public void setProperties(String properties) {
+	public void setProperties(String properties) throws ParseException {
     	escalator.escalate("The property 'properties' of class " + getClass() + "' has been renamed to 'columns'. " +
     			"Please fix the property name in your configuration", this.getClass(), "setProperties()");
         setColumns(properties);
     }
 
-    public void setColumns(String columns) {
-        this.descriptors = FixedWidthUtil.parseColumnsSpec(columns);
+    public void setColumns(String columns) throws ParseException {
+        this.descriptors = FixedWidthUtil.parseBeanColumnsSpec(columns, this.locale);
     }
     
     // Iterable interface ----------------------------------------------------------------------------------------------

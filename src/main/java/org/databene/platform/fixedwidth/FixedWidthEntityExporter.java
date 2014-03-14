@@ -33,6 +33,7 @@ import org.databene.commons.collection.OrderedNameMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -48,6 +49,8 @@ public class FixedWidthEntityExporter extends TextFileExporter {
     private Map<String, String> formats;
     private Map<String, FWRecordFormatter> formatters;
 
+	private Locale locale;
+
     public FixedWidthEntityExporter() {
         this("export.fcw", null);
     }
@@ -61,12 +64,17 @@ public class FixedWidthEntityExporter extends TextFileExporter {
         this.uri = uri;
         this.formats = OrderedNameMap.createCaseInsensitiveMap();
         this.formatters = null;
+        this.locale = Locale.US;
         setColumns(columnFormatList);
         setDecimalPattern("0.##");
     }
 
     // properties ------------------------------------------------------------------------------------------------------
-
+    
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+	
     public void setColumns(String columnFormatList) {
     	if (columnFormatList != null)
     		this.formats.put("*", columnFormatList);
@@ -125,7 +133,7 @@ public class FixedWidthEntityExporter extends TextFileExporter {
 	private void initFormatters() {
 		this.formatters = OrderedNameMap.createCaseInsensitiveMap();
 		for (Map.Entry<String, String> entry : this.formats.entrySet())
-			this.formatters.put(entry.getKey(), new FWRecordFormatter(entry.getValue(), plainConverter));
+			this.formatters.put(entry.getKey(), new FWRecordFormatter(entry.getValue(), locale));
 	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
