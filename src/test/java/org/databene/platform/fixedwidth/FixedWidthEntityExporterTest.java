@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,10 +25,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.databene.benerator.test.ModelTest;
-import org.databene.commons.ArrayFormat;
 import org.databene.commons.Encodings;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
@@ -67,8 +65,7 @@ public class FixedWidthEntityExporterTest extends ModelTest {
 				"78        9876543.00",
 				"90        0000001.50"
 		};
-		String message = "Expected [" + ArrayFormat.format(expectedLines) + "], but found [" + ArrayFormat.format(actualLines) + "]";
-		assertTrue(message, Arrays.equals(expectedLines, actualLines));
+		assertArrayEquals(expectedLines, actualLines);
 		FileUtil.deleteIfExists(file);
 	}
 
