@@ -58,4 +58,26 @@ public class BeanParserAndStatementTest extends BeneratorIntegrationTest {
 		assertNotNull(((BeanMock) bean).getContext());
 	}
 	
+	@Test
+	public void testStringProperty() throws Exception {
+		String xml = 
+				"<bean id='id' class='" + BeanMock.class.getName() + "'>" +
+				"	<property name='text' value='xxx' />" + 
+				"</bean>";
+		BeneratorContext context = parseAndExecute(xml);
+		BeanMock bean = (BeanMock) context.get("id");
+		assertEquals("xxx", bean.getText());
+	}
+	
+	@Test
+	public void testEmptyStringProperty() throws Exception {
+		String xml = 
+				"<bean id='id' class='" + BeanMock.class.getName() + "'>" +
+				"	<property name='text' value='' />" + 
+				"</bean>";
+		BeneratorContext context = parseAndExecute(xml);
+		BeanMock bean = (BeanMock) context.get("id");
+		assertEquals("", bean.getText());
+	}
+	
 }

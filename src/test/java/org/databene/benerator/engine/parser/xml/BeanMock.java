@@ -34,6 +34,7 @@ public class BeanMock extends ContextHolder {
 
 	public int invocationCount;
 	public int lastValue;
+	private String text;
 	
 	public BeanMock() {
 	    this(0);
@@ -43,6 +44,14 @@ public class BeanMock extends ContextHolder {
 	    this.lastValue = lastValue;
 	    this.invocationCount = 0;
     }
+	
+	public String getText() {
+		return text;
+	}
+	
+	public void setText(String text) {
+		this.text = text;
+	}
 
 	public Context getContext() {
 		return context;
