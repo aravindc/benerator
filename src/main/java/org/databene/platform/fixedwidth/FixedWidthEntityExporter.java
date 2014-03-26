@@ -133,7 +133,7 @@ public class FixedWidthEntityExporter extends TextFileExporter {
 	private void initFormatters() {
 		this.formatters = OrderedNameMap.createCaseInsensitiveMap();
 		for (Map.Entry<String, String> entry : this.formats.entrySet())
-			this.formatters.put(entry.getKey(), new FWRecordFormatter(entry.getValue(), locale));
+			this.formatters.put(entry.getKey(), new FWRecordFormatter(entry.getValue(), getNullString(), locale));
 	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------

@@ -48,12 +48,14 @@ public class FixedWidthEntityExporterTest extends ModelTest {
 	public void testFormat() throws Exception {
 		File file = tempFile();
 		String uri = file.getAbsolutePath();
-		FixedWidthEntityExporter exporter = new FixedWidthEntityExporter(uri, ENCODING, "left[10],right[10.2r0]");
+		FixedWidthEntityExporter exporter = new FixedWidthEntityExporter(uri, ENCODING, "left[10],right[N0000000.00]");
+		exporter.setNullString("");
 		try {
 			consumeEntity(exporter, 12, 34);       // int
 			consumeEntity(exporter, 56, 9876543L); // long
 			consumeEntity(exporter, 78, 9876543.); // round double
 			consumeEntity(exporter, 90, 1.5);      // double
+			consumeEntity(exporter, null, null);   // null
 		} finally {
 			exporter.close();
 		}
@@ -63,7 +65,8 @@ public class FixedWidthEntityExporterTest extends ModelTest {
 				"12        0000034.00",
 				"56        9876543.00",
 				"78        9876543.00",
-				"90        0000001.50"
+				"90        0000001.50",
+				"                    "
 		};
 		assertArrayEquals(expectedLines, actualLines);
 		FileUtil.deleteIfExists(file);

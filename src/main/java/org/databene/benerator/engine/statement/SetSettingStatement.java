@@ -54,7 +54,7 @@ public class SetSettingStatement implements Statement {
 	public boolean execute(BeneratorContext context) {
         Object value = ExpressionUtil.evaluate(valueExpression, context);
 		if (propertyName.startsWith("context."))
-	        AnyMutator.setValue(context, propertyName, value, true);
+	        AnyMutator.setValue(context, propertyName, value, true, true);
         else {
 			context.setGlobal(propertyName, value);
         }

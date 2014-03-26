@@ -48,10 +48,10 @@ public class FWRecordFormatter {
     private Converter<Entity, String> converters[];
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	public FWRecordFormatter(String columnFormatList, Locale locale) {
+	public FWRecordFormatter(String columnFormatList, String nullString, Locale locale) {
         Assert.notNull(columnFormatList, "columnFormatList");
         try {
-            FixedWidthColumnDescriptor[] descriptors = FixedWidthUtil.parseBeanColumnsSpec(columnFormatList, locale);
+            FixedWidthColumnDescriptor[] descriptors = FixedWidthUtil.parseBeanColumnsSpec(columnFormatList, nullString, locale);
             this.converters = new Converter[descriptors.length];
             for (int i = 0; i < descriptors.length; i++) {
             	FixedWidthColumnDescriptor descriptor = descriptors[i];
@@ -67,7 +67,7 @@ public class FWRecordFormatter {
     
     public void format(Entity entity, PrintWriter printer) {
         for (Converter<Entity, String> converter : converters)
-            printer.print(converter.convert(entity));
+			printer.print(converter.convert(entity));
     }
     
 }

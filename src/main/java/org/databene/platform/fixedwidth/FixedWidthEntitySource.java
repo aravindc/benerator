@@ -126,7 +126,7 @@ public class FixedWidthEntitySource extends FileBasedEntitySource {
     }
 
     public void setColumns(String columns) throws ParseException {
-        this.descriptors = FixedWidthUtil.parseBeanColumnsSpec(columns, this.locale);
+        this.descriptors = FixedWidthUtil.parseBeanColumnsSpec(columns, null, this.locale);
     }
     
     // Iterable interface ----------------------------------------------------------------------------------------------

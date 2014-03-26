@@ -72,7 +72,7 @@ public class DefaultEntryConverter extends AbstractConverter<Map.Entry, Map.Entr
         Object result = stringParser.convert(sourceValue);
         if (putEntriesToContext) {
     		if (key.startsWith("benerator."))
-    			AnyMutator.setValue(context, key, result, true);
+    			AnyMutator.setValue(context, key, result, true, false);
     		else
     			context.setGlobal(key, result);
         }
