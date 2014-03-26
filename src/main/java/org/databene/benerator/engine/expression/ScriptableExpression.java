@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2013 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,7 +22,6 @@
 package org.databene.benerator.engine.expression;
 
 import org.databene.commons.Context;
-import org.databene.commons.StringUtil;
 import org.databene.script.Expression;
 import org.databene.script.expression.ConstantExpression;
 import org.databene.script.expression.DynamicExpression;
@@ -58,7 +57,7 @@ public class ScriptableExpression extends DynamicExpression<Object> {
     @Override
 	public Object evaluate(Context context) {
     	Object result;
-		if (StringUtil.isEmpty(scriptOrText))
+		if (scriptOrText == null)
 			result = (defaultValueExpression != null ? defaultValueExpression.evaluate(context) : null);
 		else if (isScript)
 			result = ScriptUtil.evaluate(scriptOrText, context);
