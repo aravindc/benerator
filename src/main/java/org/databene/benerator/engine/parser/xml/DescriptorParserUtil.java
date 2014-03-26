@@ -46,7 +46,7 @@ public class DescriptorParserUtil {
 	// direct data retrieval -------------------------------------------------------------------------------------------
 	
 	public static String getAttribute(String name, Element element) {
-	    return StringUtil.emptyToNull(element.getAttribute(name));
+	    return (element.hasAttribute(name) ? element.getAttribute(name) : null);
     }
 
 	public static String getElementText(Element element) {
