@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -90,7 +91,8 @@ public class XmlAnonInputReader implements TemplateInputReader {
 			Anonymization anon = new Anonymization(row.getCell(varnameColumnIndex).getStringCellValue());
 			// parse locators
 			for (int colnum = 0; colnum < varnameColumnIndex; colnum++) {
-				String path = row.getCell(colnum).getStringCellValue();
+				Cell cell = row.getCell(colnum);
+				String path = (cell != null ? cell.getStringCellValue() : null);
 				if (!StringUtil.isEmpty(path)) {
 					List<String> tokens = XPathTokenizer.tokenize(path);
 					String entityPath = XPathTokenizer.merge(tokens, 0, tokens.size() - 2);
