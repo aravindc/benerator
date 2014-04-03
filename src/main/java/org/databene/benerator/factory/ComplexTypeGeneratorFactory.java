@@ -48,6 +48,7 @@ import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
 import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
+import org.databene.document.fixedwidth.FixedWidthRowTypeDescriptor;
 import org.databene.document.fixedwidth.FixedWidthUtil;
 import org.databene.platform.dbunit.DbUnitEntitySource;
 import org.databene.platform.fixedwidth.FixedWidthEntitySource;
@@ -216,7 +217,9 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory<ComplexTyp
 		if (pattern == null)
 		    throw new ConfigurationError("No pattern specified for FCW file import: " + sourceName);
 		try {
-			FixedWidthColumnDescriptor[] ffcd = FixedWidthUtil.parseBeanColumnsSpec(pattern, null, context.getDefaultLocale());
+			FixedWidthRowTypeDescriptor rowDescriptor = FixedWidthUtil.parseBeanColumnsSpec(
+					pattern, descriptor.getName(), null, context.getDefaultLocale());
+			FixedWidthColumnDescriptor[] ffcd = rowDescriptor.getColumnDescriptors();
 			Converter<String, String> scriptConverter = DescriptorUtil.createStringScriptConverter(context);
 			FixedWidthEntitySource iterable = new FixedWidthEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);
 			iterable.setContext(context);
