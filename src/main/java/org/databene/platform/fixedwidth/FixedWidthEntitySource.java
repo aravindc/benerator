@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2013 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,6 +42,7 @@ import org.databene.commons.converter.NoOpConverter;
 import org.databene.commons.format.PadFormat;
 import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
 import org.databene.document.fixedwidth.FixedWidthLineSource;
+import org.databene.document.fixedwidth.FixedWidthRowTypeDescriptor;
 import org.databene.document.fixedwidth.FixedWidthUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -90,6 +91,7 @@ public class FixedWidthEntitySource extends FileBasedEntitySource {
         this.locale = Locale.getDefault();
         this.encoding = encoding;
         this.entityDescriptor = entityDescriptor;
+        this.entityTypeName = (entityDescriptor != null ? entityDescriptor.getName() : null);
         this.descriptors = descriptors;
         this.preprocessor = preprocessor;
         this.initialized = false;
@@ -126,7 +128,9 @@ public class FixedWidthEntitySource extends FileBasedEntitySource {
     }
 
     public void setColumns(String columns) throws ParseException {
-        this.descriptors = FixedWidthUtil.parseBeanColumnsSpec(columns, null, this.locale);
+        FixedWidthRowTypeDescriptor rowTypeDescriptor = FixedWidthUtil.parseBeanColumnsSpec(
+        		columns, entityTypeName, null, this.locale);
+		this.descriptors = rowTypeDescriptor.getColumnDescriptors();
     }
     
     // Iterable interface ----------------------------------------------------------------------------------------------
