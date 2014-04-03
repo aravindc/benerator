@@ -9,4 +9,4 @@ Enhancements
 
 Bug Fixes
 ---------
-- Bug fix: NPE on empty cells in XmlAnonInputReader
+- NPE on empty cells in XmlAnonInputReader
