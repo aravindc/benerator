@@ -37,6 +37,7 @@ import org.databene.commons.NullSafeComparator;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.commons.xml.XPathUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
@@ -131,7 +132,7 @@ public class DOMTree extends AbstractStorageSystem implements ContextAware {
 		beInitialized();
 		LOGGER.debug("queryEntities({}, {}, context)", type, selector);
 		try {
-			NodeList nodes = XMLUtil.queryNodes(document, selector);
+			NodeList nodes = XPathUtil.queryNodes(document, selector);
 			LOGGER.debug("queryEntities() found {} results", nodes.getLength());
 			List<Entity> list = new ArrayList<Entity>(nodes.getLength());
 			for (int i = 0; i < nodes.getLength(); i++) {
@@ -155,7 +156,7 @@ public class DOMTree extends AbstractStorageSystem implements ContextAware {
 		beInitialized();
 		LOGGER.debug("query({}, {}, context)", selector, simplify);
 		try {
-			NodeList nodes = XMLUtil.queryNodes(document, selector);
+			NodeList nodes = XPathUtil.queryNodes(document, selector);
 			LOGGER.debug("query() found {} results", nodes.getLength());
 			List<Object> list = new ArrayList<Object>(nodes.getLength());
 			for (int i = 0; i < nodes.getLength(); i++) {
