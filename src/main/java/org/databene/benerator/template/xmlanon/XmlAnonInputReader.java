@@ -38,6 +38,7 @@ import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
+import org.databene.document.xls.HSSFUtil;
 
 /**
  * Reads XLS documents for a multi-file XML anonymization.<br/><br/>
@@ -88,7 +89,12 @@ public class XmlAnonInputReader implements TemplateInputReader {
 		List<Anonymization> anonymizations = new ArrayList<Anonymization>();
 		for (int rownum = 1; rownum <= sheet.getLastRowNum(); rownum++) {
 			Row row = sheet.getRow(rownum);
-			Anonymization anon = new Anonymization(row.getCell(varnameColumnIndex).getStringCellValue());
+			if (HSSFUtil.isEmpty(row))
+				continue;
+			Cell varnameCell = row.getCell(varnameColumnIndex);
+			if (varnameCell == null || StringUtil.isEmpty(varnameCell.getStringCellValue()))
+				throw new ConfigurationError("'varname' cell empty in table row #" + (rownum + 1));
+			Anonymization anon = new Anonymization(varnameCell.getStringCellValue());
 			// parse locators
 			for (int colnum = 0; colnum < varnameColumnIndex; colnum++) {
 				Cell cell = row.getCell(colnum);
