@@ -3,7 +3,7 @@
 	
 <#list setup.files as file>
 	<echo>{'Parsing file ' + ${file}}</echo>
-	<domtree id="dom_${file}" inputUri="{${file}}" outputUri="{'anon_' + ${file}}" namespaceAware="false" />
+	<domtree id="dom_${file}" inputUri="{${file}}" outputUri="{org.databene.commons.FileUtil.prependFilePrefix('anon_', ${file})}" namespaceAware="false" />
 </#list>
 	
 	<memstore id="memdb" />
