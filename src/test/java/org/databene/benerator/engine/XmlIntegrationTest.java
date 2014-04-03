@@ -28,6 +28,7 @@ import java.util.Set;
 import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.commons.xml.XPathUtil;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -49,12 +50,12 @@ public class XmlIntegrationTest extends BeneratorIntegrationTest {
 		Set<String> anonNames = CollectionUtil.toSet("Michael", "Maria", "Miles", "Manfred");
 		Set<String> anonCities = CollectionUtil.toSet("Munich", "Michigan", "Madrid", "Milano");
 		Document document = XMLUtil.parse("target/test-classes/teamplayers-anon.xml");
-		NodeList names = XMLUtil.queryNodes(document, "//name/text()");
+		NodeList names = XPathUtil.queryNodes(document, "//name/text()");
 		for (int i = 0; i < names.getLength(); i++) {
 			String name = names.item(i).getTextContent();
 			assertTrue("Not an anonymized name: " + name, anonNames.contains(name));
 		}
-		NodeList cities = XMLUtil.queryNodes(document, "//city/text()");
+		NodeList cities = XPathUtil.queryNodes(document, "//city/text()");
 		for (int i = 0; i < cities.getLength(); i++) {
 			String city = cities.item(i).getTextContent();
 			assertTrue("not an anonymized city: " + city, anonCities.contains(city));

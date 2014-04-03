@@ -27,6 +27,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.IOUtil;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.commons.xml.XPathUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.webdecs.DataContainer;
@@ -81,7 +82,7 @@ public class DOMTreeTest {
 		
 		// verify that the tree has been modified and saved correctly
 		Document doc2 = XMLUtil.parse(outputUri);
-		NodeList cityNodes = XMLUtil.queryNodes(doc2, "//city/text()");
+		NodeList cityNodes = XPathUtil.queryNodes(doc2, "//city/text()");
 		assertEquals(4, cityNodes.getLength());
 		for (int i = 0; i < 4; i++)
 			assertEquals("Berlin", cityNodes.item(i).getTextContent());
