@@ -37,6 +37,7 @@ import org.databene.commons.*;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.model.data.Uniqueness;
 import org.databene.regex.RegexParser;
+import org.databene.regex.RegexPart;
 import org.databene.script.WeightedSample;
 
 import java.util.*;
@@ -196,20 +197,28 @@ public abstract class GeneratorFactory {
 	public Generator<String> createStringGenerator(String pattern,
 			Locale locale, Integer minLength, Integer maxLength, int lengthGranularity,
 			Distribution lengthDistribution, Uniqueness uniqueness) {
-        if (maxLength == null)
-            maxLength = defaultsProvider.defaultMaxLength();
-        if (minLength == null) {
-        	if (pattern != null && pattern.length() == 0)
-        		minLength = 0;
-        	else {
-	            int defaultMinLength = defaultsProvider.defaultMinLength();
-	            minLength = Math.min(maxLength, defaultMinLength);
-        	}
-        }
-        if (pattern == null)
-            pattern = "[A-Z]*";
+		if (pattern != null) {
+			RegexPart regex = new RegexParser().parseRegex(pattern);
+			int regexMinLength = regex.minLength();
+			Integer regexMaxLength = regex.maxLength();
+	        if (maxLength == null) {
+	            if (regexMaxLength != null)
+	            	maxLength = regexMaxLength;
+	            else
+	            	maxLength = Math.max(regexMinLength * 2, defaultsProvider.defaultMaxLength());
+	        }
+	        
+	        if (minLength == null)
+	        	minLength = regexMinLength;
+		} else {
+			pattern = "[A-Z]*";
+			if (maxLength == null)
+				maxLength = defaultsProvider.defaultMaxLength();
+	        if (minLength == null)
+	        	minLength = defaultsProvider.defaultMinLength();
+		}
         if (lengthDistribution != null) {
-        	Set<Character> chars = RegexParser.charsOfPattern(pattern, locale);
+        	Set<Character> chars = new RegexParser(locale).parseSingleChar(pattern).getCharSet().getSet();
 			return createStringGenerator(
 					chars, minLength, maxLength, lengthGranularity, lengthDistribution, uniqueness);
         }

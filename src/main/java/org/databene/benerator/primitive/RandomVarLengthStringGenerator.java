@@ -118,10 +118,8 @@ public class RandomVarLengthStringGenerator extends LengthGenerator<Character, S
 	
 	@Override
 	public void init(GeneratorContext context) {
-		if (pattern != null) {
-	        Object regex = new RegexParser(locale).parseSingleChar(pattern);
-	        this.chars = RegexParser.toSet(regex);
-		}
+		if (pattern != null)
+	        this.chars = new RegexParser(locale).parseSingleChar(pattern).getCharSet().getSet();
 		setSource(new CharacterGenerator(chars));
 		super.init(context);
 	}

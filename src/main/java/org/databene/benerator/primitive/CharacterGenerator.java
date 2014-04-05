@@ -135,7 +135,7 @@ public class CharacterGenerator extends NonNullGeneratorProxy<Character> {
     	assertNotInitialized();
         try {
             if (pattern != null)
-                values = RegexParser.charsOfPattern(pattern, locale);
+                values = new RegexParser(locale).parseSingleChar(pattern).getCharSet().getSet();
             setSource(new NonNullSampleGenerator<Character>(Character.class, values));
             super.init(context);
         } catch (SyntaxError e) {

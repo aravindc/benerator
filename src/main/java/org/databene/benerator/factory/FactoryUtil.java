@@ -162,7 +162,7 @@ public class FactoryUtil {
         Set<Character> chars;
         if (pattern != null) {
             try {
-                chars = RegexParser.toCharSet(new RegexParser(locale).parseSingleChar(pattern)).getSet();
+                chars = new RegexParser(locale).parseSingleChar(pattern).getCharSet().getSet();
             } catch (ParseException e) {
                 throw new ConfigurationError("Invalid regular expression.", e);
             }

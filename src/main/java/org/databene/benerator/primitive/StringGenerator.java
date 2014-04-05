@@ -182,7 +182,7 @@ public class StringGenerator extends NonNullGeneratorProxy<String> {
 	
 	@Override
 	public synchronized void init(GeneratorContext context) {
-		Set<Character> chars = RegexParser.charsOfPattern(charSet, locale);
+		Set<Character> chars = new RegexParser(locale).parseSingleChar(charSet).getCharSet().getSet();
 		GeneratorFactory factory = context.getGeneratorFactory();
 		if (minInitial != null) {
 			Filter<Character> initialFilter = new Filter<Character>() {
