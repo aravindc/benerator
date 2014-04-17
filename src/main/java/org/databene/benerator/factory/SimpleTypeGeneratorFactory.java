@@ -322,7 +322,10 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeD
 
 	@Override
 	protected Class<?> getGeneratedType(SimpleTypeDescriptor descriptor) {
-		return descriptor.getPrimitiveType().getJavaType();
+		PrimitiveType primitiveType = descriptor.getPrimitiveType();
+		if (primitiveType == null)
+			throw new ConfigurationError("No type configured for " + descriptor.getName());
+		return primitiveType.getJavaType();
 	}
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
