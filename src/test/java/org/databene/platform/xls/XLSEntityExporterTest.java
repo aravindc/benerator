@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -100,19 +100,19 @@ public class XLSEntityExporterTest extends XLSTest {
 
 	// helpers ---------------------------------------------------------------------------------------------------------
 
-	private void consumeProducts(XLSEntityExporter exporter) {
+	private static void consumeProducts(XLSEntityExporter exporter) {
 	    exporter.startProductConsumption(PROD1);
 		exporter.finishProductConsumption(PROD1);
 		exporter.startProductConsumption(PROD2);
 		exporter.finishProductConsumption(PROD2);
     }
 	
-	private void consumePersons(XLSEntityExporter exporter) {
+	private static void consumePersons(XLSEntityExporter exporter) {
 	    exporter.startProductConsumption(PERSON1);
 		exporter.finishProductConsumption(PERSON1);
     }
 	
-	private void assertFullContent(File file) throws IOException {
+	private static void assertFullContent(File file) throws IOException {
 	    assertTrue(file.exists());
 		HSSFSheet sheet = readFirstSheetOf(CUSTOM_FILE);
 		checkCells(sheet.getRow(0), "ean", "price", "date", "avail", "updated", null);
@@ -121,12 +121,12 @@ public class XLSEntityExporterTest extends XLSTest {
 		checkCells(sheet.getRow(3));
     }
 
-    private HSSFSheet readFirstSheetOf(File file) throws IOException {
+    private static HSSFSheet readFirstSheetOf(File file) throws IOException {
 	    HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(file));
 	    return wb.getSheetAt(0);
     }
 
-    private void checkCells(HSSFRow row, Object... values) {
+    private static void checkCells(HSSFRow row, Object... values) {
 	    if (ArrayUtil.isEmpty(values))
 	    	assertNull(row);
 	    for (int i = 0; i < values.length; i++) {

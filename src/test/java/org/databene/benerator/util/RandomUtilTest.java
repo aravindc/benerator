@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2012 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -85,7 +85,7 @@ public class RandomUtilTest extends GeneratorTest {
 	
     // implementation --------------------------------------------------------------------------------------------------
 
-    private void testEqualDistribution(int min, int max, double tolerance, int iterations) {
+    private static void testEqualDistribution(int min, int max, double tolerance, int iterations) {
         List<Integer> list = new ArrayList<Integer>();
         Set<Integer> expectedSet = new HashSet<Integer>(max - min + 1);
         for (int i = min; i <= max; i++)
@@ -95,7 +95,7 @@ public class RandomUtilTest extends GeneratorTest {
         checkEqualDistribution(list, tolerance, expectedSet);
     }
 
-    private void testEqualDistribution(long min, long max, double tolerance, int iterations) {
+    private static void testEqualDistribution(long min, long max, double tolerance, int iterations) {
         List<Long> list = new ArrayList<Long>();
         Set<Long> expectedSet = new HashSet<Long>((int)(max - min + 1));
         for (long i = min; i <= max; i++)

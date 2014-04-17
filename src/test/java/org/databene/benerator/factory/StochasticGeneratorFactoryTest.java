@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -170,8 +170,8 @@ public class StochasticGeneratorFactoryTest extends GeneratorTest {
         }
     }
 
-    private Date date(int year, int nullBasedMonth, int day) {
-        return new GregorianCalendar(year, nullBasedMonth, day).getTime();
+    private static Date date(int year, int zeroBasedMonth, int day) {
+        return new GregorianCalendar(year, zeroBasedMonth, day).getTime();
     }
 
     // text source --------------------------------------------------------------------------------------------------
@@ -320,7 +320,7 @@ public class StochasticGeneratorFactoryTest extends GeneratorTest {
         }
     }
 
-    private WeightFunction[] getDistributionFunctions(double min, double max) {
+    private static WeightFunction[] getDistributionFunctions(double min, double max) {
         return new WeightFunction[] {
             new ConstantFunction(1. / (max - min)),
             new GaussianFunction((min + max) / 2, (max - min) / 4),

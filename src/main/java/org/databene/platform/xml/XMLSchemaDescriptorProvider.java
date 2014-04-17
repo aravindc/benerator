@@ -529,7 +529,8 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
 		return complexType;
 	}
 
-    private void parseUnique(Element child) {
+    @SuppressWarnings("static-method")
+	private void parseUnique(Element child) {
     	// TODO v1.0 automatically support uniqueness
         LOGGER.warn("<unique> is not supported. Please define own annotations or setup for uniqueness assurance"); 
 	}
@@ -652,7 +653,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
 		return namespaces.get(nsAlias);
 	}
 
-	private void parseOccurrences(Element element, InstanceDescriptor descriptor) {
+	private static void parseOccurrences(Element element, InstanceDescriptor descriptor) {
         Long minOccurs = XMLUtil.getLongAttribute(element, "minOccurs", 1L);
         String maxOccursString = element.getAttribute("maxOccurs");
         Long maxOccurs = 1L;
@@ -671,12 +672,14 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         }
     }
 
-    private void parseKeyRef(Element child) {
+    @SuppressWarnings("static-method")
+	private void parseKeyRef(Element child) {
     	// TODO v1.0 implement parseKeyRef
         LOGGER.warn("KeyRefs are not supported, yet. Ignoring keyRef: " + child.getAttribute("name")); 
     }
 
-    private void parseKey(Element child) {
+    @SuppressWarnings("static-method")
+	private void parseKey(Element child) {
     	// TODO v1.0 implement parseKey
         LOGGER.warn("Keys are not supported, yet. Ignoring key: " + child.getAttribute("name")); 
     }
@@ -804,7 +807,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         return descriptor;
     }
 
-	private void parseRestrictionChildren(Element restriction,
+	private static void parseRestrictionChildren(Element restriction,
 			SimpleTypeDescriptor descriptor) {
 		Element[] children = XMLUtil.getChildElements(restriction);
         for (Element child : children) {
@@ -838,7 +841,8 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         }
 	}
 
-    private void parseImport(Element importElement) {
+    @SuppressWarnings("static-method")
+	private void parseImport(Element importElement) {
         LOGGER.debug("parseImport()");
         throw unsupportedElementType(importElement, null); // TODO v0.8 implement parseImport()
     }
@@ -858,7 +862,8 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         parseDetails(parse(location));
     }
 
-    private void parseGroup(Element group) {
+    @SuppressWarnings("static-method")
+	private void parseGroup(Element group) {
         LOGGER.debug("parseGroup()");
         throw unsupportedElementType(group, null); // TODO v0.8 implement parseGroup()
     }
@@ -931,7 +936,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         }
 	}
 
-	private UnsupportedOperationException unsupportedElementType(Element element, Element parent) {
+	private static UnsupportedOperationException unsupportedElementType(Element element, Element parent) {
         String message = "Element type " + element.getNodeName() + " not supported";
         if (parent != null)
         	message += " in " + parent.getNodeName();

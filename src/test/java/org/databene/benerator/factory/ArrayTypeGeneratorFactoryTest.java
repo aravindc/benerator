@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -324,7 +324,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 	// helpers ---------------------------------------------------------------------------------------------------------
 
 	@SuppressWarnings("null")
-    private void assertArray(Object[] expected, Object[] actual) {
+    private static void assertArray(Object[] expected, Object[] actual) {
 	    if (expected == null) {
 	    	assertNull(actual);
 	    	return;
@@ -337,7 +337,7 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 	    	assertTrue(failureMessage, expected[i].equals(actual[i]));
     }
 
-	private String failureMessage(Object[] expected, Object[] actual) {
+	private static String failureMessage(Object[] expected, Object[] actual) {
 		return "Expected " + Arrays.toString(expected) + ", found: " + Arrays.toString(actual);
     }
 
@@ -350,11 +350,11 @@ public class ArrayTypeGeneratorFactoryTest extends GeneratorTest {
 		return arrayDescriptor;
 	}
 
-	private void assertEqualArrays(Object[] expected, Object[] actual) {
+	private static void assertEqualArrays(Object[] expected, Object[] actual) {
 	    assertTrue(errMsg(expected, actual), Arrays.equals(expected, actual));
     }
 
-	private String errMsg(Object[] expected, Object[] actual) {
+	private static String errMsg(Object[] expected, Object[] actual) {
 	    return "Expected {" + ArrayFormat.format(expected) + "} but found {" + ArrayFormat.format(actual) + "}";
     }
 

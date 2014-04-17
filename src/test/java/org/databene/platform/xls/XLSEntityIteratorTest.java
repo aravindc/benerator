@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -180,7 +180,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 	
-	private void assertXYZ(Entity expected, Entity actual) {
+	private static void assertXYZ(Entity expected, Entity actual) {
 		assertEquals("XYZ", actual.type());
 		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));
 		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.000001);
@@ -190,7 +190,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 				((Date) actual.getComponent("updated")).getTime());
     }
 
-	private void assertProduct(Entity expected, Entity actual) {
+	private static void assertProduct(Entity expected, Entity actual) {
 		assertEquals("Product", actual.type());
 		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));
 		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.000001);
@@ -200,7 +200,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 				((Date) actual.getComponent("updated")).getTime());
     }
 
-    private void assertPerson(Entity expected, Entity actual) {
+    private static void assertPerson(Entity expected, Entity actual) {
 		assertEquals("Person", actual.type());
 		assertEquals(expected.get("name"), actual.get("name"));
 		assertEquals(expected.get("age"), ((Number) actual.get("age")).intValue());

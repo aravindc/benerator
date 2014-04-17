@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -865,7 +865,7 @@ public abstract class DBSystem extends AbstractStorageSystem {
             parseMetaData();
     }
 
-    private String decimalGranularity(int scale) {
+    private static String decimalGranularity(int scale) {
         if (scale == 0)
             return "1";
         StringBuilder builder = new StringBuilder("0.");
@@ -875,7 +875,7 @@ public abstract class DBSystem extends AbstractStorageSystem {
         return builder.toString();
     }
 
-    private TypeMapper driverTypeMapper() {
+    private static TypeMapper driverTypeMapper() {
         return new TypeMapper(
                 "byte",        Byte.class,
                 "short",       Short.class,
