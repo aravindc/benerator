@@ -61,19 +61,19 @@ public class VersionInfoTest {
 		checkDependency("commons", dependencies);
 	}
 	
-	private void checkDependency(String name, Map<String, String> dependencies) {
+	private static void checkDependency(String name, Map<String, String> dependencies) {
 		String dependencyVersion = dependencies.get(name);
 		checkVersionNumber(dependencyVersion);
 		System.out.println("using " + name + ' ' + dependencyVersion);
 	}
 
 	@SuppressWarnings("null")
-	private void checkVersionNumber(String versionNumber) {
+	private static void checkVersionNumber(String versionNumber) {
 		assertFalse("version number is empty", versionNumber == null || versionNumber.length() == 0);
 		assertFalse("version number was not substituted", versionNumber.startsWith("${"));
 	}
 	
-	private VersionInfo getVersionInfo() {
+	private static VersionInfo getVersionInfo() {
 		return VersionInfo.getInfo("benerator");
 	}
 
