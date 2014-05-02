@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the integration of regex-based string generation.<br/><br/>
  * Created: 04.04.2014 13:36:25
  * @since 0.9.3
  * @author Volker Bergmann
