@@ -29,6 +29,7 @@ package org.databene.platform.java;
 import org.databene.model.data.Entity;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.converter.ThreadSafeConverter;
+import org.databene.commons.mutator.AnyMutator;
 
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
 		Object result = BeanUtil.newInstance(entity.type());
         for (Map.Entry<String, Object> entry : entity.getComponents().entrySet()) {
             Object value = convertAny(entry.getValue());
-			BeanUtil.setPropertyValue(result, entry.getKey(), value, false);
+			AnyMutator.setValue(result, entry.getKey(), value, true, true);
         }
         return result;
 	}

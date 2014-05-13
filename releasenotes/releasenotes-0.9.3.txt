@@ -9,3 +9,4 @@ Enhancements
 Bug Fixes
 ---------
 - Generation of large regex-based strings fails
+- Entity2JavaConverter does not write public attributes

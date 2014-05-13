@@ -55,6 +55,14 @@ public class Entity2JavaConverterTest {
         assertEquals(bean, new Entity2JavaConverter().convert(entity));
     }
 
+    @Test
+    public void testEntityWithChildClass() {
+		Entity entity = createAlice(getChildTypeDescriptor());
+		entity.set("childNo", 1);
+        ChildBean bean = new ChildBean("Alice", 23, 1);
+        assertEquals(bean, new Entity2JavaConverter().convert(entity));
+    }
+
 	@Test
     public void testEntityArray() {
         ComplexTypeDescriptor descriptor = getPersonTypeDescriptor();
@@ -67,6 +75,10 @@ public class Entity2JavaConverterTest {
 
 	private ComplexTypeDescriptor getPersonTypeDescriptor() {
 		return (ComplexTypeDescriptor) provider.getTypeDescriptor(PersonBean.class.getName());
+	}
+
+	private ComplexTypeDescriptor getChildTypeDescriptor() {
+		return (ComplexTypeDescriptor) provider.getTypeDescriptor(ChildBean.class.getName());
 	}
 
 	protected Entity createAlice(ComplexTypeDescriptor descriptor) {
