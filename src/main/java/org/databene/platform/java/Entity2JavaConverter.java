@@ -40,11 +40,11 @@ import java.util.Map;
  * @author Volker Bergmann
  */
 public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
-
+	
     public Entity2JavaConverter() {
         super(Object.class, Object.class);
     }
-
+    
     @Override
 	public Object convert(Object entityOrArray) {
     	return convertAny(entityOrArray);
@@ -60,21 +60,21 @@ public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
     	else
     		return entityOrArray;
 	}
-
+    
 	private static Object convertArray(Object[] array) {
 		Object[] result = new Object[array.length];
 		for (int i = 0; i < array.length; i++)
 			result[i] = convertAny(array[i]);
 		return result;
 	}
-
+	
 	private static Object convertEntity(Entity entity) {
 		Object result = BeanUtil.newInstance(entity.type());
         for (Map.Entry<String, Object> entry : entity.getComponents().entrySet()) {
             Object value = convertAny(entry.getValue());
-			AnyMutator.setValue(result, entry.getKey(), value, true, true);
+			AnyMutator.setValue(result, entry.getKey(), value, false, true);
         }
         return result;
 	}
-
+	
 }
