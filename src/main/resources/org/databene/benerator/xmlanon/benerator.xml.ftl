@@ -14,6 +14,7 @@
 	<iterate name="${anon.locators[0].entity}" source="dom_${anon.locators[0].file}" selector="${anon.locators[0].entityPath}" consumer="dom_${anon.locators[0].file}.updater()">
 		<attribute name="${anon.locators[0].attribute}" 
 			type="string"
+			condition="this.${anon.locators[0].attribute} != null"
 			<#list anon.settings as setting>
 			${setting.key}="${setting.value}"
 			</#list>

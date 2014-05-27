@@ -1,0 +1,17 @@
+release notes benerator 0.9.5
+=============================
+
+
+Enhancements
+------------
+- 
+
+
+Changes
+-------
+- Applying XML anonymization only on non-empty fields
+
+
+Bug Fixes
+---------
+- 
