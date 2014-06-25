@@ -72,7 +72,10 @@ public class Entity2JavaConverterTest {
 		assertTrue("Expected [" + ArrayFormat.format(expected) + "], found: [" + ArrayFormat.format(actual) + "]",
 				Arrays.deepEquals(expected, actual));
     }
-
+	
+	
+	// private helpers -------------------------------------------------------------------------------------------------
+	
 	private ComplexTypeDescriptor getPersonTypeDescriptor() {
 		return (ComplexTypeDescriptor) provider.getTypeDescriptor(PersonBean.class.getName());
 	}
@@ -81,11 +84,11 @@ public class Entity2JavaConverterTest {
 		return (ComplexTypeDescriptor) provider.getTypeDescriptor(ChildBean.class.getName());
 	}
 
-	protected Entity createAlice(ComplexTypeDescriptor descriptor) {
+	private static Entity createAlice(ComplexTypeDescriptor descriptor) {
 		return new Entity(descriptor, "name", "Alice", "age", 23);
 	}
 	
-	protected Entity createBob(ComplexTypeDescriptor descriptor) {
+	private static Entity createBob(ComplexTypeDescriptor descriptor) {
 		return new Entity(descriptor, "name", "Bob", "age", 34);
 	}
 	

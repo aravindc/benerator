@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,8 +35,11 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.TypeMapper;
+import org.databene.script.expression.ConstantExpression;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -67,7 +70,7 @@ public class BeanDescriptorProvider extends DefaultDescriptorProvider {
 	@Override
 	public TypeDescriptor getTypeDescriptor(String abstractTypeName) {
 		if (mapper.concreteType(abstractTypeName) != null)
-			return null; // the PrimitiveDescriptorProvider is responsible for primitives
+			return null;
 		TypeDescriptor result = super.getTypeDescriptor(abstractTypeName);
 		if (result == null && BeanUtil.existsClass(abstractTypeName))
 			result = createTypeDescriptor(BeanUtil.forName(abstractTypeName));
@@ -174,16 +177,33 @@ public class BeanDescriptorProvider extends DefaultDescriptorProvider {
 	    
 	    // assert complex type
 		ComplexTypeDescriptor td = new ComplexTypeDescriptor(className, this);
-	    for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(javaType)) {
-	        if ("class".equals(propertyDescriptor.getName()))
-	            continue;
-	        Class<?> propertyType = propertyDescriptor.getPropertyType();
-	        TypeDescriptor propertyTypeDescriptor = dataModel.getTypeDescriptor(propertyType.getName());
-	        PartDescriptor pd = new PartDescriptor(propertyDescriptor.getName(), this, propertyTypeDescriptor);
-	        td.addComponent(pd);
-	    }
 	    addTypeDescriptor(td);
+	    for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(javaType))
+	    	createDescriptorForProperty(propertyDescriptor, td);
 	    return td;
+	}
+
+	private void createDescriptorForProperty(PropertyDescriptor propertyDescriptor, ComplexTypeDescriptor td) {
+		if ("class".equals(propertyDescriptor.getName()))
+			return;
+		Class<?> propertyType = propertyDescriptor.getPropertyType();
+		TypeDescriptor propertyTypeDescriptor;
+		if (java.util.Collection.class.isAssignableFrom(propertyType)) {
+			ParameterizedType genericReturnType = (ParameterizedType) propertyDescriptor.getReadMethod().getGenericReturnType();
+			Type componentType = genericReturnType.getActualTypeArguments()[0];
+			propertyTypeDescriptor = dataModel.getTypeDescriptor(((Class<?>) componentType).getName());
+		} else if (propertyType.isArray()) {
+			Class<?> componentType = propertyType.getComponentType();
+			propertyTypeDescriptor = dataModel.getTypeDescriptor(componentType.getName());
+		} else {
+			propertyTypeDescriptor = dataModel.getTypeDescriptor(propertyType.getName());
+		}
+		PartDescriptor pd = new PartDescriptor(propertyDescriptor.getName(), this, propertyTypeDescriptor);
+		if (java.util.Collection.class.isAssignableFrom(propertyType) || propertyType.isArray()) {
+			pd.setMinCount(new ConstantExpression<Long>(0L));
+			pd.setMaxCount(null);
+		}
+		td.addComponent(pd);
 	}
 
 }

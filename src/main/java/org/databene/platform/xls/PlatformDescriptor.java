@@ -32,6 +32,11 @@ import org.databene.benerator.DefaultPlatformDescriptor;
 public class PlatformDescriptor extends DefaultPlatformDescriptor {
 	
 	private static boolean formattedByDefault = false;
+	private static String collectionReferencePrefix = "tab:";
+	
+	public PlatformDescriptor() {
+		super(PlatformDescriptor.class.getName());
+	}
 	
 	public static boolean isFormattedByDefault() {
 		return formattedByDefault;
@@ -40,9 +45,13 @@ public class PlatformDescriptor extends DefaultPlatformDescriptor {
 	public static void setFormattedByDefault(boolean formattedByDefault) {
 		PlatformDescriptor.formattedByDefault = formattedByDefault;
 	}
-
-	public PlatformDescriptor() {
-		super(PlatformDescriptor.class.getName());
+	
+	public static String getCollectionReferencePrefix() {
+		return collectionReferencePrefix;
 	}
-
+	
+	public static void setCollectionReferencePrefix(String collectionReferencePrefix) {
+		PlatformDescriptor.collectionReferencePrefix = collectionReferencePrefix;
+	}
+	
 }

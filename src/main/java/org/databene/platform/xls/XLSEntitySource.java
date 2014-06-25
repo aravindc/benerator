@@ -64,7 +64,10 @@ public class XLSEntitySource extends FileBasedEntitySource {
     @Override
 	public DataIterator<Entity> iterator() {
         try {
-			return new XLSEntityIterator(resolveUri(), preprocessor, entityType, sheetName, formatted);
+        	if (sheetName != null)
+        		return new SingleSheetXLSEntityIterator(resolveUri(), sheetName, preprocessor, entityType, context, true, formatted, null);
+        	else
+        		return new AllSheetsXLSEntityIterator(resolveUri(), preprocessor, entityType, formatted);
 		} catch (Exception e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
 		}

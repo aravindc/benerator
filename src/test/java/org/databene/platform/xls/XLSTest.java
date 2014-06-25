@@ -26,6 +26,9 @@
 
 package org.databene.platform.xls;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -37,6 +40,8 @@ import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
 
 /**
  * Parent class for XLS-related tests.<br/>
@@ -135,4 +140,34 @@ public abstract class XLSTest extends IteratorTestCase {
 			"age", PERSON1_AGE
 	);
 	
+	protected static void assertXYZ(Entity expected, Entity actual) {
+		assertEquals("XYZ", actual.type());
+		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));
+		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.000001);
+		assertEquals(expected.getComponent("date"), actual.getComponent("date"));
+		assertEquals(expected.getComponent("avail"), actual.getComponent("avail"));
+		assertEquals(((Date) expected.getComponent("updated")).getTime(), 
+				((Date) actual.getComponent("updated")).getTime());
+    }
+
+	protected static void assertProduct(Entity expected, Entity actual) {
+		assertEquals("Product", actual.type());
+		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));
+		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.000001);
+		assertEquals(expected.getComponent("date"), actual.getComponent("date"));
+		assertEquals(expected.getComponent("avail"), actual.getComponent("avail"));
+		assertEquals(((Date) expected.getComponent("updated")).getTime(), 
+				((Date) actual.getComponent("updated")).getTime());
+    }
+
+	protected static void assertPerson(Entity expected, Entity actual) {
+		assertEquals("Person", actual.type());
+		assertEquals(expected.get("name"), actual.get("name"));
+		assertEquals(expected.get("age"), ((Number) actual.get("age")).intValue());
+    }
+
+	protected static void assertUnavailable(DataIterator<Entity> iterator) {
+		assertNull(iterator.next(new DataContainer<Entity>()));
+	}
+    
 }

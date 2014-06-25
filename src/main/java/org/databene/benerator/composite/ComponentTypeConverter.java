@@ -26,9 +26,11 @@
 
 package org.databene.benerator.composite;
 
+import java.lang.reflect.Array;
 import java.util.Map;
 
 import org.databene.benerator.factory.DescriptorUtil;
+import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.AbstractConverter;
@@ -90,6 +92,14 @@ public class ComponentTypeConverter extends AbstractConverter<Entity, Entity> {
 			        components.put(componentName, javaValue);
 				} else if (componentValue instanceof Entity) {
 			        components.put(componentName, convert((Entity) componentValue, (ComplexTypeDescriptor) componentType));
+				} else if (componentValue.getClass().isArray()) {
+					int n = Array.getLength(componentValue);
+					ArrayBuilder<Entity> builder = new ArrayBuilder<Entity>(Entity.class, n);
+					for (int i = 0; i < n; i++) {
+						Entity item = (Entity) Array.get(componentValue, i);
+						builder.add(convert(item, (ComplexTypeDescriptor) componentType));
+					}
+			        components.put(componentName, builder.toArray());
 				} else {
 					throw new ConfigurationError("Expected complex data type for '" + componentName + "' but got " + componentValue.getClass());
 				}

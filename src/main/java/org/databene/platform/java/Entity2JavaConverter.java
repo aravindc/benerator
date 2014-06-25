@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,11 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.commons.mutator.AnyMutator;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -53,14 +58,34 @@ public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
     public static Object convertAny(Object entityOrArray) {
 		if (entityOrArray == null)
     		return null;
+    	else if (entityOrArray instanceof Entity)
+    		return convertEntity((Entity) entityOrArray, BeanUtil.forName(((Entity) entityOrArray).type()));
     	else if (entityOrArray.getClass().isArray())
     		return convertArray((Object[]) entityOrArray);
-    	else if (entityOrArray instanceof Entity)
-    		return convertEntity((Entity) entityOrArray);
     	else
     		return entityOrArray;
 	}
     
+    public static Object convertAny(Object entityOrArray, Class<?> targetType) {
+		if (entityOrArray == null)
+    		return null;
+    	else if (entityOrArray instanceof Entity)
+    		return convertEntity((Entity) entityOrArray, targetType);
+    	else if (entityOrArray.getClass().isArray())
+    		return convertArray((Object[]) entityOrArray, targetType);
+    	else
+    		return entityOrArray;
+	}
+    
+	private static Object convertArray(Object[] array, Class<?> targetType) {
+		Object result = Array.newInstance(targetType, array.length);
+		for (int i = 0; i < array.length; i++) {
+			Object value = convertAny(array[i], targetType);
+			Array.set(result, i, value);
+		}
+		return result;
+	}
+	
 	private static Object convertArray(Object[] array) {
 		Object[] result = new Object[array.length];
 		for (int i = 0; i < array.length; i++)
@@ -68,13 +93,38 @@ public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
 		return result;
 	}
 	
-	private static Object convertEntity(Entity entity) {
-		Object result = BeanUtil.newInstance(entity.type());
+	private static Object convertEntity(Entity entity, Class<?> targetType) {
+		Object result = BeanUtil.newInstance(targetType);
         for (Map.Entry<String, Object> entry : entity.getComponents().entrySet()) {
-            Object value = convertAny(entry.getValue());
+            Object value = convertAny(entry.getValue(), typeOrComponentTypeOf(entry.getKey(), targetType));
 			AnyMutator.setValue(result, entry.getKey(), value, false, true);
         }
         return result;
 	}
-	
+
+	private static Class<?> typeOrComponentTypeOf(String featureName, Class<?> beanClass) {
+		Class<?> propertyType = null;
+		PropertyDescriptor propertyDescriptor = BeanUtil.getPropertyDescriptor(beanClass, featureName);
+		if (propertyDescriptor != null) {
+			propertyType = propertyDescriptor.getPropertyType();
+		} else {
+			Field field = BeanUtil.getField(beanClass, featureName);
+			if (field != null)
+				propertyType = field.getType();
+			else
+				return null;
+		}
+		if (propertyType.isArray())
+			return propertyType.getComponentType();
+		else if (Collection.class.isAssignableFrom(propertyType))
+			return getCollectionType(propertyDescriptor);
+		else
+			return propertyType;
+	}
+
+	private static Class<?> getCollectionType(PropertyDescriptor propertyDescriptor) {
+		ParameterizedType genericReturnType = (ParameterizedType) propertyDescriptor.getReadMethod().getGenericReturnType();
+		return (Class<?>) genericReturnType.getActualTypeArguments()[0];
+	}
+
 }

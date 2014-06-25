@@ -26,7 +26,6 @@
 
 package org.databene.platform.xls;
 
-import java.util.Date;
 import java.util.List;
 
 import org.databene.benerator.engine.BeneratorContext;
@@ -40,7 +39,6 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
 import org.databene.webdecs.DataUtil;
 
 import org.junit.Before;
@@ -48,14 +46,14 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link XLSEntityIterator} class.<br/>
+ * Tests the {@link AllSheetsXLSEntityIterator} class.<br/>
  * <br/>
  * Created at 29.01.2009 11:06:33
  * @since 0.5.8
  * @author Volker Bergmann
  */
 
-public class XLSEntityIteratorTest extends XLSTest {
+public class AllSheetsXLSEntityIteratorTest extends XLSTest {
 	
 	private static final String PRODUCT_XLS = "org/databene/platform/xls/product-singlesheet.ent.xls";
 	private static final String IMPORT_XLS = "org/databene/platform/xls/import-multisheet.ent.xls";
@@ -70,7 +68,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 	
 	@Test
 	public void testImportAllSheets() throws Exception {
-		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
+		AllSheetsXLSEntityIterator iterator = new AllSheetsXLSEntityIterator(IMPORT_XLS);
 		iterator.setContext(context);
 		try {
 			assertProduct(PROD1, DataUtil.nextNotNullData(iterator));
@@ -86,7 +84,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 	@Test
 	public void testImportPredefinedEntityType() throws Exception {
 		ComplexTypeDescriptor entityDescriptor = new ComplexTypeDescriptor("XYZ", context.getLocalDescriptorProvider());
-		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, new NoOpConverter<String>(), entityDescriptor, null, false);
+		AllSheetsXLSEntityIterator iterator = new AllSheetsXLSEntityIterator(IMPORT_XLS, new NoOpConverter<String>(), entityDescriptor, false);
 		iterator.setContext(context);
 		try {
 			assertXYZ(XYZ11, DataUtil.nextNotNullData(iterator));
@@ -102,34 +100,8 @@ public class XLSEntityIteratorTest extends XLSTest {
 	}
 	
 	@Test
-	public void testImportProductSheet() throws Exception {
-		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, null, null, "Product", false);
-		iterator.setContext(context);
-		try {
-			assertProduct(PROD1, DataUtil.nextNotNullData(iterator));
-			Entity next = DataUtil.nextNotNullData(iterator);
-			assertProduct(PROD2, next);
-			assertNull(iterator.next(new DataContainer<Entity>()));
-		} finally {
-			iterator.close();
-		}
-	}
-	
-	@Test
-	public void testImportPersonSheet() throws Exception {
-		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS, null, null, "Person", false);
-		iterator.setContext(context);
-		try {
-			assertPerson(PERSON1, DataUtil.nextNotNullData(iterator));
-			assertNull(iterator.next(new DataContainer<Entity>()));
-		} finally {
-			iterator.close();
-		}
-	}
-	
-	@Test
 	public void testParseAll() throws Exception {
-		List<Entity> entities = XLSEntityIterator.parseAll(IMPORT_XLS, null);
+		List<Entity> entities = AllSheetsXLSEntityIterator.parseAll(IMPORT_XLS, null, false);
 		assertEquals(3, entities.size());
 		assertProduct(PROD1, entities.get(0));
 		assertProduct(PROD2, entities.get(1));
@@ -151,7 +123,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 		context.getDataModel().addDescriptorProvider(dp);
 		
 		// test import
-		XLSEntityIterator iterator = new XLSEntityIterator(PRODUCT_XLS);
+		AllSheetsXLSEntityIterator iterator = new AllSheetsXLSEntityIterator(PRODUCT_XLS);
 		iterator.setContext(context);
 		try {
 			assertProduct(PROD1, DataUtil.nextNotNullData(iterator));
@@ -166,7 +138,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 	@Test
 	public void testColumnIteration() throws Exception {
 		// test import
-		XLSEntityIterator iterator = new XLSEntityIterator(PRODUCT_COLUMNS_XLS);
+		AllSheetsXLSEntityIterator iterator = new AllSheetsXLSEntityIterator(PRODUCT_COLUMNS_XLS);
 		iterator.setContext(context);
 		iterator.setRowBased(false);
 		try {
@@ -178,36 +150,4 @@ public class XLSEntityIteratorTest extends XLSTest {
 		}
 	}
 	
-	// private helpers -------------------------------------------------------------------------------------------------
-	
-	private static void assertXYZ(Entity expected, Entity actual) {
-		assertEquals("XYZ", actual.type());
-		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));
-		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.000001);
-		assertEquals(expected.getComponent("date"), actual.getComponent("date"));
-		assertEquals(expected.getComponent("avail"), actual.getComponent("avail"));
-		assertEquals(((Date) expected.getComponent("updated")).getTime(), 
-				((Date) actual.getComponent("updated")).getTime());
-    }
-
-	private static void assertProduct(Entity expected, Entity actual) {
-		assertEquals("Product", actual.type());
-		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));
-		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.000001);
-		assertEquals(expected.getComponent("date"), actual.getComponent("date"));
-		assertEquals(expected.getComponent("avail"), actual.getComponent("avail"));
-		assertEquals(((Date) expected.getComponent("updated")).getTime(), 
-				((Date) actual.getComponent("updated")).getTime());
-    }
-
-    private static void assertPerson(Entity expected, Entity actual) {
-		assertEquals("Person", actual.type());
-		assertEquals(expected.get("name"), actual.get("name"));
-		assertEquals(expected.get("age"), ((Number) actual.get("age")).intValue());
-    }
-
-	public static void assertUnavailable(DataIterator<Entity> iterator) {
-		assertNull(iterator.next(new DataContainer<Entity>()));
-	}
-    
 }

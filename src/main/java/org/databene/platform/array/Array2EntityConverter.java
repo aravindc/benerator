@@ -42,6 +42,7 @@ import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityGraphMutator;
 import org.databene.model.data.SimpleTypeDescriptor;
+import org.databene.model.data.TypeDescriptor;
 
 /**
  * Converts an array of feature values to an entity.<br/>
@@ -65,49 +66,39 @@ public class Array2EntityConverter extends ThreadSafeConverter<Object[], Entity>
         this.featureNames = featureNames;
         this.entityMutators = new Mutator[featureNames.length];
         for (int i = 0; i < featureNames.length; i++)
-        	this.entityMutators[i] = createMutator(featureNames[i], descriptor, stringSource);
+        	this.entityMutators[i] = createFeatureMutator(featureNames[i], descriptor, stringSource);
     }
 
 	@SuppressWarnings("rawtypes")
-	protected ConvertingMutator createMutator(
+	protected ConvertingMutator createFeatureMutator(
 			String featureName, ComplexTypeDescriptor descriptor, boolean stringSource) {
-		Converter converter = createConverter(featureName, descriptor, stringSource);
+		ComplexTypeDescriptor complexType = getComplexType(featureName, descriptor);
+		Converter converter = createConverter(featureName, complexType, stringSource);
 		Mutator mutator = new EntityGraphMutator(featureName, descriptor);
 		return new ConvertingMutator(mutator, converter);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected Converter createConverter(
-			String featureName, ComplexTypeDescriptor descriptor, boolean stringSource) {
-		Converter converter = new NoOpConverter();
-		// for sub paths, iterate recursively through the component names separated with '.'
-		while (featureName.contains(".") && descriptor != null) {
-			String[] pathComponents = StringUtil.splitOnFirstSeparator(featureName, '.');
-			String partName = pathComponents[0];
-			ComponentDescriptor component = descriptor.getComponent(partName);
-			if (component != null)
-				descriptor = (ComplexTypeDescriptor) component.getTypeDescriptor();
-			else
-				descriptor = null;
-			featureName = pathComponents[1];
-		}
-		if (descriptor != null) { 
+	private static Converter<?, ?> createConverter(String featureName, ComplexTypeDescriptor complexType, boolean stringSource) {
+		if (complexType != null) { 
+			ComponentDescriptor component = complexType.getComponent(featureName);
 			// if all parts of the feature path have been defined in the associated descriptors, 
 			// then determine an appropriate converter
-			ComponentDescriptor component = descriptor.getComponent(featureName);
 			if (component != null && component.getTypeDescriptor() != null) {
-				SimpleTypeDescriptor componentType = (SimpleTypeDescriptor) component.getTypeDescriptor();
-				Class<?> javaType = componentType.getPrimitiveType().getJavaType();
-				if (stringSource)
-					converter = ConverterManager.getInstance().createConverter(String.class, javaType);
-				else
-					converter = new AnyConverter(javaType);
+				TypeDescriptor componentType = component.getTypeDescriptor();
+				if (componentType instanceof SimpleTypeDescriptor) {
+					Class<?> javaType = ((SimpleTypeDescriptor) componentType).getPrimitiveType().getJavaType();
+					if (stringSource)
+						return ConverterManager.getInstance().createConverter(String.class, javaType);
+					else
+						return new AnyConverter(javaType);
+				}
 			}
 		}
-		return converter;
+		return new NoOpConverter();
 	}
 
-    @Override
+	@Override
 	public Entity convert(Object[] sourceValue) {
     	if (sourceValue == null)
     		return null;
@@ -122,6 +113,28 @@ public class Array2EntityConverter extends ThreadSafeConverter<Object[], Entity>
 			entityMutators[i].setValue(entity, sourceValue[i]);
         return entity;
     }
+	
+	
+	// private helper methods ------------------------------------------------------------------------------------------
+    
+    private static ComplexTypeDescriptor getComplexType(String featureName, ComplexTypeDescriptor parentType) {
+		ComplexTypeDescriptor complexType = parentType;
+		// for sub paths, iterate recursively through the component names separated with '.'
+		while (featureName.contains(".") && complexType != null) {
+			String[] pathComponents = StringUtil.splitOnFirstSeparator(featureName, '.');
+			String partName = pathComponents[0];
+			ComponentDescriptor component = complexType.getComponent(partName);
+			if (component != null)
+				complexType = (ComplexTypeDescriptor) component.getTypeDescriptor();
+			else
+				complexType = null;
+			featureName = pathComponents[1];
+		}
+		return complexType;
+	}
+    
+    
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
     
     @Override
     public String toString() {
