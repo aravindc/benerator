@@ -30,6 +30,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
@@ -109,7 +110,7 @@ public class SingleSheetXLSEntityIterator implements DataIterator<Entity> {
 		}
 
         // parse headers
-		headers = parseHeaders();
+		parseHeaders();
 		if (headers == null) {
 			this.source = null; // empty sheet
 			return;
@@ -188,13 +189,19 @@ public class SingleSheetXLSEntityIterator implements DataIterator<Entity> {
 		return sheet;
 	}
 
-	private String[] parseHeaders() {
-		String[] headers = null;
+	private void parseHeaders() {
 		DataContainer<Object[]> tmp = this.source.next(sourceContainer.get());
-		if (tmp != null) {
-			headers = (String[]) ConverterManager.convertAll(tmp.getData(), new ToStringConverter(), String.class);
-			StringUtil.trimAll(headers);
-		}
+		this.headers = (tmp != null ? normalizeHeaders(tmp.getData()) : null);
+	}
+
+	private static String[] normalizeHeaders(Object[] rawHeaders) {
+		String[] headers = (String[]) ConverterManager.convertAll(rawHeaders, new ToStringConverter(), String.class);
+		StringUtil.trimAll(headers);
+		int lastNonEmptyIndex = headers.length - 1;
+		while (lastNonEmptyIndex >= 0 && StringUtil.isEmpty(headers[lastNonEmptyIndex]))
+			lastNonEmptyIndex--;
+		if (lastNonEmptyIndex < headers.length - 1)
+			headers = ArrayUtil.copyOfRange(headers, 0, lastNonEmptyIndex + 1);
 		return headers;
 	}
 
