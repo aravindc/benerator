@@ -34,6 +34,7 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.IOUtil;
+import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.document.xls.XLSLineIterator;
@@ -190,8 +191,10 @@ public class SingleSheetXLSEntityIterator implements DataIterator<Entity> {
 	private String[] parseHeaders() {
 		String[] headers = null;
 		DataContainer<Object[]> tmp = this.source.next(sourceContainer.get());
-		if (tmp != null)
+		if (tmp != null) {
 			headers = (String[]) ConverterManager.convertAll(tmp.getData(), new ToStringConverter(), String.class);
+			StringUtil.trimAll(headers);
+		}
 		return headers;
 	}
 
