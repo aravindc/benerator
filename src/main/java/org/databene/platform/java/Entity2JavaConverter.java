@@ -93,11 +93,15 @@ public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
 		return result;
 	}
 	
-	private static Object convertEntity(Entity entity, Class<?> targetType) {
-		Object result = BeanUtil.newInstance(targetType);
+	private static Object convertEntity(Entity entity, Class<?> targetBeanType) {
+		Object result = BeanUtil.newInstance(targetBeanType);
         for (Map.Entry<String, Object> entry : entity.getComponents().entrySet()) {
-            Object value = convertAny(entry.getValue(), typeOrComponentTypeOf(entry.getKey(), targetType));
-			AnyMutator.setValue(result, entry.getKey(), value, false, true);
+            String featureName = entry.getKey();
+			Class<?> targetComponentType = typeOrComponentTypeOf(featureName, targetBeanType);
+            if (targetComponentType != null) { // if the target object does not contain a feature of the given name, ignore the entry
+				Object value = convertAny(entry.getValue(), targetComponentType);
+				AnyMutator.setValue(result, featureName, value, false, true);
+            }
         }
         return result;
 	}
@@ -108,11 +112,12 @@ public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
 		if (propertyDescriptor != null) {
 			propertyType = propertyDescriptor.getPropertyType();
 		} else {
-			Field field = BeanUtil.getField(beanClass, featureName);
-			if (field != null)
+			try {
+				Field field = BeanUtil.getField(beanClass, featureName);
 				propertyType = field.getType();
-			else
+			} catch (Exception e) {
 				return null;
+			}
 		}
 		if (propertyType.isArray())
 			return propertyType.getComponentType();
