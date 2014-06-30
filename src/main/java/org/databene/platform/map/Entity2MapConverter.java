@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2013 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2014 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -52,6 +52,10 @@ public class Entity2MapConverter extends ThreadSafeConverter<Entity, Map> {
 
     @Override
 	public Map<String, Object> convert(Entity sourceValue) {
+        return convertEntity(sourceValue);
+    }
+
+	public static Map<String, Object> convertEntity(Entity sourceValue) {
         Map<String, Object> map = new HashMap<String, Object>();
         for (Map.Entry<String, Object> entry : sourceValue.getComponents().entrySet())
             map.put(entry.getKey(), entry.getValue());
