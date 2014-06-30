@@ -445,6 +445,7 @@ public class DefaultBeneratorContext implements BeneratorContext {
 		importPackage("org.databene.platform.csv");
 		importPackage("org.databene.platform.dbunit");
 		importPackage("org.databene.platform.xls");
+		importPackage("org.databene.platform.template");
 	}
 	
 	

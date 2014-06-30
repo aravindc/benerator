@@ -94,6 +94,10 @@
        <priority value="info"/>
     </category>
 
+    <category name="org.databene.platform.template">
+       <priority value="debug"/>
+    </category>
+
    <!-- ======================= -->
    <!-- Setup the Root category -->
    <!-- ======================= -->
