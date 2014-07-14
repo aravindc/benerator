@@ -151,17 +151,21 @@ public class TemplateFileEntityExporter implements Consumer, ContextAware {
 	
 	@Override
 	public void close() {
-		LOGGER.debug("Writing file {}", uri);
-		try {
-			Script template = ScriptUtil.readFile(templateUri);
-			mapRootToContext();
-			Context subContext = new DefaultContext(context);
-			String text = ToStringConverter.convert(template.evaluate(subContext), "");
-			IOUtil.writeTextFile(uri, text, encoding);
-		} catch (ScriptException e) {
-			throw new ConfigurationError("Error evaluating template " + templateUri, e);
-		} catch (IOException e) {
-			throw new RuntimeException("Error creating template-based output", e);
+		if (root != null) {
+			LOGGER.debug("Writing file {}", uri);
+			try {
+				Script template = ScriptUtil.readFile(templateUri);
+				mapRootToContext();
+				Context subContext = new DefaultContext(context);
+				String text = ToStringConverter.convert(template.evaluate(subContext), "");
+				IOUtil.writeTextFile(uri, text, encoding);
+			} catch (ScriptException e) {
+				throw new ConfigurationError("Error evaluating template " + templateUri, e);
+			} catch (IOException e) {
+				throw new RuntimeException("Error creating template-based output", e);
+			}
+		} else {
+			LOGGER.error("Unable to write file {}", uri);
 		}
 	}
 	
