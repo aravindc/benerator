@@ -61,9 +61,16 @@ public class TemplateFileEntityExporterIntegrationTest extends BeneratorIntegrat
 	}
 
 	@Test
-	public void testIFTDGN() throws Exception {
-		parseAndExecuteFile("org/databene/benerator/engine/template/IFTDGN.ben.xml");
-		String content = IOUtil.getContentOfURI("target/IFTDGN.edi");
+	public void testIFTDGN1() throws Exception {
+		parseAndExecuteFile("org/databene/benerator/engine/template/IFTDGN1.ben.xml");
+		String content = IOUtil.getContentOfURI("target/IFTDGN1.edi");
+		System.out.println(content);
+	}
+
+	@Test
+	public void testIFTDGN2() throws Exception {
+		parseAndExecuteFile("org/databene/benerator/engine/template/IFTDGN2.ben.xml");
+		String content = IOUtil.getContentOfURI("target/IFTDGN2.edi");
 		System.out.println(content);
 	}
 
