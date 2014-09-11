@@ -54,24 +54,31 @@ public class TemplateFileEntityExporterIntegrationTest extends BeneratorIntegrat
 	    	"   </generate>" +
 	    	"</generate>" +
 	    	"</setup>");
-		Consumer con = (Consumer) context.get("con");
-		con.close();
+		closeCon(context);
 		String content = IOUtil.getContentOfURI(uri);
 		System.out.println(content);
 	}
 
 	@Test
 	public void testIFTDGN1() throws Exception {
-		parseAndExecuteFile("org/databene/benerator/engine/template/IFTDGN1.ben.xml");
+		BeneratorContext context = parseAndExecuteFile("org/databene/benerator/engine/template/IFTDGN1.ben.xml");
+		closeCon(context);
 		String content = IOUtil.getContentOfURI("target/IFTDGN1.edi");
 		System.out.println(content);
 	}
 
 	@Test
 	public void testIFTDGN2() throws Exception {
-		parseAndExecuteFile("org/databene/benerator/engine/template/IFTDGN2.ben.xml");
+		BeneratorContext context = parseAndExecuteFile("org/databene/benerator/engine/template/IFTDGN2.ben.xml");
+		closeCon(context);
+		IOUtil.close(context);
 		String content = IOUtil.getContentOfURI("target/IFTDGN2.edi");
 		System.out.println(content);
+	}
+
+	private static void closeCon(BeneratorContext context) {
+		Consumer con = (Consumer) context.get("con");
+		con.close();
 	}
 
 }
