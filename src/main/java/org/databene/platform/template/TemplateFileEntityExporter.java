@@ -21,6 +21,7 @@
 
 package org.databene.platform.template;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -158,6 +159,10 @@ public class TemplateFileEntityExporter implements Consumer, ContextAware {
 				mapRootToContext();
 				Context subContext = new DefaultContext(context);
 				String text = ToStringConverter.convert(template.evaluate(subContext), "");
+				String path = uri.replace('/', File.separatorChar);
+				File folder = new File(path).getParentFile();
+				if (folder != null)
+					folder.mkdirs();
 				IOUtil.writeTextFile(uri, text, encoding);
 			} catch (ScriptException e) {
 				throw new ConfigurationError("Error evaluating template " + templateUri, e);
