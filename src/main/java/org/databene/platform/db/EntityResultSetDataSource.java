@@ -28,11 +28,11 @@ package org.databene.platform.db;
 
 import java.sql.ResultSet;
 
+import org.databene.formats.DataIterator;
+import org.databene.formats.DataSource;
 import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.DataSource;
 
 /**
  * Iterates a ResultSet, returning Entities.

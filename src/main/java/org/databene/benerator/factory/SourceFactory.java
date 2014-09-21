@@ -27,11 +27,11 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.iterator.TextLineIterable;
-import org.databene.document.csv.CSVCellSource;
-import org.databene.document.csv.CSVSource;
-import org.databene.document.xls.XLSLineSource;
+import org.databene.formats.DataSource;
+import org.databene.formats.csv.CSVCellSource;
+import org.databene.formats.csv.CSVSource;
+import org.databene.formats.xls.XLSLineSource;
 import org.databene.model.data.Uniqueness;
-import org.databene.webdecs.DataSource;
 
 /**
  * Factory class for source-related {@link Generator}s.<br/><br/>

@@ -27,9 +27,9 @@
 package org.databene.platform.script;
 
 import org.databene.model.data.Entity;
-import org.databene.script.ScriptedDocumentWriter;
 import org.databene.benerator.consumer.TextFileExporter;
 import org.databene.commons.ConfigurationError;
+import org.databene.formats.script.ScriptedDocumentWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -36,6 +36,9 @@ import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.formats.DataSource;
+import org.databene.formats.util.DataSourceFromIterable;
+import org.databene.formats.util.DataSourceProxy;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
@@ -44,9 +47,6 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.script.expression.ConstantExpression;
-import org.databene.webdecs.DataSource;
-import org.databene.webdecs.util.DataSourceFromIterable;
-import org.databene.webdecs.util.DataSourceProxy;
 
 /**
  * Tests the {@link ComponentBuilderFactory}'s reference-related methods.<br/>

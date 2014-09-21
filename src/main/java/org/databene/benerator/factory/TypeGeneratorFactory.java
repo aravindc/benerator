@@ -42,12 +42,12 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.converter.String2DateConverter;
+import org.databene.formats.util.DataFileUtil;
 import org.databene.model.data.Format;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.script.PrimitiveType;
-import org.databene.webdecs.util.DataFileUtil;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 

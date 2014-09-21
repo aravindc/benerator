@@ -40,17 +40,17 @@ import org.databene.commons.converter.ArrayConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.commons.format.PadFormat;
-import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
-import org.databene.document.fixedwidth.FixedWidthLineSource;
-import org.databene.document.fixedwidth.FixedWidthRowTypeDescriptor;
-import org.databene.document.fixedwidth.FixedWidthUtil;
+import org.databene.formats.DataIterator;
+import org.databene.formats.DataSource;
+import org.databene.formats.fixedwidth.FixedWidthColumnDescriptor;
+import org.databene.formats.fixedwidth.FixedWidthLineSource;
+import org.databene.formats.fixedwidth.FixedWidthRowTypeDescriptor;
+import org.databene.formats.fixedwidth.FixedWidthUtil;
+import org.databene.formats.util.ConvertingDataIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
 import org.databene.platform.array.Array2EntityConverter;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.DataSource;
-import org.databene.webdecs.util.ConvertingDataIterator;
 
 /**
  * Reads Entities from a fixed-width file.<br/>

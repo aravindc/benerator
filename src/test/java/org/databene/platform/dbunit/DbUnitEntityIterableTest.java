@@ -30,9 +30,9 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 import org.databene.benerator.engine.DefaultBeneratorContext;
+import org.databene.formats.util.DataUtil;
 import org.databene.model.data.Entity;
 import org.databene.platform.AbstractEntityIteratorTest;
-import org.databene.webdecs.DataUtil;
 
 /**
  * Tests the DBUnitXmlEntityImporter with a standard and a flat dataset file.<br/>

@@ -55,7 +55,7 @@ public class VersionInfoTest {
 		Map<String, String> dependencies = version.getDependencies();
 		assertEquals(5, dependencies.size());
 		checkDependency("jdbacl", dependencies);
-		checkDependency("webdecs", dependencies);
+		checkDependency("formats", dependencies);
 		checkDependency("script", dependencies);
 		checkDependency("contiperf", dependencies);
 		checkDependency("commons", dependencies);

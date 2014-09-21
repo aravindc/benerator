@@ -56,8 +56,9 @@ import org.databene.commons.maven.MavenUtil;
 import org.databene.commons.ui.I18NError;
 import org.databene.commons.ui.ProgressMonitor;
 import org.databene.commons.version.VersionInfo;
-import org.databene.html.parser.DefaultHTMLTokenizer;
-import org.databene.html.parser.HTMLTokenizer;
+import org.databene.formats.html.parser.DefaultHTMLTokenizer;
+import org.databene.formats.html.parser.HTMLTokenizer;
+import org.databene.formats.text.LFNormalizingStringBuilder;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
@@ -72,7 +73,6 @@ import org.databene.platform.db.DBSystem;
 import org.databene.platform.db.DefaultDBSystem;
 import org.databene.script.Expression;
 import org.databene.script.expression.ExpressionUtil;
-import org.databene.text.LFNormalizingStringBuilder;
 
 /**
  * Creates benerator project archetypes.<br/>

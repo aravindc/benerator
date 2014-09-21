@@ -36,17 +36,17 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.CharSet;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.formats.regex.Choice;
+import org.databene.formats.regex.Factor;
+import org.databene.formats.regex.Group;
+import org.databene.formats.regex.Quantifier;
+import org.databene.formats.regex.RegexChar;
+import org.databene.formats.regex.RegexCharClass;
+import org.databene.formats.regex.RegexParser;
+import org.databene.formats.regex.RegexPart;
+import org.databene.formats.regex.RegexString;
+import org.databene.formats.regex.Sequence;
 import org.databene.model.data.Uniqueness;
-import org.databene.regex.Choice;
-import org.databene.regex.Quantifier;
-import org.databene.regex.RegexCharClass;
-import org.databene.regex.RegexString;
-import org.databene.regex.Factor;
-import org.databene.regex.Group;
-import org.databene.regex.RegexChar;
-import org.databene.regex.RegexParser;
-import org.databene.regex.RegexPart;
-import org.databene.regex.Sequence;
 
 /**
  * Creates generators for regular expressions and their sub parts.<br/>

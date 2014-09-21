@@ -30,10 +30,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.databene.commons.IOUtil;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
 
 /**
  * Iterates a ResultSet returning Entity objects.

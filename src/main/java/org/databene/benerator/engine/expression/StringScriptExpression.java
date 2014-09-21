@@ -26,9 +26,9 @@
 
 package org.databene.benerator.engine.expression;
 
+import org.databene.formats.script.ScriptUtil;
 import org.databene.script.Expression;
 import org.databene.script.expression.StringExpression;
-import org.databene.script.ScriptUtil;
 
 /**
  * {@link Expression} that resolves a script as {@link String}.<br/>

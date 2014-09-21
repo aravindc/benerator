@@ -57,7 +57,7 @@ import org.databene.domain.address.Country;
 import org.databene.domain.person.FamilyNameGenerator;
 import org.databene.domain.person.Gender;
 import org.databene.domain.person.GivenNameGenerator;
-import org.databene.text.NameNormalizer;
+import org.databene.formats.text.NameNormalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

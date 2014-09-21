@@ -26,7 +26,7 @@
 
 package org.databene.model.data;
 
-import org.databene.webdecs.DataSource;
+import org.databene.formats.DataSource;
 
 /**
  * Common interface for all Entity sources.<br/>

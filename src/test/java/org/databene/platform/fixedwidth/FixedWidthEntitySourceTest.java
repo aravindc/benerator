@@ -30,12 +30,12 @@ import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
-import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
+import org.databene.formats.DataIterator;
+import org.databene.formats.fixedwidth.FixedWidthColumnDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.AbstractEntityIteratorTest;
 import org.databene.platform.fixedwidth.FixedWidthEntitySource;
-import org.databene.webdecs.DataIterator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.SystemInfo;

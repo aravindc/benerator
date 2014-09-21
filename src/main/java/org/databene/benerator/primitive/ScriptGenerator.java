@@ -28,8 +28,8 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.script.Script;
-import org.databene.script.ScriptUtil;
+import org.databene.formats.script.Script;
+import org.databene.formats.script.ScriptUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

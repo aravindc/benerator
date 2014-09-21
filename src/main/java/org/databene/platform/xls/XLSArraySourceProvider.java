@@ -25,10 +25,10 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.DataSourceProvider;
 import org.databene.commons.Converter;
 import org.databene.commons.converter.ArrayConverter;
-import org.databene.document.xls.XLSSource;
-import org.databene.webdecs.DataSource;
-import org.databene.webdecs.util.ConvertingDataSource;
-import org.databene.webdecs.util.OffsetDataSource;
+import org.databene.formats.DataSource;
+import org.databene.formats.util.ConvertingDataSource;
+import org.databene.formats.util.OffsetDataSource;
+import org.databene.formats.xls.XLSSource;
 
 /**
  * {@link DataSourceProvider} implementation which creates {@link XLSSource}s.<br/><br/>

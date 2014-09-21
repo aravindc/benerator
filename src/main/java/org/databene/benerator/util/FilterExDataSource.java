@@ -24,10 +24,10 @@ package org.databene.benerator.util;
 import java.util.Iterator;
 
 import org.databene.commons.Context;
+import org.databene.formats.DataIterator;
+import org.databene.formats.DataSource;
+import org.databene.formats.util.DataSourceProxy;
 import org.databene.script.Expression;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.DataSource;
-import org.databene.webdecs.util.DataSourceProxy;
 
 /**
  * {@link Iterable} proxy which creates {@link Iterator}s that filter their output with a (boolean) filter expression.<br/><br/>

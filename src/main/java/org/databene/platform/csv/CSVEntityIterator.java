@@ -27,13 +27,13 @@
 package org.databene.platform.csv;
 
 import org.databene.platform.array.Array2EntityConverter;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.OrthogonalArrayIterator;
-import org.databene.webdecs.util.ConvertingDataIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.document.csv.CSVLineIterator;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
+import org.databene.formats.csv.CSVLineIterator;
+import org.databene.formats.util.ConvertingDataIterator;
+import org.databene.formats.util.OrthogonalArrayIterator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.IOUtil;

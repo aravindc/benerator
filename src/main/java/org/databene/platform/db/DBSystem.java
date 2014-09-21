@@ -57,6 +57,8 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.version.VersionNumber;
+import org.databene.formats.DataSource;
+import org.databene.formats.util.ConvertingDataSource;
 import org.databene.jdbacl.ColumnInfo;
 import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.DatabaseDialect;
@@ -90,8 +92,6 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.TypeMapper;
 import org.databene.script.PrimitiveType;
 import org.databene.script.expression.ConstantExpression;
-import org.databene.webdecs.DataSource;
-import org.databene.webdecs.util.ConvertingDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

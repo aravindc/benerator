@@ -38,13 +38,13 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.collection.OrderedNameMap;
-import org.databene.document.csv.CSVLineIterator;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
+import org.databene.formats.csv.CSVLineIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntitySource;
 import org.databene.platform.java.BeanDescriptorProvider;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -28,11 +28,11 @@ package org.databene.platform.xls;
 
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
+import org.databene.formats.DataIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.model.data.FileBasedEntitySource;
-import org.databene.webdecs.DataIterator;
 
 /**
  * Implements an {@link EntitySource} that reads Entities from an Excel sheet.<br/>

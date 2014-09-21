@@ -30,7 +30,7 @@ import org.databene.commons.Context;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.script.ScriptUtil;
+import org.databene.formats.script.ScriptUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 

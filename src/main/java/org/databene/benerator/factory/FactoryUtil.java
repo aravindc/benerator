@@ -48,14 +48,14 @@ import org.databene.commons.Context;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
+import org.databene.formats.regex.RegexParser;
+import org.databene.formats.script.Script;
+import org.databene.formats.script.ScriptUtil;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.Uniqueness;
-import org.databene.regex.RegexParser;
 import org.databene.script.DatabeneScriptParser;
 import org.databene.script.Expression;
-import org.databene.script.Script;
-import org.databene.script.ScriptUtil;
 import org.databene.script.WeightedSample;
 import org.databene.script.expression.DynamicExpression;
 

@@ -35,9 +35,9 @@ import org.databene.benerator.engine.Statement;
 import org.databene.benerator.parser.DefaultEntryConverter;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
+import org.databene.formats.script.ScriptConverterForStrings;
 import org.databene.platform.xml.XMLSchemaDescriptorProvider;
 import org.databene.script.Expression;
-import org.databene.script.ScriptConverterForStrings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

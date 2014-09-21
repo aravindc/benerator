@@ -35,6 +35,10 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
 import org.databene.commons.context.ContextAware;
+import org.databene.formats.script.ScriptConverterForObjects;
+import org.databene.formats.script.ScriptConverterForStrings;
+import org.databene.formats.script.ScriptUtil;
+import org.databene.formats.util.DataFileUtil;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -47,10 +51,6 @@ import org.databene.platform.xls.XLSArraySourceProvider;
 import org.databene.script.BeanSpec;
 import org.databene.script.DatabeneScriptParser;
 import org.databene.script.Expression;
-import org.databene.script.ScriptConverterForObjects;
-import org.databene.script.ScriptConverterForStrings;
-import org.databene.script.ScriptUtil;
-import org.databene.webdecs.util.DataFileUtil;
 
 /**
  * Creates array {@link Generator}s.<br/><br/>

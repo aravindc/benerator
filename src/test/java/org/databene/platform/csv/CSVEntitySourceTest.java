@@ -31,10 +31,10 @@ import static junit.framework.Assert.*;
 
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.commons.Encodings;
+import org.databene.formats.DataIterator;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.AbstractEntityIteratorTest;
-import org.databene.webdecs.DataIterator;
 
 /**
  * Tests the {@link CSVEntitySource}.<br/><br/>

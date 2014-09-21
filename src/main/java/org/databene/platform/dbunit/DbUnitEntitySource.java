@@ -31,9 +31,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.IOUtil;
+import org.databene.formats.DataIterator;
 import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
-import org.databene.webdecs.DataIterator;
 
 /**
  * Imports entities from a DbUnit XML file.<br/>

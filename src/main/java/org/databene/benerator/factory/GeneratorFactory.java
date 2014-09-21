@@ -35,9 +35,9 @@ import org.databene.benerator.primitive.datetime.DateGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
 import org.databene.commons.validator.StringLengthValidator;
+import org.databene.formats.regex.RegexParser;
+import org.databene.formats.regex.RegexPart;
 import org.databene.model.data.Uniqueness;
-import org.databene.regex.RegexParser;
-import org.databene.regex.RegexPart;
 import org.databene.script.WeightedSample;
 
 import java.util.*;

@@ -26,12 +26,12 @@ import java.util.Iterator;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.CollectionUtil;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
+import org.databene.formats.util.AbstractDataIterator;
+import org.databene.formats.util.AbstractDataSource;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.util.AbstractDataIterator;
-import org.databene.webdecs.util.AbstractDataSource;
 
 /**
  * {@link EntitySource} implementation that looks up an entity by its name ({@link #productName}) in the context, 

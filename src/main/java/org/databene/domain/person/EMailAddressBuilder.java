@@ -33,7 +33,7 @@ import org.databene.commons.ThreadAware;
 import org.databene.commons.converter.CaseConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.domain.net.DomainGenerator;
-import org.databene.text.DelocalizingConverter;
+import org.databene.formats.text.DelocalizingConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

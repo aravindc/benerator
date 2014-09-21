@@ -35,13 +35,13 @@ import java.util.Date;
 
 import org.databene.benerator.IteratorTestCase;
 import org.databene.commons.TimeUtil;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
 
 /**
  * Parent class for XLS-related tests.<br/>

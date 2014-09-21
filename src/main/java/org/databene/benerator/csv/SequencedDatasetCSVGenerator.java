@@ -30,7 +30,7 @@ import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
-import org.databene.script.ScriptConverterForStrings;
+import org.databene.formats.script.ScriptConverterForStrings;
 import org.databene.script.WeightedSample;
 
 /**

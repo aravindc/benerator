@@ -37,9 +37,9 @@ import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.converter.UnsafeConverter;
-import org.databene.script.Script;
-import org.databene.script.ScriptException;
-import org.databene.script.freemarker.FreeMarkerScriptFactory;
+import org.databene.formats.script.Script;
+import org.databene.formats.script.ScriptException;
+import org.databene.formats.script.freemarker.FreeMarkerScriptFactory;
 
 /**
  * Formats Address objects as String.<br/>

@@ -36,7 +36,7 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.webdecs.xml.XMLElementParser;
+import org.databene.formats.xml.XMLElementParser;
 import org.w3c.dom.Element;
 
 /**

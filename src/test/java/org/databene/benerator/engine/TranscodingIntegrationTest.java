@@ -30,13 +30,13 @@ import java.sql.SQLException;
 import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.databene.commons.ConnectFailedException;
 import org.databene.commons.IOUtil;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
+import org.databene.formats.DataSource;
 import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.DataSource;
 import org.junit.After;
 import org.junit.Test;
 

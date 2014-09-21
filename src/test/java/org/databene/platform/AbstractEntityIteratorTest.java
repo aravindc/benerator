@@ -24,9 +24,9 @@ package org.databene.platform;
 import static junit.framework.Assert.assertNull;
 
 import org.databene.benerator.test.ModelTest;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
 import org.databene.model.data.Entity;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
 
 /**
  * Parent class for Entity-related {@link DataIterator} tests.<br/><br/>

@@ -29,7 +29,7 @@ package org.databene.model.data;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.context.ContextAware;
-import org.databene.webdecs.util.AbstractDataSource;
+import org.databene.formats.util.AbstractDataSource;
 
 /**
  * Abstract implementation of {@link EntitySource} 

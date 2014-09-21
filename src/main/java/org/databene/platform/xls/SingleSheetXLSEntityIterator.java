@@ -38,16 +38,16 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.document.xls.XLSLineIterator;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
+import org.databene.formats.util.OrthogonalArrayIterator;
+import org.databene.formats.util.ThreadLocalDataContainer;
+import org.databene.formats.xls.XLSLineIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.platform.array.Array2EntityConverter;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.OrthogonalArrayIterator;
-import org.databene.webdecs.util.ThreadLocalDataContainer;
 
 /**
  * Iterates a single sheet of an XLS document and maps its rows to entities.<br/><br/>
@@ -206,7 +206,7 @@ public class SingleSheetXLSEntityIterator implements DataIterator<Entity> {
 	}
 
 	private DataIterator<Object[]> createRawIterator(Sheet sheet, boolean rowBased, Converter<String, ?> preprocessor) {
-		XLSLineIterator iterator = new XLSLineIterator(sheet, preprocessor, formatted);
+		XLSLineIterator iterator = new XLSLineIterator(sheet, false, formatted, preprocessor);
 		if (emptyMarker != null)
 			iterator.setEmptyMarker(emptyMarker);
         if (!rowBased)

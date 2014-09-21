@@ -33,8 +33,8 @@ import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.document.csv.CSVLineIterator;
-import org.databene.webdecs.DataContainer;
+import org.databene.formats.DataContainer;
+import org.databene.formats.csv.CSVLineIterator;
 
 import java.io.IOException;
 import java.io.FileNotFoundException;

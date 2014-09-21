@@ -39,7 +39,7 @@ import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.domain.address.Country;
 import org.databene.domain.organization.CompanyName;
 import org.databene.domain.organization.CompanyNameGenerator;
-import org.databene.text.DelocalizingConverter;
+import org.databene.formats.text.DelocalizingConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

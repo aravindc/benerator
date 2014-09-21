@@ -29,11 +29,11 @@ import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.SyntaxError;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
+import org.databene.formats.script.ScriptUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.script.ScriptUtil;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
 
 /**
  * Reads the nested form of a DbUnit XML dataset file and provides its content as Entities 

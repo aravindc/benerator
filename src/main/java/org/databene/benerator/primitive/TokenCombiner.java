@@ -38,8 +38,8 @@ import org.databene.commons.Encodings;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.validator.BlacklistValidator;
-import org.databene.document.csv.CSVLineIterator;
-import org.databene.webdecs.DataContainer;
+import org.databene.formats.DataContainer;
+import org.databene.formats.csv.CSVLineIterator;
 
 /**
  * {@link Generator} implementation which takes cells from a CSV file as input 

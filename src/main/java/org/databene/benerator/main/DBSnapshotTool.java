@@ -37,6 +37,8 @@ import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.ui.ProgressMonitor;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
@@ -44,8 +46,6 @@ import org.databene.platform.db.DefaultDBSystem;
 import org.databene.platform.db.SQLEntityExporter;
 import org.databene.platform.dbunit.DbUnitEntityExporter;
 import org.databene.platform.xls.XLSEntityExporter;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -32,15 +32,15 @@ import org.databene.commons.Context;
 import org.databene.commons.OrderedMap;
 import org.databene.commons.StringUtil;
 import org.databene.commons.collection.OrderedNameMap;
+import org.databene.formats.DataSource;
+import org.databene.formats.script.ScriptUtil;
+import org.databene.formats.util.DataSourceFromIterable;
+import org.databene.formats.util.DataSourceProxy;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.script.Expression;
-import org.databene.script.ScriptUtil;
-import org.databene.webdecs.DataSource;
-import org.databene.webdecs.util.DataSourceFromIterable;
-import org.databene.webdecs.util.DataSourceProxy;
 
 /**
  * Simple heap-based implementation of the AbstractStorageSystem interface.<br/><br/>

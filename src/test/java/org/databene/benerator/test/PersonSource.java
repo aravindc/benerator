@@ -24,14 +24,14 @@ package org.databene.benerator.test;
 import java.util.List;
 
 import org.databene.commons.CollectionUtil;
+import org.databene.formats.DataIterator;
+import org.databene.formats.util.DataIteratorFromJavaIterator;
 import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.model.data.PartDescriptor;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.util.DataIteratorFromJavaIterator;
 
 /**
  * {@link EntitySource} implementation for testing.<br/>

@@ -35,8 +35,8 @@ import java.util.Set;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
-import org.databene.document.csv.CSVLineIterator;
-import org.databene.webdecs.DataContainer;
+import org.databene.formats.DataContainer;
+import org.databene.formats.csv.CSVLineIterator;
 
 /**
  * Represents a Noun.<br/>

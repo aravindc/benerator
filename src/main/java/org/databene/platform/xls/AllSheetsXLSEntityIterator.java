@@ -41,10 +41,10 @@ import org.databene.commons.Converter;
 import org.databene.commons.IOUtil;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.NoOpConverter;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
 
 /**
  * Iterates an Excel sheet and maps its rows to {@link Entity} instances.<br/>

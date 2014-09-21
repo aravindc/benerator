@@ -32,7 +32,7 @@ import org.databene.script.expression.StringExpression;
 import org.databene.script.expression.TypeConvertingExpression;
 import org.databene.script.expression.UnescapeExpression;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.text.SplitStringConverter;
+import org.databene.formats.text.SplitStringConverter;
 import org.w3c.dom.Element;
 
 /**

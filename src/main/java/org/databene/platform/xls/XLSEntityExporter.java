@@ -48,7 +48,7 @@ import org.databene.benerator.consumer.FormattingConsumer;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
-import org.databene.document.xls.HSSFUtil;
+import org.databene.formats.xls.XLSUtil;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.SimpleTypeDescriptor;
@@ -125,7 +125,7 @@ public class XLSEntityExporter extends FormattingConsumer implements FileExporte
             if (workbook == null)
                 workbook = new HSSFWorkbook(); // if no data was added, create an empty Excel document
             else
-            	HSSFUtil.autoSizeColumns(workbook);
+            	XLSUtil.autoSizeColumns(workbook);
 			// Write the output to a file
             out = new FileOutputStream(uri);
 			workbook.write(out);

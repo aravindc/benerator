@@ -22,7 +22,7 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.webdecs.DataSource;
+import org.databene.formats.DataSource;
 
 /**
  * Interface for classes which provide {@link Iterable}s for iterating through data sources.<br/><br/>

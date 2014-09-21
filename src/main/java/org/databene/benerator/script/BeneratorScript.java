@@ -27,10 +27,10 @@
 package org.databene.benerator.script;
 
 import org.databene.commons.Context;
-import org.databene.script.AbstractScript;
+import org.databene.formats.script.AbstractScript;
+import org.databene.formats.script.Script;
+import org.databene.formats.script.ScriptException;
 import org.databene.script.Expression;
-import org.databene.script.Script;
-import org.databene.script.ScriptException;
 
 /**
  * {@link Script} implementation for BeneratorScript.<br/>

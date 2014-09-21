@@ -25,11 +25,11 @@ import org.databene.benerator.storage.AbstractStorageSystem;
 import org.databene.commons.Context;
 import org.databene.commons.Encodings;
 import org.databene.commons.SystemInfo;
+import org.databene.formats.DataSource;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.script.Expression;
 import org.databene.script.expression.ExpressionUtil;
-import org.databene.webdecs.DataSource;
 import org.junit.Test;
 
 import static org.databene.script.expression.ExpressionUtil.*;

@@ -28,7 +28,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.wrapper.LengthGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.regex.RegexParser;
+import org.databene.formats.regex.RegexParser;
 
 /**
  * Generates {@link String}s composed of numerical digits.<br/><br/>

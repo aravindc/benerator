@@ -69,6 +69,8 @@ import org.databene.commons.ProgrammerError;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.context.ContextAware;
+import org.databene.formats.script.ScriptUtil;
+import org.databene.formats.util.DataFileUtil;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -84,8 +86,6 @@ import org.databene.platform.db.DefaultDBSystem;
 import org.databene.platform.java.BeanDescriptorProvider;
 import org.databene.platform.java.Entity2JavaConverter;
 import org.databene.script.DatabeneScriptParser;
-import org.databene.script.ScriptUtil;
-import org.databene.webdecs.util.DataFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -25,10 +25,10 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.formats.DataContainer;
+import org.databene.formats.script.ScriptUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.script.ScriptUtil;
-import org.databene.webdecs.DataContainer;
 
 /**
  * Parses a flat DbUnit dataset file.<br/><br/>

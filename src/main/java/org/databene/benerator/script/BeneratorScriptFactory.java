@@ -30,9 +30,9 @@ import java.io.IOException;
 
 import org.databene.commons.IOUtil;
 import org.databene.commons.ParseException;
+import org.databene.formats.script.Script;
+import org.databene.formats.script.ScriptFactory;
 import org.databene.script.DatabeneScriptParser;
-import org.databene.script.Script;
-import org.databene.script.ScriptFactory;
 
 /**
  * {@link ScriptFactory} implementation for BeneratorScript.<br/>

@@ -28,7 +28,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/contiperf"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/databene-script"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jdbacl"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webdecs"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/formats"/>
 	<classpathentry kind="var" path="M2_REPO/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.9/poi-3.9.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-ooxml/3.9/poi-ooxml-3.9.jar" sourcepath="/M2_REPO/org/apache/poi/poi-ooxml/3.9/poi-ooxml-3.9-sources.jar"/>

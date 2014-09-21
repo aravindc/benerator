@@ -22,7 +22,7 @@
 package org.databene.platform.flat;
 
 import org.databene.commons.Converter;
-import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
+import org.databene.formats.fixedwidth.FixedWidthColumnDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.fixedwidth.FixedWidthEntitySource;
 import org.slf4j.Logger;

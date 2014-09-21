@@ -26,9 +26,9 @@
 
 package org.databene.domain.address;
 
-import org.databene.document.csv.BeanCSVWriter;
-import org.databene.document.csv.CSVLineIterator;
-import org.databene.webdecs.DataContainer;
+import org.databene.formats.DataContainer;
+import org.databene.formats.csv.BeanCSVWriter;
+import org.databene.formats.csv.CSVLineIterator;
 import org.databene.commons.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

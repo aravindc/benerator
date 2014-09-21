@@ -26,11 +26,11 @@ import static org.junit.Assert.*;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
 import org.databene.commons.context.DefaultContext;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
+import org.databene.formats.util.DataIteratorFromJavaIterator;
 import org.databene.script.Expression;
 import org.databene.script.expression.DynamicExpression;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.util.DataIteratorFromJavaIterator;
 import org.junit.Test;
 
 /**

@@ -44,8 +44,6 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.script.Expression;
-import org.databene.script.Script;
-import org.databene.script.ScriptUtil;
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.StorageSystem;
@@ -70,6 +68,8 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SyntaxError;
+import org.databene.formats.script.Script;
+import org.databene.formats.script.ScriptUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -34,8 +34,8 @@ import org.databene.commons.Context;
 import org.databene.commons.StringUtil;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.ui.ConsoleInfoPrinter;
-import org.databene.script.Script;
-import org.databene.script.freemarker.FreeMarkerScriptFactory;
+import org.databene.formats.script.Script;
+import org.databene.formats.script.freemarker.FreeMarkerScriptFactory;
 
 /**
  * Anonymizes XML files homogeneously based on generator and XPath definitions in an Excel sheet.<br/><br/>

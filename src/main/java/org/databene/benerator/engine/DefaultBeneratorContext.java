@@ -51,13 +51,13 @@ import org.databene.commons.context.SimpleContextStack;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.file.FileSuffixFilter;
 import org.databene.domain.address.Country;
+import org.databene.formats.script.ScriptUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.script.ScriptUtil;
 
 /**
  * Default implementation of {@link BeneratorContext}.<br/><br/>

@@ -33,11 +33,11 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.UnsafeNonNullGenerator;
 import org.databene.commons.IOUtil;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
+import org.databene.formats.DataSource;
+import org.databene.formats.script.ScriptUtil;
 import org.databene.jdbacl.DBUtil;
-import org.databene.script.ScriptUtil;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.DataSource;
 
 /**
  * Uses a database table to fetch and increment values like a database sequence.<br/><br/>

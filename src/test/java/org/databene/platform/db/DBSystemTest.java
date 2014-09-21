@@ -34,12 +34,12 @@ import java.util.List;
 import org.databene.benerator.Consumer;
 import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
+import org.databene.formats.DataSource;
 import org.databene.jdbacl.DBUtil;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;

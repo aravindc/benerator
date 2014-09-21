@@ -28,11 +28,11 @@ import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.NoOpConverter;
+import org.databene.formats.DataIterator;
+import org.databene.formats.DataSource;
+import org.databene.formats.script.ScriptConverterForStrings;
+import org.databene.formats.util.AbstractDataSource;
 import org.databene.jdbacl.QueryDataIterator;
-import org.databene.script.ScriptConverterForStrings;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.DataSource;
-import org.databene.webdecs.util.AbstractDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

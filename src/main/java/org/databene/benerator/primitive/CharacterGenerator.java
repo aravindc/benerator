@@ -27,11 +27,11 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
-import org.databene.regex.RegexParser;
 import org.databene.benerator.sample.NonNullSampleGenerator;
 import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.SyntaxError;
+import org.databene.formats.regex.RegexParser;
 
 import java.util.*;
 

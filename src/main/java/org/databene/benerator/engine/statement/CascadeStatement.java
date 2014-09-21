@@ -37,6 +37,8 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SyntaxError;
+import org.databene.formats.DataContainer;
+import org.databene.formats.DataIterator;
 import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
 import org.databene.jdbacl.identity.KeyMapper;
@@ -50,8 +52,6 @@ import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.db.DBSystem;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

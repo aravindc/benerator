@@ -34,7 +34,7 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ExceptionUtil;
 import org.databene.commons.StringUtil;
-import org.databene.webdecs.xml.XMLElementParser;
+import org.databene.formats.xml.XMLElementParser;
 import org.w3c.dom.Element;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 

@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
-import org.databene.webdecs.xml.XMLElementParser;
+import org.databene.formats.xml.XMLElementParser;
 
 /**
  * Default implementation of the {@link PlatformDescriptor} interface.<br/><br/>

@@ -41,8 +41,8 @@ import org.databene.commons.ui.ConsoleInfoPrinter;
 import org.databene.commons.ui.InfoPrinter;
 import org.databene.commons.version.VersionInfo;
 import org.databene.contiperf.sensor.MemorySensor;
+import org.databene.formats.text.KiloFormatter;
 import org.databene.jdbacl.DBUtil;
-import org.databene.text.KiloFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

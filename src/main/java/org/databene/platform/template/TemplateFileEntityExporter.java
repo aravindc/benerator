@@ -40,10 +40,10 @@ import org.databene.commons.context.ContextAware;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.mutator.AnyMutator;
+import org.databene.formats.script.Script;
+import org.databene.formats.script.ScriptException;
+import org.databene.formats.script.ScriptUtil;
 import org.databene.model.data.Entity;
-import org.databene.script.Script;
-import org.databene.script.ScriptException;
-import org.databene.script.ScriptUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

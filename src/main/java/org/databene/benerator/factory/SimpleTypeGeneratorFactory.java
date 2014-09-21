@@ -63,15 +63,15 @@ import org.databene.commons.converter.DateString2DurationConverter;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.validator.StringLengthValidator;
+import org.databene.formats.DataSource;
+import org.databene.formats.script.ScriptConverterForStrings;
+import org.databene.formats.util.DataFileUtil;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.script.BeanSpec;
 import org.databene.script.DatabeneScriptParser;
 import org.databene.script.PrimitiveType;
-import org.databene.script.ScriptConverterForStrings;
-import org.databene.webdecs.DataSource;
-import org.databene.webdecs.util.DataFileUtil;
 
 import static org.databene.model.data.SimpleTypeDescriptor.*;
 

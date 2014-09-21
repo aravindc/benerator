@@ -37,14 +37,14 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.SyntaxError;
 import org.databene.commons.converter.UnsafeConverter;
 import org.databene.commons.validator.AbstractValidator;
+import org.databene.formats.DataIterator;
+import org.databene.formats.DataSource;
+import org.databene.formats.util.DataIteratorTestCase;
 import org.databene.jdbacl.dialect.HSQLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.platform.db.DefaultDBSystem;
-import org.databene.webdecs.DataIterator;
-import org.databene.webdecs.DataSource;
-import org.databene.webdecs.util.DataIteratorTestCase;
 import org.junit.Test;
 
 /**

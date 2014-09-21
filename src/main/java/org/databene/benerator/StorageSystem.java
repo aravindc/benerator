@@ -31,9 +31,9 @@ import java.io.Flushable;
 
 import org.databene.benerator.storage.AbstractStorageSystem;
 import org.databene.commons.Context;
+import org.databene.formats.DataSource;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
-import org.databene.webdecs.DataSource;
 
 /**
  * Abstract interface characterizing an Entity storage system. 

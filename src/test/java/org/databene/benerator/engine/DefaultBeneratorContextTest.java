@@ -27,10 +27,10 @@ import java.util.Locale;
 
 import org.databene.commons.BeanUtil;
 import org.databene.commons.SystemInfo;
-import org.databene.document.xls.XLSLineIterator;
 import org.databene.domain.address.Country;
-import org.databene.script.ScriptUtil;
-import org.databene.webdecs.DataContainer;
+import org.databene.formats.DataContainer;
+import org.databene.formats.script.ScriptUtil;
+import org.databene.formats.xls.XLSLineIterator;
 import org.junit.Test;
 
 /**

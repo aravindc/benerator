@@ -30,9 +30,9 @@ import java.util.List;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DefaultBeneratorContext;
+import org.databene.formats.DataContainer;
+import org.databene.formats.util.DataUtil;
 import org.databene.model.data.Entity;
-import org.databene.webdecs.DataContainer;
-import org.databene.webdecs.DataUtil;
 
 import org.junit.Before;
 import org.junit.Test;

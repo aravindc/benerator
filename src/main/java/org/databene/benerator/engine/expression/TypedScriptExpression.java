@@ -26,10 +26,10 @@
 
 package org.databene.benerator.engine.expression;
 
+import org.databene.formats.script.Script;
+import org.databene.formats.script.ScriptUtil;
 import org.databene.script.Expression;
 import org.databene.script.expression.TypeConvertingExpression;
-import org.databene.script.Script;
-import org.databene.script.ScriptUtil;
 
 /**
  * {@link Expression} implementation that evaluates a script.<br/>

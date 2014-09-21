@@ -31,8 +31,8 @@ import org.databene.commons.Converter;
 import org.databene.commons.converter.AccessingConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
-import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
-import org.databene.document.fixedwidth.FixedWidthUtil;
+import org.databene.formats.fixedwidth.FixedWidthColumnDescriptor;
+import org.databene.formats.fixedwidth.FixedWidthUtil;
 import org.databene.model.data.ComponentAccessor;
 import org.databene.model.data.Entity;
 

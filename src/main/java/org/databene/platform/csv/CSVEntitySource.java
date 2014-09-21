@@ -30,11 +30,11 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.Tabular;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.document.csv.CSVUtil;
+import org.databene.formats.DataIterator;
+import org.databene.formats.csv.CSVUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
-import org.databene.webdecs.DataIterator;
 
 /**
  * Imports {@link Entity} data from CSV files.<br/><br/>

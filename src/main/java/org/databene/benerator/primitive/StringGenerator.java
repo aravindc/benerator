@@ -36,8 +36,8 @@ import org.databene.commons.Filter;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.filter.FilterUtil;
+import org.databene.formats.regex.RegexParser;
 import org.databene.model.data.Uniqueness;
-import org.databene.regex.RegexParser;
 
 /**
  * {@link String} {@link Generator} which offers a wide range of options for generating strings.<br/><br/>

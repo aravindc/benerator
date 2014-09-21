@@ -25,10 +25,10 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.DataSourceProvider;
 import org.databene.commons.converter.ArrayConverter;
 import org.databene.commons.Converter;
-import org.databene.document.csv.CSVSource;
-import org.databene.webdecs.DataSource;
-import org.databene.webdecs.util.ConvertingDataSource;
-import org.databene.webdecs.util.OffsetDataSource;
+import org.databene.formats.DataSource;
+import org.databene.formats.csv.CSVSource;
+import org.databene.formats.util.ConvertingDataSource;
+import org.databene.formats.util.OffsetDataSource;
 
 /**
  * {@link DataSourceProvider} which creates array {@link Iterable}s for CSV files.<br/><br/>

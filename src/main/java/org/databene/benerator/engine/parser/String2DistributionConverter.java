@@ -27,7 +27,7 @@ import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.ThreadSafeConverter;
-import org.databene.script.ScriptUtil;
+import org.databene.formats.script.ScriptUtil;
 
 /**
  * Parses a string and interprets it as a {@link Distribution} spec, 
