@@ -79,7 +79,7 @@ public class RunTaskParser extends AbstractBeneratorDescriptorParser {
 	}
 
 	@SuppressWarnings("unchecked")
-    private Expression<PageListener> parsePager(Element element) {
+    private static Expression<PageListener> parsePager(Element element) {
 		String pagerSpec = element.getAttribute(ATT_PAGER);
 		return (Expression<PageListener>) DatabeneScriptParser.parseBeanSpec(pagerSpec);
 	}

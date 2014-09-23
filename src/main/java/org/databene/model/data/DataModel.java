@@ -132,7 +132,7 @@ public class DataModel {
     
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private TypeDescriptor searchCaseInsensitive(DescriptorProvider provider, String name) {
+    private static TypeDescriptor searchCaseInsensitive(DescriptorProvider provider, String name) {
         for (TypeDescriptor type : provider.getTypeDescriptors())
             if (type.getName().equals(name))
                 return type;

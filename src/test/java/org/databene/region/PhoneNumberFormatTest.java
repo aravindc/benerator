@@ -75,7 +75,7 @@ public class PhoneNumberFormatTest {
         check(n, "00c(a)l", "0049(1234)5678");
     }
 
-    private void check(PhoneNumber number, String pattern, String formatted) throws ParseException {
+    private static void check(PhoneNumber number, String pattern, String formatted) throws ParseException {
         PhoneNumberFormat format = new PhoneNumberFormat(pattern);
         assertEquals("formatting with pattern '" + pattern + "' failed for phone number: " + number, 
                 formatted, format.format(number));

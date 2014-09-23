@@ -88,7 +88,7 @@ public class AlternativeGeneratorTest extends GeneratorTest {
     // helpers ---------------------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    private Generator<Integer> generator(int ... values) {
+    private static Generator<Integer> generator(int ... values) {
         Generator<Integer>[] gens = new Generator[values.length];
         for (int i = 0; i < values.length; i++)
             gens[i] = new NShotGeneratorProxy<Integer>(new ConstantGenerator<Integer>(values[i]), 1);

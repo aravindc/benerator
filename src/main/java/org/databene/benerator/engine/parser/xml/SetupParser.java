@@ -102,7 +102,7 @@ public class SetupParser extends AbstractBeneratorDescriptorParser {
 	    return rootStatement;
 	}
 
-	private boolean isStandardXmlRootAttribute(String key) {
+	private static boolean isStandardXmlRootAttribute(String key) {
 		return XML_ATTRIBUTES.contains(key) || key.contains(":");
 	}
 

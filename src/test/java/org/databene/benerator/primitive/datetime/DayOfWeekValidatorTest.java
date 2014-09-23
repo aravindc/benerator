@@ -87,7 +87,7 @@ public class DayOfWeekValidatorTest {
 	
 	// private helper method -------------------------------------------------------------------------------------------
 
-    private void check(Validator<Date> validator, 
+    private static void check(Validator<Date> validator, 
     		boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday,
             boolean saturday, boolean sunday) {
 	    Calendar cal = new GregorianCalendar();

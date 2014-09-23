@@ -130,7 +130,7 @@ public class StochasticGeneratorFactory extends GeneratorFactory {
         return new BooleanGenerator(trueQuota != null ? trueQuota : 0.5);
     }
 
-    private boolean weightsUsed(WeightedSample<?>[] samples) {
+    private static boolean weightsUsed(WeightedSample<?>[] samples) {
 	    for (WeightedSample<?> sample : samples)
 	    	if (sample.getWeight() != 1)
 	    		return true;

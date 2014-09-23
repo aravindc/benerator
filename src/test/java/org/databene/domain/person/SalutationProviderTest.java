@@ -57,7 +57,7 @@ public class SalutationProviderTest {
         check(new Locale("xx"), "Mrs.", "Mr.");
     }
 
-    private void check(Locale locale, String femaleSalutation, String maleSalutation) {
+    private static void check(Locale locale, String femaleSalutation, String maleSalutation) {
         SalutationProvider provider = new SalutationProvider(locale);
         assertEquals(femaleSalutation, provider.salutation(Gender.FEMALE));
         assertEquals(maleSalutation, provider.salutation(Gender.MALE));

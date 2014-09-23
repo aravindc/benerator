@@ -60,7 +60,7 @@ public class MemStoreParser extends AbstractBeneratorDescriptorParser {
 		}
     }
 
-	private void checkAttributeSupport(Map<String, String> attributes) {
+	private static void checkAttributeSupport(Map<String, String> attributes) {
 		if (StringUtil.isEmpty(attributes.get(ATT_ID)))
 			throw new ConfigurationError("No id specified for <store>");
 		for (String key : attributes.keySet())

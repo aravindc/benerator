@@ -61,7 +61,7 @@ public class DbUnitEntitySource extends FileBasedEntitySource {
     		return new NestedDbUnitEntityIterator(resolvedUri, context);
     }
     
-    private Boolean isFlat(String uri) {
+    private static Boolean isFlat(String uri) {
 		try {
 			XMLInputFactory factory = XMLInputFactory.newInstance();
 			XMLStreamReader reader = factory.createXMLStreamReader(IOUtil.getInputStreamForURI(uri));

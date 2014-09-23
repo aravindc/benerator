@@ -285,7 +285,7 @@ public class CSVEntityExporterTest extends GeneratorTest {
 	    exporter.close();
     }
 
-	private String getContent(File file) throws IOException {
+	private static String getContent(File file) throws IOException {
 	    return IOUtil.getContentOfURI(file.getAbsolutePath());
     }
 

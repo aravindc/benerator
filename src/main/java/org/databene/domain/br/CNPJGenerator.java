@@ -94,7 +94,7 @@ public class CNPJGenerator extends WeightedCSVSampleGenerator<String> implements
 		return buf.toString();
 	}
 
-	private void addDigits(ArrayList<Integer> digits) {
+	private static void addDigits(ArrayList<Integer> digits) {
 		int sum = 0;
 		sum = (5 * digits.get(0)) + (4 * digits.get(1)) + (3 * digits.get(2)) + (2 * digits.get(3))
 		        + (9 * digits.get(4)) + (8 * digits.get(5)) + (7 * digits.get(6)) + (6 * digits.get(7))

@@ -85,7 +85,7 @@ public class ImportParser extends AbstractBeneratorDescriptorParser {
 		return new ImportStatement(defaults, classImports.toArray(), domainImports.toArray(), platformImports);
 	}
 
-	private List<PlatformDescriptor> importPlatforms(String[] platformNames, BeneratorParseContext context) {
+	private static List<PlatformDescriptor> importPlatforms(String[] platformNames, BeneratorParseContext context) {
 		List<PlatformDescriptor> platforms = new ArrayList<PlatformDescriptor>(platformNames.length);
 		for (String platformName : platformNames) {
 			PlatformDescriptor platformDescriptor = createPlatformDescriptor(platformName);
@@ -98,7 +98,7 @@ public class ImportParser extends AbstractBeneratorDescriptorParser {
 		return platforms;
 	}
 
-	private PlatformDescriptor createPlatformDescriptor(String platformName) {
+	private static PlatformDescriptor createPlatformDescriptor(String platformName) {
 		String platformPackage = (platformName.indexOf('.') < 0 ? "org.databene.platform." + platformName : platformName);
 		String descriptorClassName = platformPackage + ".PlatformDescriptor";
 		try {

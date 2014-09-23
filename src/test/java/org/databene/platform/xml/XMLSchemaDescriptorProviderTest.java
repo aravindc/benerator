@@ -172,7 +172,7 @@ public class XMLSchemaDescriptorProviderTest {
     
     // helpers ---------------------------------------------------------------------------------------------------------
 
-	private void assertComplexComponentWithSimpleContent(String name, ComplexTypeDescriptor rootDescriptor) {
+	private static void assertComplexComponentWithSimpleContent(String name, ComplexTypeDescriptor rootDescriptor) {
 		ComponentDescriptor stComponent = rootDescriptor.getComponent(name);
         assertNotNull(stComponent);
         assertTrue(stComponent instanceof PartDescriptor);

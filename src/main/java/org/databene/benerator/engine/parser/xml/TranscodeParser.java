@@ -79,7 +79,7 @@ public class TranscodeParser extends AbstractTranscodeParser {
 		return result;
     }
 
-	private Expression<String> parseSelector(Element element, TranscodingTaskStatement parent) {
+	private static Expression<String> parseSelector(Element element, TranscodingTaskStatement parent) {
 		return parseScriptableStringAttribute("selector", element);
 	}
 

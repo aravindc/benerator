@@ -30,7 +30,7 @@ public class BooleanGeneratorTest extends GeneratorClassTest {
         checkDistribution(1.0, 1000);
     }
 
-    private void checkDistribution(double trueProbability, int n) throws IllegalGeneratorStateException {
+    private static void checkDistribution(double trueProbability, int n) throws IllegalGeneratorStateException {
         BooleanGenerator generator = new BooleanGenerator((float)trueProbability);
         int[] count = new int[2];
         for (int i = 0; i < n; i++) {

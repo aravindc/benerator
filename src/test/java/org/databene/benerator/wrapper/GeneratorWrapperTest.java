@@ -56,7 +56,7 @@ public class GeneratorWrapperTest extends GeneratorTest {
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 
-	private void expect12(MyWrapper wrapper) {
+	private static void expect12(MyWrapper wrapper) {
 		assertEquals(1, (int) GeneratorUtil.generateNonNull(wrapper));
 		assertEquals(2, (int) GeneratorUtil.generateNonNull(wrapper));
 		assertUnavailable(wrapper);

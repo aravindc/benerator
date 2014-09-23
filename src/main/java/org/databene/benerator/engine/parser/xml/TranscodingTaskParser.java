@@ -65,7 +65,7 @@ public class TranscodingTaskParser extends AbstractTranscodeParser {
 		return statement;
     }
 
-	private Expression<String> parseIdentity(Element element) {
+	private static Expression<String> parseIdentity(Element element) {
 		return parseScriptableStringAttribute("identity", element);
 	}
 

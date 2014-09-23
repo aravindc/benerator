@@ -179,7 +179,7 @@ public class XMLEntityExporter extends AbstractConsumer implements FileExporter 
 		}
     }
 
-    private boolean hasSimpleType(Object value) {
+    private static boolean hasSimpleType(Object value) {
     	return (!value.getClass().isArray() && !(value instanceof Entity));
     }
 

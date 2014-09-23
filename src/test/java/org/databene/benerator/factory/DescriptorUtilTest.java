@@ -114,7 +114,7 @@ public class DescriptorUtilTest extends ModelTest {
 		checkConversion(1, "big_decimal", BigDecimal.ONE);
 	}
 	
-	private void checkConversion(Object source, String targetType, Object expectedResult) {
+	private static void checkConversion(Object source, String targetType, Object expectedResult) {
 		DataModel model = new DataModel();
 		SimpleTypeDescriptor typeDescriptor = (SimpleTypeDescriptor) model.getTypeDescriptor(targetType);
 		Object result = DescriptorUtil.convertType(source, typeDescriptor);

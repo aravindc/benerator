@@ -77,7 +77,7 @@ public class XmlCreatorTest {
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
-    private Document createXMLFile(String schemaUri, String root, String filename) throws IOException {
+    private static Document createXMLFile(String schemaUri, String root, String filename) throws IOException {
     	String[] args = new String[] { schemaUri, root, filename, "1" };
         XmlCreator.main(args);
         return XMLUtil.parse(filename);

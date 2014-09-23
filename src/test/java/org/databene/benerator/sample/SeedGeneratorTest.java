@@ -95,7 +95,7 @@ public class SeedGeneratorTest extends GeneratorTest {
         }
     }
 
-	private void checkSequence(Character[] sequence, int depth) {
+	private static void checkSequence(Character[] sequence, int depth) {
 	    String seqString = ArrayFormat.format(sequence);
 	    assertNotNull(sequence);
 	    assertTrue(sequence.length > 0);

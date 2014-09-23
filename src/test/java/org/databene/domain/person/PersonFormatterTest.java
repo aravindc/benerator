@@ -47,7 +47,7 @@ public class PersonFormatterTest {
 		check("Lee Bruce", Locales.CHINESE, null, "Bruce", "Lee");
 	}
 
-	private void check(String expected, Locale locale, String salutation, String givenName, String familyName) {
+	private static void check(String expected, Locale locale, String salutation, String givenName, String familyName) {
 		Person person = new Person(locale);
 		person.setSalutation(salutation);
 		person.setGivenName(givenName);

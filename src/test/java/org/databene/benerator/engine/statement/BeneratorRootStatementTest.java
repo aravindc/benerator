@@ -122,7 +122,7 @@ public class BeneratorRootStatementTest extends BeneratorIntegrationTest {
         }
     }
 
-	private void checkGeneration(Generator<?> generator) {
+	private static void checkGeneration(Generator<?> generator) {
 	    Entity entity = (Entity) GeneratorUtil.generateNonNull(generator);
 	    assertNotNull("generator unavailable: " + generator, entity);
 		assertEquals("Person", entity.type());

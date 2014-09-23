@@ -235,7 +235,7 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		assertEquals(expectedCity, iterator.next(new DataContainer<Entity>()).getData());
 	}
 	
-	private void dropTables(Connection s) throws SQLException {
+	private static void dropTables(Connection s) throws SQLException {
 		DBUtil.executeUpdate("drop table user", s);
 		DBUtil.executeUpdate("drop table role", s);
 		DBUtil.executeUpdate("drop table city", s);

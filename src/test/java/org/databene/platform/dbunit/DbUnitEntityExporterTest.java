@@ -84,7 +84,7 @@ public class DbUnitEntityExporterTest extends ModelTest {
 		exporter.close();
 	}
 
-	private void assertPerson(Element element, String name, int age) {
+	private static void assertPerson(Element element, String name, int age) {
 	    assertEquals("Person", element.getNodeName());
 		assertEquals(name, element.getAttribute("name"));
 		assertEquals(String.valueOf(age), element.getAttribute("age"));

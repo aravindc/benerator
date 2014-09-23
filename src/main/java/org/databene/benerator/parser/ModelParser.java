@@ -281,7 +281,7 @@ public class ModelParser {
         return descriptor;
     }
     
-    private void assertElementName(Element element, String... expectedNames) {
+    private static void assertElementName(Element element, String... expectedNames) {
         String elementName = XMLUtil.localName(element);
         for (String expectedName : expectedNames)
             if (elementName.equals(expectedName))

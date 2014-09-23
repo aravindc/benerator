@@ -93,11 +93,11 @@ public class ConsoleExporterTest extends ModelTest {
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 
-	private void check(String expectedOut, Object... ins) {
+	private static void check(String expectedOut, Object... ins) {
 		check(new ConsoleExporter(), expectedOut, ins);
 	}
 	
-	private void check(ConsoleExporter exporter, String expectedOut, Object... ins) {
+	private static void check(ConsoleExporter exporter, String expectedOut, Object... ins) {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		exporter.setOut(new PrintStream(stream));
 		try {

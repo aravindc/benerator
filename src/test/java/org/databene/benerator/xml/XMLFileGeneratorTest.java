@@ -86,7 +86,7 @@ public class XMLFileGeneratorTest extends GeneratorTest {
     
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private void assertElementNameAndText(Element child, String name, String text) {
+    private static void assertElementNameAndText(Element child, String name, String text) {
         assertNotNull(child);
         assertEquals(name, child.getNodeName());
         assertEquals(text, XMLUtil.getText(child));

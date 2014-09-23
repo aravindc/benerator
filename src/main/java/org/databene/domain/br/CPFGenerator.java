@@ -76,7 +76,7 @@ public class CPFGenerator extends ThreadSafeNonNullGenerator<String> {
         return String.class;
     }
     
-    private void addDigit(ArrayList<Integer> digits){
+    private static void addDigit(ArrayList<Integer> digits){
     	int sum=0;
     	for (int i=0, j=digits.size()+1; i < digits.size(); i++,j-- )
     		sum += digits.get(i) * j;

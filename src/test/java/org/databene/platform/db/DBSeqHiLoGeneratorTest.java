@@ -92,7 +92,7 @@ public class DBSeqHiLoGeneratorTest extends GeneratorTest {
     	}
     }
     
-    private void expectSequence(DBSeqHiLoGenerator generator, long ... values) {
+    private static void expectSequence(DBSeqHiLoGenerator generator, long ... values) {
         for (long expectedValue : values) {
             Long product = generator.generate();
             assertNotNull("Generator is not available: " + generator, product);

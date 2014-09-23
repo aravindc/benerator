@@ -216,7 +216,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	}
 
 	@SuppressWarnings("unchecked")
-    private Generator<String> createAndInitGenerator(
+    private static Generator<String> createAndInitGenerator(
     		SimpleTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
 		Generator<String> generator = (Generator<String>) new SimpleTypeGeneratorFactory().createGenerator(
 				type, null, false, uniqueness, context);

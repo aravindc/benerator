@@ -57,7 +57,7 @@ public class EquivalenceGeneratorFactoryTest {
 		checkMidDate(date(2011, 7, 20), date(2011, 7, 30), DAY.getMillis() * 3 / 2, date(2011, 7, 24, 12, 0, 0, 0));
 	}
 	
-	private void checkMidDate(Date min, Date max, long granularity, Date expected) {
+	private static void checkMidDate(Date min, Date max, long granularity, Date expected) {
 		EquivalenceGeneratorFactory factory = new EquivalenceGeneratorFactory();
 		Date result = factory.midDate(min, max, granularity);
 		assertEquals(expected, result);

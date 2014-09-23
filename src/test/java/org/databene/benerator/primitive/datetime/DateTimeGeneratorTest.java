@@ -113,7 +113,7 @@ public class DateTimeGeneratorTest extends GeneratorClassTest {
         }
     }
 
-	private DateTimeGenerator createGenerator(Date minDate, Date maxDate, Time minTime, Time maxTime) {
+	private static DateTimeGenerator createGenerator(Date minDate, Date maxDate, Time minTime, Time maxTime) {
 	    DateTimeGenerator generator = new DateTimeGenerator();
         generator.setMinDate(minDate);
         generator.setMaxDate(maxDate);

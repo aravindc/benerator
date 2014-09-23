@@ -52,7 +52,7 @@ public class DecimalQuantizerTest {
 		checkConversion( "0.1",  "0.2", posQuantizer);
 	}
 
-	private void checkConversion(String expectedResult, String sourceValue, DecimalQuantizer quantizer) {
+	private static void checkConversion(String expectedResult, String sourceValue, DecimalQuantizer quantizer) {
 		assertEquals(0, new BigDecimal(expectedResult).compareTo(quantizer.convert(new BigDecimal(sourceValue))));
 	}
 	

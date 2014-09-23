@@ -122,7 +122,7 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 	
-	private void checkRecursion(StateTransitionGenerator<Integer> generator) {
+	private static void checkRecursion(StateTransitionGenerator<Integer> generator) {
 	    for (int n = 0; n < 10; n++) {
 			List<Transition> products = GeneratorUtil.allProducts(generator);
 			assertEquals(new Transition(null, 1), products.get(0));

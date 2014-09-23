@@ -388,7 +388,7 @@ public class CreateProjectPanel extends JPanel {
         }
 	}
 
-	private Setup loadOrCreateSetup() {
+	private static Setup loadOrCreateSetup() {
 		ObjectInputStream in = null;
 		try {
 			in = new ObjectInputStream(new FileInputStream(SETUP_FILE));

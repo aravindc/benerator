@@ -53,7 +53,7 @@ public class RepeatSequenceTest extends GeneratorTest {
 		expectGeneratedSequence(generator, 1, 2, 2, 3, 3, 3).withCeasedAvailability();
 	}
 	
-	private RepeatSequence createSequence122333() {
+	private static RepeatSequence createSequence122333() {
 	    StepSequence repetitionDistribution = new StepSequence(BigDecimal.ONE, BigDecimal.ZERO);
 		return new RepeatSequence(0, 2, 1, repetitionDistribution);
     }

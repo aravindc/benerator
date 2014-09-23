@@ -200,7 +200,7 @@ public class EvaluateStatement implements Statement {
 		}
     }
 
-	private String mapExtensionOf(String uri) {
+	private static String mapExtensionOf(String uri) {
 		String lcUri = uri.toLowerCase();
 		for (Entry<String, String> entry : extensionMap.entrySet())
 			if (lcUri.endsWith(entry.getKey()))

@@ -56,9 +56,10 @@ public class SequencedDatasetCSVGenerator<E> extends GeneratorProxy<E> {
 		setSource(new SampleGenerator<E>((Class<E>) samples.get(0).getClass(), distribution, false, samples));
     }
 
-	private List<E> parseFiles(String datasetName, char separator, String nesting, String filenamePattern,
-            String encoding, Converter<String, E> preprocessor) {
-        List<WeightedSample<E>> weightedSamples = CSVGeneratorUtil.parseDatasetFiles(datasetName, separator, nesting, filenamePattern, encoding, preprocessor);
+	private static <T> List<T> parseFiles(String datasetName, char separator, String nesting, String filenamePattern,
+            String encoding, Converter<String, T> preprocessor) {
+        List<WeightedSample<T>> weightedSamples = CSVGeneratorUtil.parseDatasetFiles(
+        		datasetName, separator, nesting, filenamePattern, encoding, preprocessor);
         return SampleGeneratorUtil.extractValues(weightedSamples);
     }
 

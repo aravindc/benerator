@@ -115,7 +115,7 @@ public class Country {
         IOUtil.close(iterator);
     }
 
-    private void mapProperty(String propertyName, Entity source, State target, boolean required) {
+    private static void mapProperty(String propertyName, Entity source, State target, boolean required) {
     	String propertyValue = String.valueOf(source.get(propertyName));
     	if (required)
     		Assert.notNull(propertyValue, propertyName);

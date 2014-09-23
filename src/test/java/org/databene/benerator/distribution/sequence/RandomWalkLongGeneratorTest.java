@@ -103,7 +103,7 @@ public class RandomWalkLongGeneratorTest extends GeneratorClassTest {
         assertProductSpace(space, generator);
     }
 
-    private void assertProductSpace(Set<Long> space, RandomWalkLongGenerator generator) {
+    private static void assertProductSpace(Set<Long> space, RandomWalkLongGenerator generator) {
         Long product = generator.generate(new ProductWrapper<Long>()).unwrap();
 		assertTrue("Expected one of " + space + ", but found " + product, space.contains(product));
     }

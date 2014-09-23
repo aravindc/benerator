@@ -76,7 +76,7 @@ public class CyclicGeneratorProxyTest extends GeneratorTest {
 	
 	// helper methods --------------------------------------------------------------------------------------------------
 
-	private void expect12(CyclicGeneratorProxy<Integer> wrapper) {
+	private static void expect12(CyclicGeneratorProxy<Integer> wrapper) {
 		assertEquals(1, (int) GeneratorUtil.generateNonNull(wrapper));
 		assertEquals(2, (int) GeneratorUtil.generateNonNull(wrapper));
     }
