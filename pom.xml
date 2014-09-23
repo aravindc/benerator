@@ -9,11 +9,11 @@
 
     <properties>
     	<build_number>${buildNumber}</build_number>
-    	<jdbacl_version>1.0.0-EA1</jdbacl_version>
+    	<jdbacl_version>0.8.19-EA1</jdbacl_version>
     	<formats_version>1.0.0-EA1</formats_version>
     	<script_version>1.0.0-EA1</script_version>
     	<commons_version>1.0.0-EA1</commons_version>
-    	<contiperf_version>2.3.2</contiperf_version>
+    	<contiperf_version>2.3.3</contiperf_version>
     </properties>
 
     <packaging>jar</packaging>
