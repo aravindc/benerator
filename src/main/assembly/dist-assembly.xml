@@ -19,7 +19,7 @@
         </fileSet>
         <fileSet>
             <directory>releasenotes</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>releasenotes</outputDirectory>
             <includes>
                 <include>releasenotes*.txt</include>
             </includes>
