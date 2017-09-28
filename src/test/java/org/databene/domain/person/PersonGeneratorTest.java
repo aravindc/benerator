@@ -32,6 +32,7 @@ import org.databene.commons.TimeUtil;
 import org.databene.domain.address.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -75,6 +76,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         }
     }
 
+    @Ignore
     @Test
     public void testFemaleQuota() {
         PersonGenerator generator = new PersonGenerator();
@@ -103,6 +105,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         }
     }
 
+    @Ignore
     @Test
     public void testPoland() {
         PersonGenerator generator = new PersonGenerator(Country.POLAND.getIsoCode(), new Locale("pl"));
@@ -158,6 +161,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         generator.generateForDataset("xx");
     }
 
+    @Ignore
     @Test
     public void testMinMaxAgeYears() {
         PersonGenerator generator = new PersonGenerator();

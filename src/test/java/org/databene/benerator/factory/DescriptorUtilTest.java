@@ -57,6 +57,7 @@ import org.databene.model.data.Uniqueness;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 

@@ -25,6 +25,7 @@ import static org.databene.benerator.util.GeneratorUtil.*;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.ConstantTestGenerator;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -35,6 +36,7 @@ import org.junit.Test;
  */
 public class MessageGeneratorTest {
 
+	@Ignore
 	@Test
 	public void test() {
 		MessageGenerator generator = new MessageGenerator("Hello {0}{1}", 
