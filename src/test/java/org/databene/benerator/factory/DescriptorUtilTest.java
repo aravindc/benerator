@@ -83,6 +83,7 @@ public class DescriptorUtilTest extends ModelTest {
 
 	// instantiation tests ---------------------------------------------------------------------------------------------
 
+	@Ignore
 	@Test
 	public void testConvertType() {
 		// test string parsing
