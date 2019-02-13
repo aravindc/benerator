@@ -31,8 +31,8 @@ import javax.validation.ConstraintValidatorContext;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Validates an eight-digit EAN code.<br/>
- * <br/>
+ * Validates an eight-digit EAN code.<br>
+ * <br>
  * Created: 26.03.2008 12:17:58
  * @author Volker Bergmann
  */

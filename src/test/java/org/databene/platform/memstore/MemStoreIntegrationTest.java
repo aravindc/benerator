@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Integration test for the {@link MemStore} class.<br/><br/>
+ * Integration test for the {@link MemStore} class.<br><br>
  * Created: 08.03.2011 16:06:12
  * @since 0.6.6
  * @author Volker Bergmann

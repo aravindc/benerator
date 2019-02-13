@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that marks a class or method to be tested with gentle value defaults.<br/><br/>
+ * Annotation that marks a class or method to be tested with gentle value defaults.<br><br>
  * Created: 15.07.2011 21:38:21
  * @since 0.7.0
  * @author Volker Bergmann

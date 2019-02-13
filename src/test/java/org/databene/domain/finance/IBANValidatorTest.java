@@ -30,8 +30,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link IBANValidator}.<br/>
- * <br/>
+ * Tests the {@link IBANValidator}.<br>
+ * <br>
  * Created at 12.07.2008 15:28:08
  * @since 0.5.4
  * @author Volker Bergmann

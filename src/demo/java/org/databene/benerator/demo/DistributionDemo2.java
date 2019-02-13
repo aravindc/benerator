@@ -28,7 +28,7 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.function.ExponentialFunction;
 
 /**
- * Demonstrates usage of the {@link ExponentialFunction}.<br/><br/>
+ * Demonstrates usage of the {@link ExponentialFunction}.<br><br>
  * Created: 08.03.2011 17:29:29
  * @since 0.6.6
  * @author Volker Bergmann

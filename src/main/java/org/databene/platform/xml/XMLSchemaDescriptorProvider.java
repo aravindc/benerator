@@ -75,8 +75,8 @@ import org.w3c.dom.Element;
 import static org.databene.commons.xml.XMLUtil.*;
 
 /**
- * Parses an XML schema file into a benerator metadata structure.<br/>
- * <br/>
+ * Parses an XML schema file into a benerator metadata structure.<br>
+ * <br>
  * Created: 27.02.2008 09:40:45
  * @since 0.5.0
  * @author Volker Bergmann

@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
 
 /**
  * Specifies which {@link org.databene.benerator.distribution.Distribution} to use when generating data for the 
- * annotated element.<br/><br/>
+ * annotated element.<br><br>
  * Created: 02.05.2010 18:53:18
  * @since 0.6.1
  * @author Volker Bergmann

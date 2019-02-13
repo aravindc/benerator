@@ -58,7 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Exports entities to Excel sheets.<br/><br/>
+ * Exports entities to Excel sheets.<br><br>
  * Created at 07.05.2008 13:31:15
  * @since 0.5.3
  * @author Volker Bergmann

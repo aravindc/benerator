@@ -33,8 +33,8 @@ import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 import org.databene.benerator.util.RandomUtil;
 
 /**
- * Long Generator that implements a 'random' Long Sequence.<br/>
- * <br/>
+ * Long Generator that implements a 'random' Long Sequence.<br>
+ * <br>
  * Created: 03.09.2006 09:53:01
  * @author Volker Bergmann
  */

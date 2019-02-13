@@ -33,7 +33,7 @@ import org.databene.commons.Validator;
 import org.databene.model.data.Entity;
 
 /**
- * Validates an AuditedUpdatable entity.<br/><br/>
+ * Validates an AuditedUpdatable entity.<br><br>
  * Created: 26.03.2008 12:32:58
  * @author Volker Bergmann
  */

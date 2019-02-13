@@ -34,7 +34,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * A EMailGeneratorTest.<br/><br/>
+ * A EMailGeneratorTest.<br><br>
  * Created at 20.04.2008 08:16:28
  * @since 0.5.2
  * @author Volker Bergmann

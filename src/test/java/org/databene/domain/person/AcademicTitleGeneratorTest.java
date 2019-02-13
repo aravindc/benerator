@@ -32,7 +32,7 @@ import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link AcademicTitleGenerator}.<br/><br/>
+ * Tests the {@link AcademicTitleGenerator}.<br><br>
  * Created: 17.03.2013 18:47:40
  * @since 0.8.2
  * @author Volker Bergmann

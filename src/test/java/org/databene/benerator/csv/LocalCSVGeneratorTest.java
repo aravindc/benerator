@@ -37,7 +37,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link LocalCSVGenerator}.<br/><br/>
+ * Tests the {@link LocalCSVGenerator}.<br><br>
  * Created: 14.06.2007 07:01:53
  * @since 0.1
  * @author Volker Bergmann

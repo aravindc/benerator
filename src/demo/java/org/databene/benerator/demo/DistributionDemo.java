@@ -17,8 +17,8 @@ import java.awt.*;
 import java.math.BigDecimal;
 
 /**
- * Demonstrates the built-in Sequences of 'databene generator'.<br/>
- * <br/>
+ * Demonstrates the built-in Sequences of 'databene generator'.<br>
+ * <br>
  * Created: 07.09.2006 21:13:33
  * @author Volker Bergmann
  */

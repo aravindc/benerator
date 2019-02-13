@@ -30,7 +30,7 @@ import org.databene.commons.Validator;
 import org.databene.model.data.Entity;
 
 /**
- * Validates an entity by its name.<br/><br/>
+ * Validates an entity by its name.<br><br>
  * Created: 29.03.2008 09:59:33
  * @since 0.5.0
  * @author Volker Bergmann

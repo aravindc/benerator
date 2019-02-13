@@ -38,8 +38,8 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 
 /**
- * Marks a fied as 8-digit-EAN (for JSR 303 Bean Validation).<br/>
- * <br/>
+ * Marks a fied as 8-digit-EAN (for JSR 303 Bean Validation).<br>
+ * <br>
  * Created at 03.07.2009 18:37:46
  * @since 0.6.0
  * @author Volker Bergmann

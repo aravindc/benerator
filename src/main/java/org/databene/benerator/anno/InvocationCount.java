@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for configuring Feed4TestNG test method invocation.<br/><br/>
+ * Annotation for configuring Feed4TestNG test method invocation.<br><br>
  * Created: 19.04.2010 09:47:18
  * @since 0.6.1
  * @author Volker Bergmann

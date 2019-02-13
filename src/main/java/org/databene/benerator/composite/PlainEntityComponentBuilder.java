@@ -32,7 +32,7 @@ import org.databene.commons.UpdateFailedException;
 import org.databene.model.data.Entity;
 
 /**
- * Builds a plain (atomic) component that is supposed to have a name.<br/><br/>
+ * Builds a plain (atomic) component that is supposed to have a name.<br><br>
  * Created at 09.05.2008 07:20:43
  * @since 0.5.4
  * @author Volker Bergmann

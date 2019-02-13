@@ -22,7 +22,7 @@
 package org.databene.benerator.archetype;
 
 /**
- * Provides informations where to put which source file types in a project.<br/><br/>
+ * Provides informations where to put which source file types in a project.<br><br>
  * Created: 04.04.2010 11:40:17
  * @since 0.6.0
  * @author Volker Bergmann

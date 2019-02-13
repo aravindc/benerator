@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
- * Parses a &lt;bean&gt; element.<br/><br/>
+ * Parses a &lt;bean&gt; element.<br><br>
  * Created: 25.10.2009 01:09:59
  * @since 0.6.0
  * @author Volker Bergmann

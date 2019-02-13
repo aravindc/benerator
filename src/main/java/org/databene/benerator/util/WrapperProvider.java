@@ -24,7 +24,7 @@ package org.databene.benerator.util;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Provides a {@link ThreadLocal} implementation that wraps a {@link ProductWrapper} for reuse.<br/><br/>
+ * Provides a {@link ThreadLocal} implementation that wraps a {@link ProductWrapper} for reuse.<br><br>
  * Created: 16.02.2010 10:59:31
  * @since 0.6.0
  * @author Volker Bergmann

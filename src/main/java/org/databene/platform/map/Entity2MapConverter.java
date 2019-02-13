@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Converts an Entity to a Map.<br/>
- * <br/>
+ * Converts an Entity to a Map.<br>
+ * <br>
  * Created: 29.08.2007 18:12:58
  * @author Volker Bergmann
  */

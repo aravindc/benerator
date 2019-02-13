@@ -32,8 +32,8 @@ import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
- * Generates EAN8 and EAN13 codes at the configured ratio.<br/>
- * <br/>
+ * Generates EAN8 and EAN13 codes at the configured ratio.<br>
+ * <br>
  * Created: 30.07.2007 21:23:44
  * @author Volker Bergmann
  */

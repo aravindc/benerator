@@ -32,8 +32,8 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link GenderGenerator}.<br/>
- * <br/>
+ * Tests the {@link GenderGenerator}.<br>
+ * <br>
  * Created: 09.06.2006 21:47:53
  * @since 0.1
  * @author Volker Bergmann

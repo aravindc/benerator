@@ -43,7 +43,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the ComplexTypeGeneratorFactory.<br/><br/>
+ * Tests the ComplexTypeGeneratorFactory.<br><br>
  * Created at 27.04.2008 18:29:59
  * @since 0.5.2
  * @author Volker Bergmann

@@ -32,8 +32,8 @@ import org.databene.script.expression.UnaryExpression;
 
 /**
  * Expression that evaluates a text as a literal; if it encounters a script expression 
- * (like {settings.base}) it evaluates the script and parses its result.<br/>
- * <br/>
+ * (like {settings.base}) it evaluates the script and parses its result.<br>
+ * <br>
  * Created at 23.07.2009 14:34:42
  * @see LiteralParser
  * @since 0.6.0

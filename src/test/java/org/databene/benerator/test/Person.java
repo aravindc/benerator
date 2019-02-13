@@ -33,8 +33,8 @@ import java.util.Date;
 import org.databene.commons.NullSafeComparator;
 
 /**
- * JavaBean class for testing.<br/>
- * <br/>
+ * JavaBean class for testing.<br>
+ * <br>
  * Created at 28.12.2008 11:34:47
  * @since 0.5.7
  * @author Volker Bergmann

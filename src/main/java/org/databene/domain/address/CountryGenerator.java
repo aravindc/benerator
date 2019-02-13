@@ -37,8 +37,8 @@ import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.WeighingGeneratorWrapper;
 
 /**
- * Generates a random country.<br/>
- * <br/>
+ * Generates a random country.<br>
+ * <br>
  * Created: 11.06.2006 08:15:51
  * @author Volker Bergmann
  */

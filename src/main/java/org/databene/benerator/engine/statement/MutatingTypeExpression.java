@@ -30,7 +30,7 @@ import org.databene.script.Expression;
 import org.w3c.dom.Element;
 
 /**
- * {@link Expression} which changes an {@link Entity}'s type.<br/><br/>
+ * {@link Expression} which changes an {@link Entity}'s type.<br><br>
  * Created: 18.04.2011 14:48:57
  * @since 0.6.6
  * @author Volker Bergmann

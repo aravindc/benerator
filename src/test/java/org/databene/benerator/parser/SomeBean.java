@@ -22,8 +22,8 @@
 package org.databene.benerator.parser;
 
 /**
- * Helper bean for testing.<br/>
- * <br/>
+ * Helper bean for testing.<br>
+ * <br>
  * Created at 12.10.2009 15:03:12
  * @since 0.6.0
  * @author Volker Bergmann

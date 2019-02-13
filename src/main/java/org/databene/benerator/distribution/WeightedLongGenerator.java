@@ -34,8 +34,8 @@ import java.util.Random;
 import java.util.Arrays;
 
 /**
- * Long Generator that supports a weight function.<br/>
- * <br/>
+ * Long Generator that supports a weight function.<br>
+ * <br>
  * Created: 18.06.2006 15:00:41
  * @since 0.1
  * @author Volker Bergmann

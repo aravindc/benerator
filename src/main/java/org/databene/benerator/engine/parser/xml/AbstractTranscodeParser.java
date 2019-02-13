@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
  * Parent class for parsers that read parsing related XML elements. 
  * It provides functionality for parsing <code>source</code>, 
  * <code>target</code> and <code>irrelevantColumns</code>, 
- * <code>pageSize</code> and <code>onError</code>.<br/><br/>
+ * <code>pageSize</code> and <code>onError</code>.<br><br>
  * Created: 11.09.2010 07:12:55
  * @since 0.6.4
  * @author Volker Bergmann

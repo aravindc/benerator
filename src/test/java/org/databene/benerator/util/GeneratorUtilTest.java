@@ -34,7 +34,7 @@ import org.databene.commons.SysUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link GeneratorUtil} class.<br/><br/>
+ * Tests the {@link GeneratorUtil} class.<br><br>
  * Created: 30.07.2010 18:54:13
  * @since 0.6.3
  * @author Volker Bergmann

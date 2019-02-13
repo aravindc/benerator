@@ -35,8 +35,8 @@ import org.databene.commons.NumberUtil;
 /**
  * Creates UUIDs evaluating IP address, a JVM ID and timestamp.
  * The algorithm is intended to be compatible to the uuid format used by Hibernate, 
- * so it differs from the one defined in <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.<br/>
- * <br/>
+ * so it differs from the one defined in <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.<br>
+ * <br>
  * Created: 15.11.2007 10:52:55
  * @author Volker Bergmann
  */

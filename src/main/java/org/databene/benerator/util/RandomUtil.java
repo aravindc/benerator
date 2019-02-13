@@ -36,8 +36,8 @@ import org.databene.script.DatabeneScriptParser;
 import org.databene.script.WeightedSample;
 
 /**
- * Provides utility functions for generating numbers in an interval.<br/>
- * <br/>
+ * Provides utility functions for generating numbers in an interval.<br>
+ * <br>
  * Created: 03.09.2006 13:23:02
  * @since 0.1
  * @author Volker Bergmann

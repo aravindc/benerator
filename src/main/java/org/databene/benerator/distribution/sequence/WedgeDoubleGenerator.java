@@ -25,7 +25,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
- * Generates 'Double' values for the 'wedge' sequence.<br/><br/>
+ * Generates 'Double' values for the 'wedge' sequence.<br><br>
  * Created: 13.02.2010 13:06:27
  * @since 0.6.0
  * @author Volker Bergmann

@@ -50,8 +50,8 @@ import java.util.List;
 
 /**
  * Iterates Entities in a CSV file.
- * When the property 'columns' is set, the CSV file is assumed to have no header row.<br/>
- * <br/>
+ * When the property 'columns' is set, the CSV file is assumed to have no header row.<br>
+ * <br>
  * Created: 07.04.2008 09:49:08
  * @since 0.5.1
  * @author Volker Bergmann

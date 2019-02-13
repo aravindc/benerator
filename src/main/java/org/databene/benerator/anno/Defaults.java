@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 import org.databene.benerator.factory.DefaultsProvider;
 
 /**
- * Declares a {@link DefaultsProvider} to use for testing.<br/><br/>
+ * Declares a {@link DefaultsProvider} to use for testing.<br><br>
  * Created: 11.11.2012 14:58:15
  * @since 0.7.10
  * @author Volker Bergmann

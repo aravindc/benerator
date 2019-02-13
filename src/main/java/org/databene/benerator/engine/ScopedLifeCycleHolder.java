@@ -22,7 +22,7 @@
 package org.databene.benerator.engine;
 
 /**
- * Common interface of classes with a prepare method.<br/><br/>
+ * Common interface of classes with a prepare method.<br><br>
  * Created: 02.09.2011 10:27:09
  * @since 0.7.0
  * @author Volker Bergmann

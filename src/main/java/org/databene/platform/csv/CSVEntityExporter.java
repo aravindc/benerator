@@ -45,8 +45,8 @@ import java.util.List;
 /**
  * Exports Entities to a CSV file.
  * The default line separator is CR LF according to RFC 4180. 
- * It can be set explicitly by <code>setLineSeparator()</code>.<br/>
- * <br/>
+ * It can be set explicitly by <code>setLineSeparator()</code>.<br>
+ * <br>
  * Created: 21.08.2007 21:16:59
  * @author Volker Bergmann
  */

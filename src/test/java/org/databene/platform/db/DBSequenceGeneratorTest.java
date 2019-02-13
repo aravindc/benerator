@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the {@link DBSequenceGenerator}.<br/><br/>
+ * Tests the {@link DBSequenceGenerator}.<br><br>
  * Created: 11.11.2009 18:50:58
  * @since 0.6.0
  * @author Volker Bergmann

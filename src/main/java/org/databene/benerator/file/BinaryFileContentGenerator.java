@@ -27,7 +27,7 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.IOUtil;
 
 /**
- * Provides file contents as byte arrays.<br/><br/>
+ * Provides file contents as byte arrays.<br><br>
  * Created: 24.02.2010 07:43:02
  * @since 0.6.0
  * @author Volker Bergmann

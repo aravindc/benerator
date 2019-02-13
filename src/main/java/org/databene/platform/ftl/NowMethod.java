@@ -34,8 +34,8 @@ import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 
 /**
- * Returns the current date and time.<br/>
- * <br/>
+ * Returns the current date and time.<br>
+ * <br>
  * Created at 29.05.2009 19:26:15
  * @since 0.6.0
  * @author Volker Bergmann

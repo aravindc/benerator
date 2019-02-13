@@ -32,8 +32,8 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link StepDoubleGenerator}.<br/>
- * <br/>
+ * Tests the {@link StepDoubleGenerator}.<br>
+ * <br>
  * Created: 26.07.2007 18:41:19
  * @author Volker Bergmann
  */

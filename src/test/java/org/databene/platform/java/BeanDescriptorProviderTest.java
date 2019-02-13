@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * Tests the {@link BeanDescriptorProvider}.<br/><br/>
+ * Tests the {@link BeanDescriptorProvider}.<br><br>
  * Created: 19.04.2010 10:38:21
  * @since 0.6.1
  * @author Volker Bergmann

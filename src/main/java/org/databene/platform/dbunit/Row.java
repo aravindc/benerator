@@ -24,7 +24,7 @@ package org.databene.platform.dbunit;
 import org.databene.commons.ArrayFormat;
 
 /**
- * Provides the data of a database row with meta information.<br/><br/>
+ * Provides the data of a database row with meta information.<br><br>
  * Created: 20.09.2011 08:06:13
  * @since 0.7.1
  * @author Volker Bergmann

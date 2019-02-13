@@ -32,7 +32,7 @@ import org.databene.commons.SyntaxError;
 import org.junit.Test;
 
 /**
- * Tests {@link ImportParser} and {@link ImportStatement}.<br/><br/>
+ * Tests {@link ImportParser} and {@link ImportStatement}.<br><br>
  * Created: 01.05.2010 07:24:25
  * @since 0.6.1
  * @author Volker Bergmann

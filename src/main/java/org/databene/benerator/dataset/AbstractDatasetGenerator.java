@@ -40,7 +40,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * {@link DatasetBasedGenerator}s, inherit from this class and implement 
  * the abstract method {@link #createAtomicDatasetGenerator(Dataset, boolean)}.
  * All dataset recognition and handling and data generation will be handled 
- * automatically.<br/><br/>
+ * automatically.<br><br>
  * Created: 10.03.2011 10:44:58
  * @since 0.6.6
  * @author Volker Bergmann

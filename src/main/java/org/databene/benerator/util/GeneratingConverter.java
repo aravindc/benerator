@@ -30,7 +30,7 @@ import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
- * {@link Converter} implementation which makes use of a {@link Generator}.<br/><br/>
+ * {@link Converter} implementation which makes use of a {@link Generator}.<br><br>
  * Created: 27.07.2011 08:44:40
  * @since 0.7.0
  * @author Volker Bergmann

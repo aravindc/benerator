@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 import org.junit.Test;
 
 /**
- * Tests the {@link CityManager}.<br/><br/>
+ * Tests the {@link CityManager}.<br><br>
  * Created: 11.02.2010 18:27:23
  * @since 0.6.0
  * @author Volker Bergmann

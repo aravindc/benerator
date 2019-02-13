@@ -36,8 +36,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Tests the {@link CharacterGenerator}.<br/>
- * <br/>
+ * Tests the {@link CharacterGenerator}.<br>
+ * <br>
  * @author Volker Bergmann
  * @since 0.1
  * Created: 09.06.2006 21:03:42

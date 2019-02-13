@@ -34,8 +34,8 @@ import static org.databene.commons.NumberUtil.*;
 /**
  * {@link Sequence} implementation for a distribution that creates the bit-reverses (r) 
  * of a continuous series, e.g. r(1), r(2), r(3), ...; the numbers produced by a related 
- * generator are unique as long as the generator is not reset.<br/>
- * <br/>
+ * generator are unique as long as the generator is not reset.<br>
+ * <br>
  * Created at 23.09.2009 18:59:30
  * @since 0.6.0
  * @author Volker Bergmann

@@ -30,8 +30,8 @@ import org.databene.commons.LocaleUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link DepartmentNameGenerator}.<br/>
- * <br/>
+ * Tests the {@link DepartmentNameGenerator}.<br>
+ * <br>
  * Created: 14.10.2009 10:44:23
  * @since 0.6.0
  * @author Volker Bergmann

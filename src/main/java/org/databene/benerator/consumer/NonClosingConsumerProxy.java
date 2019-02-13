@@ -27,7 +27,7 @@ import org.databene.benerator.engine.ResourceManager;
 /**
  * {@link Consumer} proxy that prevents its delegate from being closed.
  * Note: Users of this class must ensure that the delegate is closed 
- * a different way (e.g. by a {@link ResourceManager}).<br/><br/>
+ * a different way (e.g. by a {@link ResourceManager}).<br><br>
  * Created: 14.04.2011 11:36:07
  * @since 0.6.6
  * @author Volker Bergmann

@@ -27,7 +27,7 @@ import org.databene.benerator.engine.DefaultBeneratorContext;
 import org.junit.Test;
 
 /**
- * Tests the {@link NoiseInducer}.<br/><br/>
+ * Tests the {@link NoiseInducer}.<br><br>
  * Created: 08.10.2010 21:42:30
  * @since 0.5.4
  * @author Volker Bergmann

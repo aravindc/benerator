@@ -75,7 +75,7 @@ import org.databene.script.Expression;
 import org.databene.script.expression.ExpressionUtil;
 
 /**
- * Creates benerator project archetypes.<br/>
+ * Creates benerator project archetypes.<br>
  * Created at 30.11.2008 17:59:18
  * @since 0.5.6
  * @author Volker Bergmann

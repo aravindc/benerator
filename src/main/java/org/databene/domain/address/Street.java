@@ -31,8 +31,8 @@ import java.util.Random;
 import org.databene.benerator.util.RandomUtil;
 
 /**
- * Represents a street and serves as generator for house numbers.<br/>
- * <br/>
+ * Represents a street and serves as generator for house numbers.<br>
+ * <br>
  * Created: 11.06.2006 08:09:21
  */
 public class Street {

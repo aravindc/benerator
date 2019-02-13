@@ -29,8 +29,8 @@ package org.databene.model.data;
 import org.databene.commons.Accessor;
 
 /**
- * Accesses a component of an entity specified by the component name.<br/>
- * <br/>
+ * Accesses a component of an entity specified by the component name.<br>
+ * <br>
  * Created: 26.08.2007 07:22:33
  */
 public class ComponentAccessor implements Accessor<Entity, Object> {

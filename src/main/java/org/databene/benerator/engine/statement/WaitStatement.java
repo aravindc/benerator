@@ -26,7 +26,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 
 /**
- * Causes the thread to sleep for a certain number of milliseconds.<br/><br/>
+ * Causes the thread to sleep for a certain number of milliseconds.<br><br>
  * Created: 21.02.2010 07:46:50
  * @since 0.6.0
  * @author Volker Bergmann

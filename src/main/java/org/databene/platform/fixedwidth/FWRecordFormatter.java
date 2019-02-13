@@ -37,7 +37,7 @@ import org.databene.model.data.ComponentAccessor;
 import org.databene.model.data.Entity;
 
 /**
- * Formats Entities' attributes as a fixed-width table.<br/><br/>
+ * Formats Entities' attributes as a fixed-width table.<br><br>
  * Created: 20.02.2014 14:03:25
  * @since 0.9.0
  * @author Volker Bergmann

@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * Tests the {@link IfParser}.<br/><br/>
+ * Tests the {@link IfParser}.<br><br>
  * Created: 19.02.2010 09:47:36
  * @since 0.6.0
  * @author Volker Bergmann

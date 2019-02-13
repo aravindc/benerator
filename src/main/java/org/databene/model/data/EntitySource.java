@@ -29,8 +29,8 @@ package org.databene.model.data;
 import org.databene.formats.DataSource;
 
 /**
- * Common interface for all Entity sources.<br/>
- * <br/>
+ * Common interface for all Entity sources.<br>
+ * <br>
  * Created at 19.10.2008 13:35:50
  * @since 0.5.6
  * @author Volker Bergmann

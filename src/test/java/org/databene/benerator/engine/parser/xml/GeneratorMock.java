@@ -29,7 +29,7 @@ import org.databene.commons.context.ContextAware;
 import org.databene.model.data.Entity;
 
 /**
- * Mock implementation of {@link org.databene.benerator.Generator} and {@link ContextAware}.<br/><br/>
+ * Mock implementation of {@link org.databene.benerator.Generator} and {@link ContextAware}.<br><br>
  * Created: 16.02.2010 12:16:33
  * @since 0.6.0
  * @author Volker Bergmann

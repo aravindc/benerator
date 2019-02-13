@@ -26,7 +26,7 @@ import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Uses a {@link Generator} to create the currently processed object.<br/><br/>
+ * Uses a {@link Generator} to create the currently processed object.<br><br>
  * Created: 01.09.2011 19:03:38
  * @since 0.7.0
  * @author Volker Bergmann

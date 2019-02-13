@@ -36,7 +36,7 @@ import org.databene.formats.DataContainer;
 import org.databene.formats.csv.CSVCellIterator;
 
 /**
- * Tests the {@link CSVCellIterator}.<br/><br/>
+ * Tests the {@link CSVCellIterator}.<br><br>
  * Created: 11.10.2006 23:14:33
  * @since 0.1
  * @author Volker Bergmann

@@ -37,7 +37,7 @@ import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.TypeDescriptor;
 
 /**
- * Abstract implementation of the {@link BeneratorSubContext} interface.<br/><br/>
+ * Abstract implementation of the {@link BeneratorSubContext} interface.<br><br>
  * Created: 26.01.2013 13:14:37
  * @since 0.8.0
  * @author Volker Bergmann

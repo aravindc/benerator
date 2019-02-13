@@ -33,7 +33,7 @@ import org.databene.commons.StringUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link Archetype} class.<br/><br/>
+ * Tests the {@link Archetype} class.<br><br>
  * Created: 02.04.2010 12:35:46
  * @since 0.6.0
  * @author Volker Bergmann

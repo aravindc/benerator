@@ -37,8 +37,8 @@ import org.databene.model.data.Uniqueness;
 import java.util.Locale;
 
 /**
- * Generates Strings that comply to a regular expression.<br/>
- * <br/>
+ * Generates Strings that comply to a regular expression.<br>
+ * <br>
  * Created: 18.07.2006 19:32:52
  * @since 0.1
  * @author Volker Bergmann

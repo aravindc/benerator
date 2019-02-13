@@ -36,8 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides a standard implementation of the {@link ResourceManager} interface.<br/>
- * <br/>
+ * Provides a standard implementation of the {@link ResourceManager} interface.<br>
+ * <br>
  * Created at 25.09.2009 09:19:41
  * @since 0.6.0
  * @author Volker Bergmann

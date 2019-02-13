@@ -36,8 +36,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Generates unique strings of fixed length.<br/>
- * <br/>
+ * Generates unique strings of fixed length.<br>
+ * <br>
  * Created: 15.11.2007 14:07:49
  * @author Volker Bergmann
  */

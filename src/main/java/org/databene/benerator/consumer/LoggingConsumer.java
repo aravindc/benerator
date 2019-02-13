@@ -31,8 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A {@link Consumer} that logs the entities that it receives at info level.<br/>
- * <br/>
+ * A {@link Consumer} that logs the entities that it receives at info level.<br>
+ * <br>
  * Created: 26.08.2007 14:52:40
  * @since 0.4.0
  * @author Volker Bergmann

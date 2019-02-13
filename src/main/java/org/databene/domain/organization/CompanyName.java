@@ -23,7 +23,7 @@ package org.databene.domain.organization;
 
 /**
  * Assembles the parts of a company name, providing access to full name, short name and name parts 
- * like core name (which is the shortName), sector, location and legal form.<br/><br/>
+ * like core name (which is the shortName), sector, location and legal form.<br><br>
  * Created: 10.10.2010 17:28:01
  * @since 0.6.4
  * @author Volker Bergmann

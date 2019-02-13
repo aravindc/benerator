@@ -43,8 +43,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Parent class for wrapping several other generators (in a <i>sources</i> property) 
- * and refining a composite state from them.<br/>
- * <br/>
+ * and refining a composite state from them.<br>
+ * <br>
  * Created: 19.12.2006 07:05:29
  * @since 0.1
  * @author Volker Bergmann

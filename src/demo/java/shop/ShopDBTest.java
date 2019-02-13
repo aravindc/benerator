@@ -45,8 +45,8 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Tests the shop demo on all supported database systems.<br/>
- * <br/>
+ * Tests the shop demo on all supported database systems.<br>
+ * <br>
  * Created: 20.11.2007 13:24:13
  */
 public class ShopDBTest {

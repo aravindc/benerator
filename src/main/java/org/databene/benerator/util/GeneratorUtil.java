@@ -42,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides utility methods for data generation.<br/><br/>
+ * Provides utility methods for data generation.<br><br>
  * Created: 19.11.2007 15:27:50
  * @author Volker Bergmann
  */

@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * {@link DataSource} implementation which is able to resolve script expressions, performs a query and 
- * provides the result of a query as a {@link DataIterator} of {@link ResultSet} objects.<br/><br/>
+ * provides the result of a query as a {@link DataIterator} of {@link ResultSet} objects.<br><br>
  * Created: 03.08.2011 19:55:52
  * @since 0.7.0
  * @author Volker Bergmann

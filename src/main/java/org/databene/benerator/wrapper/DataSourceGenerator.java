@@ -34,7 +34,7 @@ import org.databene.formats.DataSource;
 import org.databene.formats.util.ThreadLocalDataContainer;
 
 /**
- * {@link Generator} implementation which reads and forwards data from a {@link DataSource}.<br/><br/>
+ * {@link Generator} implementation which reads and forwards data from a {@link DataSource}.<br><br>
  * Created: 24.07.2011 08:58:09
  * @since 0.7.0
  * @author Volker Bergmann

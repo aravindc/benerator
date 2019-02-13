@@ -29,8 +29,8 @@ package org.databene.benerator.primitive.datetime;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Generates Long objects that represent the current system time in nanoseconds since 1970-01-01.<br/>
- * <br/>
+ * Generates Long objects that represent the current system time in nanoseconds since 1970-01-01.<br>
+ * <br>
  * Created: 17.11.2007 13:08:47
  * @author Volker Bergmann
  */

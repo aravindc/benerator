@@ -40,8 +40,8 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 
 /**
- * Tests the Array2EntityConverter.<br/>
- * <br/>
+ * Tests the Array2EntityConverter.<br>
+ * <br>
  * Created: 29.08.2007 19:09:05
  * @author Volker Bergmann
  */

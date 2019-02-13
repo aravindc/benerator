@@ -35,7 +35,7 @@ import org.databene.script.expression.TypeConvertingExpression;
 
 /**
  * Describes generation of (several) entities of a type by uniqueness, 
- * nullability and count characteristics.<br/><br/>
+ * nullability and count characteristics.<br><br>
  * Created: 03.03.2008 07:55:45
  * @since 0.5.0
  * @author Volker Bergmann

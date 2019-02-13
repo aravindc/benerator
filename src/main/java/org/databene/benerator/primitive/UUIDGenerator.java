@@ -31,8 +31,8 @@ import java.util.UUID;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Creates UUIDs using {@link java.util.UUID#randomUUID()}.<br/>
- * <br/>
+ * Creates UUIDs using {@link java.util.UUID#randomUUID()}.<br>
+ * <br>
  * Created at 26.09.2009 07:51:56
  * @see java.util.UUID#randomUUID()
  * @see <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>

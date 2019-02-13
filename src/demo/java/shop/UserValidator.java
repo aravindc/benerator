@@ -30,7 +30,7 @@ import org.databene.commons.StringUtil;
 import org.databene.model.data.Entity;
 
 /**
- * Validates a user.<br/><br/>
+ * Validates a user.<br><br>
  * Created: 23.03.2008 06:45:59
  * @since 0.5.0
  * @author Volker Bergmann

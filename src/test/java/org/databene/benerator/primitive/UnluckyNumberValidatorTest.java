@@ -35,8 +35,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link UnluckyNumberValidator}.<br/>
- * <br/>
+ * Tests the {@link UnluckyNumberValidator}.<br>
+ * <br>
  * Created at 03.07.2009 08:57:20
  * @since 0.6.0
  * @author Volker Bergmann

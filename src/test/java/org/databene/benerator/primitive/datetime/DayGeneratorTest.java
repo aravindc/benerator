@@ -33,7 +33,7 @@ import org.databene.commons.TimeUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link DayGenerator}.<br/><br/>
+ * Tests the {@link DayGenerator}.<br><br>
  * Created: 12.10.2010 21:31:12
  * @since 0.6.4
  * @author Volker Bergmann

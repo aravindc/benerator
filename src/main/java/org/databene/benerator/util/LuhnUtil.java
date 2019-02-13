@@ -22,7 +22,7 @@
 package org.databene.benerator.util;
 
 /**
- * Provides utility methods for Luhn check digit calculation.<br/><br/>
+ * Provides utility methods for Luhn check digit calculation.<br><br>
  * Created: 18.10.2009 10:06:01
  * @since 0.6.0
  * @author Volker Bergmann

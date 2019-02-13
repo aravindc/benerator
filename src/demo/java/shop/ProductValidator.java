@@ -30,7 +30,7 @@ import org.databene.domain.product.EANValidator;
 import org.databene.model.data.Entity;
 
 /**
- * Validates a product.<br/><br/>
+ * Validates a product.<br><br>
  * Created: 23.03.2008 06:45:21
  * @since 0.5.0
  * @author Volker Bergmann

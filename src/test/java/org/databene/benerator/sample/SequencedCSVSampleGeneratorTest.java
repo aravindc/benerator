@@ -46,7 +46,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SequencedCSVSampleGenerator}.<br/>
+ * Tests the {@link SequencedCSVSampleGenerator}.<br>
  * Created: 26.07.2007 18:16:11
  * @author Volker Bergmann
  */

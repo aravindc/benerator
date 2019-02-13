@@ -33,8 +33,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Wraps a {@link Generator} with an {@link Iterator} interface.<br/>
- * <br/>
+ * Wraps a {@link Generator} with an {@link Iterator} interface.<br>
+ * <br>
  * Created at 21.07.2009 10:09:55
  * @since 0.6.0
  * @author Volker Bergmann

@@ -38,8 +38,8 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 
 /**
- * Bean validation annotation (JSR 303) for fields that represent a credit card number.<br/>
- * <br/>
+ * Bean validation annotation (JSR 303) for fields that represent a credit card number.<br>
+ * <br>
  * Created at 03.07.2009 19:52:37
  * @since 0.6.0
  * @author Volker Bergmann

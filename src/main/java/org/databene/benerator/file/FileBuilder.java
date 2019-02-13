@@ -33,8 +33,8 @@ import org.databene.commons.DocumentWriter;
 import java.io.IOException;
 
 /**
- * Calls a Generator several times and writes its output to a DocumentWriter.<br/>
- * <br/>
+ * Calls a Generator several times and writes its output to a DocumentWriter.<br>
+ * <br>
  * Created: 08.06.2007 17:53:50
  * @author Volker Bergmann
  */

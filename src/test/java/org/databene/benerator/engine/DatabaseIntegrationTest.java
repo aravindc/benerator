@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Integration test for Benerator's database support.<br/><br/>
+ * Integration test for Benerator's database support.<br><br>
  * Created: 24.05.2010 17:52:58
  * @since 0.6.2
  * @author Volker Bergmann

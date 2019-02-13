@@ -34,7 +34,7 @@ import org.databene.commons.Validator;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * {@link Validator} that verifies postal codes.<br/><br/>
+ * {@link Validator} that verifies postal codes.<br><br>
  * Created: 28.08.2010 15:27:35
  * @since 0.6.4
  * @author Volker Bergmann

@@ -31,7 +31,7 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.junit.Test;
 
 /**
- * Tests the {@link DistributingGenerator}.<br/><br/>
+ * Tests the {@link DistributingGenerator}.<br><br>
  * Created: 21.07.2010 06:54:40
  * @since 0.6.3
  * @author Volker Bergmann

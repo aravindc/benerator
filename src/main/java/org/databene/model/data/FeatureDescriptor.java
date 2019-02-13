@@ -37,7 +37,7 @@ import org.databene.commons.converter.ToStringConverter;
 import java.util.List;
 
 /**
- * Common parent class of all descriptors.<br/><br/>
+ * Common parent class of all descriptors.<br><br>
  * Created: 17.07.2006 21:30:45
  * @since 0.1
  * @author Volker Bergmann

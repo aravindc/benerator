@@ -35,7 +35,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SingleSourceArrayGenerator}.<br/><br/>
+ * Tests the {@link SingleSourceArrayGenerator}.<br><br>
  * Created: 11.10.2006 23:12:21
  * @since 0.1
  * @author Volker Bergmann

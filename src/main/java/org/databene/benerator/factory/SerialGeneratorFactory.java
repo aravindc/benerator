@@ -52,8 +52,8 @@ import org.databene.script.WeightedSample;
 
 /**
  * {@link GeneratorFactory} implementation which provides 
- * serial value generation and parallel combinations.<br/>
- * <br/>
+ * serial value generation and parallel combinations.<br>
+ * <br>
  * Created: 22.07.2011 10:14:36
  * @since 0.7.0
  * @author Volker Bergmann

@@ -45,8 +45,8 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 
 /**
- * Converts an array of feature values to an entity.<br/>
- * <br/>
+ * Converts an array of feature values to an entity.<br>
+ * <br>
  * Created: 26.08.2007 12:27:45
  * @author Volker Bergmann
  */

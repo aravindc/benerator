@@ -29,7 +29,7 @@ import org.databene.script.Expression;
 import org.databene.script.expression.ExpressionUtil;
 
 /**
- * Evaluates a string expression for a Locale string, if none is set, it picks Benerator's default Locale.<br/><br/>
+ * Evaluates a string expression for a Locale string, if none is set, it picks Benerator's default Locale.<br><br>
  * Created: 29.11.2010 15:30:37
  * @since 0.6.4
  * @author Volker Bergmann

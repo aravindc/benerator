@@ -27,7 +27,7 @@ import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * {@link DatasetBasedGenerator} implementation which bases on an atomic dataset.<br/><br/>
+ * {@link DatasetBasedGenerator} implementation which bases on an atomic dataset.<br><br>
  * Created: 09.03.2011 10:54:28
  * @since 0.6.6
  * @author Volker Bergmann

@@ -55,8 +55,8 @@ import org.databene.platform.xml.XMLEntityExporter;
 import org.databene.platform.xml.XMLSchemaDescriptorProvider;
 
 /**
- * Generates XML files.<br/>
- * <br/>
+ * Generates XML files.<br>
+ * <br>
  * @author Volker Bergmann
  */
 public class XMLFileGenerator extends UnsafeGenerator<File> {

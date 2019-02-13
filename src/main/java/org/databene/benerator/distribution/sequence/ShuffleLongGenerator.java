@@ -35,8 +35,8 @@ import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
  * It starts with min and produced numbers by continuously incrementing the cursor 
  * by a fix <code>increment</code> value; when <code>max</code> is reached, it 
  * repeats the procedure starting by min+granularity, later min+2*granularity and so on.
- * The generated numbers are unique as long as the generator is not reset.<br/>
- * <br/>
+ * The generated numbers are unique as long as the generator is not reset.<br>
+ * <br>
  * Created: 18.06.2006 14:40:29
  * @since 0.1
  * @author Volker Bergmann

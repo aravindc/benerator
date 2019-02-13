@@ -32,8 +32,8 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link IndividualWeight}.<br/>
- * <br/>
+ * Tests the {@link IndividualWeight}.<br>
+ * <br>
  * Created at 01.07.2009 16:39:01
  * @since 0.6.0
  * @author Volker Bergmann

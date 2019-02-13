@@ -52,8 +52,8 @@ import org.databene.commons.validator.UniqueValidator;
 import org.databene.model.data.Entity;
 
 /**
- * Provides methods for testing generators.<br/>
- * <br/>
+ * Provides methods for testing generators.<br>
+ * <br>
  * Created: 15.11.2007 14:46:31
  * @author Volker Bergmann
  */

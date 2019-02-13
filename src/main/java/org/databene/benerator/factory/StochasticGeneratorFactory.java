@@ -55,8 +55,8 @@ import org.databene.script.WeightedSample;
 /**
  * {@link GeneratorFactory} implementation that generates docile data in order to avoid functional failures 
  * and combines them randomly and repetitively for generating large data volumes. Its primary purpose is 
- * data generation for performance tests.<br/>
- * <br/>
+ * data generation for performance tests.<br>
+ * <br>
  * Created: 04.07.2011 09:34:34
  * @since 0.7.0
  * @author Volker Bergmann

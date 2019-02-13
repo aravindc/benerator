@@ -37,8 +37,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link TextFileExporter}.<br/>
- * <br/>
+ * Tests the {@link TextFileExporter}.<br>
+ * <br>
  * Created at 28.02.2009 07:19:13
  * @since 0.5.8
  * @author Volker Bergmann

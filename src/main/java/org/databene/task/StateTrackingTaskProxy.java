@@ -27,7 +27,7 @@ import org.databene.commons.ErrorHandler;
 
 /**
  * Task proxy that remembers the result of the last execution step and provides it as 
- * property <code>available</code>.<br/><br/>
+ * property <code>available</code>.<br><br>
  * Created: 05.02.2010 10:41:55
  * @since 0.6
  * @author Volker Bergmann

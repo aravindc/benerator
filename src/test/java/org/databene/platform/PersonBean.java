@@ -27,8 +27,8 @@
 package org.databene.platform;
 
 /**
- * Simple JavaBean for testing, it holds a 'name' and an 'age' property.<br/>
- * <br/>
+ * Simple JavaBean for testing, it holds a 'name' and an 'age' property.<br>
+ * <br>
  * Created: 04.08.2007 08:40:20
  * @author Volker Bergmann
  */

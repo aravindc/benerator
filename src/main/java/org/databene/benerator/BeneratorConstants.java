@@ -22,7 +22,7 @@
 package org.databene.benerator;
 
 /**
- * Holds constants which are of general interest for Benerator.<br/><br/>
+ * Holds constants which are of general interest for Benerator.<br><br>
  * Created: 07.08.2011 15:49:47
  * @since 0.7.0
  * @author Volker Bergmann

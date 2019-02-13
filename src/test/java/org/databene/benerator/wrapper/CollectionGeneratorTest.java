@@ -38,7 +38,7 @@ import org.databene.commons.collection.ObjectCounter;
 import org.junit.Test;
 
 /**
- * Tests the {@link CollectionGenerator}.<br/><br/>
+ * Tests the {@link CollectionGenerator}.<br><br>
  * Created: 11.10.2006 23:12:21
  * @since 0.1
  * @author Volker Bergmann

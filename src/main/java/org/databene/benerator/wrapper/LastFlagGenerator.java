@@ -25,8 +25,8 @@ import org.databene.benerator.Generator;
 
 /**
  * Proxies a {@link Generator}, examines its generated {@link ProductWrapper}s for the "last" tag and, if one is found,
- * replaces a boolean array value at a given index ({@link #indexOfLastFlag}) with true, otherwise with false.<br/>
- * <br/>
+ * replaces a boolean array value at a given index ({@link #indexOfLastFlag}) with true, otherwise with false.<br>
+ * <br>
  * Created: 12.09.2011 12:27:34
  * @since 0.7.0
  * @author Volker Bergmann

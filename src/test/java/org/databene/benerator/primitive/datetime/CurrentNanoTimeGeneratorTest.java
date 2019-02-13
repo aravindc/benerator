@@ -35,8 +35,8 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
 import org.junit.Test;
 
 /**
- * Tests the CurrentNanoTimeGenerator.<br/>
- * <br/>
+ * Tests the CurrentNanoTimeGenerator.<br>
+ * <br>
  * Created: 19.11.2007 20:43:45
  * @author Volker Bergmann
  * @since 0.3.03

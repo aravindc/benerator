@@ -26,7 +26,7 @@ import java.io.Closeable;
 import org.databene.commons.Resettable;
 
 /**
- * Declares life cycle methods: {@link #init(BeneratorContext)}, {@link #reset()} and {@link #close()}.<br/><br/>
+ * Declares life cycle methods: {@link #init(BeneratorContext)}, {@link #reset()} and {@link #close()}.<br><br>
  * Created: 04.04.2012 10:18:25
  * @since 0.7.6
  * @author Volker Bergmann

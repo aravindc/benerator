@@ -48,8 +48,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Parses and executes a benerator descriptor file.<br/>
- * <br/>
+ * Parses and executes a benerator descriptor file.<br>
+ * <br>
  * Created at 26.02.2009 15:51:59
  * @since 0.5.8
  * @author Volker Bergmann

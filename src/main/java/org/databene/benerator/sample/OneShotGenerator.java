@@ -32,8 +32,8 @@ import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Returns a value only once and then becomes unavailable immediately.<br/>
- * <br/>
+ * Returns a value only once and then becomes unavailable immediately.<br>
+ * <br>
  * Created at 23.09.2009 00:20:03
  * @since 0.6.0
  * @author Volker Bergmann

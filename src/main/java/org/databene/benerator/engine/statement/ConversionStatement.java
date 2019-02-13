@@ -27,7 +27,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Converter;
 
 /**
- * {@link Statement} that uses a {@link Converter} to convert the current product.<br/><br/>
+ * {@link Statement} that uses a {@link Converter} to convert the current product.<br><br>
  * Created: 06.09.2011 12:41:22
  * @since 0.7.0
  * @author Volker Bergmann

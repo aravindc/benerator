@@ -31,8 +31,8 @@ import org.databene.commons.ErrorHandler;
 import org.databene.commons.MessageHolder;
 
 /**
- * Wraps a Task and forwards invocations.<br/>
- * <br/>
+ * Wraps a Task and forwards invocations.<br>
+ * <br>
  * Created: 06.07.2007 06:36:22
  * @since 0.2
  * @author Volker Bergmann

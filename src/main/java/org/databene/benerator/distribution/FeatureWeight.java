@@ -33,7 +33,7 @@ import org.databene.commons.converter.AnyConverter;
 
 /**
  * Implements the IndividualWeight function for arbitrary feature names, 
- * supporting e.g. properties, attributes, or Map keys.<br/><br/>
+ * supporting e.g. properties, attributes, or Map keys.<br><br>
  * Created at 27.04.2008 17:23:45
  * @since 0.5.2
  * @author Volker Bergmann

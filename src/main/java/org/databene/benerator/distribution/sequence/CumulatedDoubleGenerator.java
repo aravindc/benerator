@@ -31,8 +31,8 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
- * Double Generator that implements a 'cumulated' Double Sequence.<br/>
- * Created: 07.06.2006 19:33:37<br/>
+ * Double Generator that implements a 'cumulated' Double Sequence.<br>
+ * Created: 07.06.2006 19:33:37<br>
  * @since 0.1
  * @author Volker Bergmann
  */

@@ -33,8 +33,8 @@ import org.databene.commons.FileUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link LocalSequenceGenerator}.<br/>
- * <br/>
+ * Tests the {@link LocalSequenceGenerator}.<br>
+ * <br>
  * Created at 01.07.2009 17:30:46
  * @since 0.6.0
  * @author Volker Bergmann

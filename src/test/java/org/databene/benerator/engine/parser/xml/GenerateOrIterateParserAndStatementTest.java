@@ -48,7 +48,7 @@ import org.databene.platform.db.DefaultDBSystem;
 import org.junit.Test;
 
 /**
- * Tests the {@link GenerateOrIterateParser}.<br/><br/>
+ * Tests the {@link GenerateOrIterateParser}.<br><br>
  * Created: 10.11.2009 15:08:46
  * @since 0.6.0
  * @author Volker Bergmann

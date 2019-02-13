@@ -34,7 +34,7 @@ import java.util.Calendar;
 import javax.validation.Constraint;
 
 /**
- * Bean validation annotation (JSR 303) based on the day of week.<br/><br/>
+ * Bean validation annotation (JSR 303) based on the day of week.<br><br>
  * Created: 16.02.2010 22:50:57
  * @since 0.6.0
  * @author Volker Bergmann

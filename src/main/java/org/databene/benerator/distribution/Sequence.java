@@ -31,8 +31,8 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 
 /**
- * Provides access to specific Sequence number Generators.<br/>
- * <br/>
+ * Provides access to specific Sequence number Generators.<br>
+ * <br>
  * Created: 11.09.2006 21:12:57
  * @since 0.1
  * @author Volker Bergmann

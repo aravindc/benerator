@@ -32,7 +32,7 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 
 /**
- * Facade class for the various {@link MetaGeneratorFactory} implementations.<br/><br/>
+ * Facade class for the various {@link MetaGeneratorFactory} implementations.<br><br>
  * Created: 06.09.2011 07:30:48
  * @since 0.7.0
  * @author Volker Bergmann

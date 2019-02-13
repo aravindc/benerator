@@ -42,8 +42,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link XLSEntityExporter}.<br/>
- * <br/>
+ * Tests the {@link XLSEntityExporter}.<br>
+ * <br>
  * Created at 14.03.2009 07:27:34
  * @since 0.5.8
  * @author Volker Bergmann

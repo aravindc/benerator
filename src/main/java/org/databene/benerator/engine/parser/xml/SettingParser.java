@@ -45,7 +45,7 @@ import org.databene.script.DatabeneScriptParser;
 import org.w3c.dom.Element;
 
 /**
- * Parses a &lt;Property&gt; element in a Benerator descriptor file.<br/><br/>
+ * Parses a &lt;Property&gt; element in a Benerator descriptor file.<br><br>
  * Created: 25.10.2009 00:58:53
  * @since 0.6.0
  * @author Volker Bergmann
@@ -115,7 +115,7 @@ public class SettingParser extends AbstractBeneratorDescriptorParser {
     }
 
 	/**
-     * Evaluates a 'source' expression to a Generator.<br/><br/>
+     * Evaluates a 'source' expression to a Generator.<br><br>
      * Created: 26.10.2009 08:38:44
      * @since 0.6.0
      * @author Volker Bergmann

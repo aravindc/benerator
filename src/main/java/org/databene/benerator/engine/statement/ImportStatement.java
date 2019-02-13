@@ -33,8 +33,8 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 
 /**
- * Imports classes by package, class, domain and platform definition(s).<br/>
- * <br/>
+ * Imports classes by package, class, domain and platform definition(s).<br>
+ * <br>
  * Created at 22.07.2009 08:19:54
  * @since 0.6.0
  * @author Volker Bergmann

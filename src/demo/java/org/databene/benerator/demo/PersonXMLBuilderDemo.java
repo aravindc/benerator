@@ -36,8 +36,8 @@ import org.databene.commons.IOUtil;
 import java.io.*;
 
 /**
- * Demonstrates how to use a FreeMarker script for formatting JavaBeans in custom file formats, e.g. XML.<br/>
- * <br/>
+ * Demonstrates how to use a FreeMarker script for formatting JavaBeans in custom file formats, e.g. XML.<br>
+ * <br>
  * Created: 07.06.2007 12:04:39
  */
 public class PersonXMLBuilderDemo {

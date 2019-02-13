@@ -31,8 +31,8 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
- * Double Generator that implements a 'shuffle' Double Sequence.<br/>
- * <br/>
+ * Double Generator that implements a 'shuffle' Double Sequence.<br>
+ * <br>
  * Created: 18.06.2006 14:40:29
  * @since 0.1
  * @author Volker Bergmann

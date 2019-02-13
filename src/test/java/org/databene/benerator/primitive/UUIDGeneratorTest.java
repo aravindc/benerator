@@ -32,8 +32,8 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the UUIDGenerator.<br/>
- * <br/>
+ * Tests the UUIDGenerator.<br>
+ * <br>
  * Created at 26.09.2009 07:56:05
  * @since 0.6.0
  * @author Volker Bergmann

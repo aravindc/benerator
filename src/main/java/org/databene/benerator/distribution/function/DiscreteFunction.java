@@ -31,7 +31,7 @@ import org.databene.benerator.distribution.AbstractWeightFunction;
 /**
  * Discrete function that is based on an array.
  * On invocation it rounds the function argument to the floor
- * and returns the arrays value of that index.<br/><br/>
+ * and returns the arrays value of that index.<br><br>
  * Created: 20.09.2006 19:04:00
  * @author Volker Bergmann
  * @since 0.1

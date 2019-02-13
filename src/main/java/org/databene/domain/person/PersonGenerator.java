@@ -43,8 +43,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Generates {@link Person} beans.<br/>
- * <br/>
+ * Generates {@link Person} beans.<br>
+ * <br>
  * Created: 09.06.2006 21:45:13
  * @since 0.1
  * @author Volker Bergmann

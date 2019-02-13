@@ -27,7 +27,7 @@ import org.databene.commons.validator.SimpleValidatorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link CPFValidator}.<br/><br/>
+ * Tests the {@link CPFValidator}.<br><br>
  * Created: 17.10.2009 08:25:15
  * @since 0.6.0
  * @author Volker Bergmann

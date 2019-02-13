@@ -27,7 +27,7 @@ import org.databene.benerator.distribution.CumulativeDistributionFunction;
  * Inverse of the integral of the probability density f(x) = a e^{-ax} (x > 0), 
  * which resolves to F^{-1}(x) = - log(1 - x) / a.
  * See <a href="http://www.stat.wisc.edu/~larget/math496/random2.html">Random 
- * Number Generation from Non-uniform Distributions</a>.<br/><br/>
+ * Number Generation from Non-uniform Distributions</a>.<br><br>
  * Created: 12.03.2010 15:41:21
  * @since 0.6.0
  * @author Volker Bergmann

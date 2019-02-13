@@ -32,8 +32,8 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 
 /**
- * Abstract implementation of the {@link WeightFunction} interface.<br/>
- * <br/>
+ * Abstract implementation of the {@link WeightFunction} interface.<br>
+ * <br>
  * Created at 30.06.2009 07:13:49
  * @since 0.6.0
  * @author Volker Bergmann

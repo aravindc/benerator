@@ -28,7 +28,7 @@ import org.databene.script.expression.ConstantExpression;
 import org.databene.script.expression.DynamicExpression;
 
 /**
- * Evaluates a string which may be a script (indicated by {}).<br/><br/>
+ * Evaluates a string which may be a script (indicated by {}).<br><br>
  * Created: 19.02.2010 10:39:29
  * @since 0.6.0
  * @author Volker Bergmann

@@ -29,7 +29,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 
 /**
- * Provides configuration and variable space for {@link Generator}s.<br/><br/>
+ * Provides configuration and variable space for {@link Generator}s.<br><br>
  * Created: 14.03.2010 13:14:00
  * @since 0.6.0
  * @author Volker Bergmann

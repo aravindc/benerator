@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.Collection;
 
 /**
- * Generates values from a weighted or non-weighted set of samples.<br/>
- * <br/>
+ * Generates values from a weighted or non-weighted set of samples.<br>
+ * <br>
  * Created: 07.06.2006 19:04:08
  * @since 0.1
  * @author Volker Bergmann

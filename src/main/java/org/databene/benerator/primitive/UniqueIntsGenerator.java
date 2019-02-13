@@ -27,7 +27,7 @@ import org.databene.benerator.distribution.sequence.BitReverseNaturalNumberGener
 import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 
 /**
- * Creates unique pseudo-random int arrays.<br/><br/>
+ * Creates unique pseudo-random int arrays.<br><br>
  * Created: 01.08.2011 17:00:57
  * @since 0.7.0
  * @author Volker Bergmann

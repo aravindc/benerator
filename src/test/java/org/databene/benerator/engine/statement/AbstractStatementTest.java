@@ -27,7 +27,7 @@ import org.databene.benerator.engine.Statement;
 import org.junit.Before;
 
 /**
- * Parent class for {@link Statement} tests.<br/><br/>
+ * Parent class for {@link Statement} tests.<br><br>
  * Created: 02.09.2011 16:44:08
  * @since 0.7.0
  * @author Volker Bergmann

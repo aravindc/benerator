@@ -32,7 +32,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link CumulativeDistributionFunction}.<br/><br/>
+ * Tests the {@link CumulativeDistributionFunction}.<br><br>
  * Created: 12.03.2010 15:06:33
  * @since 0.6.0
  * @author Volker Bergmann

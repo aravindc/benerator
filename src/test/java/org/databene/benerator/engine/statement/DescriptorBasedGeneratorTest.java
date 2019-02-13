@@ -33,7 +33,7 @@ import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * Tests the {@link DescriptorBasedGenerator}.<br/><br/>
+ * Tests the {@link DescriptorBasedGenerator}.<br><br>
  * Created: 23.02.2010 12:17:27
  * @since 0.6.0
  * @author Volker Bergmann

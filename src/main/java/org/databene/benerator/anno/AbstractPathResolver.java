@@ -24,7 +24,7 @@ package org.databene.benerator.anno;
 import java.io.File;
 
 /**
- * Abstract implementation of the {@link PathResolver} interface.<br/><br/>
+ * Abstract implementation of the {@link PathResolver} interface.<br><br>
  * Created: 04.05.2012 08:56:44
  * @since 0.7.7
  * @author Volker Bergmann

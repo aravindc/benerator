@@ -31,7 +31,7 @@ import org.databene.benerator.util.ThreadSafeGenerator;
 import java.util.Collection;
 
 /**
- * Generates values from a list of samples.<br/><br/>
+ * Generates values from a list of samples.<br><br>
  * Created: 29.04.2008 07:30:08
  * @since 0.5.2
  * @author Volker Bergmann

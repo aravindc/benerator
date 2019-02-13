@@ -27,8 +27,8 @@
 package org.databene.domain.lang;
 
 /**
- * German implementation of the {@link LanguageResourceBundle} class.<br/>
- * <br/>
+ * German implementation of the {@link LanguageResourceBundle} class.<br>
+ * <br>
  * Created at 16.07.2009 19:11:12
  * @since 0.6.0
  * @author Volker Bergmann

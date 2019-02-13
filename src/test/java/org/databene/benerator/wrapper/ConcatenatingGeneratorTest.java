@@ -27,7 +27,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link ConcatenatingGenerator}.<br/><br/>
+ * Tests the {@link ConcatenatingGenerator}.<br><br>
  * Created: 14.10.2009 10:16:05
  * @since 0.6.0
  * @author Volker Bergmann

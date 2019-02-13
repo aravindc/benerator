@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * Tests the {@link XMLPlatformUtil}.<br/><br/>
+ * Tests the {@link XMLPlatformUtil}.<br><br>
  * Created: 16.01.2014 13:57:18
  * @since 0.9.0
  * @author Volker Bergmann

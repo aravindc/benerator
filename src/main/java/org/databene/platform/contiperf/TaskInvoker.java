@@ -27,7 +27,7 @@ import org.databene.contiperf.Invoker;
 import org.databene.task.Task;
 
 /**
- * {@link Invoker} implementation that calls {@link Task#execute(Context, ErrorHandler)}.<br/><br/>
+ * {@link Invoker} implementation that calls {@link Task#execute(Context, ErrorHandler)}.<br><br>
  * Created: 14.03.2010 10:50:57
  * @since 0.6.0
  * @author Volker Bergmann

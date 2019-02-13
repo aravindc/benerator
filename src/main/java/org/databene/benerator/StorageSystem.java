@@ -38,8 +38,8 @@ import org.databene.model.data.Entity;
 /**
  * Abstract interface characterizing an Entity storage system. 
  * An implementation of this interface must inherit the class {@link AbstractStorageSystem}
- * if it is needs to be forward compatible.<br/><br/>
- * <br/>
+ * if it is needs to be forward compatible.<br><br>
+ * <br>
  * Created: 27.06.2007 23:02:21
  * @since 0.4.0
  * @author Volker Bergmann

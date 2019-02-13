@@ -32,7 +32,7 @@ import static junit.framework.Assert.*;
 import java.util.Locale;
 
 /**
- * Tests the {@link SalutationProvider}.<br/><br/>
+ * Tests the {@link SalutationProvider}.<br><br>
  * Created: 09.06.2006 22:14:08
  * @since 0.1
  * @author Volker Bergmann

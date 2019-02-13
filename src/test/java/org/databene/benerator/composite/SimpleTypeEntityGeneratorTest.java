@@ -37,7 +37,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SimpleTypeEntityGenerator}.<br/><br/>
+ * Tests the {@link SimpleTypeEntityGenerator}.<br><br>
  * Created at 13.05.2008 21:16:33
  * @since 0.5.4
  * @author Volker Bergmann

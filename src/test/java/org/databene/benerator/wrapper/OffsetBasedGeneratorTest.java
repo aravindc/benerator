@@ -27,7 +27,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link OffsetBasedGenerator}.<br/><br/>
+ * Tests the {@link OffsetBasedGenerator}.<br><br>
  * Created: 23.07.2011 10:04:27
  * @since 0.7.0
  * @author Volker Bergmann

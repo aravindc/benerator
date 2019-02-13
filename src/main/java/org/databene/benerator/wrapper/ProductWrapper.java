@@ -27,7 +27,7 @@ import java.util.Map;
 import org.databene.benerator.Generator;
 
 /**
- * Helper class for the {@link Generator} class.<br/><br/>
+ * Helper class for the {@link Generator} class.<br><br>
  * Created: 26.01.2010 10:53:53
  * @since 0.6.0
  * @author Volker Bergmann

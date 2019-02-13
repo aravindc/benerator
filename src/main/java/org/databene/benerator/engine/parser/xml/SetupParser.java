@@ -40,7 +40,7 @@ import org.databene.formats.xml.XMLElementParser;
 import org.w3c.dom.Element;
 
 /**
- * {@link XMLElementParser} implementation for parsing a Benerator descriptor file's root XML element.<br/><br/>
+ * {@link XMLElementParser} implementation for parsing a Benerator descriptor file's root XML element.<br><br>
  * Created: 14.12.2010 19:48:00
  * @since 0.6.4
  * @author Volker Bergmann

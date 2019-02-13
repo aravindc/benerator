@@ -32,7 +32,7 @@ import org.databene.commons.NullSafeComparator;
 import org.databene.commons.bean.HashCodeBuilder;
 
 /**
- * Represents an address with phone numbers.<br/><br/>
+ * Represents an address with phone numbers.<br><br>
  * Created: 11.06.2006 08:05:00
  * @since 0.1
  * @author Volker Bergmann

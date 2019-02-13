@@ -29,7 +29,7 @@ package shop;
 import org.databene.model.data.Entity;
 
 /**
- * Validates a category instance.<br/><br/>
+ * Validates a category instance.<br><br>
  * Created: 23.03.2008 06:33:15
  * @author Volker Bergmann
  */

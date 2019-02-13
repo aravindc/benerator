@@ -36,8 +36,8 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import java.util.Arrays;
 
 /**
- * Tests the Entity2ArrayConverter.<br/>
- * <br/>
+ * Tests the Entity2ArrayConverter.<br>
+ * <br>
  * Created: 29.08.2007 19:09:05
  * @author Volker Bergmann
  */

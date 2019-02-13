@@ -37,7 +37,7 @@ import org.databene.commons.LocaleUtil;
 /**
  * Creates random department names based on a {@link Locale}-specific CSV file. 
  * If not CSV file is found for the requested Locale, the generator falls back 
- * to English.<br/><br/>
+ * to English.<br><br>
  * 
  * Created at 11.07.2009 18:43:55
  * @since 0.6.0

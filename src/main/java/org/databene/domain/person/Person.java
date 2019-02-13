@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Represents a natural person.<br/><br/>
+ * Represents a natural person.<br><br>
  * Created: 09.06.2006 21:51:25
  * @since 0.1
  * @author Volker Bergmann

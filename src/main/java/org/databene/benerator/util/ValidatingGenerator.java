@@ -33,8 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides an abstract implementation of a generator that validates its generated values.<br/>
- * <br/>
+ * Provides an abstract implementation of a generator that validates its generated values.<br>
+ * <br>
  * Created: 23.09.2006 00:03:04
  * @since 0.1
  * @author Volker Bergmann

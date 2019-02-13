@@ -29,8 +29,8 @@ package org.databene.benerator.test;
 import org.databene.commons.Validator;
 
 /**
- * Mock implementation of the {@link Validator} interface.<br/>
- * <br/>
+ * Mock implementation of the {@link Validator} interface.<br>
+ * <br>
  * Created at 29.12.2008 07:49:35
  * @since 0.5.7
  * @author Volker Bergmann

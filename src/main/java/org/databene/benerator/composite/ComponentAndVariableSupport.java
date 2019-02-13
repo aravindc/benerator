@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Offers support for entity or array component generation with or without variable generation.<br/><br/>
+ * Offers support for entity or array component generation with or without variable generation.<br><br>
  * Created: 13.01.2011 10:52:43
  * @since 0.6.4
  * @author Volker Bergmann

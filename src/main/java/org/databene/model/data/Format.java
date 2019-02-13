@@ -22,7 +22,7 @@
 package org.databene.model.data;
 
 /**
- * Enumeration for import formats.<br/><br/>
+ * Enumeration for import formats.<br><br>
  * Created: 25.01.2013 08:42:13
  * @since 0.8.0
  * @author Volker Bergmann

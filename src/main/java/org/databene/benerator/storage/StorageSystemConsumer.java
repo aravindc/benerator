@@ -31,8 +31,8 @@ import org.databene.benerator.consumer.AbstractConsumer;
 import org.databene.commons.ThreadAware;
 
 /**
- * Stores an Entity in the associated {@link StorageSystem}. It replaces the class SystemProcessor.<br/>
- * <br/>
+ * Stores an Entity in the associated {@link StorageSystem}. It replaces the class SystemProcessor.<br>
+ * <br>
  * Created: 29.01.2008 09:35:07
  * @since 0.4.0
  * @author Volker Bergmann

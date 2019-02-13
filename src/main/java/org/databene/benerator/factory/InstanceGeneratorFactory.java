@@ -40,8 +40,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Creates entity generators from entity metadata.<br/>
- * <br/>
+ * Creates entity generators from entity metadata.<br>
+ * <br>
  * Created: 08.09.2007 07:45:40
  * @author Volker Bergmann
  */

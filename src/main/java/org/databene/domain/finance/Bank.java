@@ -27,7 +27,7 @@
 package org.databene.domain.finance;
 
 /**
- * Represents a bank.<br/><br/>
+ * Represents a bank.<br><br>
  * Created at 24.06.2008 08:31:56
  * @since 0.5.4
  * @author Volker Bergmann

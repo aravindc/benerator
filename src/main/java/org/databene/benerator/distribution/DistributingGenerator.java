@@ -27,8 +27,8 @@ import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
  * General purpose generator proxy which is supposed to work with any distribution. 
- * The behavior on a reset is up to the generator created by the distribution.<br/>
- * <br/>
+ * The behavior on a reset is up to the generator created by the distribution.<br>
+ * <br>
  * Created: 22.03.2010 10:45:48
  * @since 0.6.0
  * @author Volker Bergmann

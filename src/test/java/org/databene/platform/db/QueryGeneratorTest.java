@@ -34,7 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests the {@link QueryGenerator}.<br/><br/>
+ * Tests the {@link QueryGenerator}.<br><br>
  * Created: 09.08.2010 13:05:02
  * @since 0.6.4
  * @author Volker Bergmann

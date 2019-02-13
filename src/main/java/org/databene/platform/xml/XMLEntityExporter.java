@@ -53,7 +53,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Writes Entities to an XML file.<br/><br/>
+ * Writes Entities to an XML file.<br><br>
  * Created: 20.02.2008 15:39:23
  * @since 0.5.0
  * @author Volker Bergmann

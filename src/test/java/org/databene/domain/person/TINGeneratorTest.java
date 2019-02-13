@@ -30,8 +30,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link TINGenerator}.<br/>
- * <br/>
+ * Tests the {@link TINGenerator}.<br>
+ * <br>
  * Created at 27.08.2008 00:23:07
  * @since 0.5.5
  * @author Volker Bergmann

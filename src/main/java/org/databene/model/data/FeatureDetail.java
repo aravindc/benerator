@@ -33,8 +33,8 @@ import org.databene.commons.Operation;
 import org.databene.commons.operation.FirstArgSelector;
 
 /**
- * A FeatureDescriptor is composed og FeatureDetails, which have name, value and type.<br/>
- * <br/>
+ * A FeatureDescriptor is composed og FeatureDetails, which have name, value and type.<br>
+ * <br>
  * Created: 03.08.2007 06:57:42
  * @author Volker Bergmann
  */

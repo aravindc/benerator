@@ -38,8 +38,8 @@ import org.databene.commons.validator.StringLengthValidator;
 
 /**
  * Provides wrappers for number {@link Generator}s that converts 
- * their products to a target {@link Number} type.<br/>
- * <br/>
+ * their products to a target {@link Number} type.<br>
+ * <br>
  * Created at 30.06.2009 10:48:59
  * @since 0.6.0
  * @author Volker Bergmann

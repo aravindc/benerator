@@ -37,8 +37,8 @@ import java.util.Locale;
 /**
  * Generates data from a localized csv file.
  * For different locales, different CSV versions may be provided by appending region suffixes,
- * similar to the JDK ResourceBundle handling.<br/>
- * <br/>
+ * similar to the JDK ResourceBundle handling.<br>
+ * <br>
  * Created: 07.06.2007 17:21:24
  * @author Volker Bergmann
  */

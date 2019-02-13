@@ -34,7 +34,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the DatasetCSVGenerator.<br/><br/>
+ * Tests the DatasetCSVGenerator.<br><br>
  * Created: 21.03.2008 16:58:20
  * @since 0.5.0
  * @author Volker Bergmann

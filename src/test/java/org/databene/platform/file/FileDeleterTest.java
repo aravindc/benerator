@@ -36,8 +36,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link FileDeleter}.<br/>
- * <br/>
+ * Tests the {@link FileDeleter}.<br>
+ * <br>
  * Created at 17.09.2009 10:26:38
  * @since 0.6.0
  * @author Volker Bergmann

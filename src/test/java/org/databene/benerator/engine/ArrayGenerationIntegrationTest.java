@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Benerator integration test for array generation.<br/><br/>
+ * Benerator integration test for array generation.<br><br>
  * Created: 08.08.2011 16:57:47
  * @since 0.7.0
  * @author Volker Bergmann

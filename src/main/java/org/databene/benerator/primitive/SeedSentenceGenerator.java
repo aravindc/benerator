@@ -35,8 +35,8 @@ import org.databene.commons.ReaderLineIterator;
 import org.databene.commons.StringUtil;
 
 /**
- * Generates sentences based on a seed sentence set.<br/>
- * <br/>
+ * Generates sentences based on a seed sentence set.<br>
+ * <br>
  * Created at 16.07.2009 20:02:32
  * @since 0.6.0
  * @author Volker Bergmann

@@ -43,7 +43,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link ConsoleExporter}.<br/><br/>
+ * Tests the {@link ConsoleExporter}.<br><br>
  * Created at 11.04.2008 06:58:53
  * @since 0.5.2
  * @author Volker Bergmann

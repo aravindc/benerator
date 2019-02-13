@@ -30,7 +30,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ThreadUtil;
 
 /**
- * Creates one component from an arbitrary choice of different available ones.<br/><br/>
+ * Creates one component from an arbitrary choice of different available ones.<br><br>
  * Created at 09.05.2008 13:28:19
  * @since 0.5.4
  * @author Volker Bergmann

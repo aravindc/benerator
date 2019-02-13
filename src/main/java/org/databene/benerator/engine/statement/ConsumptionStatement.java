@@ -28,7 +28,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * {@link Statement} that consumes the current entity of a {@link GeneratorContext} using a {@link Consumer}.<br/><br/>
+ * {@link Statement} that consumes the current entity of a {@link GeneratorContext} using a {@link Consumer}.<br><br>
  * Created: 01.09.2011 15:51:27
  * @since 0.7.0
  * @author Volker Bergmann

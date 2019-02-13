@@ -26,7 +26,7 @@ import org.databene.commons.Assert;
 import org.databene.script.Expression;
 
 /**
- * {@link ComponentBuilder} which executes only if a condition expression evaluates to 'true'.<br/><br/>
+ * {@link ComponentBuilder} which executes only if a condition expression evaluates to 'true'.<br><br>
  * Created: 11.10.2010 11:15:14
  * @since 0.6.4
  * @author Volker Bergmann

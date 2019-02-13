@@ -40,8 +40,8 @@ import javax.validation.Constraint;
 import org.databene.benerator.primitive.UnluckyNumberValidator;
 
 /**
- * Marks a field as US Social Security Number (according to JSR 303: BeanValidation).<br/>
- * <br/>
+ * Marks a field as US Social Security Number (according to JSR 303: BeanValidation).<br>
+ * <br>
  * Created at 03.07.2009 19:44:46
  * @since 0.6.0
  * @author Volker Bergmann

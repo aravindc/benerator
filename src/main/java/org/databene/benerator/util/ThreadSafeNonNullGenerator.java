@@ -24,7 +24,7 @@ package org.databene.benerator.util;
 import org.databene.benerator.NonNullGenerator;
 
 /**
- * {@link NonNullGenerator} implementation which declares thread safety.<br/><br/>
+ * {@link NonNullGenerator} implementation which declares thread safety.<br><br>
  * Created: 26.07.2011 19:21:11
  * @since 0.7.0
  * @author Volker Bergmann

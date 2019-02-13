@@ -30,12 +30,12 @@ import org.databene.domain.math.FibonacciLongGenerator;
 /**
  * Parent class for Number Generators that calculate numbers recursively.
  * Child classes can define recursive sequences easily by defining a depth and 
- * implementing the methods {@link #a0(int)} and {@link #aN()}.<br><br/> 
+ * implementing the methods {@link #a0(int)} and {@link #aN()}.<br><br> 
  * 
  * The recursion depth needs to be specified in the constructor call,
  * {@link #a0(int)} needs to return the predefined initial value(s) of the 
  * sequence (f0, f1, ...) and {@link #aN()} implements the recursion 
- * (fN = f(f(n-1), f(n-2), ...).<br/><br/>
+ * (fN = f(f(n-1), f(n-2), ...).<br><br>
  * 
  * Example: The Fibonacci sequence is defined recursively by
  * <ul>
@@ -44,7 +44,7 @@ import org.databene.domain.math.FibonacciLongGenerator;
  *   <li><code>F(n) = F(n-1) + F(n-2)</code></li>
  * </ul>
  * 
- * For a Generator of Long values, this translates to an implementation with<br/><br/>
+ * For a Generator of Long values, this translates to an implementation with<br><br>
  * <pre>depth = 2</code>
  *  
  * protected Long aN() {
@@ -57,7 +57,7 @@ import org.databene.domain.math.FibonacciLongGenerator;
  * </pre>
  * 
  * Have a look at the {@link FibonacciLongGenerator} source code for the complete implementation.
- * <br/><br/>
+ * <br><br>
  * Created: 13.10.2009 19:07:27
  * @since 0.6.0
  * @author Volker Bergmann

@@ -29,7 +29,7 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 
 /**
- * {@link EntitySource} implementation which creates {@link Iterable}s that iterate through CSV files.<br/><br/>
+ * {@link EntitySource} implementation which creates {@link Iterable}s that iterate through CSV files.<br><br>
  * Created: 05.05.2010 14:52:01
  * @since 0.6.1
  * @author Volker Bergmann

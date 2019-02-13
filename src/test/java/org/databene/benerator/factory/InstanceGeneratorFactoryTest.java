@@ -35,8 +35,8 @@ import org.databene.model.data.Uniqueness;
 import org.junit.Test;
 
 /**
- * Tests the {@link InstanceGeneratorFactory}.<br/>
- * <br/>
+ * Tests the {@link InstanceGeneratorFactory}.<br>
+ * <br>
  * Created at 27.08.2008 13:55:03
  * @since 0.5.5
  * @author Volker Bergmann

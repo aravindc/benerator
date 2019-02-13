@@ -37,8 +37,8 @@ import java.io.IOException;
 
 /**
  * Script based entity exporter.
- * Three scripts may be combined for formatting header, generated document part(s) and footer<br/>
- * <br/>
+ * Three scripts may be combined for formatting header, generated document part(s) and footer<br>
+ * <br>
  * Created: 01.09.2007 18:05:04
  * @author Volker Bergmann
  */

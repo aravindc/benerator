@@ -33,7 +33,7 @@ import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.commons.context.ContextAware;
 
 /**
- * Default implementation of the abstract {@link BeneratorFactory} class.<br/><br/>
+ * Default implementation of the abstract {@link BeneratorFactory} class.<br><br>
  * Created: 08.09.2010 15:45:25
  * @since 0.6.4
  * @author Volker Bergmann

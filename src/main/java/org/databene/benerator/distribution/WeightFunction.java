@@ -27,8 +27,8 @@
 package org.databene.benerator.distribution;
 
 /**
- * Common interface for weight functions.<br/>
- * <br/>
+ * Common interface for weight functions.<br>
+ * <br>
  * Created: 10.06.2006 05:27:38
  * @author Volker Bergmann
  */

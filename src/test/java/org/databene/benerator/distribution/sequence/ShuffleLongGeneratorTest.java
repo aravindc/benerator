@@ -32,7 +32,7 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link ShuffleLongGenerator}.<br/><br/>
+ * Tests the {@link ShuffleLongGenerator}.<br><br>
  * Created: 07.06.2006 20:23:39
  * @since 0.1
  * @author Volker Bergmann

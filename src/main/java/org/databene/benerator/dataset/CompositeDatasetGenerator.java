@@ -27,7 +27,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.WeightedGeneratorGenerator;
 
 /**
- * {@link DatasetBasedGenerator} implementation which bases on a composite dataset.<br/><br/>
+ * {@link DatasetBasedGenerator} implementation which bases on a composite dataset.<br><br>
  * Created: 09.03.2011 11:01:04
  * @since 0.6.6
  * @author Volker Bergmann

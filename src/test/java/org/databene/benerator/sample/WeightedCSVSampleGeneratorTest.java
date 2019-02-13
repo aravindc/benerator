@@ -40,7 +40,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link WeightedCSVSampleGenerator}.<br/><br/>
+ * Tests the {@link WeightedCSVSampleGenerator}.<br><br>
  * Created: 27.09.2006 23:16:11
  * @since 0.1
  * @author Volker Bergmann

@@ -32,7 +32,7 @@ import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.Encodings;
 
 /**
- * A TopLevelDomainGenerator.<br/><br/>
+ * A TopLevelDomainGenerator.<br><br>
  * Created at 20.04.2008 08:01:55
  * @since 0.5.2
  * @author Volker Bergmann

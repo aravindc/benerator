@@ -45,8 +45,8 @@ import org.databene.commons.ui.I18NError;
 import org.databene.jdbacl.JDBCDriverInfo;
 
 /**
- * Assembles all data useful for creating benerator archetypes.<br/>
- * <br/>
+ * Assembles all data useful for creating benerator archetypes.<br>
+ * <br>
  * Created at 29.11.2008 22:44:12
  * @since 0.5.6
  * @author Volker Bergmann

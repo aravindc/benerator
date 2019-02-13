@@ -31,8 +31,8 @@ import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
 /**
- * Tests the UniqueFixedLengthStringGenerator.<br/>
- * <br/>
+ * Tests the UniqueFixedLengthStringGenerator.<br>
+ * <br>
  * Created: 15.11.2007 14:30:28
  * @author Volker Bergmann
  */

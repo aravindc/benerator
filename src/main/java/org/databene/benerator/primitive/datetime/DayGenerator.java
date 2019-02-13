@@ -37,7 +37,7 @@ import org.databene.commons.TimeUtil;
 import org.databene.model.data.Uniqueness;
 
 /**
- * Generates dates with a granularity of days, months or years.<br/><br/>
+ * Generates dates with a granularity of days, months or years.<br><br>
  * Created: 12.10.2010 20:57:18
  * @since 0.6.4
  * @author Volker Bergmann

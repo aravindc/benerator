@@ -35,7 +35,7 @@ import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableDescriptor;
 
 /**
- * Factory class that creates {@link Generator}s for &lt;variable&gt;s.<br/><br/>
+ * Factory class that creates {@link Generator}s for &lt;variable&gt;s.<br><br>
  * Created: 18.05.2011 12:01:24
  * @since 0.6.6
  * @author Volker Bergmann

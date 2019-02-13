@@ -25,7 +25,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.formats.DataSource;
 
 /**
- * Interface for classes which provide {@link Iterable}s for iterating through data sources.<br/><br/>
+ * Interface for classes which provide {@link Iterable}s for iterating through data sources.<br><br>
  * Created: 05.05.2010 14:51:09
  * @since 0.6.1
  * @author Volker Bergmann

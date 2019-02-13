@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specifies the number granularity to use when generating number data for the annotated element.<br/><br/>
+ * Specifies the number granularity to use when generating number data for the annotated element.<br><br>
  * Created: 06.07.2011 07:17:52
  * @since 0.7.0
  * @author Volker Bergmann

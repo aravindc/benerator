@@ -38,7 +38,7 @@ import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
- * Parses a &lt;memstore%gt; statement.<br/><br/>
+ * Parses a &lt;memstore%gt; statement.<br><br>
  * Created: 08.03.2011 13:28:55
  * @since 0.6.6
  * @author Volker Bergmann

@@ -53,8 +53,8 @@ import org.databene.model.data.FileBasedEntitySource;
 import org.databene.platform.array.Array2EntityConverter;
 
 /**
- * Reads Entities from a fixed-width file.<br/>
- * <br/>
+ * Reads Entities from a fixed-width file.<br>
+ * <br>
  * Created at 07.11.2008 18:18:24
  * @since 0.5.6
  * @author Volker Bergmann

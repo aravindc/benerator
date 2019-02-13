@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 
 /**
- * Bean Validation annotation for fields that must pass the Luhn number test.<br/><br/>
+ * Bean Validation annotation for fields that must pass the Luhn number test.<br><br>
  * Created: 16.10.2009 18:41:23
  * @since 0.6.0
  * @author Volker Bergmann

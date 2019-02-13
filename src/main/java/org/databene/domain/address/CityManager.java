@@ -39,8 +39,8 @@ import java.io.IOException;
 import java.io.FileWriter;
 
 /**
- * Reads and persists city files in CSV format (column header = property name).<br/>
- * <br/>
+ * Reads and persists city files in CSV format (column header = property name).<br>
+ * <br>
  * Created: 28.07.2007 15:21:12
  * @author Volker Bergmann
  */

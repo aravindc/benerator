@@ -53,7 +53,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Loads an XML document into a DOM structure, supports queries for data and updates. 
- * When an instance is {@link #close()}d, the tree content is written to the {@link #outputUri}.<br/><br/>
+ * When an instance is {@link #close()}d, the tree content is written to the {@link #outputUri}.<br><br>
  * Created: 08.01.2014 15:27:38
  * @since 0.9.0
  * @author Volker Bergmann

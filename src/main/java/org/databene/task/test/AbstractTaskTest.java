@@ -31,7 +31,7 @@ import org.databene.task.TaskResult;
 import static org.junit.Assert.*;
 
 /**
- * Parent class for {@link Task} tests.<br/><br/>
+ * Parent class for {@link Task} tests.<br><br>
  * Created: 10.02.2010 10:11:35
  * @since 0.6.0
  * @author Volker Bergmann

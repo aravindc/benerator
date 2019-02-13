@@ -66,8 +66,8 @@ import java.text.ParseException;
 import java.util.*;
 
 /**
- * Creates entity generators from entity metadata.<br/>
- * <br/>
+ * Creates entity generators from entity metadata.<br>
+ * <br>
  * Created: 08.09.2007 07:45:40
  * @author Volker Bergmann
  */

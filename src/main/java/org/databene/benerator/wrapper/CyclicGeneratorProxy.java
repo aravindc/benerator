@@ -33,8 +33,8 @@ import org.databene.benerator.GeneratorState;
  * Generator proxy that 'loops' through a source Generator,
  * calling reset() each time the source becomes unavailable.
  * It becomes unavailable only if the source generator is
- * unavailable after a reset.<br/>
- * <br/>
+ * unavailable after a reset.<br>
+ * <br>
  * Created: 18.08.2007 16:55:21
  * @author Volker Bergmann
  */

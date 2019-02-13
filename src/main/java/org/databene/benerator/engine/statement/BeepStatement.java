@@ -27,7 +27,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 
 /**
- * {@link Statement} that emits a beep.<br/><br/>
+ * {@link Statement} that emits a beep.<br><br>
  * Created: 14.09.2010 14:40:33
  * @since 0.6.4
  * @author Volker Bergmann

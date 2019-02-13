@@ -33,7 +33,7 @@ import org.databene.commons.Validator;
 
 /**
  * Generator proxy that uses another generator for creating values and filters out invalid ones.
- * <br/>
+ * <br>
  * Created: 29.08.2006 08:27:11
  * @see ValidatingGenerator
  */

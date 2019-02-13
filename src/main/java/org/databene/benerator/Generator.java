@@ -34,9 +34,9 @@ import org.databene.commons.Resettable;
 import org.databene.commons.ThreadAware;
 
 /**
- * This is the basic Generator interface, the mother of all generators.<br/>
- * <br/>
- * <b>Generator States</b><br/>
+ * This is the basic Generator interface, the mother of all generators.<br>
+ * <br>
+ * <b>Generator States</b><br>
  * A Generator may be in one of three states:
  * <ul>
  *   <li><i>constructing</i>: The generator is under construction.
@@ -50,13 +50,13 @@ import org.databene.commons.ThreadAware;
  *        When <i>unavailable</i>, the generator must be in a state in which it can be safely garbage collected.</li>
  * </ul>
  *
- * <b>Developer Notes:</b><br/>
+ * <b>Developer Notes:</b><br>
  * When implementing a custom generator, you should make it a JavaBean:
  * <ul>
  *   <li>Implement a public default (no-arg) constructor</li>
  *   <li>make each relevant property configurable by a set-method</li>
  * </ul>
- * <br/>
+ * <br>
  * Created: 07.06.2006 18:51:28
  * @since 0.1
  * @author Volker Bergmann

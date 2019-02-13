@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 /**
- * Tests the DOMTree.<br/><br/>
+ * Tests the DOMTree.<br><br>
  * Created: 14.01.2014 17:58:07
  * @since 0.9.0
  * @author Volker Bergmann

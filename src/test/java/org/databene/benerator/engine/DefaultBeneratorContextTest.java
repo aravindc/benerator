@@ -34,7 +34,7 @@ import org.databene.formats.xls.XLSLineIterator;
 import org.junit.Test;
 
 /**
- * Tests the {@link BeneratorContext}.<br/><br/>
+ * Tests the {@link BeneratorContext}.<br><br>
  * Created: 31.03.2010 15:15:07
  * @since 0.6.0
  * @author Volker Bergmann

@@ -75,7 +75,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
- * Parses a &lt;generate&gt; or &lt;update&gt; element in a Benerator descriptor file.<br/><br/>
+ * Parses a &lt;generate&gt; or &lt;update&gt; element in a Benerator descriptor file.<br><br>
  * Created: 25.10.2009 01:05:18
  * @since 0.6.0
  * @author Volker Bergmann

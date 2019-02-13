@@ -47,7 +47,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the {@link ArrayTypeGeneratorFactory}.<br/><br/>
+ * Tests the {@link ArrayTypeGeneratorFactory}.<br><br>
  * Created: 01.05.2010 08:03:12
  * @since 0.6.1
  * @author Volker Bergmann

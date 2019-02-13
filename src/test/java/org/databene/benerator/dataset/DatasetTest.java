@@ -39,7 +39,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link Dataset} features.<br/><br/>
+ * Tests the {@link Dataset} features.<br><br>
  * Created: 21.03.2008 14:20:59
  * @since 0.5.0
  * @author Volker Bergmann

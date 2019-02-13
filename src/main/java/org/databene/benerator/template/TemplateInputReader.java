@@ -27,7 +27,7 @@ import org.databene.commons.Context;
 import org.databene.commons.ParseException;
 
 /**
- * Reads the input file for a template and attaches it to a {@link Context}.<br/><br/>
+ * Reads the input file for a template and attaches it to a {@link Context}.<br><br>
  * Created: 06.03.2014 08:22:09
  * @since 0.9.0
  * @author Volker Bergmann

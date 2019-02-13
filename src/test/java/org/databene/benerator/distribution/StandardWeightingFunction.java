@@ -23,7 +23,7 @@ package org.databene.benerator.distribution;
 import org.databene.benerator.distribution.function.DiscreteFunction;
 
 /**
- * Custom weight function implementation.<br/><br/>
+ * Custom weight function implementation.<br><br>
  * Created: 09.07.2010 07:41:55
  * @since 0.6.3
  * @author Volker Bergmann

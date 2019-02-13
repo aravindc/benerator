@@ -53,7 +53,7 @@ import org.databene.script.DatabeneScriptParser;
 import org.databene.script.Expression;
 
 /**
- * Creates array {@link Generator}s.<br/><br/>
+ * Creates array {@link Generator}s.<br><br>
  * Created: 29.04.2010 07:45:18
  * @since 0.6.1
  * @author Volker Bergmann

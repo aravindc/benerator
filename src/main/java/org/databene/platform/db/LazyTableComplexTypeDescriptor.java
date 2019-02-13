@@ -32,7 +32,7 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.VariableDescriptor;
 
 /**
- * Lazily initialized {@link ComplexTypeDescriptor} that reads its components from a database table.<br/><br/>
+ * Lazily initialized {@link ComplexTypeDescriptor} that reads its components from a database table.<br><br>
  * Created: 30.11.2010 19:23:33
  * @since 0.6.4
  * @author Volker Bergmann

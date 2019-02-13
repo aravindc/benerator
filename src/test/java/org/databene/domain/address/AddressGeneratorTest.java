@@ -44,7 +44,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the AddressGenerator.<br/><br/>
+ * Tests the AddressGenerator.<br><br>
  * Created: 12.06.2007 06:45:41
  * @since 0.1
  * @author Volker Bergmann

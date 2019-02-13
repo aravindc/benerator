@@ -28,7 +28,7 @@ import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.junit.Test;
 
 /**
- * Integration test for the &lt;evaluate&gt; statement.<br/><br/>
+ * Integration test for the &lt;evaluate&gt; statement.<br><br>
  * Created: 24.03.2011 11:54:43
  * @since 0.6.6
  * @author Volker Bergmann

@@ -40,8 +40,8 @@ import javax.validation.Constraint;
 import org.databene.domain.br.CPFValidator;
 
 /**
- * Bean validation annotation (JSR 303) for fields that represent an IBAN.<br/>
- * <br/>
+ * Bean validation annotation (JSR 303) for fields that represent an IBAN.<br>
+ * <br>
  * Created at 03.07.2009 19:53:27
  * @since 0.6.0
  * @author Volker Bergmann

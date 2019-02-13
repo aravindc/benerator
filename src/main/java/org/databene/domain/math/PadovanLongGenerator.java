@@ -35,7 +35,7 @@ import org.databene.benerator.primitive.number.RecurrenceRelationNumberGenerator
  *   <li>P(0) = P(1) = P(2) = 1</li>
  *   <li>P(n) = P(n-2) + P(n-3)</li>
  * </ul>
- * <br/>
+ * <br>
  * Created at 03.07.2009 13:22:41
  * @see PadovanSequence
  * @since 0.6.0

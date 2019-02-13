@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks an element as configured by a Benerator descriptor file.<br/><br/>
+ * Marks an element as configured by a Benerator descriptor file.<br><br>
  * Created: 08.05.2010 07:57:51
  * @since 0.6.2
  * @author Volker Bergmann

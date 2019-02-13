@@ -28,7 +28,7 @@ import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * {@link Generator} class for use by the {@link LiteralSequence}.<br/><br/>
+ * {@link Generator} class for use by the {@link LiteralSequence}.<br><br>
  * Created: 03.06.2010 08:48:44
  * @since 0.6.3
  * @author Volker Bergmann

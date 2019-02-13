@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * {@link Statement} for creating a {@link DOMTree} element 
- * and assigning it with context and resource manager.<br/><br/>
+ * and assigning it with context and resource manager.<br><br>
  * Created: 16.01.2014 16:07:06
  * @since 0.9.0
  * @author Volker Bergmann

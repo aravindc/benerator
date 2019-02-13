@@ -33,7 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the {@link CompositeDatasetGenerator}.<br/><br/>
+ * Tests the {@link CompositeDatasetGenerator}.<br><br>
  * Created: 09.03.2011 16:28:23
  * @since 0.6.6
  * @author Volker Bergmann

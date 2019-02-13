@@ -26,7 +26,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Assert;
 
 /**
- * Proxy class for a {@link ComponentBuilder}.<br/><br/>
+ * Proxy class for a {@link ComponentBuilder}.<br><br>
  * Created: 11.10.2010 11:10:51
  * @since 0.6.4
  * @author Volker Bergmann

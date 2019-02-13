@@ -43,7 +43,7 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.script.Expression;
 
 /**
- * Simple heap-based implementation of the AbstractStorageSystem interface.<br/><br/>
+ * Simple heap-based implementation of the AbstractStorageSystem interface.<br><br>
  * Created: 07.03.2011 14:41:40
  * @since 0.6.6
  * @author Volker Bergmann

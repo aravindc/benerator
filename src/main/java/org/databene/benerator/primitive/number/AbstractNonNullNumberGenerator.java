@@ -34,8 +34,8 @@ import org.databene.commons.converter.NumberToNumberConverter;
 
 /**
  * Abstract parent class for all number generators.
- * It hosts a distribution and defines abstract properties to be implemented by child classes.<br/>
- * <br/>
+ * It hosts a distribution and defines abstract properties to be implemented by child classes.<br>
+ * <br>
  * Created: 10.09.2006 19:47:32
  * @since 0.1
  * @author Volker Bergmann

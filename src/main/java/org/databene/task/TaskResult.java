@@ -22,7 +22,7 @@
 package org.databene.task;
 
 /**
- * Represents the result of a task execution.<br/><br/>
+ * Represents the result of a task execution.<br><br>
  * Created: 17.02.2010 13:51:02
  * @since 0.6.0
  * @author Volker Bergmann

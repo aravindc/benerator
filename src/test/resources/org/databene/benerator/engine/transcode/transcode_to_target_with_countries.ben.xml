@@ -11,12 +11,12 @@
 	<execute uri="createTables.sql" target="t" />
 	
 	<execute target="s">
-		insert into COUNTRY values (10, 'United States');
-		insert into COUNTRY values (20, 'Germany');
-		insert into STATE   values (110, 10, 'California');
-		insert into STATE   values (120, 10, 'Florida');
-		insert into STATE   values (210, 20, 'Bayern');
-		insert into STATE   values (220, 20, 'Hamburg');
+		insert into COUNTRY values (1000, 'United States');
+		insert into COUNTRY values (2000, 'Germany');
+		insert into STATE   values (110, 1000, 'California');
+		insert into STATE   values (120, 1000, 'Florida');
+		insert into STATE   values (210, 2000, 'Bayern');
+		insert into STATE   values (220, 2000, 'Hamburg');
 	</execute>
 	
 	<execute target="t">

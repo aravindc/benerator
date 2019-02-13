@@ -28,7 +28,7 @@ import java.util.Locale;
 import org.junit.Test;
 
 /**
- * Tests the {@link DatasetUtil}.<br/><br/>
+ * Tests the {@link DatasetUtil}.<br><br>
  * Created: 31.01.2012 11:17:29
  * @since 0.7.5
  * @author Volker Bergmann

@@ -33,7 +33,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link FamilyNameGenerator}.<br/><br/>
+ * Tests the {@link FamilyNameGenerator}.<br><br>
  * Created: 09.06.2006 22:16:06
  * @since 0.1
  * @author Volker Bergmann

@@ -60,7 +60,7 @@ import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.TypeDescriptor;
 
 /**
- * Default implementation of {@link BeneratorContext}.<br/><br/>
+ * Default implementation of {@link BeneratorContext}.<br><br>
  * Created: 02.09.2011 14:36:58
  * @since 0.7.0
  * @author Volker Bergmann

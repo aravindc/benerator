@@ -30,7 +30,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link CreditCardNumberValidator}.<br/><br/>
+ * Tests the {@link CreditCardNumberValidator}.<br><br>
  * Created at 09.04.2008 12:35:58
  * @since 0.5.1
  * @author Volker Bergmann

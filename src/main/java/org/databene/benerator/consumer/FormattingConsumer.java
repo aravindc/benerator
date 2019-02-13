@@ -30,7 +30,7 @@ import org.databene.commons.Capitalization;
 import org.databene.commons.converter.ToStringConverter;
 
 /**
- * Provides a datePattern property for child classes.<br/><br/>
+ * Provides a datePattern property for child classes.<br><br>
  * Created at 08.04.2008 07:18:17
  * @since 0.5.1
  * @author Volker Bergmann

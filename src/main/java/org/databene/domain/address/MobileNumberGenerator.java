@@ -24,7 +24,7 @@ package org.databene.domain.address;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Generates mobile phone numbers.<br/><br/>
+ * Generates mobile phone numbers.<br><br>
  * Created: 16.10.2009 07:11:15
  * @since 0.6.0
  * @author Volker Bergmann

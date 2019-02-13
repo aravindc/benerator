@@ -34,8 +34,8 @@ import org.databene.benerator.PropertyMessage;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
- * Creates random {@link Integer} values with a uniform distribution.<br/>
- * <br/>
+ * Creates random {@link Integer} values with a uniform distribution.<br>
+ * <br>
  * Created at 24.06.2009 00:57:52
  * @since 0.6.0
  * @author Volker Bergmann

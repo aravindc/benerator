@@ -31,7 +31,7 @@ import org.databene.script.WeightedSample;
 
 /**
  * {@link Sequence} implementation that provides values specified in a comma-separated value list, 
- * use like "new PredefinedSequence('A', 'B', 'C')" or "new PredefinedSequence(5, 7, 11)".<br/><br/>
+ * use like "new PredefinedSequence('A', 'B', 'C')" or "new PredefinedSequence(5, 7, 11)".<br><br>
  * Created: 03.06.2010 08:40:27
  * @since 0.6.3
  * @author Volker Bergmann

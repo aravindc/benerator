@@ -32,7 +32,7 @@ import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
 /**
- * Tests the {NobilityTitleGenerator}.<br/><br/>
+ * Tests the {NobilityTitleGenerator}.<br><br>
  * Created: 11.02.2010 12:55:50
  * @since 0.6.0
  * @author Volker Bergmann

@@ -34,7 +34,7 @@ import org.databene.formats.script.ScriptConverterForStrings;
 import org.databene.script.WeightedSample;
 
 /**
- * Generates values from a dataset based on a {@link Sequence}.<br/><br/>
+ * Generates values from a dataset based on a {@link Sequence}.<br><br>
  * Created: 17.02.2010 23:22:52
  * @since 0.6.0
  * @author Volker Bergmann

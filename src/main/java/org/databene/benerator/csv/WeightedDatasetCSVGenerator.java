@@ -45,8 +45,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Generates data from a csv file set that is organized as {@link Dataset}.
  * For different regions, different CSV versions may be provided by appending region suffixes,
- * similar to the JDK ResourceBundle handling.<br/>
- * <br/>
+ * similar to the JDK ResourceBundle handling.<br>
+ * <br>
  * Created: 21.03.2008 16:32:04
  * @since 0.5.0
  * @author Volker Bergmann

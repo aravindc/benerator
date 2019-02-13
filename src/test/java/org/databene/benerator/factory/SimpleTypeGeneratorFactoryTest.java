@@ -46,8 +46,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SimpleTypeGeneratorFactory}.<br/>
- * <br/>
+ * Tests the {@link SimpleTypeGeneratorFactory}.<br>
+ * <br>
  * Created at 29.04.2008 20:13:40
  * @since 0.5.2
  * @author Volker Bergmann

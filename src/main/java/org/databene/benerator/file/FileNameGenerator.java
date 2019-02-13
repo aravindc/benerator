@@ -26,7 +26,7 @@ import java.io.File;
 import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 
 /**
- * Generates file and/or directory names out of a directory.<br/><br/>
+ * Generates file and/or directory names out of a directory.<br><br>
  * Created: 24.02.2010 06:30:22
  * @since 0.6.0
  * @author Volker Bergmann

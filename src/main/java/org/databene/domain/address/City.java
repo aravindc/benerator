@@ -36,7 +36,7 @@ import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
 
 /**
- * Represents a city.<br/><br/>
+ * Represents a city.<br><br>
  * Created: 11.06.2006 08:19:23
  * @since 0.1
  * @author Volker Bergmann

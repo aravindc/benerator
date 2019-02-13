@@ -34,7 +34,7 @@ import org.databene.task.TaskExecutor;
 import org.databene.task.Task;
 
 /**
- * {@link Statement} that executes a {@link Task} supporting paging and multithreading.<br/><br/>
+ * {@link Statement} that executes a {@link Task} supporting paging and multithreading.<br><br>
  * Created: 27.10.2009 20:29:47
  * @since 0.6.0
  * @author Volker Bergmann

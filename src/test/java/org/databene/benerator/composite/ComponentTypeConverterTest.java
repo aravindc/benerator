@@ -30,7 +30,7 @@ import org.databene.model.data.PartDescriptor;
 import org.junit.Test;
 
 /**
- * Tests the {@link ComponentTypeConverter}.<br/><br/>
+ * Tests the {@link ComponentTypeConverter}.<br><br>
  * Created: 28.08.2013 17:19:08
  * @since 0.8.3
  * @author Volker Bergmann

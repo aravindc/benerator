@@ -33,7 +33,7 @@ import org.databene.commons.context.ContextAware;
 
 /**
  * {@link Generator} implementation that makes use of other {@link ContextAware}
- * objects by which its threading support is influenced.<br/><br/>
+ * objects by which its threading support is influenced.<br><br>
  * Created: 20.03.2010 11:19:11
  * @since 0.6.0
  * @author Volker Bergmann

@@ -31,7 +31,7 @@ import org.databene.formats.util.OffsetDataSource;
 import org.databene.formats.xls.XLSSource;
 
 /**
- * {@link DataSourceProvider} implementation which creates {@link XLSSource}s.<br/><br/>
+ * {@link DataSourceProvider} implementation which creates {@link XLSSource}s.<br><br>
  * Created: 19.07.2011 08:31:10
  * @since 0.7.0
  * @author Volker Bergmann

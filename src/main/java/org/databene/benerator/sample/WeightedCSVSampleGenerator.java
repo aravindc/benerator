@@ -48,7 +48,7 @@ import java.util.List;
  *   Bravo,4
  *   Charly,2
  * </pre>
- * <br/>
+ * <br>
  * Created: 11.06.2006 20:49:33
  * @since 0.1
  * @author Volker Bergmann

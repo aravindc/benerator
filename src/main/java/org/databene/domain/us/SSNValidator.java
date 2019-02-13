@@ -33,8 +33,8 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.Validator;
 
 /**
- * Validates US Social Security Numbers.<br/>
- * <br/>
+ * Validates US Social Security Numbers.<br>
+ * <br>
  * Created at 17.11.2008 07:08:34
  * @since 0.5.6
  * @author Volker Bergmann

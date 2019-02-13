@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Reads a text file, shuffles its lines and writes it to another file.<br/>
- * <br/>
+ * Reads a text file, shuffles its lines and writes it to another file.<br>
+ * <br>
  * Created: 16.07.2007 20:29:10
  */
 public class LineShuffler {

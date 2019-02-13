@@ -36,8 +36,8 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.ConfigurationError;
 
 /**
- * Distribution that repeats consecutive elements or numbers.<br/>
- * <br/>
+ * Distribution that repeats consecutive elements or numbers.<br>
+ * <br>
  * Created at 01.07.2009 15:40:02
  * @since 0.6.0
  * @author Volker Bergmann

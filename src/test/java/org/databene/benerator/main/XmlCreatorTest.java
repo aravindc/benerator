@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Tests the {@link XmlCreator}.<br/><br/>
+ * Tests the {@link XmlCreator}.<br><br>
  * Created at 05.05.2008 16:53:29
  * @since 0.5.3
  * @author Volker Bergmann

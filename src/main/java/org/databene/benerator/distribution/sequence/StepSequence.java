@@ -41,8 +41,8 @@ import org.databene.commons.NumberUtil;
 import static org.databene.commons.NumberUtil.*;
 
 /**
- * Creates numbers by continuously incrementing a base value by a constant amount.<br/>
- * <br/>
+ * Creates numbers by continuously incrementing a base value by a constant amount.<br>
+ * <br>
  * Created at 30.06.2009 09:55:20
  * @since 0.6.0
  * @author Volker Bergmann

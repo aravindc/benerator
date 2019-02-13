@@ -16,8 +16,8 @@ import static junit.framework.Assert.*;
 
 /**
  * Tests the behavior of the {@link RegexGeneratorFactory} 
- * when using the {@link StochasticGeneratorFactory}.<br/>
- * <br/>
+ * when using the {@link StochasticGeneratorFactory}.<br>
+ * <br>
  * Created: 20.08.2006 09:21:19
  * @since 0.1
  * @author Volker Bergmann

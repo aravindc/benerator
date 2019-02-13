@@ -30,7 +30,7 @@ import org.databene.benerator.sample.WeightedCSVSampleGenerator;
 import org.databene.commons.Encodings;
 
 /**
- * A WebmailDomainGenerator.<br/><br/>
+ * A WebmailDomainGenerator.<br><br>
  * Created at 23.04.2008 22:20:53
  * @since 0.5.2
  * @author Volker Bergmann

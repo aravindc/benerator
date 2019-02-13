@@ -27,7 +27,7 @@ import org.databene.commons.validator.RegexValidator;
 import org.junit.Test;
 
 /**
- * Tests the {@link LuhnGenerator}.<br/><br/>
+ * Tests the {@link LuhnGenerator}.<br><br>
  * Created: 18.10.2009 10:26:47
  * @since 0.6.0
  * @author Volker Bergmann

@@ -36,7 +36,7 @@ import org.databene.commons.LocaleUtil;
 import org.databene.domain.address.Country;
 
 /**
- * Generates EMail Addresses.<br/><br/>
+ * Generates EMail Addresses.<br><br>
  * Created at 09.04.2008 01:34:17
  * @since 0.5.1
  * @author Volker Bergmann

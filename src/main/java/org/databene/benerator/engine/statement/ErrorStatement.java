@@ -29,7 +29,7 @@ import org.databene.script.expression.ExpressionUtil;
 
 /**
  * {@link Statement} implementation that raises a {@link BeneratorError} 
- * and provides a result <code>code</code> for the operating system.<br/><br/>
+ * and provides a result <code>code</code> for the operating system.<br><br>
  * Created: 12.01.2011 09:04:26
  * @since 0.6.4
  * @author Volker Bergmann

@@ -42,8 +42,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Executes an &lt;include/&gt; from an XML descriptor file.<br/>
- * <br/>
+ * Executes an &lt;include/&gt; from an XML descriptor file.<br>
+ * <br>
  * Created at 23.07.2009 07:18:54
  * @since 0.6.0
  * @author Volker Bergmann

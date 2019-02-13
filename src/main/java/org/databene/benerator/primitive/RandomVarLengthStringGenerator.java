@@ -31,7 +31,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.formats.regex.RegexParser;
 
 /**
- * Generates {@link String}s composed of numerical digits.<br/><br/>
+ * Generates {@link String}s composed of numerical digits.<br><br>
  * Created: 16.10.2009 07:31:16
  * @since 0.6.0
  * @author Volker Bergmann

@@ -35,8 +35,8 @@ import java.io.IOException;
 import java.io.BufferedReader;
 
 /**
- * Demonstrates how to create (simple) bean graphs from a CSV file.<br/>
- * <br/>
+ * Demonstrates how to create (simple) bean graphs from a CSV file.<br>
+ * <br>
  * Created: 19.07.2007 07:06:22
  * @author Volker Bergmann
  */

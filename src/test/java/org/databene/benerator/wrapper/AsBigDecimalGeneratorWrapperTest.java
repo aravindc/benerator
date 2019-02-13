@@ -32,7 +32,7 @@ import org.databene.benerator.util.GeneratorUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link AsBigDecimalGeneratorWrapper}.<br/><br/>
+ * Tests the {@link AsBigDecimalGeneratorWrapper}.<br><br>
  * Created: 12.01.2011 00:02:55
  * @since 0.6.4
  * @author Volker Bergmann

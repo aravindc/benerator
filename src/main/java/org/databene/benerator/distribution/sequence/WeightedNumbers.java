@@ -34,7 +34,7 @@ import org.databene.script.WeightedSample;
 /**
  * Generates numbers with weights that are defined using a literal, 
  * for example "1^3,2^7" would cause generation of 30% '1' values and 
- * 70% '2' values.<br/><br/>
+ * 70% '2' values.<br><br>
  * Created: 02.06.2010 07:27:36
  * @since 0.6.3
  * @author Volker Bergmann

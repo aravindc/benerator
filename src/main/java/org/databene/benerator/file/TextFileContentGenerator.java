@@ -27,7 +27,7 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.IOUtil;
 
 /**
- * Provides file contents as {@link String}s.<br/><br/>
+ * Provides file contents as {@link String}s.<br><br>
  * Created: 24.02.2010 07:31:05
  * @since 0.6.0
  */

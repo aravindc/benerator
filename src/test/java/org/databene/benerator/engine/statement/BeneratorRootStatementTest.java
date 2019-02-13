@@ -41,7 +41,7 @@ import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * Tests the {@link BeneratorRootStatement}.<br/><br/>
+ * Tests the {@link BeneratorRootStatement}.<br><br>
  * Created: 24.10.2009 11:22:25
  * @since 0.6.0
  * @author Volker Bergmann

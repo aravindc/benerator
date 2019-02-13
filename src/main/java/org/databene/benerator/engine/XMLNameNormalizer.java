@@ -28,7 +28,7 @@ import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
  * Normalizes XML-valid names to Java-valid camel-case names, 
- * e.g. default-script -> defaultScript.<br/><br/>
+ * e.g. default-script -> defaultScript.<br><br>
  * Created: 26.10.2009 09:17:53
  * @since 0.6.0
  * @author Volker Bergmann

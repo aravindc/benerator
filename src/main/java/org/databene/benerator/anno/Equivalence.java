@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that marks a test as equivalence partitioning test.<br/><br/>
+ * Annotation that marks a test as equivalence partitioning test.<br><br>
  * Created: 05.07.2011 16:18:15
  * @since 0.7.0
  * @author Volker Bergmann

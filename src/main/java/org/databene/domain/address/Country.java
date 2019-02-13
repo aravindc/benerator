@@ -53,7 +53,7 @@ import java.io.IOException;
 
 /**
  * Represents a country and provides constants for most bigger countries.
- * Country information is read from the file org/databene/domain/address/country.csv.<br/><br/>
+ * Country information is read from the file org/databene/domain/address/country.csv.<br><br>
  * Created: 11.06.2006 08:15:37
  * @since 0.1
  * @author Volker Bergmann

@@ -62,7 +62,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Generates company names.<br/><br/>
+ * Generates company names.<br><br>
  * Created: 14.03.2008 08:26:44
  * @since 0.5.0
  * @author Volker Bergmann

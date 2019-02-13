@@ -25,7 +25,7 @@ import org.databene.commons.MessageHolder;
 import org.databene.commons.StringUtil;
 
 /**
- * Exception which indicates that a required Task is unavailable.<br/><br/>
+ * Exception which indicates that a required Task is unavailable.<br><br>
  * Created: 20.10.2009 10:07:05
  * @since 0.6.0
  * @author Volker Bergmann

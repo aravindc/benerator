@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 /**
- * Integration-tests Benerator's XML features.<br/><br/>
+ * Integration-tests Benerator's XML features.<br><br>
  * Created: 14.01.2014 10:09:40
  * @since 0.9.0
  * @author Volker Bergmann

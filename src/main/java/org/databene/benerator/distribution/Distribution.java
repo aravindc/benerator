@@ -30,8 +30,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 
 /**
- * Parent interface for all distribution types.<br/>
- * <br/>
+ * Parent interface for all distribution types.<br>
+ * <br>
  * Created: 11.09.2006 21:31:54
  * @version 0.1
  * @author Volker Bergmann

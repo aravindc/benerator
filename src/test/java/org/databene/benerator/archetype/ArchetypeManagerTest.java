@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * Tests the {@link ArchetypeManager}.<br/><br/>
+ * Tests the {@link ArchetypeManager}.<br><br>
  * Created: 02.04.2010 10:04:23
  * @since 0.6.0
  * @author Volker Bergmann

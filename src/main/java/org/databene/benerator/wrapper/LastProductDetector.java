@@ -25,8 +25,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 
 /**
- * Wraps another {@link Generator}, finds out which is the last generated object and tags that with "last"="true".<br/>
- * <br/>
+ * Wraps another {@link Generator}, finds out which is the last generated object and tags that with "last"="true".<br>
+ * <br>
  * Created: 12.09.2011 12:06:26
  * @see ProductWrapper#getTag(String)
  * @since 0.7.0

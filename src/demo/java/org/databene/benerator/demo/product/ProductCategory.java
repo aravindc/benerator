@@ -27,8 +27,8 @@
 package org.databene.benerator.demo.product;
 
 /**
- * Represents a product category as second level layer in a product hierarchy.<br/>
- * <br/>
+ * Represents a product category as second level layer in a product hierarchy.<br>
+ * <br>
  * Created: 19.07.2007 07:10:07
  */
 public class ProductCategory {

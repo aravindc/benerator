@@ -32,7 +32,7 @@ import org.databene.script.expression.ExpressionUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link DynamicCountGenerator}.<br/><br/>
+ * Tests the {@link DynamicCountGenerator}.<br><br>
  * Created: 28.03.2010 12:57:38
  * @since 0.6.0
  * @author Volker Bergmann

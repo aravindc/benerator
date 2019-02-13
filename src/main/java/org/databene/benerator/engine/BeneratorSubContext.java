@@ -22,7 +22,7 @@
 package org.databene.benerator.engine;
 
 /**
- * Common interface for Benerator sub contexts.<br/><br/>
+ * Common interface for Benerator sub contexts.<br><br>
  * Created: 26.01.2013 16:09:25
  * @since 0.8.0
  * @author Volker Bergmann

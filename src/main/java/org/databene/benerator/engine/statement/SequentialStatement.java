@@ -27,7 +27,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 
 /**
- * Executes all sub statements sequentially.<br/><br/>
+ * Executes all sub statements sequentially.<br><br>
  * Created: 20.02.2010 08:00:24
  * @since 0.6.0
  * @author Volker Bergmann

@@ -25,7 +25,7 @@ import org.databene.benerator.NonNullGenerator;
 
 /**
  * Common parent class for {@link NonNullGenerator}s that can 
- * generate a String of a requested length.<br/><br/>
+ * generate a String of a requested length.<br><br>
  * Created: 01.08.2011 07:41:21
  * @since 0.7.0
  * @author Volker Bergmann

@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for declaring a database.<br/><br/>
+ * Annotation for declaring a database.<br><br>
  * Created: 31.05.2011 12:11:07
  * @since 0.6.6
  * @author Volker Bergmann

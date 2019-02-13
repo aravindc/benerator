@@ -36,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the {@link CascadeStatement}.<br/><br/>
+ * Tests the {@link CascadeStatement}.<br><br>
  * Created: 28.08.2011 18:51:55
  * @since 0.7.0
  * @author Volker Bergmann

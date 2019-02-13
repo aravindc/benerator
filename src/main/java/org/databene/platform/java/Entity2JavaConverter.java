@@ -39,8 +39,8 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Converts entities and entity arrays to Java beans and bean arrays.<br/>
- * <br/>
+ * Converts entities and entity arrays to Java beans and bean arrays.<br>
+ * <br>
  * Created: 29.08.2007 08:50:24
  * @author Volker Bergmann
  */

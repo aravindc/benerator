@@ -35,7 +35,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 /**
- * Default implementation of the {@link DBSystem} class.<br/><br/>
+ * Default implementation of the {@link DBSystem} class.<br><br>
  * Created: 27.06.2007 23:04:19
  * @since 0.3
  * @author Volker Bergmann

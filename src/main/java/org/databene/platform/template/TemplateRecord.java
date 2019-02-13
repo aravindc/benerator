@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Parent interface for all records used by the {@link TemplateFileEntityExporter}.<br/><br/>
+ * Parent interface for all records used by the {@link TemplateFileEntityExporter}.<br><br>
  * Created: 30.06.2014 10:32:10
  * @since 0.9.7
  * @author Volker Bergmann

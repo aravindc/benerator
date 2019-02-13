@@ -28,7 +28,7 @@ import org.databene.platform.template.TemplateFileEntityExporter;
 import org.junit.Test;
 
 /**
- * Tests the {@link TemplateFileEntityExporter}.<br/><br/>
+ * Tests the {@link TemplateFileEntityExporter}.<br><br>
  * Created: 27.06.2014 17:42:34
  * @since 0.9.7
  * @author Volker Bergmann

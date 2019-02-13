@@ -33,8 +33,8 @@ import org.databene.script.Expression;
 import org.databene.script.expression.ExpressionUtil;
 
 /**
- * Prints out a message to the console.<br/>
- * <br/>
+ * Prints out a message to the console.<br>
+ * <br>
  * Created at 22.07.2009 07:13:28
  * @since 0.6.0
  * @author Volker Bergmann

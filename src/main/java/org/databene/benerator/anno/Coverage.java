@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marker for classes and methods with a focus on coverage.<br/><br/>
+ * Marker for classes and methods with a focus on coverage.<br><br>
  * Created: 06.07.2011 07:02:34
  * @since 0.7.0
  * @author Volker Bergmann

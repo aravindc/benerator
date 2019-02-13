@@ -33,7 +33,7 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  * CPF stands for 'Cadastro de Pessoa Fisica' 
  * and is a tax payer number assigned to an 
  * individual person (Pessoa Fisica).
- * <br/><br/>
+ * <br><br>
  * Created: 17.10.2009 08:24:12
  * @since 0.6.0
  * @author Volker Bergmann

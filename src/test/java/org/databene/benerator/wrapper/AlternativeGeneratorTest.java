@@ -36,8 +36,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link AlternativeGenerator}.<br/>
- * <br/>
+ * Tests the {@link AlternativeGenerator}.<br>
+ * <br>
  * Created: 11.10.2006 23:10:34
  * @since 0.1
  * @author Volker Bergmann

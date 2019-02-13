@@ -34,8 +34,8 @@ import org.databene.benerator.distribution.SequenceManager;
 import java.util.*;
 
 /**
- * Combines a a random number a source generator's products into a collection.<br/>
- * <br/>
+ * Combines a a random number a source generator's products into a collection.<br>
+ * <br>
  * Created: 07.07.2006 19:13:22
  * @since 0.1
  * @author Volker Bergmann

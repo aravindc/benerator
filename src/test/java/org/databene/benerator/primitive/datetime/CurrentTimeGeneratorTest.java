@@ -37,8 +37,8 @@ import java.util.Date;
 import javax.validation.ConstraintValidatorContext;
 
 /**
- * Tests the CurrentTimeGenerator.<br/>
- * <br/>
+ * Tests the CurrentTimeGenerator.<br>
+ * <br>
  * Created: 19.11.2007 20:43:45
  * @author Volker Bergmann
  */

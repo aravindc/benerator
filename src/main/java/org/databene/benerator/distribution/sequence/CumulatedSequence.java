@@ -38,8 +38,8 @@ import org.databene.commons.NumberUtil;
 import static org.databene.commons.NumberUtil.*;
 
 /**
- * {@link Sequence} implementation for an efficient bell-like distribution.<br/>
- * <br/>
+ * {@link Sequence} implementation for an efficient bell-like distribution.<br>
+ * <br>
  * Created at 23.09.2009 18:59:30
  * @since 0.6.0
  * @author Volker Bergmann

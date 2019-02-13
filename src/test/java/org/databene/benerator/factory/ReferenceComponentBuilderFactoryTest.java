@@ -49,8 +49,8 @@ import org.databene.model.data.Uniqueness;
 import org.databene.script.expression.ConstantExpression;
 
 /**
- * Tests the {@link ComponentBuilderFactory}'s reference-related methods.<br/>
- * <br/>
+ * Tests the {@link ComponentBuilderFactory}'s reference-related methods.<br>
+ * <br>
  * Created at 05.05.2008 17:08:45
  * @since 0.5.3
  * @author Volker Bergmann

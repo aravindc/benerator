@@ -31,7 +31,7 @@ import org.databene.commons.Element;
 import org.databene.commons.Visitor;
 
 /**
- * Combines other statements to a composite statement.<br/><br/>
+ * Combines other statements to a composite statement.<br><br>
  * Created: 27.10.2009 15:59:21
  * @since 0.6.0
  * @author Volker Bergmann

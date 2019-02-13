@@ -38,8 +38,8 @@ import org.databene.platform.PersonBean;
 import org.databene.platform.java.Entity2JavaConverter;
 
 /**
- * Tests the {@link Entity2JavaConverter}.<br/>
- * <br/>
+ * Tests the {@link Entity2JavaConverter}.<br>
+ * <br>
  * Created: 29.08.2007 18:54:45
  * @author Volker Bergmann
  */

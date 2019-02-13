@@ -26,7 +26,7 @@ import org.databene.benerator.dataset.DatasetUtil;
 import org.databene.commons.Encodings;
 
 /**
- * Generates the abbreviated strings for legal forms of organizations.<br/><br/>
+ * Generates the abbreviated strings for legal forms of organizations.<br><br>
  * Created: 24.08.2011 00:41:07
  * @since 0.7.0
  * @author Volker Bergmann

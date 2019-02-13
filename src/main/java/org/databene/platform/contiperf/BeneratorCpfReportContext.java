@@ -26,7 +26,7 @@ import org.databene.contiperf.PerfTestFailure;
 import org.databene.contiperf.report.ReportContext;
 
 /**
- * ContiPerf ReportContext implementation for Benerator.<br/><br/>
+ * ContiPerf ReportContext implementation for Benerator.<br><br>
  * Created: 17.01.2011 13:49:10
  * @since 0.6.5
  * @author Volker Bergmann

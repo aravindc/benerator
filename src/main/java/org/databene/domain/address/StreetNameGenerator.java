@@ -44,8 +44,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Generates a street name for a region.<br/>
- * <br/>
+ * Generates a street name for a region.<br>
+ * <br>
  * Created: 12.06.2006 00:08:28
  * @since 0.1
  * @author Volker Bergmann

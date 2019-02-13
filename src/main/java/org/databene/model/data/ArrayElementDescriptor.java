@@ -22,7 +22,7 @@
 package org.databene.model.data;
 
 /**
- * Describes an array element.<br/><br/>
+ * Describes an array element.<br><br>
  * Created: 30.04.2010 10:08:31
  * @since 0.6.1
  * @author Volker Bergmann

@@ -28,7 +28,7 @@ import org.databene.model.data.Entity;
 
 /**
  * {@link Consumer} implementation that maps input data to parameters
- * and invokes a method on a Java object with them.<br/><br/>
+ * and invokes a method on a Java object with them.<br><br>
  * Created: 21.10.2009 17:23:22
  * @since 0.6.0
  * @author Volker Bergmann

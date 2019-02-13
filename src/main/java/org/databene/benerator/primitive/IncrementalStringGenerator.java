@@ -30,7 +30,7 @@ import org.databene.benerator.wrapper.GeneratorChain;
 import org.databene.commons.ArrayBuilder;
 
 /**
- * Creates Strings in an incremental manner.<br/><br/>
+ * Creates Strings in an incremental manner.<br><br>
  * Created: 02.08.2011 10:34:08
  * @since 0.7.0
  * @author Volker Bergmann

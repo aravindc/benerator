@@ -76,8 +76,8 @@ import org.databene.script.PrimitiveType;
 import static org.databene.model.data.SimpleTypeDescriptor.*;
 
 /**
- * Creates generators of simple types.<br/>
- * <br/>
+ * Creates generators of simple types.<br>
+ * <br>
  * @author Volker Bergmann
  */
 public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory<SimpleTypeDescriptor> {

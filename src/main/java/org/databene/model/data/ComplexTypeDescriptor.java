@@ -38,8 +38,8 @@ import org.databene.commons.collection.ListBasedSet;
 import org.databene.commons.collection.NamedValueList;
 
 /**
- * Describes a type that aggregates {@link ComponentDescriptor}s.<br/>
- * <br/>
+ * Describes a type that aggregates {@link ComponentDescriptor}s.<br>
+ * <br>
  * Created: 03.03.2008 10:56:16
  * @since 0.5.0
  * @author Volker Bergmann

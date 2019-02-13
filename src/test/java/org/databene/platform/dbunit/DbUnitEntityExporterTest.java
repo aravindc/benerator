@@ -35,7 +35,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Tests the {@link DbUnitEntityExporter}.<br/><br/>
+ * Tests the {@link DbUnitEntityExporter}.<br><br>
  * Created: 05.11.2009 07:23:45
  * @since 0.6.0
  * @author Volker Bergmann

@@ -27,7 +27,7 @@ import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.NumberToNumberConverter;
 
 /**
- * {@link DefaultsProvider} implementation which creates gentle defaults, trying to provoke as little errors as possible.<br/><br/>
+ * {@link DefaultsProvider} implementation which creates gentle defaults, trying to provoke as little errors as possible.<br><br>
  * Created: 15.07.2011 21:16:59
  * @since 0.7.0
  * @author Volker Bergmann

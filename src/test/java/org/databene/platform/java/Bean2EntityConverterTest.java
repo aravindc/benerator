@@ -36,7 +36,7 @@ import org.databene.platform.PersonBean;
 import org.databene.platform.java.Bean2EntityConverter;
 
 /**
- * Tests the Bean2EntityConverter.<br/><br/>
+ * Tests the Bean2EntityConverter.<br><br>
  * Created: 29.08.2007 18:54:45
  * @author Volker Bergmann
  */

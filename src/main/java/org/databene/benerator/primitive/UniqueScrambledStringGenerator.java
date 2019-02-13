@@ -37,8 +37,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Generates unique strings of variable length.<br/>
- * <br/>
+ * Generates unique strings of variable length.<br>
+ * <br>
  * Created: 16.11.2007 11:56:15
  * @author Volker Bergmann
  */

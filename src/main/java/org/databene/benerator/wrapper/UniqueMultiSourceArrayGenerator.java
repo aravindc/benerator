@@ -39,8 +39,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Creates arrays of unique combinations of the output of other generators.
  * Each array element is filled from an own generator,
- * each used generator is supposed to generate unique values itself.<br/>
- * <br/>
+ * each used generator is supposed to generate unique values itself.<br>
+ * <br>
  * Created: 17.11.2007 13:37:37
  * @author Volker Bergmann
  */

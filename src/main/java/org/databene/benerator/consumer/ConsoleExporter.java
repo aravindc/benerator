@@ -35,7 +35,7 @@ import org.databene.commons.CompositeFormatter;
 import org.databene.model.data.Entity;
 
 /**
- * Exports generated objects to the standard output.<br/><br/>
+ * Exports generated objects to the standard output.<br><br>
  * Created: 27.02.2008 11:40:37
  * @since 0.5.0
  * @author Volker Bergmann

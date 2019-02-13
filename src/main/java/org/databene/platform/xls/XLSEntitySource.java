@@ -35,8 +35,8 @@ import org.databene.model.data.EntitySource;
 import org.databene.model.data.FileBasedEntitySource;
 
 /**
- * Implements an {@link EntitySource} that reads Entities from an Excel sheet.<br/>
- * <br/>
+ * Implements an {@link EntitySource} that reads Entities from an Excel sheet.<br>
+ * <br>
  * Created at 27.01.2009 21:31:54
  * @since 0.5.7
  * @author Volker Bergmann

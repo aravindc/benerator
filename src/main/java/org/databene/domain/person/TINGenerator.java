@@ -31,8 +31,8 @@ import java.util.Random;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Generates European Tax Identification Numbers (like the German 'Steueridentifikationsnummer').<br/>
- * <br/>
+ * Generates European Tax Identification Numbers (like the German 'Steueridentifikationsnummer').<br>
+ * <br>
  * Created at 27.08.2008 00:20:11
  * @since 0.5.5
  * @author Volker Bergmann

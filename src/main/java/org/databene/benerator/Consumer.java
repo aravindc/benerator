@@ -48,7 +48,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * 	finishConsuming(B);
  * 	finishConsuming(A);
  * </pre>
- * <br/>
+ * <br>
  * Created: 01.02.2008 16:15:09
  * @since 0.4.0
  * @author Volker Bergmann

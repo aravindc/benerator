@@ -37,8 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Creates a predefined sequence of objects.<br/>
- * <br/>
+ * Creates a predefined sequence of objects.<br>
+ * <br>
  * Created: 19.11.2007 15:21:24
  * @author Volker Bergmann
  */

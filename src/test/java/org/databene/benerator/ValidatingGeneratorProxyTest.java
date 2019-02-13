@@ -34,7 +34,7 @@ import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.Validator;
 
 /**
- * Tests the {@link ValidatingGeneratorProxy}.<br/><br/>
+ * Tests the {@link ValidatingGeneratorProxy}.<br><br>
  * Created: 29.09.2006 17:01:59
  * @since 0.1
  * @author Volker Bergmann

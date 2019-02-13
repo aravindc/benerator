@@ -24,7 +24,7 @@ package org.databene.benerator.engine;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Sub context version of the {@link BeneratorContext}.<br/><br/>
+ * Sub context version of the {@link BeneratorContext}.<br><br>
  * Created: 02.09.2011 14:35:59
  * @since 0.7.0
  * @author Volker Bergmann

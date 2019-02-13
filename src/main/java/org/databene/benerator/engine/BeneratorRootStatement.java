@@ -42,7 +42,7 @@ import org.databene.script.expression.ExpressionUtil;
 import org.databene.script.DatabeneScriptParser;
 
 /**
- * The root {@link Statement} for executing descriptor file based data generation.<br/><br/>
+ * The root {@link Statement} for executing descriptor file based data generation.<br><br>
  * Created: 24.10.2009 11:08:46
  * @since 0.6.0
  * @author Volker Bergmann

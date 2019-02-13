@@ -28,7 +28,7 @@ import org.databene.script.expression.ExpressionUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link ExpressionBasedGenerator}.<br/><br/>
+ * Tests the {@link ExpressionBasedGenerator}.<br><br>
  * Created: 28.03.2010 12:33:00
  * @since 0.6.0
  * @author Volker Bergmann

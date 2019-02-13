@@ -35,8 +35,8 @@ import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 
 /**
- * Generates value sequences derived from seed sequences.<br/>
- * <br/>
+ * Generates value sequences derived from seed sequences.<br>
+ * <br>
  * Created at 12.07.2009 09:04:43
  * @since 0.6.0
  * @author Volker Bergmann

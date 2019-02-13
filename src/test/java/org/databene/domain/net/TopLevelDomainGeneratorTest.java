@@ -31,7 +31,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the TopLevelDomainGenerator.<br/><br/>
+ * Tests the TopLevelDomainGenerator.<br><br>
  * Created at 20.04.2008 08:08:18
  * @since 0.5.2
  * @author Volker Bergmann

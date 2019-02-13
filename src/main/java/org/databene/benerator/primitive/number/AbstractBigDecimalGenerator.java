@@ -31,8 +31,8 @@ import org.databene.commons.MathUtil;
 import java.math.BigDecimal;
 
 /**
- * Wrapper for a LongGenerator that maps the generated Longs to BigDecimals.<br/>
- * <br/>
+ * Wrapper for a LongGenerator that maps the generated Longs to BigDecimals.<br>
+ * <br>
  * Created: 01.07.2006 17:43:29
  * @author Volker Bergmann
  */

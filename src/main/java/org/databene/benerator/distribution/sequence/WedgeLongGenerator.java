@@ -32,8 +32,8 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
- * Long Generator that implements a 'wedge' Long Sequence.<br/>
- * <br/>
+ * Long Generator that implements a 'wedge' Long Sequence.<br>
+ * <br>
  * Created: 13.11.2007 12:54:29
  * @author Volker Bergmann
  */

@@ -63,7 +63,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 /**
- * Parses databene model files.<br/><br/>
+ * Parses databene model files.<br><br>
  * Created: 04.03.2008 16:43:09
  * @since 0.5.0
  * @author Volker Bergmann

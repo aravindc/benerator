@@ -27,7 +27,7 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.UpdateFailedException;
 
 /**
- * Builds and mutates graphs of entities.<br/><br/>
+ * Builds and mutates graphs of entities.<br><br>
  * Created: 16.11.2011 18:14:46
  * @since 0.7.2
  * @author Volker Bergmann

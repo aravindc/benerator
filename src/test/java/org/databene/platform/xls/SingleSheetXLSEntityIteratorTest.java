@@ -39,8 +39,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link AllSheetsXLSEntityIterator} class.<br/>
- * <br/>
+ * Tests the {@link AllSheetsXLSEntityIterator} class.<br>
+ * <br>
  * Created at 29.01.2009 11:06:33
  * @since 0.5.8
  * @author Volker Bergmann

@@ -28,7 +28,7 @@ import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link WhileParser} and the {@link WhileStatement}.<br/><br/>
+ * Tests the {@link WhileParser} and the {@link WhileStatement}.<br><br>
  * Created: 19.02.2010 10:06:29
  * @since 0.6.0
  * @author Volker Bergmann

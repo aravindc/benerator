@@ -39,7 +39,7 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.Uniqueness;
 
 /**
- * Abstract test parent class which provides utility methods for testing the {@link ComponentBuilderFactory}.<br/><br/>
+ * Abstract test parent class which provides utility methods for testing the {@link ComponentBuilderFactory}.<br><br>
  * Created: 15.07.2011 18:21:19
  * @since 0.7.0
  * @author Volker Bergmann

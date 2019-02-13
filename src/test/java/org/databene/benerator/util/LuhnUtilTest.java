@@ -27,7 +27,7 @@ import org.databene.commons.StringUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link LuhnUtil} class.<br/><br/>
+ * Tests the {@link LuhnUtil} class.<br><br>
  * Created: 18.10.2009 10:29:43
  * @since 0.6.0
  * @author Volker Bergmann

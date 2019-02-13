@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * {@link Statement} that instantiates a {@link MemStore} 
- * and registers it in the {@link BeneratorContext}.<br/><br/>
+ * and registers it in the {@link BeneratorContext}.<br><br>
  * Created: 08.03.2011 13:30:45
  * @since 0.6.6
  * @author Volker Bergmann

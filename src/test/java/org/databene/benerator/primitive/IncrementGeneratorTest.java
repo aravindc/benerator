@@ -31,7 +31,7 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link IncrementGenerator}.<br/><br/>
+ * Tests the {@link IncrementGenerator}.<br><br>
  * Created: 14.11.2009 06:38:34
  * @since 0.6.0
  * @author Volker Bergmann

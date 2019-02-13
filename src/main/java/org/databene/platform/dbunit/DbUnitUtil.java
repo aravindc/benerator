@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 /**
- * Provides utility methods for DbUnit files.<br/><br/>
+ * Provides utility methods for DbUnit files.<br><br>
  * Created: 21.09.2011 15:09:03
  * @since 0.7.1
  * @author Volker Bergmann

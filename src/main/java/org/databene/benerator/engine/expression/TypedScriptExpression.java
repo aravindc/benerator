@@ -32,8 +32,8 @@ import org.databene.script.Expression;
 import org.databene.script.expression.TypeConvertingExpression;
 
 /**
- * {@link Expression} implementation that evaluates a script.<br/>
- * <br/>
+ * {@link Expression} implementation that evaluates a script.<br>
+ * <br>
  * Created at 22.07.2009 07:19:44
  * @since 0.6.0
  * @author Volker Bergmann

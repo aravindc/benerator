@@ -29,7 +29,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link ByteArrayGenerator}.<br/><br/>
+ * Tests the {@link ByteArrayGenerator}.<br><br>
  * Created: 29.07.2011 12:48:32
  * @since 0.7.0
  * @author Volker Bergmann

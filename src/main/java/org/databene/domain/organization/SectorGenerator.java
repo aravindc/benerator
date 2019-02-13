@@ -29,7 +29,7 @@ import org.databene.benerator.wrapper.NullInjectingGeneratorProxy;
 import org.databene.commons.Encodings;
 
 /**
- * {@link Generator} implementation which creates names of industry sectors.<br/><br/>
+ * {@link Generator} implementation which creates names of industry sectors.<br><br>
  * Created: 24.08.2011 05:43:31
  * @since 0.7.0
  * @author Volker Bergmann

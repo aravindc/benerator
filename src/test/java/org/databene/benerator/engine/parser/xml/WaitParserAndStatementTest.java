@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * Tests {@link WaitParser} and {@link WaitStatement}.<br/><br/>
+ * Tests {@link WaitParser} and {@link WaitStatement}.<br><br>
  * Created: 21.02.2010 08:04:48
  * @since 0.6.0
  * @author Volker Bergmann

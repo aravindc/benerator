@@ -29,7 +29,7 @@ import org.databene.task.Task;
 import org.databene.task.TaskResult;
 
 /**
- * Proxies a {@link Task} and tracks its execution times.<br/><br/>
+ * Proxies a {@link Task} and tracks its execution times.<br><br>
  * Created: 25.02.2010 09:08:48
  * @since 0.6.0
  * @author Volker Bergmann

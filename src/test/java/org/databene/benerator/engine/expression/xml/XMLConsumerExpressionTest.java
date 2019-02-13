@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 /**
- * Tests the {@link XMLConsumerExpression}.<br/><br/>
+ * Tests the {@link XMLConsumerExpression}.<br><br>
  * Created: 16.02.2010 11:41:13
  * @since 0.6.0
  * @author Volker Bergmann

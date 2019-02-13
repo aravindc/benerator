@@ -24,7 +24,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Property configration for a @{@link Bean}.<br/><br/>
+ * Property configration for a @{@link Bean}.<br><br>
  * Created: 16.06.2011 10:22:44
  * @since 0.6.6
  * @author Volker Bergmann

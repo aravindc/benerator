@@ -29,8 +29,8 @@ package org.databene.benerator.consumer;
 import org.databene.benerator.Consumer;
 
 /**
- * Common interface for all classes that export .<br/>
- * <br/>
+ * Common interface for all classes that export .<br>
+ * <br>
  * Created at 26.02.2009 17:46:23
  * @since 0.5.8
  * @author Volker Bergmann

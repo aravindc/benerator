@@ -32,8 +32,8 @@ import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.model.data.Entity;
 
 /**
- * Converts an Entity's features values to an array of objects.<br/>
- * <br/>
+ * Converts an Entity's features values to an array of objects.<br>
+ * <br>
  * Created: 26.08.2007 12:27:45
  * @author Volker Bergmann
  */

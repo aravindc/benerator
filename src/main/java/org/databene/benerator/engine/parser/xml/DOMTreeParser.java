@@ -39,7 +39,7 @@ import org.databene.script.Expression;
 import org.w3c.dom.Element;
 
 /**
- * Parses &lt;domtree&gt; elements in a Benerator descriptor file.<br/><br/>
+ * Parses &lt;domtree&gt; elements in a Benerator descriptor file.<br><br>
  * Created: 16.01.2014 15:59:48
  * @since 0.9.0
  * @author Volker Bergmann

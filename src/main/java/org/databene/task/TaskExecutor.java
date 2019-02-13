@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Single-threaded non-locking {@link Task} executor.<br/><br/>
+ * Single-threaded non-locking {@link Task} executor.<br><br>
  * Created: 19.12.2012 09:54:56
  * @since 0.8.0
  * @author Volker Bergmann

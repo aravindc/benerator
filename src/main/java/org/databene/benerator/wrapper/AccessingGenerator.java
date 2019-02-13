@@ -30,8 +30,8 @@ import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.commons.Accessor;
 
 /**
- * Returns the results of an accessor that is applied on a constant provider object.<br/>
- * <br/>
+ * Returns the results of an accessor that is applied on a constant provider object.<br>
+ * <br>
  * Created: 22.08.2007 19:05:40
  * @author Volker Bergmann
  */

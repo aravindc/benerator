@@ -32,8 +32,8 @@ import org.databene.commons.validator.ConstantValidator;
 import org.junit.Test;
 
 /**
- * Tests the CurrentDateGenerator.<br/>
- * <br/>
+ * Tests the CurrentDateGenerator.<br>
+ * <br>
  * Created: 19.11.2007 20:43:45
  * @author Volker Bergmann
  */

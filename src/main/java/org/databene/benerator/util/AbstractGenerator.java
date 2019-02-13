@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract {@link Generator} implementation which holds a state and state management methods.<br/><br/>
+ * Abstract {@link Generator} implementation which holds a state and state management methods.<br><br>
  * Created: 24.02.2010 12:28:05
  * @since 0.6.0
  * @author Volker Bergmann

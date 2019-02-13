@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 /**
  * Benerator {@link Entity} which represents an XML element 
  * and holds a reference to the source element, allowing its update 
- * in the {@link DOMTree}.<br/><br/>
+ * in the {@link DOMTree}.<br><br>
  * Created: 15.01.2014 10:52:37
  * @since 0.9.0
  * @author Volker Bergmann

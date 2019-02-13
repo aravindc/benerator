@@ -31,8 +31,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SeedSentenceGenerator}.<br/>
- * <br/>
+ * Tests the {@link SeedSentenceGenerator}.<br>
+ * <br>
  * Created at 16.07.2009 20:11:35
  * @since 0.6.0
  * @author Volker Bergmann

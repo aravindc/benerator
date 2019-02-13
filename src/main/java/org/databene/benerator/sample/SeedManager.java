@@ -36,8 +36,8 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.BeanUtil;
 
 /**
- * Counts frequencies of atoms and provides random atoms with the same frequency.<br/>
- * <br/>
+ * Counts frequencies of atoms and provides random atoms with the same frequency.<br>
+ * <br>
  * Created at 12.07.2009 07:51:04
  * @since 0.6.0
  * @author Volker Bergmann

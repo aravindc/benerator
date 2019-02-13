@@ -30,7 +30,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link PropertyMessage}.<br/><br/>
+ * Tests the {@link PropertyMessage}.<br><br>
  * Created at 02.05.2008 13:45:55
  * @since 0.5.3
  * @author Volker Bergmann

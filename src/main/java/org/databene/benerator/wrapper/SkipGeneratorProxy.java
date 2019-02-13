@@ -36,8 +36,8 @@ import org.databene.benerator.distribution.SequenceManager;
  * This forwards a source generator's products.
  * Iterates through the products of another generator with a variable step width.
  * This is intended mainly for use with importing generators that provide data
- * volumes too big to keep in RAM.<br/>
- * <br/>
+ * volumes too big to keep in RAM.<br>
+ * <br>
  * Created: 26.08.2006 16:16:04
  * @since 0.1
  * @author Volker Bergmann

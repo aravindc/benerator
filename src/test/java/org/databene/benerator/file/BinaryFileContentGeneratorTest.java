@@ -30,7 +30,7 @@ import org.databene.commons.ArrayFormat;
 import org.junit.Test;
 
 /**
- * Tests the {@link BinaryFileContentGenerator}.<br/><br/>
+ * Tests the {@link BinaryFileContentGenerator}.<br><br>
  * Created: 24.02.2010 11:02:44
  * @since 0.6.0
  * @author Volker Bergmann

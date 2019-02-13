@@ -39,7 +39,7 @@ import org.databene.model.data.Uniqueness;
 import org.w3c.dom.Element;
 
 /**
- * Parses a 'wait' element.<br/><br/>
+ * Parses a 'wait' element.<br><br>
  * Created: 21.02.2010 08:07:59
  * @since 0.6.0
  * @author Volker Bergmann

@@ -28,8 +28,8 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation which states that the annotated class or method shall be tested with unlimited volumes
- * or random and non-reproducible data.<br/>
- * <br/>
+ * or random and non-reproducible data.<br>
+ * <br>
  * Created: 05.07.2011 16:20:53
  * @since 0.7.0
  * @author Volker Bergmann

@@ -50,8 +50,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link FactoryUtil} class.<br/>
- * <br/>
+ * Tests the {@link FactoryUtil} class.<br>
+ * <br>
  * Created at 01.07.2009 07:10:51
  * @since 0.6.0
  * @author Volker Bergmann

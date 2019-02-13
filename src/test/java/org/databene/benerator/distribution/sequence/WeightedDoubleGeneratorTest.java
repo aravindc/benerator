@@ -36,7 +36,7 @@ import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link WeightedDoubleGenerator}.<br/><br/>
+ * Tests the {@link WeightedDoubleGenerator}.<br><br>
  * Created: 18.06.2006 15:04:17
  * @since 0.1
  * @author Volker Bergmann

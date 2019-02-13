@@ -26,7 +26,7 @@ import org.databene.benerator.StorageSystem;
 import org.databene.model.data.Entity;
 
 /**
- * {@link Consumer} implementation that updates database rows.<br/><br/>
+ * {@link Consumer} implementation that updates database rows.<br><br>
  * Created: 02.08.2010 20:25:22
  * @since 0.6.3
  * @author Volker Bergmann

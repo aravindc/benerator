@@ -31,8 +31,8 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the BitReverseLongGenerator.<br/>
- * <br/>
+ * Tests the BitReverseLongGenerator.<br>
+ * <br>
  * Created: 13.11.2007 15:51:32
  * @author Volker Bergmann
  */

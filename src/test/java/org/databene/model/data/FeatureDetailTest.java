@@ -30,7 +30,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link FeatureDetail}.<br/><br/>
+ * Tests the {@link FeatureDetail}.<br><br>
  * Created at 03.05.2008 12:14:11
  * @since 0.5.3
  * @author Volker Bergmann

@@ -37,7 +37,7 @@ import javax.validation.Constraint;
  * CNPJ stands for <i>Cadastro Nacional da Pessoa Jurídica</i>
  * and is a tax payer number assigned to a 
  * legal person (Pessoa Jurídica).
- * <br/><br/>
+ * <br><br>
  * Created: 17.10.2009 09:31:34
  * @since 0.6.0
  * @author Volker Bergmann

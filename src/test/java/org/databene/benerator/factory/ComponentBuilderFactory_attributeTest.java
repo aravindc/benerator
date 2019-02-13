@@ -49,8 +49,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link ComponentBuilderFactory} class for all useful attribute setups.<br/>
- * <br/>
+ * Tests the {@link ComponentBuilderFactory} class for all useful attribute setups.<br>
+ * <br>
  * Created: 10.08.2007 12:40:41
  * @author Volker Bergmann
  */

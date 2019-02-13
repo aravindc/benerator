@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 
 /**
- * Marker annotation for postal code fields.<br/><br/>
+ * Marker annotation for postal code fields.<br><br>
  * Created: 28.08.2010 15:30:12
  * @since 0.6.4
  * @author Volker Bergmann

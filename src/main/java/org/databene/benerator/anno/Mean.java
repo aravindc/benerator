@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for marking a class or method for testing with mean value defaults.<br/><br/>
+ * Annotation for marking a class or method for testing with mean value defaults.<br><br>
  * Created: 15.07.2011 21:38:28
  * @since 0.7.0
  * @author Volker Bergmann

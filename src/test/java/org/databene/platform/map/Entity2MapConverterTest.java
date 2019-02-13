@@ -36,8 +36,8 @@ import org.databene.commons.CollectionUtil;
 import java.util.Map;
 
 /**
- * Tests the Entity2MapConverter.<br/>
- * <br/>
+ * Tests the Entity2MapConverter.<br>
+ * <br>
  * Created: 29.08.2007 19:09:05
  * @author Volker Bergmann
  */

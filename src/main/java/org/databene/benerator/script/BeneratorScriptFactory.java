@@ -35,8 +35,8 @@ import org.databene.formats.script.ScriptFactory;
 import org.databene.script.DatabeneScriptParser;
 
 /**
- * {@link ScriptFactory} implementation for BeneratorScript.<br/>
- * <br/>
+ * {@link ScriptFactory} implementation for BeneratorScript.<br>
+ * <br>
  * Created at 09.10.2009 06:46:51
  * @since 0.6.0
  * @author Volker Bergmann

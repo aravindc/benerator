@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Parses an XML &lt;run-task&gt; element in a Benerator descriptor file.<br/><br/>
+ * Parses an XML &lt;run-task&gt; element in a Benerator descriptor file.<br><br>
  * Created: 26.10.2009 07:07:40
  * @since 0.6.0
  * @author Volker Bergmann

@@ -26,7 +26,7 @@ import org.databene.benerator.NonNullGenerator;
 
 /**
  * {@link GeneratorProxy} implementation which implements the {@link NonNullGenerator} interface and 
- * supports its implementors as source {@link Generator}.<br/><br/>
+ * supports its implementors as source {@link Generator}.<br><br>
  * Created: 27.07.2011 11:57:17
  * @since 0.7.0
  * @author Volker Bergmann

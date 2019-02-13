@@ -38,8 +38,8 @@ import org.databene.commons.NullSafeComparator;
 
 /**
  * Abstract generator class that wraps another generator object (in a <i>source</i> property)
- * and delegates life cycle control to it.<br/>
- * <br/>
+ * and delegates life cycle control to it.<br>
+ * <br>
  * Created: 12.12.2006 19:13:55
  * @since 0.1
  * @author Volker Bergmann

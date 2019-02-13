@@ -34,7 +34,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Validates a price.<br/><br/>
+ * Validates a price.<br><br>
  * Created: 26.03.2008 12:21:01
  * @author Volker Bergmann
  */

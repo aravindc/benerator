@@ -33,8 +33,8 @@ import org.databene.script.Expression;
 import org.databene.script.expression.ExpressionUtil;
 
 /**
- * Sets a global Benerator property.<br/>
- * <br/>
+ * Sets a global Benerator property.<br>
+ * <br>
  * Created at 23.07.2009 14:50:08
  * @since 0.6.0
  * @author Volker Bergmann

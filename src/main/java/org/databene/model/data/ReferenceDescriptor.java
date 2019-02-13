@@ -29,8 +29,8 @@ package org.databene.model.data;
 import org.databene.commons.operation.FirstArgSelector;
 
 /**
- * Describes a reference to an instance of a complex type (see {@link ComplexTypeDescriptor}).<br/>
- * <br/>
+ * Describes a reference to an instance of a complex type (see {@link ComplexTypeDescriptor}).<br>
+ * <br>
  * Created: 27.02.2008 16:28:22
  * @since 0.5.0
  * @author Volker Bergmann

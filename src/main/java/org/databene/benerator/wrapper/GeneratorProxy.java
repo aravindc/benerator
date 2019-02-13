@@ -31,8 +31,8 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 
 /**
- * Wraps another Generator of same product type.<br/>
- * <br/>
+ * Wraps another Generator of same product type.<br>
+ * <br>
  * Created: 17.08.2007 19:05:42
  * @author Volker Bergmann
  */

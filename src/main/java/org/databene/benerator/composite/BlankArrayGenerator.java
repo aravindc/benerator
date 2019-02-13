@@ -24,7 +24,7 @@ package org.databene.benerator.composite;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Generates an array of fixed size filled with nulls.<br/><br/>
+ * Generates an array of fixed size filled with nulls.<br><br>
  * Created: 30.04.2010 08:36:00
  * @since 0.6.1
  * @author Volker Bergmann

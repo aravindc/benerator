@@ -26,7 +26,7 @@ import org.databene.commons.Context;
 import org.databene.script.expression.DynamicExpression;
 
 /**
- * Evaluates to the default page size of the {@link BeneratorContext}.<br/><br/>
+ * Evaluates to the default page size of the {@link BeneratorContext}.<br><br>
  * Created: 26.10.2009 06:57:20
  * @since 0.6.0
  * @author Volker Bergmann

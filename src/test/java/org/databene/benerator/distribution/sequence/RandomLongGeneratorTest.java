@@ -33,8 +33,8 @@ import org.databene.commons.validator.ConstantValidator;
 import org.junit.Test;
 
 /**
- * Tests the {@link RandomLongGenerator}.<br/>
- * <br/>
+ * Tests the {@link RandomLongGenerator}.<br>
+ * <br>
  * Created: 11.10.2006 23:03:30
  * @since 0.1
  * @author Volker Bergmann

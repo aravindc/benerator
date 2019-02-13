@@ -27,7 +27,7 @@
 package org.databene.benerator.composite;
 
 /**
- * Common interface for all component builders.<br/><br/>
+ * Common interface for all component builders.<br><br>
  * Created at 09.05.2008 13:14:15
  * @since 0.5.4
  * @author Volker Bergmann

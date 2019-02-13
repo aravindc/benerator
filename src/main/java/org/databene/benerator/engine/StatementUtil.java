@@ -24,7 +24,7 @@ package org.databene.benerator.engine;
 import org.databene.benerator.engine.statement.StatementProxy;
 
 /**
- * Provides utility methods for {@link Statement} processing.<br/><br/>
+ * Provides utility methods for {@link Statement} processing.<br><br>
  * Created: 01.09.2011 16:50:54
  * @since 0.7.0
  * @author Volker Bergmann

@@ -30,8 +30,8 @@ import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.WeightFunction;
 
 /**
- * Mock implementation of the {@link WeightFunction} interface.<br/>
- * <br/>
+ * Mock implementation of the {@link WeightFunction} interface.<br>
+ * <br>
  * Created at 29.12.2008 07:31:04
  * @since 0.5.7
  * @author Volker Bergmann

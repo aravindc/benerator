@@ -29,8 +29,8 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 
 /**
- * Converts the {@link Number} products of another {@link Generator} to {@link Short}.<br/>
- * <br/>
+ * Converts the {@link Number} products of another {@link Generator} to {@link Short}.<br>
+ * <br>
  * Created at 23.06.2009 22:58:26
  * @since 0.6.0
  * @author Volker Bergmann

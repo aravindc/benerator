@@ -10,8 +10,8 @@ import org.databene.model.data.Uniqueness;
 
 /**
  * Demonstrates the use of the regular expression generator
- * by generating phone numbers and email addresses.<br/>
- * <br/>
+ * by generating phone numbers and email addresses.<br>
+ * <br>
  * Created: 07.09.2006 21:01:53
  * @author Volker Bergmann
  */

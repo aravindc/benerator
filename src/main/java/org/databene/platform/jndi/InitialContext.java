@@ -27,7 +27,7 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 /**
- * Provides InitialContext operations with a more convenient property-based setup..<br/><br/>
+ * Provides InitialContext operations with a more convenient property-based setup..<br><br>
  * Created: 21.10.2009 19:47:17
  * @since 0.6.0
  * @author Volker Bergmann

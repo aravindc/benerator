@@ -36,8 +36,8 @@ import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 
 /**
- * Reads products from a source Generator and applies a Converter to transform them into the target products.<br/>
- * <br/>
+ * Reads products from a source Generator and applies a Converter to transform them into the target products.<br>
+ * <br>
  * Created: 12.06.2006 19:02:30
  * @since 0.1
  * @author Volker Bergmann

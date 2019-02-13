@@ -29,8 +29,8 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 
 /**
- * Long Generator that maps products from a Double generator.<br/>
- * <br/> 
+ * Long Generator that maps products from a Double generator.<br>
+ * <br> 
  * Created: 23.09.2006 09:02:10
  * @author Volker Bergmann
  */

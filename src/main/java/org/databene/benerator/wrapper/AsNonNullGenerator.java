@@ -26,7 +26,7 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 
 /**
- * Adapter class which makes an arbitrary {@link Generator} available as {@link NonNullGenerator}.<br/><br/>
+ * Adapter class which makes an arbitrary {@link Generator} available as {@link NonNullGenerator}.<br><br>
  * Created: 27.07.2011 12:12:12
  * @since 0.7.0
  * @author Volker Bergmann

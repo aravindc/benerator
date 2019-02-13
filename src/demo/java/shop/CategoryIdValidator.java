@@ -33,7 +33,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Validates a category id.<br/><br/>
+ * Validates a category id.<br><br>
  * Created: 26.03.2008 12:13:14
  * @author Volker Bergmann
  */

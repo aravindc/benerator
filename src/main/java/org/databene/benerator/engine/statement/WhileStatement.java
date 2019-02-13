@@ -30,7 +30,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.script.Expression;
 
 /**
- * 'While' loop statement.<br/><br/>
+ * 'While' loop statement.<br><br>
  * Created: 19.02.2010 09:15:11
  * @since 0.6.0
  * @author Volker Bergmann

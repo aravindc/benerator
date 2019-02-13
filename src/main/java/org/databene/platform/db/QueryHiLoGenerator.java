@@ -32,8 +32,8 @@ import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
  *  * Creates Unique keys efficiently by connecting a database, retrieving a (unique) sequence value 
- * and building sub keys of it.<br/>
- * <br/>
+ * and building sub keys of it.<br>
+ * <br>
  * Created at 06.07.2009 07:57:08
  * @since 0.6.0
  * @author Volker Bergmann

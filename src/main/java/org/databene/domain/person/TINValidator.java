@@ -31,8 +31,8 @@ import javax.validation.ConstraintValidatorContext;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Validates European Tax Identification Numbers.<br/>
- * <br/>
+ * Validates European Tax Identification Numbers.<br>
+ * <br>
  * Created at 27.08.2008 00:06:33
  * @since 0.5.5
  * @author Volker Bergmann

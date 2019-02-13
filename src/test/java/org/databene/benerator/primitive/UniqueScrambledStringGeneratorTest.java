@@ -29,7 +29,7 @@ import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link UniqueScrambledStringGenerator}.<br/><br/>
+ * Tests the {@link UniqueScrambledStringGenerator}.<br><br>
  * Created: 11.03.2013 22:03:47
  * @since 0.8.1
  * @author Volker Bergmann

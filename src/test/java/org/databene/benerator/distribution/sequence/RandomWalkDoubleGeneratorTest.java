@@ -37,7 +37,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link RandomWalkLongGenerator}.<br/><br/>
+ * Tests the {@link RandomWalkLongGenerator}.<br><br>
  * Created: 18.06.2006 09:11:19
  * @since 0.1
  * @author Volker Bergmann

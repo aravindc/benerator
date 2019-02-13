@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Default implementation of the {@link TemplateRecord} interface.<br/><br/>
+ * Default implementation of the {@link TemplateRecord} interface.<br><br>
  * Created: 30.06.2014 10:33:09
  * @since 0.9.7
  * @author Volker Bergmann

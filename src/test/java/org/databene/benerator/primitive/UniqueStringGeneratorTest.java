@@ -31,8 +31,8 @@ import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
 /**
- * Tests the UniqueStringGenerator.<br/>
- * <br/>
+ * Tests the UniqueStringGenerator.<br>
+ * <br>
  * Created: 16.11.2007 12:03:55
  * @author Volker Bergmann
  */

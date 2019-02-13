@@ -39,8 +39,8 @@ import org.databene.commons.Encodings;
 import org.databene.domain.address.Country;
 
 /**
- * Generates a given name for a person.<br/>
- * <br/>
+ * Generates a given name for a person.<br>
+ * <br>
  * Created: 09.06.2006 21:13:09
  * @since 0.1
  * @author Volker Bergmann

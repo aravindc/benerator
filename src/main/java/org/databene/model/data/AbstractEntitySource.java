@@ -33,8 +33,8 @@ import org.databene.formats.util.AbstractDataSource;
 
 /**
  * Abstract implementation of {@link EntitySource} 
- * to be used as parent class for custom implementations.<br/>
- * <br/>
+ * to be used as parent class for custom implementations.<br>
+ * <br>
  * Created at 03.03.2009 17:12:16
  * @since 0.5.8
  * @author Volker Bergmann

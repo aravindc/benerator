@@ -32,7 +32,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests the {@link RegexGeneratorFactory} with the {@link EquivalenceGeneratorFactory}.<br/><br/>
+ * Tests the {@link RegexGeneratorFactory} with the {@link EquivalenceGeneratorFactory}.<br><br>
  * Created: 07.07.2011 13:39:12
  * @since 0.7.0
  * @author Volker Bergmann

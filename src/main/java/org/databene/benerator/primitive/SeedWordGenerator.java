@@ -40,8 +40,8 @@ import org.databene.commons.LocaleUtil;
 import org.databene.domain.lang.Noun;
 
 /**
- * Generates words based on a word seed.<br/>
- * <br/>
+ * Generates words based on a word seed.<br>
+ * <br>
  * Created at 11.07.2009 19:30:12
  * @since 0.6.0
  * @author Volker Bergmann

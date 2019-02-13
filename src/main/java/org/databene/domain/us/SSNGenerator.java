@@ -33,8 +33,8 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.StringUtil;
 
 /**
- * Generates US Social Security Numbers.<br/>
- * <br/>
+ * Generates US Social Security Numbers.<br>
+ * <br>
  * Created at 17.11.2008 06:54:42
  * @since 0.5.6
  * @author Volker Bergmann

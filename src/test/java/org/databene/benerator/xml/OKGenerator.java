@@ -29,7 +29,7 @@ package org.databene.benerator.xml;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Generates "OK" strings for testing.<br/><br/>
+ * Generates "OK" strings for testing.<br><br>
  * Created: 29.03.2008 08:26:22
  * @author Volker Bergmann
  */

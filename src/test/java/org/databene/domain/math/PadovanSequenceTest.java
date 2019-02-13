@@ -31,8 +31,8 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link PadovanSequence}.<br/>
- * <br/>
+ * Tests the {@link PadovanSequence}.<br>
+ * <br>
  * Created at 03.07.2009 13:25:56
  * @since 0.6.0
  * @author Volker Bergmann

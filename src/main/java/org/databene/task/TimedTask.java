@@ -33,8 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Wraps a Task and logs its execution time.<br/>
- * <br/>
+ * Wraps a Task and logs its execution time.<br>
+ * <br>
  * Created: 06.07.2007 06:49:20
  * @since 0.2
  * @author Volker Bergmann

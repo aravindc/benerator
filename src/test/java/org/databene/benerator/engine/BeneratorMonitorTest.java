@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
- * Tests the {@link BeneratorMonitor}.<br/><br/>
+ * Tests the {@link BeneratorMonitor}.<br><br>
  * Created: 27.07.2010 21:32:22
  * @since 0.6.3
  * @author Volker Bergmann

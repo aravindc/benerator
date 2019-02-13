@@ -31,8 +31,8 @@ import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 import org.databene.model.data.Uniqueness;
 
 /**
- * Generates 13-digits EAN codes.<br/>
- * <br/>
+ * Generates 13-digits EAN codes.<br>
+ * <br>
  * Created: 30.07.2007 21:47:30
  * @author Volker Bergmann
  */

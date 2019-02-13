@@ -49,8 +49,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
- * Parses and executes a benerator setup file.<br/>
- * <br/>
+ * Parses and executes a benerator setup file.<br>
+ * <br>
  * Created: 14.08.2007 19:14:28
  * @author Volker Bergmann
  */

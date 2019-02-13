@@ -29,7 +29,7 @@ import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link BeanParser}.<br/><br/>
+ * Tests the {@link BeanParser}.<br><br>
  * Created: 30.10.2009 19:02:25
  * @since 0.6.0
  * @author Volker Bergmann

@@ -30,8 +30,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the CountryCode2Validator.<br/>
- * <br/>
+ * Tests the CountryCode2Validator.<br>
+ * <br>
  * Created at 25.08.2008 09:19:13
  * @since 0.5.5
  * @author Volker Bergmann

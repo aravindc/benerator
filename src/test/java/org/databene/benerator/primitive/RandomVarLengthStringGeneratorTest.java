@@ -26,7 +26,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link RandomVarLengthStringGenerator}.<br/><br/>
+ * Tests the {@link RandomVarLengthStringGenerator}.<br><br>
  * Created: 01.08.2011 08:28:47
  * @since 0.7.0
  * @author Volker Bergmann

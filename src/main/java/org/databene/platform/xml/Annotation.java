@@ -30,7 +30,7 @@ import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
- * Represents an XML annotation with a documentation String and an appInfo element.<br/><br/>
+ * Represents an XML annotation with a documentation String and an appInfo element.<br><br>
  * Created: 27.02.2008 09:51:45
  * @since 0.5.0
  * @author Volker Bergmann

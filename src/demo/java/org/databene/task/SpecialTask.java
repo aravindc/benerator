@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Simple implementation of a Task that is single-threaded and does nothing but finding itself special
- * and logging that opinion on info level.<br/>
- * <br/>
+ * and logging that opinion on info level.<br>
+ * <br>
  * Created: 19.08.2007 16:26:37
  * @author Volker Bergmann
  */

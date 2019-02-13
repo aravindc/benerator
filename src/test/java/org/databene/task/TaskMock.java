@@ -29,7 +29,7 @@ import org.databene.commons.ErrorHandler;
 import org.databene.commons.context.ContextAware;
 
 /**
- * Mock implementation of the {@link Task} interface.<br/><br/>
+ * Mock implementation of the {@link Task} interface.<br><br>
  * Created: 26.10.2009 07:09:12
  * @since 0.6.0
  * @author Volker Bergmann

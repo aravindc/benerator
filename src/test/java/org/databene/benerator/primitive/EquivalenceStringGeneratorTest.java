@@ -27,7 +27,7 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.junit.Test;
 
 /**
- * Tests the {@link EquivalenceStringGenerator}.<br/><br/>
+ * Tests the {@link EquivalenceStringGenerator}.<br><br>
  * Created: 08.07.2011 06:52:44
  * @since 0.7.0
  * @author Volker Bergmann

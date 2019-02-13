@@ -40,8 +40,8 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  * Filters {@link Date}s by their day of week.
  * All days of the week are accepted by default. 
  * Attention: The weekday array begins with Monday (as defined in ISO_8601), 
- * not with Sunday (as used in {@link java.util.Calendar}).<br/>
- * <br/>
+ * not with Sunday (as used in {@link java.util.Calendar}).<br>
+ * <br>
  * Created at 23.09.2009 17:51:52
  * @since 0.6.0
  * @author Volker Bergmann

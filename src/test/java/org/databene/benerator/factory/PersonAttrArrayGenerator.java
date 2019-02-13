@@ -25,7 +25,7 @@ import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Constant array generator for test purposes.<br/><br/>
+ * Constant array generator for test purposes.<br><br>
  * Created: 04.05.2010 14:19:53
  * @since 0.6.1
  * @author Volker Bergmann

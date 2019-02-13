@@ -50,7 +50,7 @@ import org.databene.model.data.Entity;
 import org.databene.platform.array.Array2EntityConverter;
 
 /**
- * Iterates a single sheet of an XLS document and maps its rows to entities.<br/><br/>
+ * Iterates a single sheet of an XLS document and maps its rows to entities.<br><br>
  * Created: 23.06.2014 17:20:19
  * @since 0.9.5
  * @author Volker Bergmann

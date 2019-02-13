@@ -35,8 +35,8 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
 import org.junit.Test;
 
 /**
- * Tests the CurrentMilliTimeGenerator.<br/>
- * <br/>
+ * Tests the CurrentMilliTimeGenerator.<br>
+ * <br>
  * Created: 19.11.2007 20:43:45
  * @author Volker Bergmann
  */

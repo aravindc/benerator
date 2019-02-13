@@ -31,7 +31,7 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.script.PrimitiveType;
 
 /**
- * Converts an array's elements to the types defined in a related {@link ArrayTypeDescriptor}.<br/><br/>
+ * Converts an array's elements to the types defined in a related {@link ArrayTypeDescriptor}.<br><br>
  * Created: 05.05.2010 15:36:41
  * @since 0.6.1
  * @author Volker Bergmann

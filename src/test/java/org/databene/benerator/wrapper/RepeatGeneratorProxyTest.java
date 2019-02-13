@@ -32,8 +32,8 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the RepeatGeneratorProxy.<br/>
- * <br/>
+ * Tests the RepeatGeneratorProxy.<br>
+ * <br>
  * Created: 01.09.2007 11:05:04
  * @author Volker Bergmann
  */

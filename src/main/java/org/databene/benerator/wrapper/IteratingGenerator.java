@@ -37,8 +37,8 @@ import java.io.Closeable;
 import java.util.Iterator;
 
 /**
- * Iterates over Iterators that are provided by an {@link Iterable}.<br/>
- * <br/>
+ * Iterates over Iterators that are provided by an {@link Iterable}.<br>
+ * <br>
  * Created: 16.08.2007 07:09:57
  * @author Volker Bergmann
  */

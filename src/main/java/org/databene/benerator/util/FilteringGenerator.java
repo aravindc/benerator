@@ -28,7 +28,7 @@ import org.databene.script.Expression;
 
 /**
  * Generator proxy which takes the input of another Generator and only 
- * passes it if a boolean expression evaluates to true.<br/><br/>
+ * passes it if a boolean expression evaluates to true.<br><br>
  * Created: 11.03.2010 14:23:53
  * @since 0.6.0
  * @author Volker Bergmann

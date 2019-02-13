@@ -27,8 +27,8 @@
 package org.databene.domain.person;
 
 /**
- * Represents a person's gender.<br/>
- * <br/>
+ * Represents a person's gender.<br>
+ * <br>
  * Created: 09.06.2006 21:44:06
  * @author Volker Bergmann
  */

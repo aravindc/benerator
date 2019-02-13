@@ -27,8 +27,8 @@
 package org.databene.model.data;
 
 /**
- * Abstraction for all elements that can provide descriptors for entities.<br/>
- * <br/>
+ * Abstraction for all elements that can provide descriptors for entities.<br>
+ * <br>
  * Created: 25.08.2007 21:51:26
  * @author Volker Bergmann
  */

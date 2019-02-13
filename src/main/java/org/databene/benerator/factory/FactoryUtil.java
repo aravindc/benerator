@@ -62,7 +62,7 @@ import org.databene.script.expression.DynamicExpression;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 /**
- * Provides utility methods for Generator factories.<br/><br/>
+ * Provides utility methods for Generator factories.<br><br>
  * Created: 08.03.2008 09:39:05
  * @author Volker Bergmann
  */

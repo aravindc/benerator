@@ -31,8 +31,8 @@ import org.databene.commons.converter.PropertyResourceBundleConverter;
 import java.util.Locale;
 
 /**
- * Generates salutations.<br/>
- * <br/>
+ * Generates salutations.<br>
+ * <br>
  * Created: 07.06.2007 10:53:07
  * @since 0.1
  * @author Volker Bergmann

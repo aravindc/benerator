@@ -27,8 +27,8 @@
 package org.databene.task;
 
 /**
- * Signals failure in the execution of a Task.<br/>
- * <br/>
+ * Signals failure in the execution of a Task.<br>
+ * <br>
  * Created: 20.11.2007 13:09:51
  * @since 0.3.02
  * @author Volker Bergmann

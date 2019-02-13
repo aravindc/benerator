@@ -39,8 +39,8 @@ import org.databene.formats.DataContainer;
 import org.databene.formats.csv.CSVLineIterator;
 
 /**
- * Represents a Noun.<br/>
- * <br/>
+ * Represents a Noun.<br>
+ * <br>
  * Created at 15.07.2009 22:46:33
  * @since 0.6.0
  * @author Volker Bergmann

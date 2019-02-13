@@ -31,8 +31,8 @@ import javax.validation.ConstraintValidatorContext;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Validates a 13-digit EAN code.<br/>
- * <br/>
+ * Validates a 13-digit EAN code.<br>
+ * <br>
  * Created: 26.03.2008 12:20:58
  * @author Volker Bergmann
  */

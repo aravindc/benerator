@@ -31,7 +31,7 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.junit.Test;
 
 /**
- * Tests the {@link IndexBasedSampleGeneratorProxy}.<br/><br/>
+ * Tests the {@link IndexBasedSampleGeneratorProxy}.<br><br>
  * Created: 21.07.2010 07:09:23
  * @since 0.6.3
  * @author Volker Bergmann

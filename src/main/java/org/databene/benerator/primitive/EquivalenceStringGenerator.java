@@ -29,7 +29,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * {@link Generator} which generates {@link String}s by first generating a part and a part count
- * and the repeating the part the generated number of times.<br/><br/>
+ * and the repeating the part the generated number of times.<br><br>
  * Created: 08.07.2011 06:20:42
  * @since 0.7.0
  * @author Volker Bergmann

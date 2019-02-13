@@ -35,7 +35,7 @@ import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * Tests access to Benerator's InitialContext in descriptor file.<br/><br/>
+ * Tests access to Benerator's InitialContext in descriptor file.<br><br>
  * Created: 21.10.2009 19:25:37
  * @since 0.6.0
  * @author Volker Bergmann

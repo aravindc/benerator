@@ -37,7 +37,7 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 import org.w3c.dom.Element;
 
 /**
- * Parses an &lt;if&gt; element.<br/><br/>
+ * Parses an &lt;if&gt; element.<br><br>
  * Created: 19.02.2010 09:07:51
  * @since 0.6.0
  * @author Volker Bergmann

@@ -33,7 +33,7 @@ import java.text.ParsePosition;
 
 
 /**
- * Formats a phone code.<br/>
+ * Formats a phone code.<br>
  * The following pattern letters are defined:
  * <table>
  *   <tr><th>Letter</th><th>Phone Number Component</th></tr>
@@ -41,7 +41,7 @@ import java.text.ParsePosition;
  *   <tr><td>a</td><td>area code</td></tr>
  *   <tr><td>l</td><td>local</td></tr>
  * </table>
- * Any other character will be used 'as is'.<br/>
+ * Any other character will be used 'as is'.<br>
  * Examples:
  * <table>
  *   <tr><th>Pattern</th><th>Rendered as</th></tr>

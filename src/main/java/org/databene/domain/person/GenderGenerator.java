@@ -36,8 +36,8 @@ import org.databene.commons.CollectionUtil;
 import org.databene.script.WeightedSample;
 
 /**
- * Generates {@link Gender} objects.<br/>
- * <br/>
+ * Generates {@link Gender} objects.<br>
+ * <br>
  * Created: 09.06.2006 21:45:23
  * @see Gender
  * @since 0.1

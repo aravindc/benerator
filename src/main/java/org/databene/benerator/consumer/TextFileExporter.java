@@ -36,8 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Parent class for Exporters that export data to a text file.<br/>
- * <br/>
+ * Parent class for Exporters that export data to a text file.<br>
+ * <br>
  * Created: 11.07.2008 09:50:46
  * @since 0.5.4
  * @author Volker Bergmann

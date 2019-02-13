@@ -35,8 +35,8 @@ import org.databene.commons.IOUtil;
 
 /**
  * Combines several Processors under one Processor interface.
- * Each call to the Processor is forwarded to all sub Processors.<br/>
- * <br/>
+ * Each call to the Processor is forwarded to all sub Processors.<br>
+ * <br>
  * Created: 26.08.2007 14:50:29
  * @since 0.4.0
  * @author Volker Bergmann

@@ -38,7 +38,7 @@ import org.databene.formats.script.Script;
 import org.databene.formats.script.freemarker.FreeMarkerScriptFactory;
 
 /**
- * Anonymizes XML files homogeneously based on generator and XPath definitions in an Excel sheet.<br/><br/>
+ * Anonymizes XML files homogeneously based on generator and XPath definitions in an Excel sheet.<br><br>
  * Created: 27.02.2014 10:04:58
  * @since 0.9.0
  * @author Volker Bergmann

@@ -30,8 +30,8 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link BankAccountGenerator}.<br/>
- * <br/>
+ * Tests the {@link BankAccountGenerator}.<br>
+ * <br>
  * Created at 24.06.2008 09:20:06
  * @since 0.5.4
  * @author Volker Bergmann

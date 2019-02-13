@@ -30,7 +30,7 @@ import org.databene.platform.fixedwidth.FixedWidthEntityExporter;
 import org.junit.Test;
 
 /**
- * Integration tests for the {@link FixedWidthEntityExporter}.<br/><br/>
+ * Integration tests for the {@link FixedWidthEntityExporter}.<br><br>
  * Created: 25.03.2014 10:44:49
  * @since 0.9.2
  * @author Volker Bergmann

@@ -28,7 +28,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.formats.xml.XMLElementParser;
 
 /**
- * Descriptor interface to provide informations about Benerator platforms.<br/><br/>
+ * Descriptor interface to provide informations about Benerator platforms.<br><br>
  * Created: 07.12.2011 18:27:53
  * @since 0.7.4
  * @author Volker Bergmann

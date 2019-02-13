@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides general utility methods for Benerator.<br/><br/>
+ * Provides general utility methods for Benerator.<br><br>
  * Created: 01.02.2013 16:20:10
  * @since 0.8.0
  * @author Volker Bergmann

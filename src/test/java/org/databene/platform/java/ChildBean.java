@@ -24,7 +24,7 @@ package org.databene.platform.java;
 import org.databene.platform.PersonBean;
 
 /**
- * TODO Document class.<br/><br/>
+ * TODO Document class.<br><br>
  * Created: 13.05.2014 11:52:54
  * @since TODO version
  * @author Volker Bergmann

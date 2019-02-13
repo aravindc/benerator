@@ -29,7 +29,7 @@ import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link ErrorParser} and the {@link ErrorStatement}.<br/><br/>
+ * Tests the {@link ErrorParser} and the {@link ErrorStatement}.<br><br>
  * Created: 12.01.2011 08:58:34
  * @since o.6.4
  * @author Volker Bergmann

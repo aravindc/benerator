@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 /**
- * Tests the {@link DecimalQuantizer}.<br/><br/>
+ * Tests the {@link DecimalQuantizer}.<br><br>
  * Created: 11.04.2011 16:28:24
  * @since 0.6.6
  * @author Volker Bergmann

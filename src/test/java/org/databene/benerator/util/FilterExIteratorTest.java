@@ -34,7 +34,7 @@ import org.databene.script.expression.DynamicExpression;
 import org.junit.Test;
 
 /**
- * Tests the {@link FilterExIterator}.<br/><br/>
+ * Tests the {@link FilterExIterator}.<br><br>
  * Created: 08.03.2011 14:24:18
  * @since 0.5.8
  * @author Volker Bergmann

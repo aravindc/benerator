@@ -28,7 +28,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.junit.Test;
 
 /**
- * Tests the {@link BadDataConsumer}.<br/><br/>
+ * Tests the {@link BadDataConsumer}.<br><br>
  * Created: 23.01.2011 08:15:24
  * @since 0.6.4
  * @author Volker Bergmann

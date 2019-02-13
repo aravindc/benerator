@@ -42,7 +42,7 @@ import org.databene.commons.TimeUtil;
 import org.databene.model.data.Uniqueness;
 
 /**
- * Creates DateTimes with separate date and time distribution characteristics.<br/><br/>
+ * Creates DateTimes with separate date and time distribution characteristics.<br><br>
  * Created: 29.02.2008 18:19:55
  * @since 0.5.0
  * @author Volker Bergmann

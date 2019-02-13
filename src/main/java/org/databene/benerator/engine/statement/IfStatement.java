@@ -30,7 +30,7 @@ import org.databene.script.Expression;
 
 /**
  * {@link CompositeStatement} that executes it parts 
- * only if a condition is matched.<br/><br/>
+ * only if a condition is matched.<br><br>
  * Created: 19.02.2010 09:13:30
  * @since 0.6.0
  * @author Volker Bergmann

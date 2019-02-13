@@ -37,7 +37,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.AbstractEntityIteratorTest;
 
 /**
- * Tests the {@link CSVEntitySource}.<br/><br/>
+ * Tests the {@link CSVEntitySource}.<br><br>
  * Created: 26.08.2007 12:45:17
  * @author Volker Bergmann
  */

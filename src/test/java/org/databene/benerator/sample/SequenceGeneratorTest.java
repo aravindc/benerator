@@ -25,7 +25,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link SequenceGenerator}.<br/><br/>
+ * Tests the {@link SequenceGenerator}.<br><br>
  * Created: 08.07.2011 06:49:31
  * @since 0.7.0
  * @author Volker Bergmann

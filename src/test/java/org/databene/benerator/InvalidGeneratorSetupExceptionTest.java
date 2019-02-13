@@ -34,7 +34,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link InvalidGeneratorSetupException}.<br/><br/>
+ * Tests the {@link InvalidGeneratorSetupException}.<br><br>
  * Created at 03.05.2008 12:31:14
  * @since 0.5.3
  * @author Volker Bergmann

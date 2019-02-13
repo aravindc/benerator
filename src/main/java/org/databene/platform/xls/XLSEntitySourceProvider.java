@@ -29,7 +29,7 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 
 /**
- * {@link DataSourceProvider} implementation which creates XLS entity sources.<br/><br/>
+ * {@link DataSourceProvider} implementation which creates XLS entity sources.<br><br>
  * Created: 05.05.2010 15:08:03
  * @since 0.6.1
  * @author Volker Bergmann

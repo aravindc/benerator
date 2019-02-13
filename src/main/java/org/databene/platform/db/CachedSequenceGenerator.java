@@ -31,7 +31,7 @@ import org.databene.benerator.GeneratorContext;
  * increases the value locally on subsequent calls and 
  * finally (on close()) updates the DB sequence with the local value.
  * This saves database round trips but limits execution to a single 
- * client.<br/><br/>
+ * client.<br><br>
  * Created: 11.11.2009 18:35:26
  * @since 0.6.0
  * @author Volker Bergmann

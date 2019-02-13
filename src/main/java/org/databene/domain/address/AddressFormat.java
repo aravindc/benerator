@@ -42,8 +42,8 @@ import org.databene.formats.script.ScriptException;
 import org.databene.formats.script.freemarker.FreeMarkerScriptFactory;
 
 /**
- * Formats Address objects as String.<br/>
- * <br/>
+ * Formats Address objects as String.<br>
+ * <br>
  * Created: 06.04.2008 14:15:25
  * @author Volker Bergmann
  */

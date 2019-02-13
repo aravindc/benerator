@@ -34,7 +34,7 @@ import javax.naming.spi.InitialContextFactory;
 import org.databene.benerator.factory.ConsumerMock;
 
 /**
- * Helper class for mocking JNDI functionality.<br/><br/>
+ * Helper class for mocking JNDI functionality.<br><br>
  * Created: 21.10.2009 20:03:01
  * @since 0.6.0
  * @author Volker Bergmann

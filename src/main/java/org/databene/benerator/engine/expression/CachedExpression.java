@@ -28,7 +28,7 @@ import org.databene.script.expression.ExpressionProxy;
 /**
  * Caches the result of another expression and returns it on subsequent calls 
  * without evaluating the other expression again. The cache can be invalidated 
- * by calling the <code>invalidate()</code> method.<br/><br/>
+ * by calling the <code>invalidate()</code> method.<br><br>
  * Created: 21.10.2009 14:42:15
  * @since 0.6.0
  * @author Volker Bergmann

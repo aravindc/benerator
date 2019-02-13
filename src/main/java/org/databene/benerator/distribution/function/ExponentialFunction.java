@@ -29,8 +29,8 @@ package org.databene.benerator.distribution.function;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 
 /**
- * Exponential function. a * e^bx.<br/>
- * <br/>
+ * Exponential function. a * e^bx.<br>
+ * <br>
  * Created: 04.09.2006 23:25:20
  * @author Volker Bergmann
  * @since 0.1

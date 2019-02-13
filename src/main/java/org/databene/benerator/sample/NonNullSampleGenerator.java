@@ -25,7 +25,7 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 
 /**
- * Generates data from a base of non-null sample values.<br/><br/>
+ * Generates data from a base of non-null sample values.<br><br>
  * Created: 03.08.2011 10:30:24
  * @since 0.7.0
  * @author Volker Bergmann

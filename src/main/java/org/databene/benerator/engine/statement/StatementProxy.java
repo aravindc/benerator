@@ -28,7 +28,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 
 /**
- * Proxy for a {@link Statement}.<br/><br/>
+ * Proxy for a {@link Statement}.<br><br>
  * Created: 27.10.2009 16:06:04
  * @since 0.6.0
  * @author Volker Bergmann

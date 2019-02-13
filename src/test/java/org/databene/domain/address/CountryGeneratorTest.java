@@ -35,7 +35,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link CountryGenerator}.<br/><br/>
+ * Tests the {@link CountryGenerator}.<br><br>
  * Created: 12.06.2007 06:46:13
  * @since 0.2
  * @author Volker Bergmann

@@ -25,7 +25,7 @@ import org.databene.commons.Context;
 import org.databene.commons.context.ContextHolder;
 
 /**
- * JavaBean Mock class for testing.<br/><br/>
+ * JavaBean Mock class for testing.<br><br>
  * Created: 30.10.2009 08:16:45
  * @since 0.6.0
  * @author Volker Bergmann

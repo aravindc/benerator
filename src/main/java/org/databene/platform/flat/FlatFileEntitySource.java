@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Inherits the new FixedWidthEntitySource class emitting a deprecation warning.<br/><br/>
+ * Inherits the new FixedWidthEntitySource class emitting a deprecation warning.<br><br>
  * Created: 05.08.2011 10:38:24
  * @since 0.7.0
  * @author Volker Bergmann

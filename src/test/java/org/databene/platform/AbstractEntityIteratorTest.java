@@ -29,7 +29,7 @@ import org.databene.formats.DataIterator;
 import org.databene.model.data.Entity;
 
 /**
- * Parent class for Entity-related {@link DataIterator} tests.<br/><br/>
+ * Parent class for Entity-related {@link DataIterator} tests.<br><br>
  * Created: 24.07.2011 15:55:14
  * @since 0.7.0
  * @author Volker Bergmann

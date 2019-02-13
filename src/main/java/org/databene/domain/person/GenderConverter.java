@@ -30,8 +30,8 @@ import org.databene.commons.ConversionException;
 import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
- * Converts a {@link Gender} enumeration value to a configurable String.<br/>
- * <br/>
+ * Converts a {@link Gender} enumeration value to a configurable String.<br>
+ * <br>
  * Created at 11.03.2009 12:31:43
  * @since 0.5.8
  * @author Volker Bergmann

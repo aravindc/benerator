@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract parent class for classes that iterate DbUnit files and provide their content as {@link Entity}.<br/><br/>
+ * Abstract parent class for classes that iterate DbUnit files and provide their content as {@link Entity}.<br><br>
  * Created: 20.09.2011 08:07:44
  * @since 0.7.1
  * @author Volker Bergmann

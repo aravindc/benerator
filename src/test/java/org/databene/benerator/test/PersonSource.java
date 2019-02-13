@@ -34,8 +34,8 @@ import org.databene.model.data.EntitySource;
 import org.databene.model.data.PartDescriptor;
 
 /**
- * {@link EntitySource} implementation for testing.<br/>
- * <br/>
+ * {@link EntitySource} implementation for testing.<br>
+ * <br>
  * Created: 11.03.2010 12:42:48
  * @since 0.6.0
  * @author Volker Bergmann

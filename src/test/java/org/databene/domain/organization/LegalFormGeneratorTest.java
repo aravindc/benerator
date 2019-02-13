@@ -31,7 +31,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.junit.Test;
 
 /**
- * Tests the {@link LegalFormGenerator}.<br/><br/>
+ * Tests the {@link LegalFormGenerator}.<br><br>
  * Created: 24.08.2011 00:45:53
  * @since 0.7.0
  * @author Volker Bergmann

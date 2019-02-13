@@ -52,7 +52,7 @@ import org.w3c.dom.Element;
 
 /**
  * Groups {@link TranscodeStatement}s and provides common features like 
- * {@link IdentityProvider} and {@link KeyMapper} objects.<br/><br/>
+ * {@link IdentityProvider} and {@link KeyMapper} objects.<br><br>
  * Created: 10.09.2010 18:25:18
  * @since 0.6.4
  * @author Volker Bergmann

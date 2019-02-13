@@ -31,7 +31,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link CurrentDateGenerator}.<br/><br/>
+ * Tests the {@link CurrentDateGenerator}.<br><br>
  * Created: 15.04.2011 08:52:43
  * @since 0.6.6
  * @author Volker Bergmann

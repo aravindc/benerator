@@ -35,7 +35,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import static org.databene.benerator.util.GeneratorUtil.*;
 
 /**
- * Creates an Internet domain name from random characters.<br/><br/>
+ * Creates an Internet domain name from random characters.<br><br>
  * Created at 23.04.2008 22:44:29
  * @since 0.5.2
  * @author Volker Bergmann

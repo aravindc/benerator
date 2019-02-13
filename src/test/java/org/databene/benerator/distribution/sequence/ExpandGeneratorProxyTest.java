@@ -34,7 +34,7 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.junit.Test;
 
 /**
- * Tests the {@link ExpandGeneratorProxy}.<br/><br/>
+ * Tests the {@link ExpandGeneratorProxy}.<br><br>
  * Created: 10.12.2009 15:53:20
  * @since 0.6.0
  * @author Volker Bergmann

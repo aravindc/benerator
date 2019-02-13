@@ -64,8 +64,8 @@ import org.databene.script.math.ArithmeticEngine;
 /**
  * {@link GeneratorFactory} implementation which creates minimal data sets for 
  * <a href="http://en.wikipedia.org/wiki/Equivalence_partitioning">Equivalence Partitioning</a>
- * and <a href="http://en.wikipedia.org/wiki/Boundary_value_analysis">Boundary-value analysis</a> Tests.<br/>
- * <br/>
+ * and <a href="http://en.wikipedia.org/wiki/Boundary_value_analysis">Boundary-value analysis</a> Tests.<br>
+ * <br>
  * Created: 04.07.2011 09:39:38
  * @since 0.7.0
  * @author Volker Bergmann

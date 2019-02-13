@@ -27,8 +27,8 @@
 package org.databene.benerator.demo.product;
 
 /**
- * Represents a product in a category hierarchy.<br/>
- * <br/>
+ * Represents a product in a category hierarchy.<br>
+ * <br>
  * Created: 19.07.2007 07:09:30
  */
 public class Product {

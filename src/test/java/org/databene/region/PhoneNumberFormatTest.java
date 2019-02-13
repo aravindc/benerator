@@ -35,7 +35,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link PhoneNumberFormat}.<br/><br/>
+ * Tests the {@link PhoneNumberFormat}.<br><br>
  * @since 0.4.0
  * @author Volker Bergmann
  */

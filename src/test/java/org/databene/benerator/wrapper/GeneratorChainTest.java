@@ -27,7 +27,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link GeneratorChain} class.<br/><br/>
+ * Tests the {@link GeneratorChain} class.<br><br>
  * Created: 22.07.2011 15:02:07
  * @since 0.7.0
  * @author Volker Bergmann

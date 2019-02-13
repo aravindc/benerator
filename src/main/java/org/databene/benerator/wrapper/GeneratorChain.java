@@ -30,8 +30,8 @@ import org.databene.benerator.GeneratorContext;
 /**
  * Proxies several source generators, initially returning products of the first source as long 
  * as it is available, then of the second source and son on.
- * When generating unique data, the last source generator is required to generate unique data itself.<br/>
- * <br/>
+ * When generating unique data, the last source generator is required to generate unique data itself.<br>
+ * <br>
  * Created: 22.07.2011 14:58:00
  * @since 0.7.0
  * @author Volker Bergmann

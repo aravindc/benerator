@@ -41,8 +41,8 @@ import org.databene.benerator.primitive.UnluckyNumberValidator;
 
 /**
  * Marks a field as European <b>T</b>ax <b>I</b>dentification <b>N</b>umber 
- * (according to JSR 303: BeanValidation).<br/>
- * <br/>
+ * (according to JSR 303: BeanValidation).<br>
+ * <br>
  * Created at 03.07.2009 19:47:43
  * @since 0.6.0
  * @author Volker Bergmann

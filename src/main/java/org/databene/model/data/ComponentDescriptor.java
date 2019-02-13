@@ -27,8 +27,8 @@
 package org.databene.model.data;
 
 /**
- * Describes a component which is part of a {@link ComplexTypeDescriptor}.<br/>
- * <br/>
+ * Describes a component which is part of a {@link ComplexTypeDescriptor}.<br>
+ * <br>
  * Created: 27.02.2008 16:28:22
  * @since 0.4.2
  * @author Volker Bergmann

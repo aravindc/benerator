@@ -36,8 +36,8 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
 
 /**
- * Imports entities from a DbUnit XML file.<br/>
- * <br/>
+ * Imports entities from a DbUnit XML file.<br>
+ * <br>
  * Created at 07.11.2008 18:07:54
  * @since 0.5.6
  * @author Volker Bergmann

@@ -34,7 +34,7 @@ import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Generates {@link BankAccount}s with low validity requirements.<br/><br/>
+ * Generates {@link BankAccount}s with low validity requirements.<br><br>
  * Created at 23.06.2008 11:08:48
  * @since 0.5.4
  * @author Volker Bergmann

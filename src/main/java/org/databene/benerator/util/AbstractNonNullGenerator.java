@@ -25,7 +25,7 @@ import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Abstract implementation of the NonNullGenerator.<br/><br/>
+ * Abstract implementation of the NonNullGenerator.<br><br>
  * Created: 26.07.2011 17:35:35
  * @since 0.7.0
  * @author Volker Bergmann

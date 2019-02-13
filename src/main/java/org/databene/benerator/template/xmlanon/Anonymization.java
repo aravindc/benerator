@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wraps a single anonymization to be applied to certain data nodes of different files.<br/><br/>
+ * Wraps a single anonymization to be applied to certain data nodes of different files.<br><br>
  * Created: 27.02.2014 14:12:00
  * @since 0.9.0
  * @author Volker Bergmann

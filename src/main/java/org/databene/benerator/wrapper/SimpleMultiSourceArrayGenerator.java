@@ -32,8 +32,8 @@ import org.databene.commons.ArrayUtil;
 import java.lang.reflect.Array;
 
 /**
- * Keeps an array of generators, of which it combines the products to an array.<br/>
- * <br/>
+ * Keeps an array of generators, of which it combines the products to an array.<br>
+ * <br>
  * Created: 26.08.2006 09:37:55
  * @since 0.1
  * @author Volker Bergmann

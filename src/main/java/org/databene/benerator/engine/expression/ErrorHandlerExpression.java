@@ -35,8 +35,8 @@ import org.databene.script.expression.DynamicExpression;
 import org.databene.script.expression.ExpressionUtil;
 
 /**
- * Parses an <code>onError</code> attribute in an XML descriptor element.<br/>
- * <br/>
+ * Parses an <code>onError</code> attribute in an XML descriptor element.<br>
+ * <br>
  * Created at 24.07.2009 08:42:51
  * @since 0.6.0
  * @author Volker Bergmann

@@ -36,7 +36,7 @@ import org.databene.commons.StringUtil;
 import org.databene.domain.address.Country;
 
 /**
- * Generates German {@link BankAccount}s with low validity requirements.<br/><br/>
+ * Generates German {@link BankAccount}s with low validity requirements.<br><br>
  * Created at 24.06.2008 08:36:32
  * @since 0.5.4
  * @author Volker Bergmann

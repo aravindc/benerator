@@ -31,8 +31,8 @@ import java.math.BigDecimal;
 import org.databene.commons.StringUtil;
 
 /**
- * Provides utility methods for IBAN processing.<br/>
- * <br/>
+ * Provides utility methods for IBAN processing.<br>
+ * <br>
  * Created at 12.07.2008 16:07:21
  * @since 0.5.4
  * @author Volker Bergmann

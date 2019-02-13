@@ -62,8 +62,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link DescriptorUtil} class.<br/>
- * <br/>
+ * Tests the {@link DescriptorUtil} class.<br>
+ * <br>
  * Created at 31.12.2008 09:29:38
  * @since 0.5.7
  * @author Volker Bergmann

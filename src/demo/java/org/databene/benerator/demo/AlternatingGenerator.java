@@ -29,8 +29,8 @@ package org.databene.benerator.demo;
 import org.databene.benerator.util.UnsafeNonNullGenerator;
 
 /**
- * Simple example of a generator that alternatively generators 0 and 1: 0, 1, 0, 1, 0, 1, 0, 1.<br/>
- * <br/>
+ * Simple example of a generator that alternatively generators 0 and 1: 0, 1, 0, 1, 0, 1, 0, 1.<br>
+ * <br>
  * Created at 08.12.2008 19:01:03
  * @since 0.5.7
  * @author Volker Bergmann

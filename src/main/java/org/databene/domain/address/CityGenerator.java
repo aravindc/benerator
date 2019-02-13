@@ -36,8 +36,8 @@ import org.databene.benerator.sample.IndividualWeightSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 
 /**
- * Generates {@link City} objects.<br/>
- * <br/>
+ * Generates {@link City} objects.<br>
+ * <br>
  * Created: 14.10.2007 21:24:25
  * @author Volker Bergmann
  */

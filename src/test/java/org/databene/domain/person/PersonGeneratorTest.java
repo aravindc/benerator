@@ -42,8 +42,8 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * Tests the {@link PersonGenerator}.<br/>
- * <br/>
+ * Tests the {@link PersonGenerator}.<br>
+ * <br>
  * Created: 09.06.2006 22:14:08
  * @since 0.1
  * @author Volker Bergmann

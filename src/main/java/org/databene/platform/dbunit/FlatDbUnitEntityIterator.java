@@ -31,7 +31,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
 /**
- * Parses a flat DbUnit dataset file.<br/><br/>
+ * Parses a flat DbUnit dataset file.<br><br>
  * Created: 20.09.2011 07:53:15
  * @since 0.7.2
  * @author Volker Bergmann

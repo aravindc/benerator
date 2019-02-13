@@ -34,7 +34,7 @@ import org.databene.benerator.Consumer;
 import org.databene.benerator.consumer.AbstractConsumer;
 
 /**
- * Mock implementation of the {@link Consumer} interface to be used for testing.<br/><br/>
+ * Mock implementation of the {@link Consumer} interface to be used for testing.<br><br>
  * Created: 11.03.2010 12:51:40
  * @since 0.6.0
  * @author Volker Bergmann

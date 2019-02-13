@@ -31,8 +31,8 @@ import org.databene.commons.StringUtil;
 
 /**
  * Wrapper for simple or composite city names like 'Paris' or 'Paris, Texas'.
- * A name extension is used to make the name unique.<br/>
- * <br/>
+ * A name extension is used to make the name unique.<br>
+ * <br>
  * Created: 27.07.2007 19:06:56
  */
 public class CityId {

@@ -29,7 +29,7 @@ import org.databene.benerator.Consumer;
 
 
 /**
- * {@link Consumer} implementation that stores all consumed objects in a {@link List}.<br/><br/>
+ * {@link Consumer} implementation that stores all consumed objects in a {@link List}.<br><br>
  * Created: 23.01.2011 08:17:14
  * @since 0.6.4
  * @author Volker Bergmann

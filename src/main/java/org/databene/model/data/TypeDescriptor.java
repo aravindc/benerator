@@ -32,7 +32,7 @@ import org.databene.commons.LocaleUtil;
 import org.databene.commons.operation.FirstNonNullSelector;
 
 /**
- * Describes a type.<br/><br/>
+ * Describes a type.<br><br>
  * Created: 03.03.2008 08:37:30
  * @since 0.5.0
  * @author Volker Bergmann

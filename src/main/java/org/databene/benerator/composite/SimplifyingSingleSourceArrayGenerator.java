@@ -35,7 +35,7 @@ import org.databene.benerator.wrapper.SingleSourceArrayGenerator;
  * Creates a stochastic number of instances of a type. The number of elements is determined by the values 
  * minCount, maxCount, countDistribution. 
  * If the number of items is not one, an array of respective size is returned, 
- * otherwise a single object.<br/><br/>
+ * otherwise a single object.<br><br>
  * Created: 06.03.2008 15:43:54
  * @since 0.5.0
  * @author Volker Bergmann

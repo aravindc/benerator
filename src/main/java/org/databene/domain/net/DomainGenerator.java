@@ -32,7 +32,7 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.domain.address.Country;
 
 /**
- * Creates Internet domains of companies, web mailers or random characters.<br/><br/>
+ * Creates Internet domains of companies, web mailers or random characters.<br><br>
  * Created at 20.04.2008 08:14:35
  * @since 0.5.2
  * @author Volker Bergmann

@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specifies the quota of <code>null</code> values to produce when generating data for the annotated element.<br/><br/>
+ * Specifies the quota of <code>null</code> values to produce when generating data for the annotated element.<br><br>
  * Created: 02.05.2010 18:51:40
  * @since 0.6.1
  * @author Volker Bergmann

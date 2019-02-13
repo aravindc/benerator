@@ -43,7 +43,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link XMLSchemaDescriptorProvider}.<br/><br/>
+ * Tests the {@link XMLSchemaDescriptorProvider}.<br><br>
  * Created: 26.02.2008 21:05:23
  * @since 0.5.0
  * @author Volker Bergmann

@@ -25,7 +25,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 
 /**
- * Synchronized wrapper class for non-thread-safe {@link Generator} implementations.<br/><br/>
+ * Synchronized wrapper class for non-thread-safe {@link Generator} implementations.<br><br>
  * Created: 24.02.2010 23:08:39
  * @since 0.6.0
  * @author Volker Bergmann

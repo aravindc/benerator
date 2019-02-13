@@ -22,7 +22,7 @@
 package org.databene.benerator.engine;
 
 /**
- * Parent interface for all statement implementations.<br/><br/>
+ * Parent interface for all statement implementations.<br><br>
  * Created: 27.10.2009 15:57:12
  * @since 0.6.0
  * @author Volker Bergmann

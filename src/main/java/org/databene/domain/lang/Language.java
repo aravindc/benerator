@@ -30,8 +30,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * Represents a language.<br/>
- * <br/>
+ * Represents a language.<br>
+ * <br>
  * Created at 16.07.2009 19:20:15
  * @since 0.6.0
  * @author Volker Bergmann

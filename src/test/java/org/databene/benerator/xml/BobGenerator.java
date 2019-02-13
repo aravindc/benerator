@@ -29,7 +29,7 @@ package org.databene.benerator.xml;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Generates JavaBeans with 'name' property of value "Bob" for testing.<br/><br/>
+ * Generates JavaBeans with 'name' property of value "Bob" for testing.<br><br>
  * Created: 29.03.2008 08:26:22
  * @author Volker Bergmann
  */

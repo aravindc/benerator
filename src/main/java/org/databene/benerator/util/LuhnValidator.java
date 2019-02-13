@@ -26,7 +26,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Tests if a number passes the Luhn algorithm.<br/><br/>
+ * Tests if a number passes the Luhn algorithm.<br><br>
  * Created: 16.10.2009 18:36:20
  * @since 0.6.0
  * @author Volker Bergmann

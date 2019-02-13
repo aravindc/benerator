@@ -33,7 +33,7 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 /**
- * Parent class for {@link Iterator} test classes.<br/><br/>
+ * Parent class for {@link Iterator} test classes.<br><br>
  * @author Volker Bergmann
  */
 public abstract class IteratorTestCase {

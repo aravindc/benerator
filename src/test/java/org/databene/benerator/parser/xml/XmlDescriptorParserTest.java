@@ -33,8 +33,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link XmlDescriptorParser}.<br/>
- * <br/>
+ * Tests the {@link XmlDescriptorParser}.<br>
+ * <br>
  * Created at 02.01.2009 17:58:45
  * @since 0.5.7
  * @author Volker Bergmann

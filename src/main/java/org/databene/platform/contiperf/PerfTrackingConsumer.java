@@ -26,7 +26,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.contiperf.Invoker;
 
 /**
- * {@link Consumer} implementation that calls a ContiPerf {@link PerfTrackingConsumer}.<br/><br/>
+ * {@link Consumer} implementation that calls a ContiPerf {@link PerfTrackingConsumer}.<br><br>
  * Created: 22.10.2009 16:17:14
  * @since 0.6.0
  * @author Volker Bergmann

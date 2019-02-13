@@ -34,8 +34,8 @@ import javax.validation.ConstraintValidatorContext;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Mock class for a JSR303 {@link ConstraintValidator}.<br/>
- * <br/>
+ * Mock class for a JSR303 {@link ConstraintValidator}.<br>
+ * <br>
  * Created at 05.07.2009 07:16:43
  * @since 0.6.0
  * @author Volker Bergmann

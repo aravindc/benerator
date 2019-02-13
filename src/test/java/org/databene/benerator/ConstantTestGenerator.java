@@ -30,7 +30,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 
 
 /**
- * Helper class for testing.<br/><br/>
+ * Helper class for testing.<br><br>
  * Created: 16.12.2006 07:51:30
  * @since 0.1
  * @author Volker Bergmann

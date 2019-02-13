@@ -36,7 +36,7 @@ import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates random {@link BigDecimal}s with a uniform distribution.
- * <br/>
+ * <br>
  * Created at 23.06.2009 23:36:15
  * @since 0.6.0
  * @author Volker Bergmann

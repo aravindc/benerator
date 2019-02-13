@@ -45,7 +45,7 @@ import org.databene.commons.Filter;
 import org.databene.commons.IOUtil;
 
 /**
- * Represents a Benerator project archetype.<br/><br/>
+ * Represents a Benerator project archetype.<br><br>
  * Created at 18.02.2009 07:34:50
  * @since 0.5.9
  * @author Volker Bergmann

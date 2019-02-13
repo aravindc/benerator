@@ -38,7 +38,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests the {@link SequenceTableGenerator}.<br/><br/>
+ * Tests the {@link SequenceTableGenerator}.<br><br>
  * Created: 09.08.2010 14:51:40
  * @since 0.6.4
  * @author Volker Bergmann

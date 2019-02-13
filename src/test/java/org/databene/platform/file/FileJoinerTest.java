@@ -39,8 +39,8 @@ import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 
 /**
- * Tests the {@link FileJoiner}.<br/>
- * <br/>
+ * Tests the {@link FileJoiner}.<br>
+ * <br>
  * Created at 16.09.2009 16:32:45
  * @since 0.6.0
  * @author Volker Bergmann

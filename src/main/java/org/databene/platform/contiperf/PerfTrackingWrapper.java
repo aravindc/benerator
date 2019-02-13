@@ -30,7 +30,7 @@ import org.databene.contiperf.report.ConsoleReportModule;
 import org.databene.contiperf.report.ReportContext;
 
 /**
- * Common parent class for Benerator runners that support performance tracking.<br/><br/>
+ * Common parent class for Benerator runners that support performance tracking.<br><br>
  * Created: 14.03.2010 10:59:00
  * @since 0.6.0
  * @author Volker Bergmann

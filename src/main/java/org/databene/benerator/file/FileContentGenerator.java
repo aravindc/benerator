@@ -27,7 +27,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 
 /**
- * Abstract parent class for generators that generate products based on concrete files.<br/><br/>
+ * Abstract parent class for generators that generate products based on concrete files.<br><br>
  * Created: 24.02.2010 08:45:14
  * @since 0.6.0
  * @author Volker Bergmann

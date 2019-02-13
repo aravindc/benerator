@@ -29,7 +29,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.formats.xml.XMLElementParser;
 
 /**
- * Default implementation of the {@link PlatformDescriptor} interface.<br/><br/>
+ * Default implementation of the {@link PlatformDescriptor} interface.<br><br>
  * Created: 07.12.2011 18:58:25
  * @since 0.7.4
  * @author Volker Bergmann

@@ -40,7 +40,7 @@ import org.databene.domain.math.FibonacciSequence;
 import org.databene.domain.math.PadovanSequence;
 
 /**
- * Manages {@link Sequence}s.<br/><br/>
+ * Manages {@link Sequence}s.<br><br>
  * Created: 17.02.2010 13:36:17
  * @since 0.6.0
  * @author Volker Bergmann

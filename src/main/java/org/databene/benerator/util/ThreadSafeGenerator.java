@@ -22,7 +22,7 @@
 package org.databene.benerator.util;
 
 /**
- * Parent class for Generators which are thread-safe.<br/><br/>
+ * Parent class for Generators which are thread-safe.<br><br>
  * Created: 20.03.2010 10:29:03
  * @since 0.6.0
  * @author Volker Bergmann

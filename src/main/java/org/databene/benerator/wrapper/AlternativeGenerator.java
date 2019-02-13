@@ -30,8 +30,8 @@ import org.databene.benerator.Generator;
 
 /**
  * On each call to generate(), it chooses a generator from a collection,
- * calls its generate() method and returns the product.<br/>
- * <br/>
+ * calls its generate() method and returns the product.<br>
+ * <br>
  * Created: 30.08.2006 21:56:59
  * @since 0.1
  * @author Volker Bergmann

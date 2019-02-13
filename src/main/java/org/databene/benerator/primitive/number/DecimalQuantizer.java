@@ -29,7 +29,7 @@ import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
  * {@link Converter} that quantizes {@link Number}s by a given 'min' value and 
- * 'granularity' and converts it into a {@link BigDecimal}.<br/><br/>
+ * 'granularity' and converts it into a {@link BigDecimal}.<br><br>
  * Created: 11.04.2011 17:53:55
  * @since 0.6.6
  * @author Volker Bergmann

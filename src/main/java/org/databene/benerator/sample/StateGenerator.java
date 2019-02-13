@@ -42,8 +42,8 @@ import org.databene.script.DatabeneScriptParser;
 import org.databene.script.WeightedTransition;
 
 /**
- * Generates states as configured by a state machine.<br/>
- * <br/>
+ * Generates states as configured by a state machine.<br>
+ * <br>
  * Created at 17.07.2009 05:41:47
  * @since 0.6.0
  * @author Volker Bergmann

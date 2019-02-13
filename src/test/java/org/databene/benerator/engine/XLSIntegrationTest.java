@@ -34,7 +34,7 @@ import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * Testing XLS imports.<br/><br/>
+ * Testing XLS imports.<br><br>
  * Created: 24.01.2013 15:46:57
  * @since 0.8.0
  * @author Volker Bergmann

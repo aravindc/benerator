@@ -29,7 +29,7 @@ import org.databene.script.expression.ConstantExpression;
 import org.databene.script.expression.DynamicExpression;
 
 /**
- * Expression that evaluates a script.<br/><br/>
+ * Expression that evaluates a script.<br><br>
  * Created: 27.10.2009 13:48:11
  * @since 0.6.0
  * @author Volker Bergmann

@@ -54,7 +54,7 @@ import org.slf4j.Logger;
 import static org.databene.model.data.TypeDescriptor.*;
 
 /**
- * Creates generators of type instances.<br/><br/>
+ * Creates generators of type instances.<br><br>
  * Created: 05.03.2008 16:51:44
  * @since 0.5.0
  * @author Volker Bergmann

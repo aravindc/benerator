@@ -29,8 +29,8 @@ package org.databene.domain.address;
 import org.databene.commons.NullSafeComparator;
 
 /**
- * Represents a phone number.<br/>
- * <br/>
+ * Represents a phone number.<br>
+ * <br>
  * Created: 13.06.2006 07:19:26
  * @since 0.1
  * @author Volker Bergmann

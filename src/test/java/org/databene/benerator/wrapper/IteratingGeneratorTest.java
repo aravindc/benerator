@@ -41,8 +41,8 @@ import org.databene.commons.iterator.HeavyweightIterableAdapter;
 import org.junit.Test;
 
 /**
- * Tests the {@link IteratingGenerator}.<br/>
- * <br/>
+ * Tests the {@link IteratingGenerator}.<br>
+ * <br>
  * Created: 01.09.2007 17:22:03
  * @author Volker Bergmann
  */

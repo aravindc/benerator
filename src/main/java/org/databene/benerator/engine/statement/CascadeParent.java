@@ -32,7 +32,7 @@ import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
 
 /**
- * Interface for transcoding classes that can be parents of cascade operations.<br/><br/>
+ * Interface for transcoding classes that can be parents of cascade operations.<br><br>
  * Created: 18.04.2011 08:35:04
  * @since 0.6.6
  * @author Volker Bergmann

@@ -29,7 +29,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Tests the {@link MessageGenerator}.<br/><br/>
+ * Tests the {@link MessageGenerator}.<br><br>
  * Created: 28.07.2011 18:25:12
  * @since 0.7.0
  * @author Volker Bergmann

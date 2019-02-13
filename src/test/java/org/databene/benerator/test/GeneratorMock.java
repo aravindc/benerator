@@ -31,8 +31,8 @@ import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Mock implementation of the {@link Generator} interface.<br/>
- * <br/>
+ * Mock implementation of the {@link Generator} interface.<br>
+ * <br>
  * Created at 29.12.2008 07:11:25
  * @since 0.5.7
  * @author Volker Bergmann

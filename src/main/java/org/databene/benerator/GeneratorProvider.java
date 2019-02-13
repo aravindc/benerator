@@ -22,7 +22,7 @@
 package org.databene.benerator;
 
 /**
- * Provides a {@link Generator}.<br/><br/>
+ * Provides a {@link Generator}.<br><br>
  * Created: 08.07.2011 10:53:44
  * @since 0.7.0
  * @author Volker Bergmann

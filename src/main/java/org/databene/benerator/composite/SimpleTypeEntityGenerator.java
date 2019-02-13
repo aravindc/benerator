@@ -33,7 +33,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
 /**
- * Generates Entities that wrap a content of simple type.<br/><br/>
+ * Generates Entities that wrap a content of simple type.<br><br>
  * Created at 11.05.2008 23:37:42
  * @since 0.5.4
  * @author Volker Bergmann

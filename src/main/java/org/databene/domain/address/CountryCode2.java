@@ -34,7 +34,7 @@ import javax.validation.Constraint;
 
 /**
  * Bean validation annotation (JSR 303) for fields that represent a country code 
- * according to ISO-3166-1 alpha-2.<br/><br/>
+ * according to ISO-3166-1 alpha-2.<br><br>
  * Created: 12.02.2010 12:45:16
  * @since 0.6.0
  * @author Volker Bergmann

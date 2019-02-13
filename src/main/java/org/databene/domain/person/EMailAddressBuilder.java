@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Generates email addresses for a random domain by a given person name.<br/><br/>
+ * Generates email addresses for a random domain by a given person name.<br><br>
  * Created: 22.02.2010 12:16:11
  * @since 0.6.0
  * @author Volker Bergmann

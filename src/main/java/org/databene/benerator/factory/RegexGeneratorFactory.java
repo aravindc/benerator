@@ -49,8 +49,8 @@ import org.databene.formats.regex.Sequence;
 import org.databene.model.data.Uniqueness;
 
 /**
- * Creates generators for regular expressions and their sub parts.<br/>
- * <br/>
+ * Creates generators for regular expressions and their sub parts.<br>
+ * <br>
  * Created: 17.11.2007 16:30:09
  * @author Volker Bergmann
  */

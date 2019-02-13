@@ -84,8 +84,8 @@ import org.databene.script.expression.MinExpression;
 import org.w3c.dom.Element;
 
 /**
- * Utility class for parsing and combining descriptor settings.<br/>
- * <br/>
+ * Utility class for parsing and combining descriptor settings.<br>
+ * <br>
  * Created at 31.12.2008 09:28:28
  * @since 0.5.7
  * @author Volker Bergmann

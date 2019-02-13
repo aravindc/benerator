@@ -22,7 +22,7 @@
 package org.databene.platform.db;
 
 /**
- * Generator implementation which provides sequence values from a database.<br/><br/>
+ * Generator implementation which provides sequence values from a database.<br><br>
  * Created: 24.07.2011 06:40:20
  * @since 0.7.0
  * @author Volker Bergmann

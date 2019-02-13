@@ -30,8 +30,8 @@ import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 
 /**
- * Task implementation that executes a series of other tasks consecutively.<br/>
- * <br/>
+ * Task implementation that executes a series of other tasks consecutively.<br>
+ * <br>
  * Created at 24.07.2009 06:32:43
  * @since 0.6.0
  * @author Volker Bergmann

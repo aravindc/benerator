@@ -23,8 +23,8 @@ package org.databene.benerator;
 
 
 /**
- * {@link Generator} interface which declares a {@link #generate()} method as in Benerator versions before 0.7.<br/>
- * <br/>
+ * {@link Generator} interface which declares a {@link #generate()} method as in Benerator versions before 0.7.<br>
+ * <br>
  * Created: 26.07.2011 17:34:50
  * @since 0.7.0
  * @author Volker Bergmann

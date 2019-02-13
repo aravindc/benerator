@@ -35,7 +35,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the XMLSchemaNativeTypeProvider.<br/><br/>
+ * Tests the XMLSchemaNativeTypeProvider.<br><br>
  * Created: 21.03.2008 09:44:43
  * @since 0.5.0
  * @author Volker Bergmann

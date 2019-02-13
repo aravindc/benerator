@@ -36,8 +36,8 @@ import org.databene.formats.regex.RegexParser;
 import java.util.*;
 
 /**
- * Generates Character values from a character set or a regular expression.<br/>
- * <br/>
+ * Generates Character values from a character set or a regular expression.<br>
+ * <br>
  * Created: 09.06.2006 20:34:55
  * @since 0.1
  * @author Volker Bergmann

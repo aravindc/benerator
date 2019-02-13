@@ -36,7 +36,7 @@ import org.databene.benerator.primitive.number.RecurrenceRelationNumberGenerator
  *   <li>F(1) = 1</li>
  *   <li>F(n) = F(n-1) + F(n-2)</li>
  * </ul>
- * <br/>
+ * <br>
  * Created at 03.07.2009 10:44:56
  * @since 0.6.0
  * @author Volker Bergmann

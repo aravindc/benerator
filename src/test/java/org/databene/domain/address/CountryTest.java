@@ -30,8 +30,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link Country} class.<br/>
- * <br/>
+ * Tests the {@link Country} class.<br>
+ * <br>
  * Created at 26.08.2008 11:46:32
  * @since 0.5.5
  * @author Volker Bergmann

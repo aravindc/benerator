@@ -41,8 +41,8 @@ import org.databene.domain.address.Country;
  * See <a href="http://www.knowledgerush.com/kr/encyclopedia/Unlucky_number/">knowledgerush.com</a>,
  * <a href="http://vortex-japan.seesaa.net/article/113266312.html">vortex-japan.seesaa.net</a>,
  * <a href="http://en.wikipedia.org/wiki/Numerology">Wikipedia: Numerology</a> 
- * and <a href="http://en.wikipedia.org/wiki/Numbers_in_Chinese_culture">Wikipedia: Numbers in Chinese culture</a> <br/>
- * <br/>
+ * and <a href="http://en.wikipedia.org/wiki/Numbers_in_Chinese_culture">Wikipedia: Numbers in Chinese culture</a> <br>
+ * <br>
  * Created at 03.07.2009 07:46:20
  * @since 0.6.0
  * @author Volker Bergmann

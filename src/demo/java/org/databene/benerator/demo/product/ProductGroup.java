@@ -27,8 +27,8 @@
 package org.databene.benerator.demo.product;
 
 /**
- * Represents a product group as top level layer in a product hierarchy.<br/>
- * <br/>
+ * Represents a product group as top level layer in a product hierarchy.<br>
+ * <br>
  * Created: 19.07.2007 07:10:47
  */
 public class ProductGroup {

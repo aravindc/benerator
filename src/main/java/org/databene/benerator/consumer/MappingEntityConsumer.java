@@ -29,7 +29,7 @@ import org.databene.model.data.ComponentNameMapper;
 import org.databene.model.data.Entity;
 
 /**
- * Proxy to a {@link Consumer} which maps attribute names of the entities.<br/><br/>
+ * Proxy to a {@link Consumer} which maps attribute names of the entities.<br><br>
  * Created: 22.02.2010 19:42:16
  * @since 0.6.0
  * @author Volker Bergmann

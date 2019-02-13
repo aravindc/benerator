@@ -30,8 +30,8 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
- * Long Generator that implements a 'step' Long Sequence.<br/>
- * <br/>
+ * Long Generator that implements a 'step' Long Sequence.<br>
+ * <br>
  * Created: 26.07.2007 18:36:45
  * @author Volker Bergmann
  */

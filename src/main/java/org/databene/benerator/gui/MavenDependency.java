@@ -27,8 +27,8 @@
 package org.databene.benerator.gui;
 
 /**
- * Represents a Maven dependency.<br/>
- * <br/>
+ * Represents a Maven dependency.<br>
+ * <br>
  * Created at 29.11.2008 23:25:08
  * @since 0.5.6
  * @author Volker Bergmann

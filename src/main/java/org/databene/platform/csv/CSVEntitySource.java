@@ -37,7 +37,7 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
 
 /**
- * Imports {@link Entity} data from CSV files.<br/><br/>
+ * Imports {@link Entity} data from CSV files.<br><br>
  * @author Volker Bergmann
  */
 public class CSVEntitySource extends FileBasedEntitySource implements Tabular {

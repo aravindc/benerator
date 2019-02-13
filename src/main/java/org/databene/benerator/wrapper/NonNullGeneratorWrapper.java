@@ -24,7 +24,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.NonNullGenerator;
 
 /**
- * {@link GeneratorWrapper} for {@link NonNullGenerator}s.<br/><br/>
+ * {@link GeneratorWrapper} for {@link NonNullGenerator}s.<br><br>
  * Created: 27.07.2011 11:30:51
  * @since 0.7.0
  * @author Volker Bergmann

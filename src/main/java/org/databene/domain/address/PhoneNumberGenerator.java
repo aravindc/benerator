@@ -24,7 +24,7 @@ package org.databene.domain.address;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Generates landline or mobile phone numbers in a given {@link Country}.<br/><br/>
+ * Generates landline or mobile phone numbers in a given {@link Country}.<br><br>
  * Created: 16.10.2009 05:33:57
  * @since 0.6.0
  * @author Volker Bergmann

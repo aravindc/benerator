@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Generates unique long values incrementally.<br/><br/>
+ * Generates unique long values incrementally.<br><br>
  * Created: 14.11.2009 06:49:49
  * @since 0.6.0
  * @author Volker Bergmann

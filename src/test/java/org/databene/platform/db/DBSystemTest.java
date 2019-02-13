@@ -47,8 +47,8 @@ import static org.databene.jdbacl.dialect.HSQLUtil.*;
 import static org.junit.Assert.*;
 
 /**
- * Tests {@link DefaultDBSystem}.<br/>
- * <br/>
+ * Tests {@link DefaultDBSystem}.<br>
+ * <br>
  * Created at 26.12.2008 03:40:44
  * @since 0.5.6
  * @author Volker Bergmann

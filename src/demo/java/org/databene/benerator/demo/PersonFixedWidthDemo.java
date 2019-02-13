@@ -39,8 +39,8 @@ import org.databene.document.fixedwidth.FixedWidthColumnDescriptor;
 import java.io.*;
 
 /**
- * Demonstrates how to format JavaBeans in a fixed width file.<br/>
- * <br/>
+ * Demonstrates how to format JavaBeans in a fixed width file.<br>
+ * <br>
  * Created: 07.06.2007 12:04:39
  * @author Volker Bergmann
  */

@@ -27,8 +27,8 @@
 package org.databene.task;
 
 /**
- * Provides invocation of an implementation of java.lang.Runnable from the command line.<br/>
- * <br/>
+ * Provides invocation of an implementation of java.lang.Runnable from the command line.<br>
+ * <br>
  * Created: 22.01.2007 10:11:15
  * @since 0.2
  */

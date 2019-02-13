@@ -29,8 +29,8 @@ package org.databene.benerator.distribution.function;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 
 /**
- * Gaussian Function. 1/(deviation*sqrt(2PI)) * e^(-(x - average)^2/(4 * deviation^2)).<br/>
- * <br/>
+ * Gaussian Function. 1/(deviation*sqrt(2PI)) * e^(-(x - average)^2/(4 * deviation^2)).<br>
+ * <br>
  * Created: 10.06.2006 05:37:56
  */
 public class GaussianFunction extends AbstractWeightFunction {

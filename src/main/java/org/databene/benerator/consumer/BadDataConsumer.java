@@ -27,7 +27,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * {@link Consumer} proxy that forwards data to 'real consumer' and if the real consumer 
- * raises an error, forwards the data to a 'bad data consumer'.<br/><br/>
+ * raises an error, forwards the data to a 'bad data consumer'.<br><br>
  * Created: 23.01.2011 08:04:17
  * @since 0.6.4
  * @author Volker Bergmann

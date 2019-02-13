@@ -34,8 +34,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Double Generator that supports a weight function.<br/>
- * <br/>
+ * Double Generator that supports a weight function.<br>
+ * <br>
  * Created: 11.06.2006 21:33:41
  * @since 0.1
  * @author Volker Bergmann

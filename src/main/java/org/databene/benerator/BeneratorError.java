@@ -22,7 +22,7 @@
 package org.databene.benerator;
 
 /**
- * Indicates an error in Benerator execution, for example raised by an &lt;error&gt; element.<br/><br/>
+ * Indicates an error in Benerator execution, for example raised by an &lt;error&gt; element.<br><br>
  * Created: 12.01.2011 09:13:11
  * @since 0.6.4
  * @author Volker Bergmann

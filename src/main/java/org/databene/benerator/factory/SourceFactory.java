@@ -34,7 +34,7 @@ import org.databene.formats.xls.XLSLineSource;
 import org.databene.model.data.Uniqueness;
 
 /**
- * Factory class for source-related {@link Generator}s.<br/><br/>
+ * Factory class for source-related {@link Generator}s.<br><br>
  * Created: 06.08.2011 13:11:11
  * @since 0.7.0
  * @author Volker Bergmann

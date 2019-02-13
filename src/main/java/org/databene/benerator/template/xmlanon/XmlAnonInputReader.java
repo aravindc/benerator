@@ -41,7 +41,7 @@ import org.databene.commons.StringUtil;
 import org.databene.formats.xls.XLSUtil;
 
 /**
- * Reads XLS documents for a multi-file XML anonymization.<br/><br/>
+ * Reads XLS documents for a multi-file XML anonymization.<br><br>
  * Created: 06.03.2014 08:25:43
  * @since 0.9.0
  * @author Volker Bergmann

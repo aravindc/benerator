@@ -26,7 +26,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.commons.Validator;
 
 /**
- * {@link Statement} using a {@link Validator} to check if the current object is valid.<br/><br/>
+ * {@link Statement} using a {@link Validator} to check if the current object is valid.<br><br>
  * Created: 06.09.2011 12:50:04
  * @since 0.7.0
  * @author Volker Bergmann

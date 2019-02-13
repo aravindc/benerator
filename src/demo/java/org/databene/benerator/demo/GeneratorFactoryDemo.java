@@ -33,7 +33,7 @@ import org.databene.commons.Encodings;
 import org.databene.model.data.Uniqueness;
 
 /**
- * Demonstrates usages of the {@link GeneratorFactory}.<br/><br/>
+ * Demonstrates usages of the {@link GeneratorFactory}.<br><br>
  * Created: 08.03.2011 17:39:20
  * @since 0.6.6
  * @author Volker Bergmann

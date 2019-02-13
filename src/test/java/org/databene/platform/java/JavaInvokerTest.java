@@ -29,7 +29,7 @@ import org.databene.platform.java.JavaInvoker;
 import org.junit.Test;
 
 /**
- * Tests the {@link JavaInvoker}.<br/><br/>
+ * Tests the {@link JavaInvoker}.<br><br>
  * Created: 21.10.2009 18:28:17
  * @since 0.6.0
  * @author Volker Bergmann

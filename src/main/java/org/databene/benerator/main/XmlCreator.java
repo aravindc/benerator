@@ -42,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main class for generating XML files from the command line.<br/><br/>
+ * Main class for generating XML files from the command line.<br><br>
  * Created: 28.03.2008 16:52:49
  * @since 0.5.0
  * @author Volker Bergmann

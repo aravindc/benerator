@@ -22,7 +22,7 @@
 package org.databene.benerator;
 
 /**
- * The state of a generator.<br/><br/>
+ * The state of a generator.<br><br>
  * Created: 24.02.2010 12:13:24
  * @since 0.6.0
  * @author Volker Bergmann

@@ -29,7 +29,7 @@ import org.databene.commons.Locales;
 import org.junit.Test;
 
 /**
- * Tests the {@link PersonFormatter}.<br/><br/>
+ * Tests the {@link PersonFormatter}.<br><br>
  * Created: 22.02.2010 13:50:13
  * @since 0.6.0
  * @author Volker Bergmann

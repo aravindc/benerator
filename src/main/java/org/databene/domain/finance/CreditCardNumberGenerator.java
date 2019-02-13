@@ -29,7 +29,7 @@ package org.databene.domain.finance;
 import org.databene.benerator.primitive.LuhnGenerator;
 
 /**
- * Creates credit card numbers.<br/><br/>
+ * Creates credit card numbers.<br><br>
  * Created at 09.04.2008 12:22:12
  * @since 0.5.1
  * @author Volker Bergmann

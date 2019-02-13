@@ -22,7 +22,7 @@
 package org.databene.benerator.template.xmlanon;
 
 /**
- * Key-value pair for an anonymization setting.<br/><br/>
+ * Key-value pair for an anonymization setting.<br><br>
  * Created: 27.02.2014 14:10:51
  * @since 0.9.0
  * @author Volker Bergmann

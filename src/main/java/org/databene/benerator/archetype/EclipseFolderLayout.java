@@ -22,7 +22,7 @@
 package org.databene.benerator.archetype;
 
 /**
- * {@link FolderLayout} for Eclipse.<br/><br/>
+ * {@link FolderLayout} for Eclipse.<br><br>
  * Created: 04.04.2010 11:40:57
  * @since 0.6.0
  * @author Volker Bergmann

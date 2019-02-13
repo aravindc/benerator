@@ -43,8 +43,8 @@ import org.databene.commons.converter.NumberToNumberConverter;
 import static org.databene.commons.NumberUtil.*;
 
 /**
- * Random Walk {@link Sequence} implementation that supports a variable step width.<br/>
- * <br/>
+ * Random Walk {@link Sequence} implementation that supports a variable step width.<br>
+ * <br>
  * Created at 30.06.2009 07:48:40
  * @since 0.6.0
  * @author Volker Bergmann

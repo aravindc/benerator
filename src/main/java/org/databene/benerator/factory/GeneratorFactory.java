@@ -43,8 +43,8 @@ import org.databene.script.WeightedSample;
 import java.util.*;
 
 /**
- * Provides factory methods for generators.<br/>
- * <br/>
+ * Provides factory methods for generators.<br>
+ * <br>
  * Created: 23.08.2006 21:44:27
  * @since 0.1
  * @author Volker Bergmann

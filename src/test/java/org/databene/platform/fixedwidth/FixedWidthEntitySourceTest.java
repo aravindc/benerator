@@ -42,8 +42,8 @@ import org.databene.commons.SystemInfo;
 import org.databene.commons.format.Alignment;
 
 /**
- * Tests the {@link FixedWidthEntitySource}.<br/>
- * <br/>
+ * Tests the {@link FixedWidthEntitySource}.<br>
+ * <br>
  * Created: 27.08.2007 19:20:25
  * @author Volker Bergmann
  */

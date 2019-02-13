@@ -35,8 +35,8 @@ import org.databene.task.AbstractTask;
 import org.databene.task.TaskResult;
 
 /**
- * Deletes one or more files.<br/>
- * <br/>
+ * Deletes one or more files.<br>
+ * <br>
  * Created at 16.09.2009 15:50:25
  * @since 0.6.0
  * @author Volker Bergmann

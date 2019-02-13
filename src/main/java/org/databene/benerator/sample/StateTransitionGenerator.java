@@ -34,8 +34,8 @@ import org.databene.script.Transition;
 import org.databene.script.WeightedTransition;
 
 /**
- * Generates state transitions of a state machine.<br/>
- * <br/>
+ * Generates state transitions of a state machine.<br>
+ * <br>
  * Created at 17.07.2009 08:04:12
  * @since 0.6.0
  * @author Volker Bergmann

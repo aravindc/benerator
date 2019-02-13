@@ -27,8 +27,8 @@
 package org.databene.model.data;
 
 /**
- * Enumeration of sequential iteration modes.<br/>
- * <br/>
+ * Enumeration of sequential iteration modes.<br>
+ * <br>
  * Created: 30.08.2006 21:53:09
  */
 public enum Iteration {

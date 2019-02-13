@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Exports Entities to a SQL file.<br/><br/>
+ * Exports Entities to a SQL file.<br><br>
  * Created: 12.07.2008 09:43:59
  * @since 0.5.4
  * @author Volker Bergmann

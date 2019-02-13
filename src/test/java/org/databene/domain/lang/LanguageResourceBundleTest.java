@@ -33,8 +33,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link LanguageResourceBundle}.<br/>
- * <br/>
+ * Tests the {@link LanguageResourceBundle}.<br>
+ * <br>
  * Created at 16.07.2009 19:15:45
  * @since 0.6.0
  * @author Volker Bergmann

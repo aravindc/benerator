@@ -34,7 +34,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link ExponentialDensityIntegral}.<br/><br/>
+ * Tests the {@link ExponentialDensityIntegral}.<br><br>
  * Created: 12.03.2010 15:50:44
  * @since 0.6.0
  * @author Volker Bergmann

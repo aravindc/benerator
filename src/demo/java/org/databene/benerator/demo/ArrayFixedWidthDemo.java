@@ -49,8 +49,8 @@ import java.text.SimpleDateFormat;
 import java.math.BigDecimal;
 
 /**
- * Demonstrates the creation of fixed column width files from an array generator.<br/>
- * <br/>
+ * Demonstrates the creation of fixed column width files from an array generator.<br>
+ * <br>
  * Created: 07.06.2007 12:04:39
  * @author Volker Bergmann
  */

@@ -30,7 +30,7 @@ import org.databene.commons.SyntaxError;
 import org.junit.Test;
 
 /**
- * Tests the {@link SettingParser}.<br/><br/>
+ * Tests the {@link SettingParser}.<br><br>
  * Created: 18.02.2010 22:46:46
  * @since 0.6.0
  * @author Volker Bergmann

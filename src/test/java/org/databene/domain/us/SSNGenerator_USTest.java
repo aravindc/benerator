@@ -33,8 +33,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SSNGenerator}.<br/>
- * <br/>
+ * Tests the {@link SSNGenerator}.<br>
+ * <br>
  * Created at 17.11.2008 07:49:03
  * @since 0.5.6
  * @author Volker Bergmann

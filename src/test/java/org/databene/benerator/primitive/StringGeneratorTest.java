@@ -37,7 +37,7 @@ import org.databene.commons.validator.SuffixValidator;
 import org.junit.Test;
 
 /**
- * Tests the {@link StringGenerator}.<br/><br/>
+ * Tests the {@link StringGenerator}.<br><br>
  * Created: 01.08.2011 20:15:04
  * @since 0.7.0
  * @author Volker Bergmann

@@ -28,7 +28,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ErrorHandler;
 
 /**
- * Wraps a {@link GenerateAndConsumeTask} with a {@link Generator} interface.<br/><br/>
+ * Wraps a {@link GenerateAndConsumeTask} with a {@link Generator} interface.<br><br>
  * Created: 01.09.2011 15:33:34
  * @since 0.7.0
  * @author Volker Bergmann

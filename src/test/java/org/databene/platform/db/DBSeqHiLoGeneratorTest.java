@@ -39,7 +39,7 @@ import static junit.framework.Assert.*;
 import static org.databene.jdbacl.dialect.HSQLUtil.*;
 
 /**
- * Tests the DBSeqHiLoGenerator.<br/><br/>
+ * Tests the DBSeqHiLoGenerator.<br><br>
  * Created: 27.01.2008 10:47:39
  * @since 0.4.0
  * @author Volker Bergmann

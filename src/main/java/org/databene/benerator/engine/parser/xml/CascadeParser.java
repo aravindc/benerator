@@ -35,7 +35,7 @@ import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
- * Parses &lt;cascade ref="..."&gt; descriptors.<br/><br/>
+ * Parses &lt;cascade ref="..."&gt; descriptors.<br><br>
  * Created: 18.04.2011 08:27:48
  * @since 0.6.6
  * @author Volker Bergmann

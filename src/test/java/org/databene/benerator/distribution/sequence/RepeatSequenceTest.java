@@ -29,7 +29,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link RepeatSequence}.<br/><br/>
+ * Tests the {@link RepeatSequence}.<br><br>
  * Created: 12.02.2010 12:28:43
  * @since 0.6.0
  * @author Volker Bergmann

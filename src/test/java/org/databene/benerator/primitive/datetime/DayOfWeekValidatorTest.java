@@ -39,8 +39,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link DayOfWeekValidator}.<br/>
- * <br/>
+ * Tests the {@link DayOfWeekValidator}.<br>
+ * <br>
  * Created at 26.09.2009 08:48:03
  * @since 0.6.0
  * @author Volker Bergmann

@@ -30,7 +30,7 @@ import org.databene.benerator.wrapper.WrapperFactory;
 /**
  * Sequence implementation that returns the first n values of another Generator (default 1).
  * When used to create number generators, it creates generators that count incrementally 
- * from 'min' to min + n - 1.<br/><br/>
+ * from 'min' to min + n - 1.<br><br>
  * Created: 25.07.2010 09:55:54
  * @since 0.6.3
  * @author Volker Bergmann

@@ -32,8 +32,8 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
 import org.databene.domain.address.CountryCode2Validator;
 
 /**
- * Validates IBANs.<br/>
- * <br/>
+ * Validates IBANs.<br>
+ * <br>
  * Created at 12.07.2008 14:58:39
  * @since 0.5.4
  * @author Volker Bergmann

@@ -39,7 +39,7 @@ import org.databene.script.expression.StringExpression;
 import org.w3c.dom.Element;
 
 /**
- * Parses an &lt;evaluate&gt; element in a Benerator descriptor file.<br/><br/>
+ * Parses an &lt;evaluate&gt; element in a Benerator descriptor file.<br><br>
  * Created: 25.10.2009 01:01:02
  * @since 0.6.0
  * @author Volker Bergmann

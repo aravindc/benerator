@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Wraps a database connection and provides access functionality.<br/><br/>
+ * Wraps a database connection and provides access functionality.<br><br>
  * Created: 07.01.2013 08:28:36
  * @since 0.8.0
  * @author Volker Bergmann

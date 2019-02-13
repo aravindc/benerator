@@ -96,7 +96,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract class that serves as parent for classes which connect to databases using JDBC.<br/><br/>
+ * Abstract class that serves as parent for classes which connect to databases using JDBC.<br><br>
  * Created: 07.01.2013 08:11:25
  * @since 0.8.0
  * @author Volker Bergmann

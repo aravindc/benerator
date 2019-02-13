@@ -33,8 +33,8 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
 /**
- * Instantiates an entity without initializing any components.<br/>
- * <br/>
+ * Instantiates an entity without initializing any components.<br>
+ * <br>
  * Created: 01.09.2007 07:39:52
  * @author Volker Bergmann
  */

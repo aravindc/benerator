@@ -33,8 +33,8 @@ import org.databene.domain.math.FibonacciSequence;
 import org.junit.Test;
 
 /**
- * Tests the {@link FibonacciSequence}.<br/>
- * <br/>
+ * Tests the {@link FibonacciSequence}.<br>
+ * <br>
  * Created at 03.07.2009 10:51:18
  * @since 0.6.0
  * @author Volker Bergmann

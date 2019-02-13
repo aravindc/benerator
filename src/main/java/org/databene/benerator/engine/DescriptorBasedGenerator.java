@@ -29,7 +29,7 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.converter.ConverterManager;
 
 /**
- * Provides easy programmatic access to generators defined in an XML descriptor file.<br/><br/>
+ * Provides easy programmatic access to generators defined in an XML descriptor file.<br><br>
  * Created: 23.02.2010 12:06:44
  * @since 0.6.0
  * @author Volker Bergmann

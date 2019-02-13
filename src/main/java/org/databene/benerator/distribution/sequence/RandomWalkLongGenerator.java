@@ -33,8 +33,8 @@ import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
- * Long Generator that implements a 'randomWalk' Long Sequence.<br/>
- * <br/>
+ * Long Generator that implements a 'randomWalk' Long Sequence.<br>
+ * <br>
  * Created: 13.06.2006 07:36:45
  * @since 0.1
  * @author Volker Bergmann

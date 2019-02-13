@@ -37,7 +37,7 @@ import org.databene.script.expression.ExpressionUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link DynamicLongGenerator}.<br/><br/>
+ * Tests the {@link DynamicLongGenerator}.<br><br>
  * Created: 28.03.2010 12:36:26
  * @since 0.6.1
  * @author Volker Bergmann

@@ -35,7 +35,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the EntityAttributeWeightFunction.<br/><br/>
+ * Tests the EntityAttributeWeightFunction.<br><br>
  * Created at 27.04.2008 17:41:49
  * @since 0.5.2
  * @author Volker Bergmann

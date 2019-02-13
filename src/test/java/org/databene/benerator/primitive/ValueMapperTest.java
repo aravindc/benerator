@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * Tests the {@link ValueMapper}.<br/><br/>
+ * Tests the {@link ValueMapper}.<br><br>
  * Created: 24.10.2009 09:14:20
  * @since 0.6.0
  * @author Volker Bergmann

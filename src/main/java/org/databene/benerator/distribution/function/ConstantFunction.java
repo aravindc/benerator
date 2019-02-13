@@ -29,8 +29,8 @@ package org.databene.benerator.distribution.function;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 
 /**
- * Returns a constant value, independent of the argument.<br/>
- * <br/>
+ * Returns a constant value, independent of the argument.<br>
+ * <br>
  * Created: 18.06.2006 15:30:18
  */
 public class ConstantFunction extends AbstractWeightFunction {

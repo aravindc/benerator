@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specifies the values to use when generating data for the annotated element.<br/><br/>
+ * Specifies the values to use when generating data for the annotated element.<br><br>
  * Created: 02.05.2010 18:52:54
  * @since 0.6.1
  * @author Volker Bergmann

@@ -30,8 +30,8 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 
 /**
- * Generates {@link Long} values from a database sequence.<br/>
- * <br/>
+ * Generates {@link Long} values from a database sequence.<br>
+ * <br>
  * Created at 07.07.2009 18:54:53
  * @since 0.6.0
  * @author Volker Bergmann

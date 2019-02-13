@@ -36,8 +36,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link GeneratorWrapper}.<br/>
- * <br/>
+ * Tests the {@link GeneratorWrapper}.<br>
+ * <br>
  * Created at 18.03.2009 07:55:31
  * @since 0.5.9
  * @author Volker Bergmann

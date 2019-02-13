@@ -31,7 +31,7 @@ import org.databene.commons.converter.NumberToNumberConverter;
 
 /**
  * {@link DefaultsProvider} implementation which provides mean defaults 
- * for provoking errors in functional testing.<br/><br/>
+ * for provoking errors in functional testing.<br><br>
  * Created: 15.07.2011 21:22:39
  * @since 0.7.0
  * @author Volker Bergmann

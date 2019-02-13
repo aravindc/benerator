@@ -32,8 +32,8 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link NounGenerator}.<br/>
- * <br/>
+ * Tests the {@link NounGenerator}.<br>
+ * <br>
  * Created at 15.07.2009 22:57:37
  * @since 0.6.0
  * @author Volker Bergmann

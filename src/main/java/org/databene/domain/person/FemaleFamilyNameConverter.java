@@ -38,8 +38,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Can convert the male form of a family name to the female form by a suffix mapping. 
- * This is used for generating names in some slavic languages.<br/>
- * <br/>
+ * This is used for generating names in some slavic languages.<br>
+ * <br>
  * Created at 15.03.2009 18:06:55
  * @since 0.5.8
  * @author Volker Bergmann

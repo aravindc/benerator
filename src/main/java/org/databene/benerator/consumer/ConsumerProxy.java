@@ -26,7 +26,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ThreadAware;
 
 /**
- * Parent class for {@link Consumer}s that serve as proxy to other Consumers.<br/><br/>
+ * Parent class for {@link Consumer}s that serve as proxy to other Consumers.<br><br>
  * Created: 22.10.2009 16:18:07
  * @since 0.6.0
  * @author Volker Bergmann

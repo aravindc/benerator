@@ -34,8 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Simple {@link Consumer} proxy implementation that logs an entity before it is forwarded to the target consumer.<br/>
- * <br/>
+ * Simple {@link Consumer} proxy implementation that logs an entity before it is forwarded to the target consumer.<br>
+ * <br>
  * Created: 26.08.2007 14:47:40
  */
 public class MyProxy extends ConsumerProxy {

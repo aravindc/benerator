@@ -8,7 +8,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the BooleanGenerator.<br/><br/>
+ * Tests the BooleanGenerator.<br><br>
  * Created: 09.06.2006 20:07:56
  * @since 0.1
  * @author Volker Bergmann

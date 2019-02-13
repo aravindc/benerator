@@ -41,7 +41,7 @@ import org.databene.script.expression.FallbackExpression;
 import org.w3c.dom.Element;
 
 /**
- * Parses a &lt;transcode&gt; element.<br/><br/>
+ * Parses a &lt;transcode&gt; element.<br><br>
  * Created: 08.09.2010 16:13:13
  * @since 0.6.4
  * @author Volker Bergmann

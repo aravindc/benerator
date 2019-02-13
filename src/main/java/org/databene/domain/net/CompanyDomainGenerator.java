@@ -44,7 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Generates web domains for companies.<br/><br/>
+ * Generates web domains for companies.<br><br>
  * Created at 23.04.2008 23:04:10
  * @since 0.5.2
  * @author Volker Bergmann

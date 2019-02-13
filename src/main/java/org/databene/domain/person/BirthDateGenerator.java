@@ -37,8 +37,8 @@ import org.databene.commons.TimeUtil;
 import org.databene.commons.Period;
 
 /**
- * Creates {@link Date} objects for a person's birth day.<br/>
- * <br/>
+ * Creates {@link Date} objects for a person's birth day.<br>
+ * <br>
  * Created: 13.06.2006 07:15:03
  * @since 0.1
  * @author Volker Bergmann

@@ -35,7 +35,7 @@ import org.databene.platform.fixedwidth.FixedWidthEntityExporter;
 import org.junit.Test;
 
 /**
- * Tests the {@link FixedWidthEntityExporter}.<br/><br/>
+ * Tests the {@link FixedWidthEntityExporter}.<br><br>
  * Created: 14.11.2009 10:04:46
  * @since 0.6.0
  * @author Volker Bergmann

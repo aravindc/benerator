@@ -27,7 +27,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.script.Expression;
 
 /**
- * {@link CompositeStatement} that holds a condition expression.<br/><br/>
+ * {@link CompositeStatement} that holds a condition expression.<br><br>
  * Created: 19.02.2010 09:08:00
  * @since 0.6.0
  * @author Volker Bergmann

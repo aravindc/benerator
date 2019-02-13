@@ -33,7 +33,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link StreetNameGenerator}.<br/><br/>
+ * Tests the {@link StreetNameGenerator}.<br><br>
  * Created: 12.06.2007 06:46:33
  * @author Volker Bergmann
  */

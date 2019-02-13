@@ -35,7 +35,7 @@ import org.junit.Test;
 
 /**
  * Tests the {@link EvaluateParser} with respect to the features used 
- * in the &lt;execute&gt; element.<br/><br/>
+ * in the &lt;execute&gt; element.<br><br>
  * Created: 30.10.2009 08:11:56
  * @since 0.6.0
  * @author Volker Bergmann

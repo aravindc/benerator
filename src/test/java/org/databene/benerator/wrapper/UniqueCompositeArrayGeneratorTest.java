@@ -34,8 +34,8 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link UniqueMultiSourceArrayGenerator}.<br/>
- * <br/>
+ * Tests the {@link UniqueMultiSourceArrayGenerator}.<br>
+ * <br>
  * Created: 17.11.2007 13:39:04
  * @author Volker Bergmann
  */

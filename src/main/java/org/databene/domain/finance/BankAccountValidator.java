@@ -29,7 +29,7 @@ package org.databene.domain.finance;
 import org.databene.commons.Validator;
 
 /**
- * Validates a {@link BankAccount}.<br/><br/>
+ * Validates a {@link BankAccount}.<br><br>
  * Created at 12.07.2008 13:51:06
  * @since 0.5.4
  * @author Volker Bergmann

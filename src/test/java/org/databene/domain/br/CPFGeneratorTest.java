@@ -27,7 +27,7 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link CPFGenerator}.<br/><br/>
+ * Tests the {@link CPFGenerator}.<br><br>
  * Created: 17.10.2009 08:23:42
  * @since 0.6.0
  * @author Volker Bergmann

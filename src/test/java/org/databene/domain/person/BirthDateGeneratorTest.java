@@ -35,7 +35,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link BirthDateGenerator}.<br/><br/>
+ * Tests the {@link BirthDateGenerator}.<br><br>
  * Created: 09.06.2006 22:14:08
  * @since 0.1
  * @author Volker Bergmann

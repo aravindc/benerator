@@ -90,7 +90,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Maps Java annotations to descriptor objects.<br/><br/>
+ * Maps Java annotations to descriptor objects.<br><br>
  * Created: 29.04.2010 06:59:02
  * @since 0.6.1
  * @author Volker Bergmann

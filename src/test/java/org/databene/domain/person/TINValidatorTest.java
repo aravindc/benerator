@@ -30,8 +30,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link TINValidator}.<br/>
- * <br/>
+ * Tests the {@link TINValidator}.<br>
+ * <br>
  * Created at 27.08.2008 00:14:42
  * @since 0.5.5
  * @author Volker Bergmann

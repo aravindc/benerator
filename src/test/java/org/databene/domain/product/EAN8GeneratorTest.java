@@ -32,8 +32,8 @@ import org.databene.commons.validator.UniqueValidator;
 import org.junit.Test;
 
 /**
- * Tests the {@link EAN8Generator}.<br/>
- * <br/>
+ * Tests the {@link EAN8Generator}.<br>
+ * <br>
  * Created: 30.07.2007 21:47:30
  * @author Volker Bergmann
  */

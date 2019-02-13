@@ -31,7 +31,7 @@ import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.SimpleTypeDescriptor;
 
 /**
- * Provides descriptors for the simple types predefined in the XML Schema definition.<br/><br/>
+ * Provides descriptors for the simple types predefined in the XML Schema definition.<br><br>
  * Created: 08.03.2008 11:04:04
  * @since 0.5.0
  * @author Volker Bergmann

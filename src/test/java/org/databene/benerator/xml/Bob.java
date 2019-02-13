@@ -27,7 +27,7 @@
 package org.databene.benerator.xml;
 
 /**
- * Test bean with a name property of value 'Bob'.<br/><br/>
+ * Test bean with a name property of value 'Bob'.<br><br>
  * Created: 29.03.2008 09:11:26
  * @since 0.5.0
  * @author Volker Bergmann

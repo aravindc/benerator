@@ -24,7 +24,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 
 /**
- * Generator proxy which forwards a limited number of products from another generator.<br/><br/>
+ * Generator proxy which forwards a limited number of products from another generator.<br><br>
  * Created: 23.04.2010 17:59:14
  * @since 0.6.1
  * @author Volker Bergmann

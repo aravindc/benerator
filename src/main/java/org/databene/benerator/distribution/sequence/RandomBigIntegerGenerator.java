@@ -34,8 +34,8 @@ import org.databene.benerator.PropertyMessage;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Generates random {@link BigInteger} with a uniform distribution.<br/>
- * <br/>
+ * Generates random {@link BigInteger} with a uniform distribution.<br>
+ * <br>
  * Created at 23.06.2009 23:26:06
  * @since 0.6.0
  * @author Volker Bergmann

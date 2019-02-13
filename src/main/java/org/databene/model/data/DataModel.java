@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Merges and organizes entity definitions of different systems.<br/><br/>
+ * Merges and organizes entity definitions of different systems.<br><br>
  * Created: 25.08.2007 20:40:17
  * @since 0.3
  * @author Volker Bergmann

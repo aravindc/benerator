@@ -26,7 +26,7 @@ import org.databene.script.Expression;
 
 /**
  * Evaluates an {@link Expression} on each call to {@link ExpressionBasedGenerator#generate(ProductWrapper)} 
- * and returns its results.<br/><br/>
+ * and returns its results.<br><br>
  * Created: 27.03.2010 19:51:46
  * @since 0.6.0
  * @author Volker Bergmann

@@ -28,7 +28,7 @@ import org.databene.model.data.Entity;
 
 /**
  * Converts entities of arbitrary name to entities with a new name, 
- * keeping the attributes unchanged.<br/><br/>
+ * keeping the attributes unchanged.<br><br>
  * Created: 09.07.2010 09:00:55
  * @since 0.6.3
  * @author Volker Bergmann

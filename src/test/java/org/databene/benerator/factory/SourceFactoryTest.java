@@ -31,7 +31,7 @@ import org.databene.commons.Encodings;
 import org.junit.Test;
 
 /**
- * Tests the {@link SourceFactory}.<br/><br/>
+ * Tests the {@link SourceFactory}.<br><br>
  * Created: 06.08.2011 13:13:19
  * @since 0.7.0
  * @author Volker Bergmann

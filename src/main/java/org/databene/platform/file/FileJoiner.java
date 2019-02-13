@@ -45,8 +45,8 @@ import org.databene.task.TaskResult;
 /**
  * Joins several source files into a destination file. 
  * If the property 'append' is 'true' and the destination file already exists, 
- * it will append the source files' contents to the existing file.<br/>
- * <br/>
+ * it will append the source files' contents to the existing file.<br>
+ * <br>
  * Created at 16.09.2009 15:50:25
  * @since 0.6.0
  * @author Volker Bergmann

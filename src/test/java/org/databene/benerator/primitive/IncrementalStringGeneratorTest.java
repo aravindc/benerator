@@ -26,7 +26,7 @@ import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link IncrementalStringGenerator}.<br/><br/>
+ * Tests the {@link IncrementalStringGenerator}.<br><br>
  * Created: 02.08.2011 10:48:41
  * @since 0.7.0
  * @author Volker Bergmann

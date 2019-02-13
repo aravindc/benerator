@@ -23,7 +23,7 @@ package org.databene.benerator.template.xmlanon;
 
 /**
  * Denominates XML elements in an XML file and provides their mapping 
- * to Benerator entity and attribute names.<br/><br/>
+ * to Benerator entity and attribute names.<br><br>
  * Created: 27.02.2014 14:11:24
  * @since 0.9.0
  * @author Volker Bergmann

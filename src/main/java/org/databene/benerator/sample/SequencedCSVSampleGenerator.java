@@ -52,7 +52,7 @@ import java.util.ArrayList;
  *   Charly,fuv
  * </pre>
  *
- * <br/>
+ * <br>
  * Created: 26.07.2007 18:10:33
  * @see org.databene.benerator.sample.AttachedWeightSampleGenerator
  */

@@ -26,7 +26,7 @@ import org.databene.commons.Mutator;
 import org.databene.commons.UpdateFailedException;
 
 /**
- * {@link ComponentBuilder} implementation which builds array elements.<br/><br/>
+ * {@link ComponentBuilder} implementation which builds array elements.<br><br>
  * Created: 30.04.2010 09:57:50
  * @since 0.6.1
  * @author Volker Bergmann

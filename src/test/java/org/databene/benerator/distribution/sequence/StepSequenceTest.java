@@ -29,7 +29,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link StepSequence}.<br/><br/>
+ * Tests the {@link StepSequence}.<br><br>
  * Created: 20.07.2010 23:30:08
  * @since 0.6.3
  * @author Volker Bergmann

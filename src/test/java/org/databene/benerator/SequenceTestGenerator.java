@@ -30,7 +30,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ArrayFormat;
 
 /**
- * Helper class for testing.<br/><br/>
+ * Helper class for testing.<br><br>
  * Created: 16.12.2006 19:36:25
  * @since 0.1
  * @author Volker Bergmann

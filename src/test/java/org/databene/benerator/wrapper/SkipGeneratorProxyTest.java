@@ -35,7 +35,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SkipGeneratorProxy}.<br/><br/>
+ * Tests the {@link SkipGeneratorProxy}.<br><br>
  * Created: 11.10.2006 23:10:34
  * @since 0.1
  * @author Volker Bergmann

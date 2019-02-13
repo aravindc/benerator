@@ -27,7 +27,7 @@ import org.databene.commons.MessageHolder;
 import org.databene.commons.ThreadAware;
 
 /**
- * Common parent interface for components that are used in composite data generation.<br/><br/>
+ * Common parent interface for components that are used in composite data generation.<br><br>
  * Created: 07.08.2011 16:26:44
  * @since 0.7.0
  * @author Volker Bergmann

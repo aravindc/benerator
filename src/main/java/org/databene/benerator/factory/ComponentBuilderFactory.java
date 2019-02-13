@@ -74,7 +74,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Creates {@link ComponentBuilder}s.<br/><br/>
+ * Creates {@link ComponentBuilder}s.<br><br>
  * Created: 14.10.2007 22:16:34
  * @author Volker Bergmann
  */

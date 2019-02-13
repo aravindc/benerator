@@ -32,8 +32,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the HexUUIDGenerator.<br/>
- * <br/>
+ * Tests the HexUUIDGenerator.<br>
+ * <br>
  * Created: 15.11.2007 11:00:42
  * @author Volker Bergmann
  */

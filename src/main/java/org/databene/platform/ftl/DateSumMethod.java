@@ -37,8 +37,8 @@ import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 
 /**
- * FreeMarker method that sums Date, Time and millisecond values.<br/>
- * <br/>
+ * FreeMarker method that sums Date, Time and millisecond values.<br>
+ * <br>
  * Created at 14.10.2008 17:39:28
  * @since 0.5.6
  * @author Volker Bergmann

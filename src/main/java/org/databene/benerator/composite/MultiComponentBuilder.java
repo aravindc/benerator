@@ -35,7 +35,7 @@ import org.databene.commons.ArrayFormat;
 import org.databene.commons.CollectionUtil;
 
 /**
- * Abstract parent class for all builders that relate to a group of components.<br/><br/>
+ * Abstract parent class for all builders that relate to a group of components.<br><br>
  * Created at 09.05.2008 13:38:33
  * @since 0.5.4
  * @author Volker Bergmann

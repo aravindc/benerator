@@ -26,7 +26,7 @@ import org.databene.commons.Converter;
 import org.databene.commons.converter.ConverterManager;
 
 /**
- * Wraps another {@link Generator} and converts its products to {@link String}s.<br/><br/>
+ * Wraps another {@link Generator} and converts its products to {@link String}s.<br><br>
  * Created: 08.07.2011 11:27:54
  * @since 0.7.0
  * @author Volker Bergmann

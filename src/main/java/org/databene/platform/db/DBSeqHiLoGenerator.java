@@ -29,8 +29,8 @@ package org.databene.platform.db;
 import org.databene.benerator.primitive.HiLoGenerator;
 
 /**
- * Generates {@link Long} values with a HiLo strategy using a database sequence for the Hi values.<br/>
- * <br/>
+ * Generates {@link Long} values with a HiLo strategy using a database sequence for the Hi values.<br>
+ * <br>
  * Created at 06.07.2009 09:30:09
  * @since 0.6.0
  * @author Volker Bergmann

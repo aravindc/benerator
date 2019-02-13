@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Describes an array.<br/><br/>
+ * Describes an array.<br><br>
  * Created: 29.04.2010 07:32:52
  * @since 0.6.1
  * @author Volker Bergmann

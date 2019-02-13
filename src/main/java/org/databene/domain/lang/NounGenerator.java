@@ -32,8 +32,8 @@ import java.util.Locale;
 import org.databene.benerator.sample.NonNullSampleGenerator;
 
 /**
- * Generates {@link Noun}s of a given {@link Locale}.<br/>
- * <br/>
+ * Generates {@link Noun}s of a given {@link Locale}.<br>
+ * <br>
  * Created at 11.07.2009 19:29:22
  * @since 0.6.0
  * @author Volker Bergmann

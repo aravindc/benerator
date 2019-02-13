@@ -27,8 +27,8 @@
 package org.databene.benerator;
 
 /**
- * Delivers a message that refers to a property. This is intended to be used with the InvalidGeneratorSetupException.<br/>
- * <br/>
+ * Delivers a message that refers to a property. This is intended to be used with the InvalidGeneratorSetupException.<br>
+ * <br>
  * Created: 25.12.2006 10:46:04
  */
 public class PropertyMessage {

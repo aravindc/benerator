@@ -33,7 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the {@link AddingConsumer}.<br/><br/>
+ * Tests the {@link AddingConsumer}.<br><br>
  * Created: 04.04.2010 08:03:25
  * @since 0.6.0
  * @author Volker Bergmann

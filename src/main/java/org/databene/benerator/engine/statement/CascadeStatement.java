@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Cascades the 'transcode' operation to all entities configured to be related 
- * to the currently transcoded entity.<br/><br/>
+ * to the currently transcoded entity.<br><br>
  * Created: 18.04.2011 07:14:34
  * @since 0.6.6
  * @author Volker Bergmann

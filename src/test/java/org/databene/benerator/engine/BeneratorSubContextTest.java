@@ -27,7 +27,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.junit.Test;
 
 /**
- * Tests the {@link DefaultBeneratorSubContext}.<br/><br/>
+ * Tests the {@link DefaultBeneratorSubContext}.<br><br>
  * Created: 15.02.2012 05:35:10
  * @since 0.8.0
  * @author Volker Bergmann

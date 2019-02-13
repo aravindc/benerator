@@ -27,8 +27,8 @@
 package org.databene.platform;
 
 /**
- * Simple JavaBean for testing, it holds only a 'name' property.<br/>
- * <br/>
+ * Simple JavaBean for testing, it holds only a 'name' property.<br>
+ * <br>
  * Created: 04.08.2007 13:43:27
  * @author Volker Bergmann
  */

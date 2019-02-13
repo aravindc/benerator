@@ -35,8 +35,8 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
 /**
- * Utility class for parsing benerator descriptors in XML format.<br/>
- * <br/>
+ * Utility class for parsing benerator descriptors in XML format.<br>
+ * <br>
  * Created at 02.01.2009 17:27:31
  * @since 0.5.7
  * @author Volker Bergmann

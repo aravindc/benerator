@@ -37,8 +37,8 @@ import org.databene.commons.ThreadAware;
  * General usage is to call the executeStep() method once or several times for executing the task's work.
  * After usage, close() must be called. 
  * When implementing the Task interface, you should preferably inherit from 
- * {@link AbstractTask}, this may compensate for future interface changes.<br/>
- * <br/>
+ * {@link AbstractTask}, this may compensate for future interface changes.<br>
+ * <br>
  * Created: 06.07.2007 06:30:22
  * @since 0.2
  * @author Volker Bergmann

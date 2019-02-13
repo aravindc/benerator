@@ -34,7 +34,7 @@ import org.databene.script.PrimitiveType;
 
 /**
  * Describes an XML schema style type. 
- * Instances of this type may have one of the supported type alternatives.<br/><br/>
+ * Instances of this type may have one of the supported type alternatives.<br><br>
  * Created: 28.02.2008 22:29:37
  * @since 0.5.0
  * @author Volker Bergmann

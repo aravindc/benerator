@@ -28,7 +28,7 @@ import org.databene.commons.ConfigurationError;
 import org.junit.Test;
 
 /**
- * Tests the {@link WeightedNumbers} sequence.<br/><br/>
+ * Tests the {@link WeightedNumbers} sequence.<br><br>
  * Created: 02.06.2010 08:10:28
  * @since 0.6.3
  * @author Volker Bergmann

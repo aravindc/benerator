@@ -35,8 +35,8 @@ import org.databene.model.data.Entity;
 import org.databene.platform.AbstractEntityIteratorTest;
 
 /**
- * Tests the DBUnitXmlEntityImporter with a standard and a flat dataset file.<br/>
- * <br/>
+ * Tests the DBUnitXmlEntityImporter with a standard and a flat dataset file.<br>
+ * <br>
  * Created: 05.08.2007 08:05:10
  * @author Volker Bergmann
  */

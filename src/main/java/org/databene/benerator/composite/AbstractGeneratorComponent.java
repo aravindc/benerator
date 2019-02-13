@@ -29,7 +29,7 @@ import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * Abstract implementation of the GeneratorComponent interface which manages a source Generator
- * and a Context reference.<br/><br/>
+ * and a Context reference.<br><br>
  * Created: 31.08.2011 12:56:22
  * @since 0.7.0
  * @author Volker Bergmann

@@ -32,7 +32,7 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
- * Formats {@link Person} objects.<br/><br/>
+ * Formats {@link Person} objects.<br><br>
  * Created: 22.02.2010 12:41:37
  * @since 0.6.0
  * @author Volker Bergmann

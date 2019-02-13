@@ -29,8 +29,8 @@ package org.databene.benerator.primitive.datetime;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Generates Long values that represent the current time in milliseconds.<br/>
- * <br/>
+ * Generates Long values that represent the current time in milliseconds.<br>
+ * <br>
  * Created: 17.11.2007 13:14:55
  * @author Volker Bergmann
  */

@@ -34,8 +34,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Represents a state.<br/>
- * <br/>
+ * Represents a state.<br>
+ * <br>
  * Created: 27.07.2007 17:37:12
  * @since 0.3
  * @author Volker Bergmann

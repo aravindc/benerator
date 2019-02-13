@@ -33,8 +33,8 @@ import org.databene.benerator.Generator;
 import org.databene.commons.MathUtil;
 
 /**
- * Converts the {@link Number} products of another {@link Generator} to {@link BigDecimal}.<br/>
- * <br/>
+ * Converts the {@link Number} products of another {@link Generator} to {@link BigDecimal}.<br>
+ * <br>
  * Created at 23.06.2009 22:58:26
  * @since 0.6.0
  * @author Volker Bergmann

@@ -24,7 +24,7 @@ package org.databene.benerator.util;
 import org.databene.benerator.Generator;
 
 /**
- * Abstract parent class for {@link Generator}s that are neither thread-safe nor parallelizable.<br/><br/>
+ * Abstract parent class for {@link Generator}s that are neither thread-safe nor parallelizable.<br><br>
  * Created: 20.03.2010 10:30:34
  * @since 0.6.0
  * @author Volker Bergmann

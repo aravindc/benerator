@@ -33,7 +33,7 @@ import org.databene.script.expression.ExpressionUtil;
  * {@link Generator} implementation that generates {@link Long} numbers, 
  * redefining the underlying distribution on each <code>reset()</code> by
  * evaluating the <code>min</code>, <code>max</code>, <code>granularity</code>,
- * <code>distribution</code> and <code>unique</code> values.<br/><br/>
+ * <code>distribution</code> and <code>unique</code> values.<br><br>
  * Created: 27.03.2010 19:28:38
  * @since 0.6.0
  * @author Volker Bergmann

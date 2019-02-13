@@ -34,8 +34,8 @@ import org.databene.benerator.wrapper.CompositeStringGenerator;
 import org.junit.Test;
 
 /**
- * Tests the UniqueFixedCountCompositeStringGenerator.<br/>
- * <br/>
+ * Tests the UniqueFixedCountCompositeStringGenerator.<br>
+ * <br>
  * Created: 17.11.2007 17:45:41
  * @author Volker Bergmann
  */

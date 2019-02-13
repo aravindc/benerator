@@ -41,8 +41,8 @@ import org.databene.script.expression.BeanConstruction;
 import org.databene.task.Task;
 
 /**
- * {@link Task} implementation that instantiates a JavaBean.<br/>
- * <br/>
+ * {@link Task} implementation that instantiates a JavaBean.<br>
+ * <br>
  * Created at 24.07.2009 07:00:52
  * @since 0.6.0
  * @author Volker Bergmann

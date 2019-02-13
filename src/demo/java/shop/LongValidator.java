@@ -33,7 +33,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Validates a long value.<br/><br/>
+ * Validates a long value.<br><br>
  * Created: 26.03.2008 12:29:41
  * @author Volker Bergmann
  */

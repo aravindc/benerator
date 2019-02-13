@@ -24,7 +24,7 @@ package org.databene.platform.xls;
 import org.databene.benerator.DefaultPlatformDescriptor;
 
 /**
- * XLS platform descriptor.<br/><br/>
+ * XLS platform descriptor.<br><br>
  * Created: 24.01.2013 17:41:59
  * @since 0.8.0
  * @author Volker Bergmann

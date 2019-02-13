@@ -26,7 +26,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.formats.xml.ParseContext;
 
 /**
- * {@link ParseContext} implementation for Benerator. It defines parsers for all the descriptor XML elements.<br/><br/>
+ * {@link ParseContext} implementation for Benerator. It defines parsers for all the descriptor XML elements.<br><br>
  * Created: 14.12.2010 16:29:38
  * @since 0.6.4
  * @author Volker Bergmann

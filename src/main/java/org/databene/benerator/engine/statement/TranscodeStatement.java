@@ -52,7 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link Statement} that transcodes a database table.<br/><br/>
+ * {@link Statement} that transcodes a database table.<br><br>
  * Created: 08.09.2010 16:23:56
  * @since 0.6.4
  * @author Volker Bergmann

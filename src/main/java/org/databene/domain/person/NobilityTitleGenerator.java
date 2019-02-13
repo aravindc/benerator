@@ -35,7 +35,7 @@ import org.databene.commons.Encodings;
  * Titles are defined in the files 'org/databene/domain/person/nobTitle_*_*.csv'.
  * See the Wikipedia articles on <a href="http://en.wikipedia.org/wiki/Royal_and_noble_ranks">Royal 
  * and noble ranks</a> and <a href="http://en.wikipedia.org/wiki/Nobility">Nobility</a> for further 
- * information on the domain.<br/><br/>
+ * information on the domain.<br><br>
  * Created: 11.02.2010 12:04:01
  * @since 0.6.0
  * @author Volker Bergmann

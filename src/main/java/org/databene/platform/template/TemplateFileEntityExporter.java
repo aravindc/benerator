@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Exports generated data using template files, 
- * for example based on the FreeMarker Template Language.<br/><br/>
+ * for example based on the FreeMarker Template Language.<br><br>
  * Created: 27.06.2014 16:50:44
  * @since 0.9.7
  * @author Volker Bergmann

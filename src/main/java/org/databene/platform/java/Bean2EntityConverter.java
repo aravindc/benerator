@@ -34,8 +34,8 @@ import org.databene.commons.converter.ThreadSafeConverter;
 import java.beans.PropertyDescriptor;
 
 /**
- * Converts a Bean to an Entity.<br/>
- * <br/>
+ * Converts a Bean to an Entity.<br>
+ * <br>
  * Created: 29.08.2007 08:50:24
  * @author Volker Bergmann
  */

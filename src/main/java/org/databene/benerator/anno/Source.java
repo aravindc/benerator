@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 import org.databene.model.data.Format;
 
 /**
- * Specifies a data source and its characteristics for generating data for the annotated element.<br/><br/>
+ * Specifies a data source and its characteristics for generating data for the annotated element.<br><br>
  * Created: 02.05.2010 19:01:59
  * @since 0.6.1
  * @author Volker Bergmann

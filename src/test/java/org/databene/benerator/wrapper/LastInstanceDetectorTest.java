@@ -29,7 +29,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link LastProductDetector}.<br/><br/>
+ * Tests the {@link LastProductDetector}.<br><br>
  * Created: 12.09.2011 12:46:53
  * @since 0.7.0
  * @author Volker Bergmann

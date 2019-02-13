@@ -36,7 +36,7 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
 
 /**
- * Tests the LineShuffler.<br/><br/>
+ * Tests the LineShuffler.<br><br>
  * Created: 22.07.2007 08:16:23
  * @author Volker Bergmann
  */

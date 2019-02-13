@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 /**
  * Mimics a {@link java.lang.reflect.Method} but allows overwriting annotations. 
  * This can be used to support annotations of external libraries by replacing 
- * them with their Benerator equivalents.<br/><br/>
+ * them with their Benerator equivalents.<br><br>
  * Created: 05.04.2013 09:48:49
  * @since 0.8.2
  * @author Volker Bergmann

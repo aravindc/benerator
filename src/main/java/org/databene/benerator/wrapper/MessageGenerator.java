@@ -40,8 +40,8 @@ import java.text.MessageFormat;
 import java.util.List;
 
 /**
- * Assembles the output of several source generators by a java.text.MessageFormat.<br/>
- * <br/>
+ * Assembles the output of several source generators by a java.text.MessageFormat.<br>
+ * <br>
  * Created: 08.06.2006 21:48:08
  * @since 0.1
  * @author Volker Bergmann

@@ -37,7 +37,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the DateGenerator.<br/><br/>
+ * Tests the DateGenerator.<br><br>
  * Created: 15.03.2008 13:06:24
  * @since 0.5.0
  * @author Volker Bergmann

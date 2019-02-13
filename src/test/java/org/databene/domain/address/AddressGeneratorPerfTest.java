@@ -31,7 +31,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 /**
- * Tests the performance of the {@link AddressGenerator}.<br/><br/>
+ * Tests the performance of the {@link AddressGenerator}.<br><br>
  * Created: 17.04.2010 07:12:51
  * @since 0.6.0
  * @author Volker Bergmann

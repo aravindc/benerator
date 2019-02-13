@@ -49,8 +49,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link GenerateAndConsumeTask}.<br/>
- * <br/>
+ * Tests the {@link GenerateAndConsumeTask}.<br>
+ * <br>
  * Created at 25.07.2009 12:42:25
  * @since 0.6.0
  * @author Volker Bergmann

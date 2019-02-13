@@ -27,8 +27,8 @@
 package org.databene.task;
 
 /**
- * Listens to page invocations of a PagedTassk.<br/>
- * <br/>
+ * Listens to page invocations of a PagedTassk.<br>
+ * <br>
  * Created: 06.09.2007 08:48:27
  * @since 0.3
  * @author Volker Bergmann

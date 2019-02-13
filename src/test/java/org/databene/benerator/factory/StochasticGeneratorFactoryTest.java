@@ -50,7 +50,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link StochasticGeneratorFactory}.<br/><br/>
+ * Tests the {@link StochasticGeneratorFactory}.<br><br>
  * Created: 24.08.2006 07:03:03
  * @since 0.1
  * @author Volker Bergmann

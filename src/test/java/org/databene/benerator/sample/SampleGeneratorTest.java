@@ -34,7 +34,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SampleGenerator}.<br/>
+ * Tests the {@link SampleGenerator}.<br>
  * Created: 07.06.2006 21:59:02
  * @author Volker Bergmann
  */

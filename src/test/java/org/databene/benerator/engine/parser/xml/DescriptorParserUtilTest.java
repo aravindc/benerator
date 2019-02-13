@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * Tests the {@link DescriptorParserUtil}.<br/><br/>
+ * Tests the {@link DescriptorParserUtil}.<br><br>
  * Created: 11.04.2011 13:10:30
  * @since 0.6.6
  * @author Volker Bergmann

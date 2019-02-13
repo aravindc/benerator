@@ -51,8 +51,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Tests processing of the shop.xsd file.<br/>
- * <br/>
+ * Tests processing of the shop.xsd file.<br>
+ * <br>
  * Created: 28.02.2008 15:17:13
  * @author Volker Bergmann
  */

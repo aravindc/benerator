@@ -29,8 +29,8 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 
 /**
- * Double Generator that maps products from a generator of a different number type.<br/>
- * <br/> 
+ * Double Generator that maps products from a generator of a different number type.<br>
+ * <br> 
  * Created: 13.11.2007 12:43:10
  * @author Volker Bergmann
  */

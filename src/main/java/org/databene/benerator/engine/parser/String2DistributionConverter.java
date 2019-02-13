@@ -31,7 +31,7 @@ import org.databene.formats.script.ScriptUtil;
 
 /**
  * Parses a string and interprets it as a {@link Distribution} spec, 
- * supporting the predefined sequences, like 'random' and 'cumulated'.<br/><br/>
+ * supporting the predefined sequences, like 'random' and 'cumulated'.<br><br>
  * Created: 04.05.2010 06:43:01
  * @since 0.6.1
  * @author Volker Bergmann

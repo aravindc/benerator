@@ -47,8 +47,8 @@ import static junit.framework.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests the {@link CSVEntityExporter}.<br/>
- * <br/>
+ * Tests the {@link CSVEntityExporter}.<br>
+ * <br>
  * Created at 14.03.2009 06:10:37
  * @since 0.5.8
  * @author Volker Bergmann

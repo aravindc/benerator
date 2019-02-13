@@ -33,8 +33,8 @@ import org.databene.formats.script.ScriptException;
 import org.databene.script.Expression;
 
 /**
- * {@link Script} implementation for BeneratorScript.<br/>
- * <br/>
+ * {@link Script} implementation for BeneratorScript.<br>
+ * <br>
  * Created at 09.10.2009 06:48:01
  * @since 0.6.0
  * @author Volker Bergmann

@@ -31,8 +31,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SSNValidator}.<br/>
- * <br/>
+ * Tests the {@link SSNValidator}.<br>
+ * <br>
  * Created at 17.11.2008 07:32:50
  * @since 0.5.6
  * @author Volker Bergmann

@@ -29,7 +29,7 @@ package org.databene.model.data;
 import org.databene.script.PrimitiveType;
 
 /**
- * Provides benerator's built-in type descriptors.<br/><br/>
+ * Provides benerator's built-in type descriptors.<br><br>
  * Created: 05.03.2008 13:57:13
  * @since 0.5.0
  * @author Volker Bergmann

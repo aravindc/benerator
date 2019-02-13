@@ -44,7 +44,7 @@ import org.databene.task.Task;
 import org.w3c.dom.Element;
 
 /**
- * Parses a run-task descriptor.<br/><br/>
+ * Parses a run-task descriptor.<br><br>
  * Created: 25.10.2009 00:55:16
  * @since 0.6.0
  * @author Volker Bergmann

@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Arrays;
 
 /**
- * Indicates invalid setup of a Generator.<br/>
- * <br/>
+ * Indicates invalid setup of a Generator.<br>
+ * <br>
  * Created: 21.12.2006 08:04:49
  */
 public class InvalidGeneratorSetupException extends ConfigurationError {

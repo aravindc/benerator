@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
- * Abstract parent class for Descriptor parsers.<br/><br/>
+ * Abstract parent class for Descriptor parsers.<br><br>
  * Created: 25.10.2009 00:43:18
  * @since 0.6.0
  * @author Volker Bergmann

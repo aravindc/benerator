@@ -31,7 +31,7 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the BitReverseNaturalNumberGeneratorTest<br/><br/>
+ * Tests the BitReverseNaturalNumberGeneratorTest<br><br>
  * Created: 13.11.2007 13:10:39
  * @author Volker Bergmann
  */

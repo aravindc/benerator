@@ -32,7 +32,7 @@ import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * Tests the {@link MappingEntityConsumer}.<br/><br/>
+ * Tests the {@link MappingEntityConsumer}.<br><br>
  * Created: 22.02.2010 20:09:02
  * @since 0.6.0
  * @author Volker Bergmann

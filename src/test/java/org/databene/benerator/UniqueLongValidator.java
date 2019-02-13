@@ -26,7 +26,7 @@ import java.util.BitSet;
 import org.databene.commons.Validator;
 
 /**
- * Accepts only unique numbers.<br/><br/>
+ * Accepts only unique numbers.<br><br>
  * Created: 10.12.2009 15:58:21
  * @since 0.6.0
  * @author Volker Bergmann

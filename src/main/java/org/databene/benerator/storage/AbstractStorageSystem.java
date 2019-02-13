@@ -36,8 +36,8 @@ import org.databene.model.data.DataModel;
  * When writing a custom implementation of SystemStorage interface, 
  * inherit from this class for assuring future compatibility.
  * If the interface would change in future versions, the future 
- * version of this class will try to compensate.<br/>
- * <br/>
+ * version of this class will try to compensate.<br>
+ * <br>
  * Created: 27.01.2008 07:25:39
  * @since 0.4.0
  * @author Volker Bergmann

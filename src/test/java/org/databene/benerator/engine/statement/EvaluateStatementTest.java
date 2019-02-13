@@ -36,7 +36,7 @@ import static org.databene.script.expression.ExpressionUtil.*;
 import static org.junit.Assert.*;
 
 /**
- * Tests the {@link EvaluateStatement}.<br/><br/>
+ * Tests the {@link EvaluateStatement}.<br><br>
  * Created: 12.02.2010 13:18:42
  * @since 0.6.0
  * @author Volker Bergmann

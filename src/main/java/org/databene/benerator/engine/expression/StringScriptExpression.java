@@ -31,8 +31,8 @@ import org.databene.script.Expression;
 import org.databene.script.expression.StringExpression;
 
 /**
- * {@link Expression} that resolves a script as {@link String}.<br/>
- * <br/>
+ * {@link Expression} that resolves a script as {@link String}.<br>
+ * <br>
  * Created at 23.07.2009 09:14:30
  * @since 0.6.0
  * @author Volker Bergmann

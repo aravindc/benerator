@@ -35,7 +35,7 @@ import org.junit.Test;
 
 /**
  * Tests the correct interaction of XML parser, 
- * Benerator engine and {@link DateTimeGenerator}.<br/><br/>
+ * Benerator engine and {@link DateTimeGenerator}.<br><br>
  * Created: 04.05.2010 06:13:08
  * @since 0.6.1
  * @author Volker Bergmann

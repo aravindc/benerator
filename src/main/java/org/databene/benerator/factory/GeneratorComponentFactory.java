@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Factory for {@link GeneratorComponent}s.<br/><br/>
+ * Factory for {@link GeneratorComponent}s.<br><br>
  * Created: 08.08.2011 12:04:39
  * @since 0.7.0
  * @author Volker Bergmann

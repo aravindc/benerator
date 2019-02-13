@@ -29,7 +29,7 @@ import javax.management.ObjectName;
 import org.databene.jdbacl.DBUtil;
 
 /**
- * MBean implementation for monitoring Benerator.<br/><br/>
+ * MBean implementation for monitoring Benerator.<br><br>
  * Created: 27.07.2010 21:15:28
  * @since 0.6.3
  * @author Volker Bergmann

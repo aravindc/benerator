@@ -30,8 +30,8 @@ import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Generator implementation that always returns the same value.<br/>
- * <br/>
+ * Generator implementation that always returns the same value.<br>
+ * <br>
  * Created: 08.06.2006 20:26:22
  * @since 0.1
  * @author Volker Bergmann

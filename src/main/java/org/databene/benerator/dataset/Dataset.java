@@ -34,7 +34,7 @@ import java.util.Set;
 import org.databene.commons.Named;
 
 /**
- * Defines a data set that may be nested.<br/><br/>
+ * Defines a data set that may be nested.<br><br>
  * Created: 21.03.2008 12:31:13
  * @since 0.5.0
  * @author Volker Bergmann

@@ -30,8 +30,8 @@ import org.databene.benerator.Generator;
 
 /**
  * {@link Generator} implementation that wraps several String generators 
- * and concatenates their results to a composite {@link String}.<br/>
- * <br/>
+ * and concatenates their results to a composite {@link String}.<br>
+ * <br>
  * Created at 21.09.2009 18:54:32
  * @since 0.6.0
  * @author Volker Bergmann

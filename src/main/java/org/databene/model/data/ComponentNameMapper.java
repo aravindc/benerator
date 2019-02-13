@@ -28,7 +28,7 @@ import org.databene.commons.ConversionException;
 import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
- * Converts the names of Entity components.<br/><br/>
+ * Converts the names of Entity components.<br><br>
  * Created: 22.02.2010 19:42:49
  * @since 0.6.0
  * @author Volker Bergmann

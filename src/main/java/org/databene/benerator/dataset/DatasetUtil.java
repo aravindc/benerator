@@ -42,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Creates and manages {@link Dataset}s.<br/><br/>
+ * Creates and manages {@link Dataset}s.<br><br>
  * Created: 21.03.2008 13:46:54
  * @since 0.5.0
  * @author Volker Bergmann

@@ -28,7 +28,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
 /**
- * {@link Consumer} implementation that inserts entities into database tables.<br/><br/>
+ * {@link Consumer} implementation that inserts entities into database tables.<br><br>
  * Created: 02.08.2010 19:38:56
  * @since 0.6.3
  * @author Volker Bergmann

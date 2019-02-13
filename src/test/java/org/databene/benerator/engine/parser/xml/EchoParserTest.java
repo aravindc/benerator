@@ -28,7 +28,7 @@ import org.databene.benerator.test.BeneratorIntegrationTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link EchoParser}.<br/><br/>
+ * Tests the {@link EchoParser}.<br><br>
  * Created: 11.02.2010 15:16:48
  * @since 0.6.0
  * @author Volker Bergmann

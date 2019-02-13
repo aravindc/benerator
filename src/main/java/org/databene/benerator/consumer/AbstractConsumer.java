@@ -35,7 +35,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * Custom implementations should rather inherit from this class 
  * than implement the Consumer interface directly.
  * This increases the chance to keep custom consumers compatible 
- * with future versions.<br/><br/>
+ * with future versions.<br><br>
  * Created: 25.01.2008 22:37:42
  * @since 0.4.0
  * @author Volker Bergmann

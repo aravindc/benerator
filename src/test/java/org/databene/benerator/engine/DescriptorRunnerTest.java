@@ -40,8 +40,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link DescriptorRunner}.<br/>
- * <br/>
+ * Tests the {@link DescriptorRunner}.<br>
+ * <br>
  * Created at 13.03.2009 07:16:55
  * @since 0.5.8
  * @author Volker Bergmann

@@ -47,8 +47,8 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
 /**
- * Iterates an Excel sheet and maps its rows to {@link Entity} instances.<br/>
- * <br/>
+ * Iterates an Excel sheet and maps its rows to {@link Entity} instances.<br>
+ * <br>
  * Created at 27.01.2009 21:38:31
  * @since 0.5.8
  * @author Volker Bergmann

@@ -27,7 +27,7 @@ import org.databene.commons.ErrorHandler;
 
 /**
  * {@link TaskProxy} implementation that add thread-safety to an unsafe 
- * {@link Task} by synchronizing the method {@link Task#execute(Context, ErrorHandler)}.<br/><br/>
+ * {@link Task} by synchronizing the method {@link Task#execute(Context, ErrorHandler)}.<br><br>
  * Created: 27.03.2010 16:39:02
  * @since 0.6.0
  * @author Volker Bergmann

@@ -31,8 +31,8 @@ import org.databene.commons.Assert;
  * Proxy for generators that are used by several clients. It forwards all calls to 
  * the real generator except calls to {@link #reset()} and {@link #close()} to assure
  * that clients do not interfere with each other. This class may only be applied to 
- * {@link Generator}s of which behaviour does not change in case of a reset.<br/>
- * <br/>
+ * {@link Generator}s of which behaviour does not change in case of a reset.<br>
+ * <br>
  * Created: 20.01.2012 16:28:14
  * @since 0.7.6
  * @author Volker Bergmann

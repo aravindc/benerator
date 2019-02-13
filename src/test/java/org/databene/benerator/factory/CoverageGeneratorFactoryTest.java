@@ -37,7 +37,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Test the {@link CoverageGeneratorFactory}.<br/><br/>
+ * Test the {@link CoverageGeneratorFactory}.<br><br>
  * Created: 21.08.2011 06:00:54
  * @since 0.7.0
  * @author Volker Bergmann

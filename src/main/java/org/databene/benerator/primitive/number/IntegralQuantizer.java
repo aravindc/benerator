@@ -27,7 +27,7 @@ import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
  * Quantizes integer numbers ({@link Byte}, {@link Short}, {@link Integer}, {@link Long})
- * to be <code>min</code> plus an integral multiple of <code>granularity</code>.<br/><br/>
+ * to be <code>min</code> plus an integral multiple of <code>granularity</code>.<br><br>
  * Created: 15.03.2010 15:27:08
  * @since 0.6.0
  * @author Volker Bergmann

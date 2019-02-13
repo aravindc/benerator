@@ -30,7 +30,7 @@ import org.databene.formats.util.DataIteratorProxy;
 import org.databene.script.Expression;
 
 /**
- * {@link Iterator} proxy which filters its source's output with a (boolean) filter expression.<br/><br/>
+ * {@link Iterator} proxy which filters its source's output with a (boolean) filter expression.<br><br>
  * Created: 08.03.2011 11:51:51
  * @since 0.5.8
  * @author Volker Bergmann

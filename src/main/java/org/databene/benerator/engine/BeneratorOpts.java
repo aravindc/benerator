@@ -24,7 +24,7 @@ package org.databene.benerator.engine;
 import org.databene.commons.StringUtil;
 
 /**
- * Provides support for Benerator's system property settings.<br/><br/>
+ * Provides support for Benerator's system property settings.<br><br>
  * Created: 30.07.2010 18:25:01
  * @since 0.6.3
  * @author Volker Bergmann

@@ -39,8 +39,8 @@ import org.databene.commons.Encodings;
 import org.databene.domain.address.Country;
 
 /**
- * Generates family names.<br/>
- * <br/>
+ * Generates family names.<br>
+ * <br>
  * Created: 09.06.2006 22:03:56
  * @since 0.1
  * @author Volker Bergmann

@@ -33,7 +33,7 @@ import org.databene.formats.csv.CSVLineIterator;
 import org.databene.script.WeightedSample;
 
 /**
- * Provides CSV-related utility methods.<br/><br/>
+ * Provides CSV-related utility methods.<br><br>
  * Created: 17.02.2010 23:20:35
  * @since 0.6.0
  * @author Volker Bergmann

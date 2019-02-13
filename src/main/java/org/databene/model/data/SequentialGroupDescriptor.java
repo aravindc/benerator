@@ -27,7 +27,7 @@
 package org.databene.model.data;
 
 /**
- * Describes a sequential group of components.<br/><br/>
+ * Describes a sequential group of components.<br><br>
  * Created at 08.05.2008 19:19:26
  * @since 0.5.4
  * @author Volker Bergmann

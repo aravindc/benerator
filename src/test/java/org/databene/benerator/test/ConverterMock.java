@@ -31,8 +31,8 @@ import org.databene.commons.Converter;
 import org.databene.commons.converter.UnsafeConverter;
 
 /**
- * Mock implementation of the {@link Converter} interface.<br/>
- * <br/>
+ * Mock implementation of the {@link Converter} interface.<br>
+ * <br>
  * Created at 29.12.2008 07:24:19
  * @since 0.5.7
  * @author Volker Bergmann

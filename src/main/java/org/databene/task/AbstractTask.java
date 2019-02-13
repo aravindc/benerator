@@ -27,8 +27,8 @@
 package org.databene.task;
 
 /**
- * Simple abstract implementation of the Task interface.<br/>
- * <br/>
+ * Simple abstract implementation of the Task interface.<br>
+ * <br>
  * Created: 16.07.2007 18:55:16
  * @since 0.2
  * @author Volker Bergmann

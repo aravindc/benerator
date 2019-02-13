@@ -12,8 +12,8 @@ import org.databene.model.data.Uniqueness;
 /**
  * Demonstrates definition and use of the custom Sequence 'odd'
  * by an example that generates a sequence of odd numbers:
- * 3, 5, 7, ...<br/>
- * <br/>
+ * 3, 5, 7, ...<br>
+ * <br>
  * Created: 13.09.2006 20:27:54
  * @author Volker Bergmann
  */

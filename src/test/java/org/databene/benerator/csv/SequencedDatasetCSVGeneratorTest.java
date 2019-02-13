@@ -30,7 +30,7 @@ import org.junit.Test;
 
 
 /**
- * Tests the {@link SequencedDatasetCSVGenerator}.<br/><br/>
+ * Tests the {@link SequencedDatasetCSVGenerator}.<br><br>
  * Created: 18.02.2010 00:09:59
  * @since 0.6.0
  * @author Volker Bergmann

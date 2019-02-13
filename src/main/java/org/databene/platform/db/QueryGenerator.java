@@ -34,8 +34,8 @@ import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.StringUtil;
 
 /**
- * Generates values based on a database query.<br/>
- * <br/>
+ * Generates values based on a database query.<br>
+ * <br>
  * Created at 06.07.2009 08:02:21
  * @since 0.6.0
  * @author Volker Bergmann

@@ -30,8 +30,8 @@ import org.databene.commons.validator.SimpleValidatorTest;
 import org.junit.Test;
 
 /**
- * Tests the validation of EAN codes with the {@link EANValidator}.<br/>
- * <br/>
+ * Tests the validation of EAN codes with the {@link EANValidator}.<br>
+ * <br>
  * Created: 29.07.2007 08:04:09
  * @author Volker Bergmann
  */

@@ -35,7 +35,7 @@ import org.databene.model.data.Uniqueness;
 import org.junit.Test;
 
 /**
- * Tests the id builder creation of the {@link ComponentBuilderFactory}.<br/><br/>
+ * Tests the id builder creation of the {@link ComponentBuilderFactory}.<br><br>
  * Created: 06.07.2011 15:46:50
  * @since 0.7.0
  * @author Volker Bergmann

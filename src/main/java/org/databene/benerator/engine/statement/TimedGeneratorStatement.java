@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * {Task} implementation that acts as a proxy to another tasks, forwards calls to it, 
- * measures execution times and logs them.<br/><br/>
+ * measures execution times and logs them.<br><br>
  * Created at 23.07.2009 06:55:46
  * @since 0.6.0
  * @author Volker Bergmann

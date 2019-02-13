@@ -29,7 +29,7 @@ import org.databene.benerator.engine.statement.WhileStatement;
 import org.w3c.dom.Element;
 
 /**
- * Parses a &lt;beep/&gt; descriptor.<br/><br/>
+ * Parses a &lt;beep/&gt; descriptor.<br><br>
  * Created: 14.09.2010 14:35:23
  * @since 0.6.4
  * @author Volker Bergmann

@@ -37,7 +37,7 @@ import org.databene.model.data.Entity;
 
 /**
  * Reads the nested form of a DbUnit XML dataset file and provides its content as Entities 
- * through the {@link DataIterator} interface.<br/><br/>
+ * through the {@link DataIterator} interface.<br><br>
  * Created: 20.09.2011 07:55:49
  * @since 0.7.2
  * @author Volker Bergmann

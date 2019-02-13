@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tokenizes XPath expressions.<br/><br/>
+ * Tokenizes XPath expressions.<br><br>
  * Created: 27.02.2014 15:01:24
  * @since 0.9.0
  * @author Volker Bergmann

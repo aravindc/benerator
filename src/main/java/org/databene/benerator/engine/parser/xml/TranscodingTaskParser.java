@@ -37,7 +37,7 @@ import org.databene.platform.db.DBSystem;
 import org.w3c.dom.Element;
 
 /**
- * Parses Benerator's &lt;transcode&gt; XML descriptor element.<br/><br/>
+ * Parses Benerator's &lt;transcode&gt; XML descriptor element.<br><br>
  * Created: 10.09.2010 18:14:53
  * @since 0.6.4
  * @author Volker Bergmann

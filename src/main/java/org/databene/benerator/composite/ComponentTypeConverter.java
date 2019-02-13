@@ -43,7 +43,7 @@ import org.databene.model.data.TypeDescriptor;
 /**
  * Converts an Entity's components to the type specified by the EntityDescriptor.
  * This is used for e.g. importing Entities from file with String component values and 
- * converting them to the correct target type.<br/><br/>
+ * converting them to the correct target type.<br><br>
  * Created at 06.05.2008 11:34:46
  * @since 0.5.3
  * @author Volker Bergmann

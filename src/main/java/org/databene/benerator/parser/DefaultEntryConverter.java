@@ -39,7 +39,7 @@ import org.databene.commons.mutator.AnyMutator;
 
 /**
  * Converts Map entries by first applying a preprocessor to the value, 
- * then (if possible) converting the result to a number or boolean.<br/><br/>
+ * then (if possible) converting the result to a number or boolean.<br><br>
  * Created: 01.02.2008 14:40:43
  * @since 0.4.0
  * @author Volker Bergmann

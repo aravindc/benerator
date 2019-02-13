@@ -31,8 +31,8 @@ import java.util.Random;
 import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
- * Generates boolean values with a configurable quota of true values.<br/>
- * <br/>
+ * Generates boolean values with a configurable quota of true values.<br>
+ * <br>
  * Created: 09.06.2006 20:03:18
  */
 public class BooleanGenerator extends ThreadSafeNonNullGenerator<Boolean> {

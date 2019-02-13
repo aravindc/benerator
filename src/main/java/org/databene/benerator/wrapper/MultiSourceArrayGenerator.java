@@ -26,7 +26,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.commons.ArrayUtil;
 
 /**
- * Keeps an array of generators, of which it combines the products to an array.<br/><br/>
+ * Keeps an array of generators, of which it combines the products to an array.<br><br>
  * Created: 28.07.2010 19:10:53
  * @since 0.1
  * @author Volker Bergmann

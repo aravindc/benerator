@@ -22,7 +22,7 @@
 package org.databene.model.data;
 
 /**
- * Provides enumerations for different uniqueness requirements.<br/><br/>
+ * Provides enumerations for different uniqueness requirements.<br><br>
  * Created: 17.02.2010 08:59:03
  * @since 0.6.0
  * @author Volker Bergmann

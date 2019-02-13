@@ -29,7 +29,7 @@ import org.databene.commons.Level;
 import org.databene.script.Expression;
 
 /**
- * Abstract implementation of the Statement interface.<br/><br/>
+ * Abstract implementation of the Statement interface.<br><br>
  * Created: 27.10.2009 20:16:20
  * @since 0.5.0
  * @author Volker Bergmann

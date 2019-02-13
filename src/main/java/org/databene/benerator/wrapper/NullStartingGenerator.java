@@ -27,7 +27,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 
 /**
  * {@link Generator} implementation which wraps a source {@link Generator}
- * but generates a null value before forwarding the products of the source.<br/><br/>
+ * but generates a null value before forwarding the products of the source.<br><br>
  * Created: 04.07.2011 13:18:03
  * @since 0.7.0
  * @author Volker Bergmann

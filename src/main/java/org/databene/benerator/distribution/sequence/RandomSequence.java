@@ -40,8 +40,8 @@ import org.databene.commons.NumberUtil;
 import static org.databene.commons.NumberUtil.*;
 
 /**
- * {@link Sequence} implementation that creates generators with a random uniform distribution.<br/>
- * <br/>
+ * {@link Sequence} implementation that creates generators with a random uniform distribution.<br>
+ * <br>
  * Created at 27.07.2009 06:31:25
  * @since 0.6.0
  * @author Volker Bergmann

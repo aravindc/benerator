@@ -87,8 +87,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Lets the user enter benerator project data and 
- * calls the ArchetypeBuilder for creating a new benerator project.<br/>
- * <br/>
+ * calls the ArchetypeBuilder for creating a new benerator project.<br>
+ * <br>
  * Created at 17.07.2008 08:00:00
  * @since 0.5.6
  * @author Volker Bergmann

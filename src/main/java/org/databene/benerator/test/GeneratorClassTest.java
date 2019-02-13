@@ -34,8 +34,8 @@ import junit.framework.AssertionFailedError;
 import org.junit.Test;
 
 /**
- * Provides methods for testing generators and standard tests that act on generically created generator instances.<br/>
- * <br/>
+ * Provides methods for testing generators and standard tests that act on generically created generator instances.<br>
+ * <br>
  * Created: 13.11.2007 13:13:07
  * @author Volker Bergmann
  */

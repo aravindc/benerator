@@ -49,7 +49,7 @@ import org.databene.script.expression.DynamicExpression;
 import org.w3c.dom.Element;
 
 /**
- * Parses a {@link Consumer} specification in an XML element in a descriptor file.<br/><br/>
+ * Parses a {@link Consumer} specification in an XML element in a descriptor file.<br><br>
  * Created at 24.07.2009 07:21:16
  * @since 0.6.0
  * @author Volker Bergmann

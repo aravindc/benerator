@@ -32,8 +32,8 @@ import org.databene.commons.Converter;
 import org.databene.commons.converter.ConverterManager;
 
 /**
- * Generates {@link Long} values based on a database query.<br/>
- * <br/>
+ * Generates {@link Long} values based on a database query.<br>
+ * <br>
  * Created at 06.07.2009 07:58:45
  * @since 0.6.0
  * @author Volker Bergmann

@@ -48,7 +48,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the {@link AnnotationMapper}.<br/><br/>
+ * Tests the {@link AnnotationMapper}.<br><br>
  * Created: 30.04.2010 13:57:59
  * @since 0.6.1
  * @author Volker Bergmann

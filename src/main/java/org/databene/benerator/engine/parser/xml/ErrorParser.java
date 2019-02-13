@@ -32,7 +32,7 @@ import org.databene.script.expression.StringExpression;
 import org.w3c.dom.Element;
 
 /**
- * Parses Benerator's &lt;error&gt; descriptor XML element and maps it to an {@link ErrorStatement}.<br/><br/>
+ * Parses Benerator's &lt;error&gt; descriptor XML element and maps it to an {@link ErrorStatement}.<br><br>
  * Created: 12.01.2011 09:03:58
  * @since 0.6.4
  * @author Volker Bergmann

@@ -27,7 +27,7 @@ import org.databene.commons.validator.SimpleValidatorTest;
 import org.junit.Test;
 
 /**
- * Tests the CPNJValidator.<br/><br/>
+ * Tests the CPNJValidator.<br><br>
  * Created: 17.10.2009 08:24:46
  * @since 0.6.0
  * @author Volker Bergmann

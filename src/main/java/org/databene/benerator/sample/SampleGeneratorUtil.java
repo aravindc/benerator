@@ -27,7 +27,7 @@ import java.util.List;
 import org.databene.script.WeightedSample;
 
 /**
- * Provides utility methods for sample-based generators.<br/><br/>
+ * Provides utility methods for sample-based generators.<br><br>
  * Created: 17.02.2010 23:57:20
  * @since 0.6.0
  * @author Volker Bergmann

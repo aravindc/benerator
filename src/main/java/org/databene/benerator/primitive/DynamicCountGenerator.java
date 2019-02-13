@@ -28,7 +28,7 @@ import org.databene.script.Expression;
 
 /**
  * Behaves similar to the {@link DynamicLongGenerator}, 
- * but generates <code>maxFallback</code> values, if <code>max</code> is set to <code>null</code>.<br/><br/>
+ * but generates <code>maxFallback</code> values, if <code>max</code> is set to <code>null</code>.<br><br>
  * Created: 28.03.2010 08:48:11
  * @since 0.6.0
  * @author Volker Bergmann

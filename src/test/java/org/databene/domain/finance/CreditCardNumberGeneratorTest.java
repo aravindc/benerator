@@ -32,7 +32,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link CreditCardNumberGenerator}.<br/><br/>
+ * Tests the {@link CreditCardNumberGenerator}.<br><br>
  * Created at 09.04.2008 13:03:46
  * @since 0.5.1
  * @author Volker Bergmann

@@ -37,7 +37,7 @@ import org.databene.script.Expression;
 import org.w3c.dom.Element;
 
 /**
- * Parses a 'while' element.<br/><br/>
+ * Parses a 'while' element.<br><br>
  * Created: 19.02.2010 09:18:47
  * @since 0.6.0
  * @author Volker Bergmann

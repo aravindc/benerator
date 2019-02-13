@@ -27,7 +27,7 @@ import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
  * Quantizes floating point numbers ({@link Double} or {@link Float}) 
- * to be <code>min</code> plus an integral multiple of <code>granularity</code>.<br/><br/>
+ * to be <code>min</code> plus an integral multiple of <code>granularity</code>.<br><br>
  * Created: 15.03.2010 15:35:05
  * @since 0.6.0
  * @author Volker Bergmann

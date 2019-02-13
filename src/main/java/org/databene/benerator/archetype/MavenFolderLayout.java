@@ -22,7 +22,7 @@
 package org.databene.benerator.archetype;
 
 /**
- * Maven version of the {@link FolderLayout}.<br/><br/>
+ * Maven version of the {@link FolderLayout}.<br><br>
  * Created: 04.04.2010 11:41:08
  * @since 0.6.0
  * @author Volker Bergmann

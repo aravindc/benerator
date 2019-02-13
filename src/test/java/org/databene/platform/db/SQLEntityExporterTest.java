@@ -36,7 +36,7 @@ import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * Tests the {@link SQLEntityExporter}.<br/><br/>
+ * Tests the {@link SQLEntityExporter}.<br><br>
  * Created: 18.02.2010 15:24:05
  * @since 0.6.0
  * @author Volker Bergmann

@@ -31,7 +31,7 @@ import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
  * Internal generator which reads all products of a source generator and provides them with an index-based strategy. 
- * Reevaluates source on reset.<br/><br/>
+ * Reevaluates source on reset.<br><br>
  * Created: 21.07.2010 01:57:31
  * @since 0.6.3
  * @author Volker Bergmann

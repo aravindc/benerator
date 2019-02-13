@@ -32,7 +32,7 @@ import org.databene.benerator.util.LuhnUtil;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Validates credit card numbers.<br/><br/>
+ * Validates credit card numbers.<br><br>
  * Created at 09.04.2008 12:25:18
  * @since 0.5.1
  * @author Volker Bergmann

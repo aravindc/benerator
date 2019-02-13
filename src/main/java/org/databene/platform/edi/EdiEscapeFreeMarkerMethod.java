@@ -26,7 +26,7 @@ import java.util.List;
 import freemarker.template.TemplateMethodModel;
 
 /**
- * Provides Edifact character escaping in FreeMarker templates.<br/><br/>
+ * Provides Edifact character escaping in FreeMarker templates.<br><br>
  * Created: 30.06.2014 11:14:26
  * @since 0.9.7
  * @author Volker Bergmann

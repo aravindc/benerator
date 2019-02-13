@@ -33,8 +33,8 @@ import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 /**
  * Long Generator that implements a 'cumulated' Long Sequence.
  * Uniqueness cannot be supported since it contradicts the 
- * purpose of this generator.<br/>
- * <br/>
+ * purpose of this generator.<br>
+ * <br>
  * Created: 07.06.2006 19:33:37
  * @since 0.1
  * @author Volker Bergmann

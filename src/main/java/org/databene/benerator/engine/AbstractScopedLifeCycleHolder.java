@@ -23,8 +23,8 @@ package org.databene.benerator.engine;
 
 /**
  * Parent class for all generation components that can connect to the life cycle of a different component 
- * (thus defining a 'scope').<br/>
- * <br/>
+ * (thus defining a 'scope').<br>
+ * <br>
  * Created: 03.04.2012 19:28:48
  * @since 0.7.6
  * @author Volker Bergmann

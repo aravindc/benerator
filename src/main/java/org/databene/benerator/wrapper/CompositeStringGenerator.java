@@ -29,8 +29,8 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 
 /**
- * Uses n String generators and appends the output of each one in each generate() call.<br/>
- * <br/>
+ * Uses n String generators and appends the output of each one in each generate() call.<br>
+ * <br>
  * Created: 17.11.2007 17:33:21
  * @author Volker Bergmann
  */

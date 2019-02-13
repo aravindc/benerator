@@ -34,7 +34,7 @@ import org.databene.stat.LatencyCounter;
 import org.junit.Test;
 
 /**
- * Integration test of the {@link PerfTrackingConsumer}.<br/><br/>
+ * Integration test of the {@link PerfTrackingConsumer}.<br><br>
  * Created: 14.03.2010 12:17:07
  * @since 0.6.0
  * @author Volker Bergmann

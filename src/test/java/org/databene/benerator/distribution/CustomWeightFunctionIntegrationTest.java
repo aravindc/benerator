@@ -31,7 +31,7 @@ import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * Tests the definition of custom weight functions.<br/><br/>
+ * Tests the definition of custom weight functions.<br><br>
  * Created: 09.07.2010 07:23:54
  * @since 0.6.3
  * @author Volker Bergmann

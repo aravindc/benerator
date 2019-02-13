@@ -31,8 +31,8 @@ import java.util.Collection;
 import org.databene.commons.CollectionUtil;
 
 /**
- * Collects element and attribute names used in Benerator's XML descriptor files.<br/>
- * <br/>
+ * Collects element and attribute names used in Benerator's XML descriptor files.<br>
+ * <br>
  * Created at 24.07.2009 07:39:19
  * @since 0.6.0
  * @author Volker Bergmann

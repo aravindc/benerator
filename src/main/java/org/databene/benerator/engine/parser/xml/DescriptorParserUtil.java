@@ -36,7 +36,7 @@ import org.databene.formats.text.SplitStringConverter;
 import org.w3c.dom.Element;
 
 /**
- * Provides utility methods for XML descriptor parsing.<br/><br/>
+ * Provides utility methods for XML descriptor parsing.<br><br>
  * Created: 19.02.2010 09:32:33
  * @since 0.6.0
  * @author Volker Bergmann

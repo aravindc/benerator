@@ -55,7 +55,7 @@ import org.databene.task.Task;
 import org.databene.task.TaskResult;
 
 /**
- * Task that creates one data set instance per run() invocation and sends it to the specified consumer.<br/><br/>
+ * Task that creates one data set instance per run() invocation and sends it to the specified consumer.<br><br>
  * Created: 01.02.2008 14:39:11
  * @author Volker Bergmann
  */

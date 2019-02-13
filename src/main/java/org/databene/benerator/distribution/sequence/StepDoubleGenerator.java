@@ -30,8 +30,8 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
- * Double Generator that implements a 'step' Double Sequence.<br/>
- * <br/>
+ * Double Generator that implements a 'step' Double Sequence.<br>
+ * <br>
  * Created: 26.07.2007 18:36:45
  * @author Volker Bergmann
  */

@@ -32,8 +32,8 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 
 /**
- * A generator proxy that forwards the output of another generator with a random number of repetitions.<br/>
- * <br/>
+ * A generator proxy that forwards the output of another generator with a random number of repetitions.<br>
+ * <br>
  * Created: 18.08.2007 17:08:10
  * @author Volker Bergmann
  */

@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Default implementation of the DescriptorProvider interface.<br/><br/>
+ * Default implementation of the DescriptorProvider interface.<br><br>
  * @since 0.5.0
  * @author Volker Bergmann
  */

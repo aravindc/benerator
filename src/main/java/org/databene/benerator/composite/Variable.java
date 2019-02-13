@@ -26,7 +26,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Wraps variable name and generator functionality.<br/><br/>
+ * Wraps variable name and generator functionality.<br><br>
  * Created: 07.08.2011 16:24:10
  * @since 0.7.0
  * @author Volker Bergmann

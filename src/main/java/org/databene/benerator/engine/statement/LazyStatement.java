@@ -27,8 +27,8 @@ import org.databene.script.Expression;
 
 /**
  * {@link Statement} implementation that evaluates an {@link Expression} 
- * which returns a Task and executes the returned Task.<br/>
- * <br/>
+ * which returns a Task and executes the returned Task.<br>
+ * <br>
  * Created: 27.10.2009 16:09:20
  * @since 0.6.0
  * @author Volker Bergmann

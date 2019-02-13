@@ -32,8 +32,8 @@ import java.io.IOException;
 import org.databene.commons.IOUtil;
 
 /**
- * Parent class for file-related tests.<br/>
- * <br/>
+ * Parent class for file-related tests.<br>
+ * <br>
  * Created at 17.09.2009 10:25:10
  * @since 0.6.0
  * @author Volker Bergmann

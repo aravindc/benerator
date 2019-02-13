@@ -28,7 +28,7 @@ import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link TextFileContentGenerator}.<br/><br/>
+ * Tests the {@link TextFileContentGenerator}.<br><br>
  * Created: 24.02.2010 10:22:20
  * @since 0.6.0
  * @author Volker Bergmann

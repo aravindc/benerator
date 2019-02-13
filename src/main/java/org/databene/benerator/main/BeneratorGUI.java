@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Small Swing application for editing and running Benerator descriptors.<br/><br/>
+ * Small Swing application for editing and running Benerator descriptors.<br><br>
  * Created: 31.05.2010 08:05:35
  * @since 0.6.3
  * @author Volker Bergmann

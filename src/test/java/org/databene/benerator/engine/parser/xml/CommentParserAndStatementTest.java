@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * Tests the {@link CommentParser} and the {@link CommentStatement}.<br/><br/>
+ * Tests the {@link CommentParser} and the {@link CommentStatement}.<br><br>
  * Created: 19.02.2010 12:54:43
  * @since 0.6.0
  * @author Volker Bergmann

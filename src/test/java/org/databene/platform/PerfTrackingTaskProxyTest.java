@@ -33,7 +33,7 @@ import org.databene.task.TaskResult;
 import org.junit.Test;
 
 /**
- * Tests the {@link PerfTrackingTaskProxy}.<br/><br/>
+ * Tests the {@link PerfTrackingTaskProxy}.<br><br>
  * Created: 25.02.2010 09:16:55
  * @since 0.6.0
  * @author Volker Bergmann

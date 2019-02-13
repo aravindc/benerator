@@ -30,8 +30,8 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
- * Double Generator that implements a 'randomWalk' Double Sequence.<br/>
- * <br/>
+ * Double Generator that implements a 'randomWalk' Double Sequence.<br>
+ * <br>
  * Created: 13.06.2006 07:36:45
  * @author Volker Bergmann
  */

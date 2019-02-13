@@ -36,7 +36,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
- * Provides utility methods for Benerator's XML platform.<br/><br/>
+ * Provides utility methods for Benerator's XML platform.<br><br>
  * Created: 15.01.2014 11:03:25
  * @since 0.9.0
  * @author Volker Bergmann

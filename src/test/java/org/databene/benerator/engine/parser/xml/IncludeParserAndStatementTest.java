@@ -30,7 +30,7 @@ import org.databene.commons.SyntaxError;
 import org.junit.Test;
 
 /**
- * Integration test for {@link IncludeParser} and {@link IncludeStatement}.<br/><br/>
+ * Integration test for {@link IncludeParser} and {@link IncludeStatement}.<br><br>
  * Created: 12.03.2010 10:37:04
  * @since 0.6.0
  * @author Volker Bergmann

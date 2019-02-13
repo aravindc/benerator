@@ -32,7 +32,7 @@ import org.databene.script.DatabeneScriptParser;
 import org.databene.script.WeightedTransition;
 
 /**
- * Converter implementation that maps input values in a 'Map' style.<br/><br/>
+ * Converter implementation that maps input values in a 'Map' style.<br><br>
  * Created: 24.10.2009 09:05:58
  * @since 0.6.0
  * @author Volker Bergmann

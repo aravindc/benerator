@@ -22,7 +22,7 @@
 package org.databene.model.data;
 
 /**
- * Describes a variable.<br/><br/>
+ * Describes a variable.<br><br>
  * Created: 08.08.2011 10:09:58
  * @since 0.7.0
  * @author Volker Bergmann

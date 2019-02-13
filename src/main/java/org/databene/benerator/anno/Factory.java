@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 import org.databene.benerator.factory.GeneratorFactory;
 
 /**
- * Declares a {@link GeneratorFactory} to use for testing.<br/><br/>
+ * Declares a {@link GeneratorFactory} to use for testing.<br><br>
  * Created: 10.11.2012 08:29:35
  * @since 0.7.10
  * @author Volker Bergmann

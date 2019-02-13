@@ -39,8 +39,8 @@ import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 
 /**
- * Local implementation of an increment {@link Generator} that behaves like a database sequence.<br/>
- * <br/>
+ * Local implementation of an increment {@link Generator} that behaves like a database sequence.<br>
+ * <br>
  * Created at 29.05.2009 19:35:27
  * @since 0.6.0
  * @author Volker Bergmann

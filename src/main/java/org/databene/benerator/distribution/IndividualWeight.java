@@ -33,8 +33,8 @@ import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.ConfigurationError;
 
 /**
- * Distribution type that provides an individual weight for each object.<br/>
- * <br/>
+ * Distribution type that provides an individual weight for each object.<br>
+ * <br>
  * Created at 27.04.2008 19:17:38
  * @since 0.5.2
  * @author Volker Bergmann

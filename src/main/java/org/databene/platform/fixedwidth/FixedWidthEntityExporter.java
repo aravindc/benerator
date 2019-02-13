@@ -37,8 +37,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Exports Entities to fixed-width files.<br/>
- * <br/>
+ * Exports Entities to fixed-width files.<br>
+ * <br>
  * Created: 26.08.2007 06:17:41
  * @author Volker Bergmann
  */

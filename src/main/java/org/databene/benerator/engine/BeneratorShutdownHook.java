@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Closes resources if system shutdown happens normally or enforced.<br/><br/>
+ * Closes resources if system shutdown happens normally or enforced.<br><br>
  * Created: 22.02.2010 07:39:37
  * @since 0.6.0
  * @author Volker Bergmann

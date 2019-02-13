@@ -32,8 +32,8 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the 'wedge' sequence.<br/>
- * <br/>
+ * Tests the 'wedge' sequence.<br>
+ * <br>
  * Created: 13.11.2007 14:20:39
  * @author Volker Bergmann
  */

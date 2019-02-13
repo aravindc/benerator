@@ -26,7 +26,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link RecurrenceRelationNumberGenerator}.<br/><br/>
+ * Tests the {@link RecurrenceRelationNumberGenerator}.<br><br>
  * Created: 13.10.2009 19:54:23
  * @since 0.6.0
  * @author Volker Bergmann

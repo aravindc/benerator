@@ -31,8 +31,8 @@ import org.databene.commons.ErrorHandler;
 import org.databene.commons.context.ContextAware;
 
 /**
- * Wraps a Runnable in a Task.<br/>
- * <br/>
+ * Wraps a Runnable in a Task.<br>
+ * <br>
  * @since 0.2
  * Created: 06.07.2007 07:31:50
  * @author Volker Bergmann

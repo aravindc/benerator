@@ -32,7 +32,7 @@ import org.databene.commons.StringUtil;
 import org.databene.model.data.Entity;
 
 /**
- * Validates a customer.<br/><br/>
+ * Validates a customer.<br><br>
  * Created: 23.03.2008 06:46:33
  * @since 0.5.0
  * @author Volker Bergmann

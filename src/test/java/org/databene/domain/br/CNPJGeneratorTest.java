@@ -28,7 +28,7 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link CNPJGenerator}.<br/><br/>
+ * Tests the {@link CNPJGenerator}.<br><br>
  * Created: 17.10.2009 08:24:59
  * @since 0.6.0
  * @author Volker Bergmann

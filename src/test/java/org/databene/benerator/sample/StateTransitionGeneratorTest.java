@@ -37,8 +37,8 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link StateTransitionGenerator}.<br/>
- * <br/>
+ * Tests the {@link StateTransitionGenerator}.<br>
+ * <br>
  * Created at 17.07.2009 08:15:03
  * @since 0.6.0
  * @author Volker Bergmann

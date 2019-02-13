@@ -33,7 +33,7 @@ import org.databene.script.math.ArithmeticEngine;
 
 /**
  * {@link Consumer} implementation which sums up the values of a 'feature' of all objects it consumes
- * and return the sum as 'sum' property of type 'type'.<br/><br/>
+ * and return the sum as 'sum' property of type 'type'.<br><br>
  * Created: 03.04.2010 07:41:42
  * @since 0.6.0
  * @author Volker Bergmann

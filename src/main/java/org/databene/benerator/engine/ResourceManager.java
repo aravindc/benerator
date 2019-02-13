@@ -29,8 +29,8 @@ package org.databene.benerator.engine;
 import java.io.Closeable;
 
 /**
- * Parent interface for classes that manage resources.<br/>
- * <br/>
+ * Parent interface for classes that manage resources.<br>
+ * <br>
  * Created at 24.09.2009 16:45:56
  * @since 0.6.0
  * @author Volker Bergmann

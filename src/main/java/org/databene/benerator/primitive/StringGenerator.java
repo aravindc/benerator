@@ -40,7 +40,7 @@ import org.databene.formats.regex.RegexParser;
 import org.databene.model.data.Uniqueness;
 
 /**
- * {@link String} {@link Generator} which offers a wide range of options for generating strings.<br/><br/>
+ * {@link String} {@link Generator} which offers a wide range of options for generating strings.<br><br>
  * Created: 31.07.2011 07:15:05
  * @since 0.7.0
  * @author Volker Bergmann

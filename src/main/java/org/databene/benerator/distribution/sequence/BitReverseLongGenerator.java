@@ -30,8 +30,8 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
- * Generates integers reversing the bits of a continuously rising number.<br/>
- * <br/>
+ * Generates integers reversing the bits of a continuously rising number.<br>
+ * <br>
  * Created: 13.11.2007 15:42:27
  * @author Volker Bergmann
  */

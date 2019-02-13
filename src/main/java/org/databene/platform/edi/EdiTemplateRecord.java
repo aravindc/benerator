@@ -28,7 +28,7 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.platform.template.DefaultTemplateRecord;
 
 /**
- * TODO Document class.<br/><br/>
+ * TODO Document class.<br><br>
  * Created: 30.06.2014 11:14:26
  * @since TODO version
  * @author Volker Bergmann

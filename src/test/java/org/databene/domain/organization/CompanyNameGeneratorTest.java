@@ -35,7 +35,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the CompanyNameGenerator.<br/><br/>
+ * Tests the CompanyNameGenerator.<br><br>
  * Created: 14.03.2008 08:31:26
  * @author Volker Bergmann
  */

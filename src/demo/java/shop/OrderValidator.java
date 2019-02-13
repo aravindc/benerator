@@ -31,7 +31,7 @@ import java.util.Date;
 import org.databene.model.data.Entity;
 
 /**
- * Validates an order.<br/><br/>
+ * Validates an order.<br><br>
  * Created: 23.03.2008 06:46:08
  * @since 0.5.0
  * @author Volker Bergmann

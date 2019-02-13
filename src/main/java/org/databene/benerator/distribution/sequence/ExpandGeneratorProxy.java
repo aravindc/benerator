@@ -37,18 +37,18 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * Handling of unlimited data volume is provided with a cache of limited size, 
  * distribution is implemented by distributing source data randomly over buckets
  * and uniqueness can be assured (when setting duplicationQuota to 0) by removing 
- * used data from its bucket.<br/>
+ * used data from its bucket.<br>
  * For maximum efficiency, source data first is randomly distributed over buckets of limited size.
  * As long as further source data is available, the proxy randomly selects an entry from a random 
  * bucket returns it to the caller and replaces it with new data if no duplicates are allowed or 
  * should not be applied in this case. 
  * If no more source data is available, the proxy returns the last element from a bucket, allowing 
- * to reduce the used bucket size without shifting elements. If a bucket is empty, it is removed.<br/> 
+ * to reduce the used bucket size without shifting elements. If a bucket is empty, it is removed.<br> 
  * The buckets were introduced for quickly freeing RAM after usage and for allowing a more erratic 
  * behavior in the phase when no more source data is available and elements are taken from bucket end 
  * to beginning.
- * <br/>
- * <br/>
+ * <br>
+ * <br>
  * Created: 10.12.2009 11:32:35
  * @since 0.6.0
  * @author Volker Bergmann

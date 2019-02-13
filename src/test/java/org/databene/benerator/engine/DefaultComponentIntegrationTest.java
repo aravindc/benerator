@@ -34,7 +34,7 @@ import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * Tests the &lt;defaultComponents&gt; element.<br/><br/>
+ * Tests the &lt;defaultComponents&gt; element.<br><br>
  * Created: 23.05.2011 09:37:37
  * @since 0.6.6
  * @author Volker Bergmann

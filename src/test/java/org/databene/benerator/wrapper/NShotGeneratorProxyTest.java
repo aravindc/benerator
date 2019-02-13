@@ -27,7 +27,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link NShotGeneratorProxy}.<br/><br/>
+ * Tests the {@link NShotGeneratorProxy}.<br><br>
  * Created: 25.07.2010 11:38:23
  * @since 0.6.3
  * @author Volker Bergmann

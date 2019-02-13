@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specifies which {@link org.databene.benerator.Generator} to use when generating data for the annotated element.<br/><br/>
+ * Specifies which {@link org.databene.benerator.Generator} to use when generating data for the annotated element.<br><br>
  * Created: 02.05.2010 18:52:02
  * @since 0.6.1
  * @author Volker Bergmann

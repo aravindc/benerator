@@ -28,8 +28,8 @@ package org.databene.benerator;
 
 /**
  * Indicates exceptional generator states that stem from inappropriate
- * generator setup or use.<br/>
- * <br/>
+ * generator setup or use.<br>
+ * <br>
  * Created: 07.06.2006 22:13:57
  * @since 0.1
  * @author Volker Bergmann

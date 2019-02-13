@@ -37,7 +37,7 @@ import org.databene.commons.converter.ConverterManager;
  * {@link Distribution} implementation which uses the inverse of a probability function integral 
  * for efficiently generating numbers with a given probability distribution. 
  * See <a href="http://www.stat.wisc.edu/~larget/math496/random2.html">Random 
- * Number Generation from Non-uniform Distributions</a>.<br/><br/>
+ * Number Generation from Non-uniform Distributions</a>.<br><br>
  * Created: 12.03.2010 13:31:16
  * @since 0.6.0
  * @author Volker Bergmann
@@ -72,7 +72,7 @@ public abstract class CumulativeDistributionFunction implements Distribution {
 	}
 	
     /**
-     * Generates numbers according to an {@link CumulativeDistributionFunction}.<br/><br/>
+     * Generates numbers according to an {@link CumulativeDistributionFunction}.<br><br>
      * Created: 12.03.2010 14:37:33
      * @since 0.6.0
      * @author Volker Bergmann

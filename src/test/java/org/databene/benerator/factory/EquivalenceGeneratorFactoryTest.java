@@ -30,7 +30,7 @@ import static org.databene.commons.Period.*;
 import org.junit.Test;
 
 /**
- * Tests the {@link EquivalenceGeneratorFactory}.<br/><br/>
+ * Tests the {@link EquivalenceGeneratorFactory}.<br><br>
  * Created: 29.08.2011 18:09:46
  * @since 0.7.0
  * @author Volker Bergmann

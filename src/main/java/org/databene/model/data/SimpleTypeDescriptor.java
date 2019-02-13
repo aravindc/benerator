@@ -34,8 +34,8 @@ import org.databene.commons.operation.MinOperation;
 import org.databene.script.PrimitiveType;
 
 /**
- * Describes a simple type.<br/>
- * <br/>
+ * Describes a simple type.<br>
+ * <br>
  * Created: 03.03.2008 08:58:58
  * @since 0.5.0
  * @author Volker Bergmann

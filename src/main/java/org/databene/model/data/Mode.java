@@ -27,8 +27,8 @@
 package org.databene.model.data;
 
 /**
- * Enumerates the processing modes of an Entity or component.<br/>
- * <br/>
+ * Enumerates the processing modes of an Entity or component.<br>
+ * <br>
  * Created: 19.08.2007 18:11:19
  */
 public enum Mode {

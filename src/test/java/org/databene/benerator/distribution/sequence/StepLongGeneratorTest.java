@@ -32,7 +32,7 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link StepLongGenerator}.<br/><br/>
+ * Tests the {@link StepLongGenerator}.<br><br>
  * Created: 26.07.2007 18:11:19
  * @author Volker Bergmann
  */

@@ -31,8 +31,8 @@ import javax.validation.ConstraintValidatorContext;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Validates ISO-3166-1 alpha-2 country codes.<br/>
- * <br/>
+ * Validates ISO-3166-1 alpha-2 country codes.<br>
+ * <br>
  * Created at 12.07.2008 15:24:58
  * @since 0.5.4
  * @author Volker Bergmann

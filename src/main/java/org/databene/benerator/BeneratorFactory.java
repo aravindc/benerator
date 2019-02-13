@@ -35,7 +35,7 @@ import org.databene.commons.Validator;
 import org.databene.commons.version.VersionInfo;
 
 /**
- * Abstract factory class for extending Benerator.<br/><br/>
+ * Abstract factory class for extending Benerator.<br><br>
  * Created: 08.09.2010 15:43:11
  * @see DefaultBeneratorFactory
  * @since 0.6.4

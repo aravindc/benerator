@@ -44,8 +44,8 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
 
 /**
- * Parent class for XLS-related tests.<br/>
- * <br/>
+ * Parent class for XLS-related tests.<br>
+ * <br>
  * Created at 18.07.2009 23:45:02
  * @since 0.6.0
  * @author Volker Bergmann

@@ -25,7 +25,7 @@ package org.databene.benerator.template.xmlanon;
 import java.util.List;
 
 /**
- * Wraps the complete configuration of a multi-file anonymization.<br/><br/>
+ * Wraps the complete configuration of a multi-file anonymization.<br><br>
  * Created: 27.02.2014 14:10:16
  * @since 0.9.0
  * @author Volker Bergmann

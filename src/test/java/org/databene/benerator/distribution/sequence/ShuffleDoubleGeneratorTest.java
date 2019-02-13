@@ -33,7 +33,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link ShuffleDoubleGenerator}.<br/><br/>
+ * Tests the {@link ShuffleDoubleGenerator}.<br><br>
  * Created: 07.06.2006 20:23:39
  * @since 0.1
  * @author Volker Bergmann

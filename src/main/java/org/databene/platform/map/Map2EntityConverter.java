@@ -34,8 +34,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Converts a Map to an Entity.<br/>
- * <br/>
+ * Converts a Map to an Entity.<br>
+ * <br>
  * Created: 29.08.2007 18:44:41
  * @author Volker Bergmann
  */

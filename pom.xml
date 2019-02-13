@@ -23,10 +23,10 @@
 	<properties>
 		<build_number>${buildNumber}</build_number>
 		<jdbacl_version>0.8.19</jdbacl_version>
-		<formats_version>1.0.0</formats_version>
+		<formats_version>1.0.15</formats_version>
 		<script_version>1.0.0</script_version>
 		<contiperf_version>2.3.4</contiperf_version>
-		<commons_version>1.0.0</commons_version>
+		<commons_version>1.0.12</commons_version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -282,8 +282,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 
@@ -369,7 +369,7 @@
 				<configuration>
 					<linkXref>true</linkXref>
 					<minimumTokens>100</minimumTokens>
-					<targetJdk>1.6</targetJdk>
+					<targetJdk>1.8</targetJdk>
 				</configuration>
 			</plugin>
 

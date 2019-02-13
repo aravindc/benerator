@@ -30,7 +30,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link City} class.<br/><br/>
+ * Tests the {@link City} class.<br><br>
  * Created at 02.05.2008 13:27:53
  * @since 0.5.3
  * @author Volker Bergmann

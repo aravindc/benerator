@@ -34,8 +34,8 @@ import org.databene.benerator.util.RandomUtil;
  * it and replace the internal value with the new feed value. When the source is no longer 
  * available, a call to randomElement() will return the last value from the buffer and remove 
  * it (avoiding expensive shift operations that would result from choosing value from a random 
- * position).<br/>
- * <br/>
+ * position).<br>
+ * <br>
  * Created: 10.12.2009 15:10:33
  * @since 0.6.0
  * @author Volker Bergmann

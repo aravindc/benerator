@@ -43,7 +43,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Tests the XMLFileGenerator.<br/><br/>
+ * Tests the XMLFileGenerator.<br><br>
  * Created: 06.03.2008 11:16:45
  * @since 0.5.0
  * @author Volker Bergmann

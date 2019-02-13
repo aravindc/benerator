@@ -36,7 +36,7 @@ import javax.validation.Constraint;
  * Marker for Brazilian CPF numbers.
  * CPF stands for 'Cadastro de Pessoa Fisica' 
  * and is a tax payer number assigned to an 
- * individual person (Pessoa Fisica).<br/><br/>
+ * individual person (Pessoa Fisica).<br><br>
  * Created: 17.10.2009 09:31:23
  * @since 0.6.0
  * @author Volker Bergmann

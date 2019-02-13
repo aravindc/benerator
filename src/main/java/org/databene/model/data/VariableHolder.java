@@ -22,7 +22,7 @@
 package org.databene.model.data;
 
 /**
- * Common interface for descriptors that support variables.<br/><br/>
+ * Common interface for descriptors that support variables.<br><br>
  * Created: 01.05.2010 12:44:26
  * @since 0.6.1
  * @author Volker Bergmann

@@ -31,8 +31,8 @@ import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 import org.databene.commons.NumberUtil;
 
 /**
- * Long Generator that implements a 'bitreverse' Long Sequence.<br/>
- * <br/>
+ * Long Generator that implements a 'bitreverse' Long Sequence.<br>
+ * <br>
  * Created: 13.11.2007 14:39:29
  * @author Volker Bergmann
  */

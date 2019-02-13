@@ -27,7 +27,7 @@ import org.databene.benerator.test.ModelTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link ComponentNameMapper}.<br/><br/>
+ * Tests the {@link ComponentNameMapper}.<br><br>
  * Created: 22.02.2010 20:00:34
  * @since 0.6.0
  * @author Volker Bergmann

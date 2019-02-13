@@ -36,7 +36,7 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
 
 /**
- * Looks up and manages Benerator archetypes.<br/><br/>
+ * Looks up and manages Benerator archetypes.<br><br>
  * Created at 18.02.2009 07:35:52
  * @since 0.5.9
  * @author Volker Bergmann

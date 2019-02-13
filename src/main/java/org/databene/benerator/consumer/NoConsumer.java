@@ -24,7 +24,7 @@ package org.databene.benerator.consumer;
 import org.databene.benerator.Consumer;
 
 /**
- * Empty {@link Consumer} implementation which does nothing.<br/><br/>
+ * Empty {@link Consumer} implementation which does nothing.<br><br>
  * Created: 07.09.2011 07:57:55
  * @since 0.7.0
  * @author Volker Bergmann

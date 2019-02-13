@@ -44,8 +44,8 @@ import org.databene.benerator.gui.CreateProjectPanel;
 import org.databene.commons.ui.I18NSupport;
 
 /**
- * Main class for the benerator GUI.<br/>
- * <br/>
+ * Main class for the benerator GUI.<br>
+ * <br>
  * Created at 17.07.2008 09:32:54
  * @since 0.5.6
  * @author Volker Bergmann

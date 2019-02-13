@@ -29,7 +29,7 @@ import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 import org.databene.commons.StringUtil;
 
 /**
- * Generates numbers that pass a Luhn test.<br/><br/>
+ * Generates numbers that pass a Luhn test.<br><br>
  * Created: 18.10.2009 10:08:09
  * @since 0.6.0
  * @author Volker Bergmann

@@ -34,7 +34,7 @@ import org.databene.commons.Validator;
 import org.databene.model.data.Entity;
 
 /**
- * Validates an audited entity.<br/><br/>
+ * Validates an audited entity.<br><br>
  * Created: 26.03.2008 12:30:34
  * @author Volker Bergmann
  */

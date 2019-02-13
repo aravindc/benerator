@@ -41,7 +41,7 @@ import org.databene.task.PageListener;
 import org.databene.task.TaskExecutor;
 
 /**
- * Creates a number of entities in parallel execution and a given page size.<br/><br/>
+ * Creates a number of entities in parallel execution and a given page size.<br><br>
  * Created: 01.02.2008 14:43:15
  * @author Volker Bergmann
  */

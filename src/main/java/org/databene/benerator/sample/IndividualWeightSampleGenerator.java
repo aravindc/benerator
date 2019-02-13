@@ -39,8 +39,8 @@ import org.databene.commons.Assert;
 
 /**
  * Maps an {@link IndividualWeight} distribution to an {@link AbstractWeightFunction} and uses its capabilities
- * for providing distribution features based on the {@link IndividualWeight}'s characteristics.<br/>
- * <br/>
+ * for providing distribution features based on the {@link IndividualWeight}'s characteristics.<br>
+ * <br>
  * Created at 01.07.2009 11:48:23
  * @since 0.6.0
  * @author Volker Bergmann

@@ -39,7 +39,7 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.script.ScriptContext;
 
 /**
- * A BeneratorContext.<br/><br/>
+ * A BeneratorContext.<br><br>
  * Created at 20.04.2008 06:41:04
  * @since 0.5.2
  * @author Volker Bergmann

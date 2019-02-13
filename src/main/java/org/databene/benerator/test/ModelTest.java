@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract parent class for all tests which rely on a {@link DataModel}.<br/><br/>
+ * Abstract parent class for all tests which rely on a {@link DataModel}.<br><br>
  * Created: 09.12.2011 22:21:24
  * @since 0.7.4
  * @author Volker Bergmann

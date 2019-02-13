@@ -44,7 +44,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the DBSnapshotTool.<br/><br/>
+ * Tests the DBSnapshotTool.<br><br>
  * Created at 03.05.2008 11:39:01
  * @since 0.5.3
  * @author Volker Bergmann

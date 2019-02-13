@@ -24,7 +24,7 @@ package org.databene.task;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Mock for the {@link PageListener} interface to be used for testing.<br/><br/>
+ * Mock for the {@link PageListener} interface to be used for testing.<br><br>
  * Created: 26.10.2009 07:48:08
  * @since 0.6.0
  * @author Volker Bergmann

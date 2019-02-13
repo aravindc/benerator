@@ -33,7 +33,7 @@ import org.databene.script.math.ArithmeticEngine;
 
 /**
  * {@link Converter} implementation that transforms numbers 
- * inducing relative or absolute numerical noise based on a {@link Distribution}.<br/><br/>
+ * inducing relative or absolute numerical noise based on a {@link Distribution}.<br><br>
  * Created: 06.10.2010 17:14:46
  * @since 0.6.4
  * @author Volker Bergmann

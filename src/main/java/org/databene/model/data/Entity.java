@@ -35,8 +35,8 @@ import org.databene.platform.java.BeanDescriptorProvider;
 import org.databene.script.PrimitiveType;
 
 /**
- * Instance of a composite data type as described by a {@link ComplexTypeDescriptor}.<br/>
- * <br/>
+ * Instance of a composite data type as described by a {@link ComplexTypeDescriptor}.<br>
+ * <br>
  * Created: 20.08.2007 19:20:22
  * @since 0.3
  * @author Volker Bergmann

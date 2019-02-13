@@ -26,7 +26,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link IndividualWeightSampleGenerator}.<br/><br/>
+ * Tests the {@link IndividualWeightSampleGenerator}.<br><br>
  * Created: 29.08.2011 15:52:51
  * @since 0.7.0
  * @author Volker Bergmann

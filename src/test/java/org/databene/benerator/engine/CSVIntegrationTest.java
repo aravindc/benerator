@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.junit.Ignore;
 
 /**
- * Integration test for Benerator's CSV functionality.<br/><br/>
+ * Integration test for Benerator's CSV functionality.<br><br>
  * Created: 03.02.2011 18:15:34
  * @since 0.6.5
  * @author Volker Bergmann

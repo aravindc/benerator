@@ -27,7 +27,7 @@ import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates int arrays in the same manner in which decimal numbers are used. 
- * It can be used to generate numbers or strings of arbitrary numerical radix.<br/><br/>
+ * It can be used to generate numbers or strings of arbitrary numerical radix.<br><br>
  * Created: 01.08.2011 15:15:39
  * @since 0.7.0
  * @author Volker Bergmann

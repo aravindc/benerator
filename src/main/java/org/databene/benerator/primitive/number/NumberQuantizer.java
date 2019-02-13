@@ -31,7 +31,7 @@ import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.script.math.ArithmeticEngine;
 
 /**
- * A quantizer for arbitrary number types.<br/><br/>
+ * A quantizer for arbitrary number types.<br><br>
  * Created: 05.07.2011 08:19:20
  * @since 0.7.0
  * @author Volker Bergmann

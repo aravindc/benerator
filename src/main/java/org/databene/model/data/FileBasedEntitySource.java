@@ -24,7 +24,7 @@ package org.databene.model.data;
 import org.databene.benerator.engine.BeneratorContext;
 
 /**
- * Parent class for {@link EntitySource}s that import entities from files.<br/><br/>
+ * Parent class for {@link EntitySource}s that import entities from files.<br><br>
  * Created: 12.03.2010 11:05:13
  * @since 0.6.0
  * @author Volker Bergmann

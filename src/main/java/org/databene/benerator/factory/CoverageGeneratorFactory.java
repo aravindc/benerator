@@ -35,7 +35,7 @@ import org.databene.model.data.Uniqueness;
 
 /**
  * {@link GeneratorFactory} implementation which creates data sets 
- * that cover the full range of available data and combinations.<br/><br/>
+ * that cover the full range of available data and combinations.<br><br>
  * Created: 04.07.2011 09:39:08
  * @since 0.7.0
  * @author Volker Bergmann

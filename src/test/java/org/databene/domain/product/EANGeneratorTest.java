@@ -30,8 +30,8 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
 /**
- * Tests the EANGenerator.<br/>
- * <br/>
+ * Tests the EANGenerator.<br>
+ * <br>
  * Created: 30.07.2007 21:35:18
  * @author Volker Bergmann
  */

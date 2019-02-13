@@ -40,7 +40,7 @@ import java.util.GregorianCalendar;
 
 /**
  * creates date values by a LongGenerator.
- * <br/>
+ * <br>
  * Created: 07.06.2006 22:54:28
  * @since 0.1
  * @author Volker Bergmann

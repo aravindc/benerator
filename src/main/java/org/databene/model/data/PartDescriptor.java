@@ -29,7 +29,7 @@ package org.databene.model.data;
 import org.databene.script.Expression;
 
 /**
- * Descriptor for attributes<br/><br/>
+ * Descriptor for attributes<br><br>
  * Created: 30.06.2007 07:29:43
  * @since 0.2
  * @author Volker Bergmann

@@ -35,8 +35,8 @@ import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.util.UnsafeGenerator;
 
 /**
- * Tests the {@link CyclicGeneratorProxy}.<br/>
- * <br/>
+ * Tests the {@link CyclicGeneratorProxy}.<br>
+ * <br>
  * Created at 18.03.2009 09:17:10
  * @since 0.5.9
  * @author Volker Bergmann

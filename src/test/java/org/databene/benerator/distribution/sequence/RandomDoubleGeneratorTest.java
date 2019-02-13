@@ -32,7 +32,7 @@ import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link RandomDoubleGenerator}.<br/><br/>
+ * Tests the {@link RandomDoubleGenerator}.<br><br>
  * Created: 11.10.2006 23:03:30
  * @since 0.1
  * @author Volker Bergmann

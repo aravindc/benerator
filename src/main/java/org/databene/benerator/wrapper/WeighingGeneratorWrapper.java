@@ -26,7 +26,7 @@ import org.databene.benerator.WeightedGenerator;
 
 /**
  * Wraps an ordinary {@link Generator} with a {@link WeightedGenerator} interface
- * requiring an explicit weight setting.<br/><br/>
+ * requiring an explicit weight setting.<br><br>
  * Created: 29.08.2011 22:34:03
  * @since 0.7.0
  * @author Volker Bergmann

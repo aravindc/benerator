@@ -38,8 +38,8 @@ import org.databene.document.csv.BeanCSVWriter;
 import java.io.*;
 
 /**
- * Demonstrates how to generated and format JavaBeans into a CSV file.<br/>
- * <br/>
+ * Demonstrates how to generated and format JavaBeans into a CSV file.<br>
+ * <br>
  * Created: 06.06.2007 19:43:09
  */
 public class PersonCSVCreatorDemo {
