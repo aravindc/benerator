@@ -42,7 +42,6 @@
 	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.6.4/slf4j-log4j12-1.6.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.16/log4j-1.2.16.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/commons"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/contiperf"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/databene-script"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jdbacl"/>
@@ -61,5 +60,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/databene-commons"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

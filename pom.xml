@@ -449,14 +449,30 @@
 	</profiles>
 
 	<distributionManagement>
+<!-- 
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
-		<repository>
+ 		<repository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
+ -->		
+
+    <snapshotRepository>
+        <id>snapshots</id>
+        <name>repo.arapravi.in-snapshots</name>
+        <url>https://repo.arapravi.in/libs-snapshot</url>
+    </snapshotRepository>
+
+
+    <repository>
+        <id>central</id>
+        <name>repo.arapravi.in-releases</name>
+        <url>https://repo.arapravi.in/libs-release</url>
+    </repository>
+
 	</distributionManagement>
 
 	<scm>

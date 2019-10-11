@@ -40,6 +40,10 @@ import org.databene.script.WeightedSample;
  */
 public class CSVGeneratorUtil {
 	
+	private CSVGeneratorUtil(){
+		
+	}
+	
     public static <T> List<WeightedSample<T>> parseDatasetFiles(
             String datasetName, char separator, String nesting, String filenamePattern,
             String encoding, Converter<String, T> converter) {
@@ -59,11 +63,10 @@ public class CSVGeneratorUtil {
         return parseFile(filename, separator, encoding, converter, new ArrayList<WeightedSample<T>>());
     }
 
-    public static <T> List<WeightedSample<T>> parseFile(String filename, char separator, String encoding, 
+	public static <T> List<WeightedSample<T>> parseFile(String filename, char separator, String encoding, 
     		Converter<String, T> converter, List<WeightedSample<T>> samples) {
-        try {
-            CSVLineIterator iterator = new CSVLineIterator(filename, separator, encoding);
-            DataContainer<String[]> container = new DataContainer<String[]>();
+        try(CSVLineIterator iterator = new CSVLineIterator(filename, separator, encoding)) {
+        	DataContainer<String[]> container = new DataContainer<String[]>();
             while ((container = iterator.next(container)) != null) {
             	String[] tokens = container.getData();
                 if (tokens.length == 0)

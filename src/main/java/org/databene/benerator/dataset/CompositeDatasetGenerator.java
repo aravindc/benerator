@@ -110,6 +110,7 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 		return (DatasetBasedGenerator<E>) getSource().generate(new ProductWrapper<Generator<E>>()).unwrap();
 	}
 
+	@SuppressWarnings("resource")
 	private DatasetBasedGenerator<E> randomAtomicGenerator() {
 		DatasetBasedGenerator<E> generator = this;
 		while (generator instanceof CompositeDatasetGenerator)
