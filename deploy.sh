@@ -1,4 +1,4 @@
-cd ../commons
+cd ../databenecommons
 mvn clean deploy
 cd ../webdecs
 mvn clean deploy
