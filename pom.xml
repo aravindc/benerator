@@ -25,7 +25,7 @@
 		<jdbacl_version>0.8.19</jdbacl_version>
 		<formats_version>1.0.15</formats_version>
 		<script_version>1.0.0</script_version>
-		<contiperf_version>2.3.4</contiperf_version>
+		<contiperf_version>2.3.4.1</contiperf_version>
 		<commons_version>1.0.13</commons_version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
