@@ -5,7 +5,7 @@
 
 	<groupId>org.databene</groupId>
 	<artifactId>databene-benerator</artifactId>
-	<version>0.9.8</version>
+	<version>0.9.9</version>
 	<packaging>jar</packaging>
 
 	<name>Databene Benerator</name>
@@ -25,8 +25,8 @@
 		<jdbacl_version>0.8.19</jdbacl_version>
 		<formats_version>1.0.15</formats_version>
 		<script_version>1.0.0</script_version>
-		<contiperf_version>2.3.4</contiperf_version>
-		<commons_version>1.0.12</commons_version>
+		<contiperf_version>2.3.4.1</contiperf_version>
+		<commons_version>1.0.13</commons_version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -117,13 +117,13 @@
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
-			<version>1.0.0.GA</version>
+			<version>2.0.1.Final</version>
 		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>4.13.1</version>
 			<!-- NOT in test scope because Benerator provides test helper classes -->
 		</dependency>
 
@@ -139,7 +139,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.12</version>
+			<version>8.0.16</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -198,6 +198,7 @@
 			<version>11.1.0.7</version> <scope>runtime</scope> </dependency> <dependency> 
 			<groupId>com.ibm</groupId> <artifactId>db2jcc</artifactId> <version>3.50.152</version> 
 			<scope>runtime</scope> </dependency> -->
+
 		<!-- logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -205,13 +206,19 @@
 			<version>1.6.4</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
-			<scope>provided</scope>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.13.3</version>
 		</dependency>
+
+<!--		<dependency>-->
+<!--			<groupId>log4j</groupId>-->
+<!--			<artifactId>log4j</artifactId>-->
+<!--			<version>1.2.17</version>-->
+<!--			<scope>provided</scope>-->
+<!--		</dependency>-->
 
 	</dependencies>
 
@@ -347,9 +354,19 @@
 					<revisionOnScmFailure>x</revisionOnScmFailure>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.2</version>
+			</plugin>
 		</plugins>
-
+		<extensions>
+			<extension>
+				<groupId>io.packagecloud.maven.wagon</groupId>
+				<artifactId>maven-packagecloud-wagon</artifactId>
+				<version>0.0.6</version>
+			</extension>
+		</extensions>
 	</build>
 
 	<reporting>
@@ -448,7 +465,37 @@
 		</profile>
 	</profiles>
 
+	<repositories>
+		<repository>
+			<id>arachockalingam-production</id>
+			<url>https://packagecloud.io/arachockalingam/production/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<distributionManagement>
+		<repository>
+			<id>packagecloud-arachockalingam</id>
+			<url>packagecloud+https://packagecloud.io/arachockalingam/production</url>
+		</repository>
+		<snapshotRepository>
+			<id>packagecloud-arachockalingam</id>
+			<url>packagecloud+https://packagecloud.io/arachockalingam/production</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<scm>
+		<connection>https://github.com/aravindc/benerator.git</connection>
+		<developerConnection>https://github.com/aravindc/benerator.git</developerConnection>
+		<url>https://github.com/aravindc/benerator.git</url>
+	</scm>
+
+<!--	<distributionManagement>-->
 <!-- 
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -460,25 +507,25 @@
 		</repository>
  -->		
 
-    <snapshotRepository>
-        <id>snapshots</id>
-        <name>repo.arapravi.in-snapshots</name>
-        <url>https://repo.arapravi.in/libs-snapshot</url>
-    </snapshotRepository>
+<!--    <snapshotRepository>-->
+<!--        <id>snapshots</id>-->
+<!--        <name>repo.arapravi.in-snapshots</name>-->
+<!--        <url>https://repo.arapravi.in/libs-snapshot</url>-->
+<!--    </snapshotRepository>-->
 
 
-    <repository>
-        <id>central</id>
-        <name>repo.arapravi.in-releases</name>
-        <url>https://repo.arapravi.in/libs-release</url>
-    </repository>
+<!--    <repository>-->
+<!--        <id>central</id>-->
+<!--        <name>repo.arapravi.in-releases</name>-->
+<!--        <url>https://repo.arapravi.in/libs-release</url>-->
+<!--    </repository>-->
 
-	</distributionManagement>
+<!--	</distributionManagement>-->
 
-	<scm>
-		<connection>scm:svn:http://svn.code.sf.net/p/benerator/code/benerator</connection>
-		<developerConnection>scm:svn:https://svn.code.sf.net/p/benerator/code/benerator</developerConnection>
-		<url>https://sourceforge.net/p/benerator/code/HEAD/tree/benerator/</url>
-	</scm>
+<!--	<scm>-->
+<!--		<connection>scm:svn:http://svn.code.sf.net/p/benerator/code/benerator</connection>-->
+<!--		<developerConnection>scm:svn:https://svn.code.sf.net/p/benerator/code/benerator</developerConnection>-->
+<!--		<url>https://sourceforge.net/p/benerator/code/HEAD/tree/benerator/</url>-->
+<!--	</scm>-->
 
 </project>
