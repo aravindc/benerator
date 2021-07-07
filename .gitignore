@@ -1,1 +1,6 @@
 /target/
+.idea/
+buildNumber.properties
+databene-benerator.iml
+LocalSequenceGenerator.properties
+benerator.log
