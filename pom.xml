@@ -123,7 +123,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.1</version>
+			<version>4.13.2</version>
 			<!-- NOT in test scope because Benerator provides test helper classes -->
 		</dependency>
 
